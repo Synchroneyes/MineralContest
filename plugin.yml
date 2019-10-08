@@ -1,0 +1,85 @@
+name: MineralContest
+version: ${project.version}
+main: fr.mineral.mineralcontest
+api-version: 1.13
+prefix: MINERALC
+load: STARTUP
+authors: [Groupe6]
+description: Plugin gamemode Mineral Contest
+website: http://synchroneyes.fr
+commands:
+  teamJaune:
+    description: Rejoindre l'equipe jaune
+    usage: /teamJaune
+    permission:
+    permission-message: This is an error
+
+  join:
+    description: Rejoindre une equipe, jaune, bleu, rouge
+    usage: /join <teamName>
+    permission:
+    permission-message: This is an error
+
+  leave:
+    description: quitter une equipe
+    usage: /leave
+    permission:
+    permission-message: This is an error
+
+  start:
+    description: demarrer une partie
+    usage: /start
+    permission: admin
+    permission-message: This is an error
+
+  randomizeTeam:
+    description: Attribuer aleatoirement une equipe aux joueur
+    usage: /randomizeTeam
+    permission: admin
+    permission-message: This is an error
+
+  setHouse:
+    description: set le spawn de base d'une équipe
+    usage: /setHouse [couleur]
+    permission: admin
+    permission-message: you do not have the permission
+
+  setSpawn:
+    description: set le spawn d'une equipe
+    usage: /setSpawn [couleur]
+    permission: admin
+    permission-message: you do not have the permission
+
+  arene:
+    description: teleport les joeurs de l equipe dans l arene
+    usage: /arene
+    permission:
+    permission-message:
+
+  teams:
+    description: Affiche les equipes
+    usage: /teams
+    permission:
+    permission-message:
+
+  setCoffre:
+    description: set le spawn du coffre
+    usage: /setCoffre
+    permission: admin
+    permission-message: you do not have the permission
+
+  spawnCoffre:
+    description: spawn le coffre
+    usage: /spawnCoffre
+    permission: admin
+    permission-message: you do not have the permission
+
+  setScoreBoard:
+    description: initialise les scoreboard
+    use: /setScoreBoard
+    permission: admin
+    permission-message: you do not have the permission
+
+  permissions:
+    admin:
+      description: allow all plugin command
