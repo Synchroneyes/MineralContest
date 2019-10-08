@@ -33,8 +33,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     private LinkedList<Equipe> teamList = new LinkedList<Equipe>();
 
     private Location positionSpawnArene;
-    private Coffre coffre;
-
+    private static Coffre coffre;
+    private boolean isCoffreSet = false;
+    private static boolean areneAuthozied = false;
+    private static int areneTimer = 0;
 
 
     public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
@@ -97,6 +99,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         new BukkitRunnable() {
             public void run() {
 
+
                 if(mineralcontest.isGameStarted()) {
                     if(timeLeft > 0) timeLeft--;
 
@@ -117,6 +120,19 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                     }
 
                 }
+
+                if(timeLeft % (15*60) == 0 ){ // on fais spawn un chest tous les 15 min
+                    if(!isCoffreSet){
+                        mineralcontest.coffre.spawn();
+                        mineralcontest.areneAuthozied = true;
+                        mineralcontest.areneTimer = 0;
+                    }
+                }
+
+                if (mineralcontest.areneTimer++ > 15){
+                    mineralcontest.areneAuthozied = false;
+                }
+
             }
         }.runTaskTimer(plugin, 0, 20);
 
@@ -248,11 +264,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         }
 
         if(cmd.getName().equalsIgnoreCase("arene")){
-            if(sender instanceof Player){
+            if(sender instanceof Player && areneAuthozied){
                 Player joueur = (Player) sender;
 
                 try{
-
                     if(this.gameStarted != 1) {
                         throw new Exception(this.ERROR_GAME_NOT_STARTED);
                     }

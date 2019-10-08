@@ -29,25 +29,25 @@ commands:
   start:
     description: demarrer une partie
     usage: /start
-    permission:
+    permission: admin
     permission-message: This is an error
 
   randomizeTeam:
     description: Attribuer aleatoirement une equipe aux joueur
     usage: /randomizeTeam
-    permission:
+    permission: admin
     permission-message: This is an error
 
   setHouse:
     description: set le spawn de base d'une équipe
     usage: /setHouse [couleur]
-    permission:
+    permission: admin
     permission-message: you do not have the permission
 
   setSpawn:
     description: set le spawn d'une equipe
     usage: /setSpawn [couleur]
-    permission:
+    permission: admin
     permission-message: you do not have the permission
 
   arene:
@@ -65,17 +65,21 @@ commands:
   setCoffre:
     description: set le spawn du coffre
     usage: /setCoffre
-    permission:
+    permission: admin
     permission-message: you do not have the permission
 
   spawnCoffre:
     description: spawn le coffre
     usage: /spawnCoffre
-    permission:
+    permission: admin
     permission-message: you do not have the permission
 
   setScoreBoard:
     description: initialise les scoreboard
     use: /setScoreBoard
-    permission:
+    permission: admin
     permission-message: you do not have the permission
+
+  permissions:
+    admin:
+      description: allow all plugin command
