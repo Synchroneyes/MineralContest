@@ -1,10 +1,11 @@
 package fr.mineral;
 
-import fr.mineral.Events.Mort;
-import fr.mineral.Events.Spawn;
+import fr.mineral.Events.PlayerJoin;
+import fr.mineral.Events.PlayerMort;
+import fr.mineral.Events.PlayerSpawn;
 import fr.mineral.Exception.FullTeamException;
-import fr.mineral.scoreboard.scoreboard;
 
+import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
@@ -32,7 +34,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     private Location positionSpawnArene;
     private Coffre coffre;
-    private scoreboard scoreBoard;
+
 
 
     public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
@@ -44,7 +46,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     // 60*60 car dans 60min il y a 60*60 sec
     public static int timeLeft = 60*60-1;
     public static int teamMaxPlayers = 1;
-    private int gameStarted = 0;
+    private static int gameStarted = 0;
 
 
     public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
@@ -88,8 +90,37 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("onEnable has beezn invoked!");
-        Bukkit.getServer().getPluginManager().registerEvents(new Mort(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new Spawn(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
+
+
+        new BukkitRunnable() {
+            public void run() {
+
+                if(mineralcontest.isGameStarted()) {
+                    if(timeLeft > 0) timeLeft--;
+
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+                        Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+
+                    }
+
+                } else {
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+                        Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
+                        if(equipe == null)
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                        else
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+
+                    }
+
+                }
+            }
+        }.runTaskTimer(plugin, 0, 20);
+
+
 
     }
 
@@ -103,15 +134,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 
-        if (cmd.getName().equalsIgnoreCase("setScoreBoard")){
-
-            try {
-                this.scoreBoard = new scoreboard();
-                Bukkit.getServer().broadcastMessage("scoreBoard set");
-            }catch (Exception e){
-
-            }
-        }
 
         if(cmd.getName().equalsIgnoreCase("join")){
             if(sender instanceof Player) {
@@ -165,7 +187,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                     this.teamList.add(teamJaune);
                     this.teamList.add(teamRouge);
 
-                    this.scoreBoard.setTeamScore(teamList);
 
                 }catch (Exception e) {
                     joueur.sendMessage(this.prefixErreur + e.getMessage());
@@ -408,13 +429,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getServer().broadcastMessage(this.prefixGlobal + this.GAME_SUCCESSFULLY_STARTED);
         getServer().broadcastMessage("=============================");
 
-        // On lance le timer
-        new BukkitRunnable() {
-            public void run() {
-
-                if(timeLeft > 0) timeLeft--;
-            }
-        }.runTaskTimer(plugin, 0, 20);
 
         this.gameStarted = 1;
         return true;
@@ -574,6 +588,12 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         minutes = (timeLeft % 3600) / 60;
         secondes = (timeLeft % 60);
         return String.format("%02d:%02d", minutes, secondes);
+    }
+
+    public static boolean isGameStarted() {
+        if(gameStarted == 0)
+            return false;
+        return true;
     }
 
 }
