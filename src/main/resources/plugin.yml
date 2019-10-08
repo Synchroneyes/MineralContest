@@ -61,3 +61,9 @@ commands:
     usage: /teams
     permission:
     permission-message:
+
+  setScoreBoard:
+    description: initialise les scoreboard
+    use: /setScoreBoard
+    permission:
+    permission-message:

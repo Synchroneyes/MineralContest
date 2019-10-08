@@ -2,6 +2,7 @@ package fr.mineral;
 
 import fr.mineral.Exception.FullTeamException;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.scoreboard.scoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,8 +23,14 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     private Equipe teamRouge;
     private Equipe teamBleu;
 
+    private LinkedList<Equipe> teamList = new LinkedList<Equipe>();
+
     private Location positionSpawnArene;
     private Location positionSpawnCoffre;
+
+    // scoreboard
+    private scoreboard scoreBoard;
+
 
     public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
     public static String prefixErreur = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ERREUR] " + ChatColor.WHITE;
@@ -79,6 +86,17 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+
+        if (cmd.getName().equalsIgnoreCase("setScoreBoard")){
+
+            try {
+                this.scoreBoard = new scoreboard();
+                Bukkit.getServer().broadcastMessage("scoreBoard set");
+            }catch (Exception e){
+
+            }
+        }
+
         if(cmd.getName().equalsIgnoreCase("join")){
             if(sender instanceof Player) {
                 Player joueur = (Player) sender;
@@ -127,6 +145,13 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                 Player joueur = (Player) sender;
                 try {
                     randomizeTeam();
+
+                    this.teamList.add(teamBleu);
+                    this.teamList.add(teamJaune);
+                    this.teamList.add(teamRouge);
+
+                    this.scoreBoard.setTeamScore(teamList);
+
                 }catch (Exception e) {
                     joueur.sendMessage(this.prefixErreur + e.getMessage());
                 }
@@ -217,6 +242,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             if(sender instanceof Player) {
                 Player joueur = (Player) sender;
                 try {
+                    // TODO only person with certain permissions can do this cmd
                     // TODO only person with certain permissions can do this cmd
                     Location loc = joueur.getLocation();
 
