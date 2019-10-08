@@ -78,7 +78,7 @@ public class Equipe {
     }
 
     public void setHouseLocation(Location houseLocation){
-        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le spawn de l'équipe" +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + "  pour réapparaitre a bien été ajouter");
+        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le spawn de l'équipe " +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + "  pour réapparaitre a bien été ajouter");
         this.houseLocation = houseLocation;
     }
 

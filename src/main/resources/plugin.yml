@@ -62,8 +62,20 @@ commands:
     permission:
     permission-message:
 
+  setCoffre:
+    description: set le spawn du coffre
+    usage: /setCoffre
+    permission:
+    permission-message: you do not have the permission
+
+  spawnCoffre:
+    description: spawn le coffre
+    usage: /spawnCoffre
+    permission:
+    permission-message: you do not have the permission
+
   setScoreBoard:
     description: initialise les scoreboard
     use: /setScoreBoard
     permission:
-    permission-message:
+    permission-message: you do not have the permission
