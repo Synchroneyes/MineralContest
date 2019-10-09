@@ -280,6 +280,48 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             return true;
         }
 
+        if(cmd.getName().equalsIgnoreCase("setCoffreTeam")){
+            if(sender instanceof Player) {
+                Player joueur = (Player) sender;
+                if(args.length == 1) {
+                    try {
+                        String[] equipes = {"rouge", "red", "bleu", "blue", "yellow", "jaune"};
+                        // On fait un foreach pour parcourir le tableau d'équipe
+                        for(String equipe : equipes) {
+                            // Le nom de l'équipe passé en commentaire existe
+                            if (args[1].toLowerCase().equalsIgnoreCase(equipe)) {
+                                switch (equipe) {
+                                    // On va vérifier si l'équipe est pleine ou non
+                                    // Si elle l'est, on retourne FALSE
+                                    // Sinon, on l'ajoute et on le supprime de son équipe initiale
+                                    case "red":
+                                    case "rouge":
+                                        this.teamRouge.setCoffreEquipe(joueur.getLocation());
+                                        break;
+
+                                    case "jaune":
+                                    case "yellow":
+                                        this.teamJaune.setCoffreEquipe(joueur.getLocation());
+                                        break;
+
+                                    case "blue":
+                                    case "bleu":
+                                        this.teamBleu.setCoffreEquipe(joueur.getLocation());
+                                        break;
+                                }
+                            }
+                        }
+                    }catch (Exception e) {
+                        joueur.sendMessage(this.prefixErreur + e.getMessage());
+                    }
+                } else {
+                    joueur.sendMessage(this.prefixErreur + "Utilisation de la commande: /setCoffreTeam  <team>");
+                }
+            }
+            return true;
+        }
+
+
         if(cmd.getName().equalsIgnoreCase("arene")){
             if(sender instanceof Player && allowAreneTeleport){
                 Player joueur = (Player) sender;
@@ -540,12 +582,31 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         getServer().broadcastMessage(this.prefixGlobal + "[Verification] Spawn maison: " + ChatColor.GREEN + "OK");
 
+        // SPAWN COFFRE MAISON
+        if(this.teamJaune.getCoffreEquipeLocation() == null) {
+            getServer().broadcastMessage(this.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamJaune.getNomEquipe() + ": " + ChatColor.RED + "X");
+            return false;
+        }
+
+        if(this.teamRouge.getCoffreEquipeLocation() == null) {
+            getServer().broadcastMessage(this.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamRouge.getNomEquipe() + ": " + ChatColor.RED + "X");
+            return false;
+        }
+
+        if(this.teamBleu.getCoffreEquipeLocation() == null) {
+            getServer().broadcastMessage(this.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamBleu.getNomEquipe() + ": " + ChatColor.RED + "X");
+            return false;
+        }
+        getServer().broadcastMessage(this.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
+
         // SPAWN COFFRE ARENE
         if(this.coffre.getPosition() == null) {
             getServer().broadcastMessage(this.prefixGlobal + "[Verification] spawn coffre arene: " + ChatColor.RED + "X");
             return false;
         }
         getServer().broadcastMessage(this.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
+
+
 
         // SPAWN ARENE
         if(this.positionSpawnArene == null) {
@@ -554,6 +615,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         }
         getServer().broadcastMessage(this.prefixGlobal + "[Verification] Spawn arene: " + ChatColor.GREEN + "OK");
 
+
+        randomizeTeam();
 
         // EQUIPES PLEINE
         if(!this.teamRouge.isTeamFull()) {

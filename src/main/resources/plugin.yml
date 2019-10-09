@@ -80,6 +80,24 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  resume:
+    description: Reprend la partie
+    use: /resume
+    permission: admin
+    permission-message: you do not have the permission
+
+  switch:
+    description: switch un joueur
+    use: /switch <player> <team>
+    permission: admin
+    permission-message: you do not have the permission
+
+  setCoffreTeam:
+    description: set le coffre d'une teal
+    use: /setCoffreTeam <team>
+    permission: admin
+    permission-message: you do not have the permission
+
   permissions:
     admin:
       description: allow all plugin command
