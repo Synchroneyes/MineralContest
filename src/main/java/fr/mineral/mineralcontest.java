@@ -16,10 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.*;
 
@@ -50,6 +46,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static int teamMaxPlayers = 2;
     private static int gameStarted = 0;
     private static boolean gamePaused = false;
+
+    public static int SCORE_IRON = 10;
+    public static int SCORE_GOLD = 50;
+    public static int SCORE_DIAMOND = 150;
+    public static int SCORE_EMERALD = 300;
 
 
     public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
@@ -105,6 +106,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             public void run() {
                 if(mineralcontest.isGameStarted()) {
                     if(timeLeft > 0) timeLeft--;
+
+                    if(timeLeft <= 0) {
+                        afficherScore();
+                        afficherGagnant();
+                    }
 
                         for(Player online : Bukkit.getOnlinePlayers()) {
                             Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
@@ -377,6 +383,38 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         }
 
         return true;
+    }
+
+    public static void afficherGagnant() {
+        Equipe[] equipes = new Equipe[3];
+        equipes[0] = plugin.teamBleu;
+        equipes[1] = plugin.teamRouge;
+        equipes[2] = plugin.teamJaune;
+
+        int[] resultats = new int[3];
+        int max = 0;
+        int index = 0;
+        for(int i = 0; i < 3; i++) {
+            resultats[i] = equipes[i].getScore();
+            if (resultats[i] >= max) {
+                max = resultats[i];
+                index = i;
+            }
+        }
+
+        plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "L'équipe " + equipes[index].getCouleur() + equipes[index].getNomEquipe() + ChatColor.WHITE + " remporte la partie avec " + equipes[index].getScore());
+
+    }
+
+    public static void afficherScore() {
+        Equipe[] equipes = new Equipe[3];
+        equipes[0] = plugin.teamBleu;
+        equipes[1] = plugin.teamRouge;
+        equipes[2] = plugin.teamJaune;
+
+        for(int i = 0; i < 3; i++) {
+            plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Equipe " + equipes[i].getCouleur() + equipes[i].getNomEquipe() + ChatColor.WHITE + ": " + equipes[i].getScore() + " point(s)");
+        }
     }
 
     public void switchPlayer(Player joueur, String teamName) throws Exception {

@@ -1,11 +1,16 @@
 package fr.mineral.Teams;
 
+import fr.mineral.Coffre;
 import fr.mineral.Exception.FullTeamException;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.LinkedList;
 
@@ -14,13 +19,38 @@ public class Equipe {
     private String nomEquipe;
     private ChatColor couleur;
     private Location houseLocation;
+    private Coffre coffre;
+    private int score = 0;
 
 
+    public void setCoffreEquipe(Location loc) {
+        this.coffre = new Coffre();
+        this.coffre.setPosition(loc);
+    }
+
+    public Location getCoffreEquipeLocation() throws Exception {
+        if(this.coffre.getPosition() == null)
+            throw new Exception("Le coffre de l'équipe " + nomEquipe + " n'a pas été défini");
+        return coffre.getPosition();
+    }
+
+    public void spawnCoffreEquipe() throws Exception {
+        Location loc = coffre.getPosition();
+        Block block = loc.getBlock();
+        loc.getBlock().setType(Material.CHEST);
+     }
 
     public Equipe(String nom, ChatColor c) {
         this.joueurs = new LinkedList<Player>();
         this.nomEquipe = nom;
         this.couleur = c;
+    }
+
+    public int getScore() { return this.score; }
+    public void setScore(int score) {
+        for(Player online : joueurs)
+            online.sendMessage(mineralcontest.prefixPrive + "Votre score est désormais de " + ChatColor.BLUE + score + ChatColor.WHITE + " points !");
+        this.score = score;
     }
 
 
