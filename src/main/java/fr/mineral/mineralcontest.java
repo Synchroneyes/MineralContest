@@ -1,15 +1,13 @@
 package fr.mineral;
 
-import fr.mineral.Events.PlayerJoin;
-import fr.mineral.Events.PlayerMort;
-import fr.mineral.Events.PlayerSpawn;
-import fr.mineral.Events.SafeZoneEvent;
+import fr.mineral.Events.*;
 import fr.mineral.Exception.FullTeamException;
 
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,9 +33,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     private Location positionSpawnArene;
     private static Coffre coffre;
-    private boolean isCoffreSet = false;
-    private static boolean areneAuthozied = false;
-    private static int areneTimer = 0;
+    private static boolean allowAreneTeleport = false;
+    private static int areneTimer = 15;
+    // Temps en minute
+    private static int TIME_BETWEEN_ARENA_CHEST = 15;
 
 
     public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
@@ -48,8 +47,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     // 60*60 car dans 60min il y a 60*60 sec
     public static int timeLeft = 60*60-1;
-    public static int teamMaxPlayers = 1;
+    public static int teamMaxPlayers = 2;
     private static int gameStarted = 0;
+    private static boolean gamePaused = false;
 
 
     public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
@@ -92,10 +92,13 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info("onEnable has beezn invoked!");
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
+
+
 
 
         new BukkitRunnable() {
@@ -108,16 +111,18 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                             ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
                         }
 
-                        if(timeLeft % (15*60) == 0 ){ // on fais spawn un chest tous les 15 min
-                            if(!isCoffreSet){
-                                mineralcontest.coffre.spawn();
-                                mineralcontest.areneAuthozied = true;
-                                mineralcontest.areneTimer = 0;
-                            }
+                        if(timeLeft % (mineralcontest.TIME_BETWEEN_ARENA_CHEST*60) == 0 ){ // on fait spawn un chest
+                            mineralcontest.allowAreneTeleport = true;
+                            mineralcontest.areneTimer = 0;
+                            getServer().broadcastMessage(prefixGlobal + "Le /arene est désormais disponible pendant 15 secondes !");
                         }
 
-                        if (mineralcontest.areneTimer++ > 15){
-                            mineralcontest.areneAuthozied = false;
+                        if(allowAreneTeleport) {
+                            if(areneTimer >= 15) {
+                                allowAreneTeleport = false;
+                                getServer().broadcastMessage(prefixGlobal + "Le /arene n'est plus disponible!");
+                            }
+                            areneTimer++;
                         }
 
                     } else {
@@ -139,12 +144,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
 
     @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
-
-
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 
 
@@ -162,7 +161,22 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                 }
             }
             return true;
+        }
 
+        if(cmd.getName().equalsIgnoreCase("switch")){
+            if(sender instanceof Player) {
+                Player joueur = (Player) sender;
+                if(args.length == 2) {
+                    try {
+                        this.switchPlayer(Bukkit.getPlayer(args[0]), args[1]);
+                    }catch (Exception e) {
+                        joueur.sendMessage(this.prefixErreur + e.getMessage());
+                    }
+                } else {
+                    joueur.sendMessage(this.prefixErreur + "Utilisation de la commande: /switch <player> <team>");
+                }
+            }
+            return true;
         }
 
         if(cmd.getName().equalsIgnoreCase("leave")){
@@ -261,7 +275,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         }
 
         if(cmd.getName().equalsIgnoreCase("arene")){
-            if(sender instanceof Player && areneAuthozied){
+            if(sender instanceof Player && allowAreneTeleport){
                 Player joueur = (Player) sender;
 
                 try{
@@ -319,6 +333,15 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             return true;
         }
 
+        if(cmd.getName().equalsIgnoreCase("resume")){
+            if(sender instanceof Player){
+                Player joueur = (Player) sender;
+                resumeGame();
+            }
+
+            return true;
+        }
+
         if(cmd.getName().equalsIgnoreCase("setHouse")){
             if(sender instanceof Player) {
                 Player joueur = (Player) sender;
@@ -356,6 +379,78 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         return true;
     }
 
+    public void switchPlayer(Player joueur, String teamName) throws Exception {
+        Equipe team = getPlayerTeam(joueur);
+
+        if(team != null)
+            team.removePlayer(joueur);
+        String[] equipes = {"rouge", "red", "bleu", "blue", "yellow", "jaune"};
+        // On fait un foreach pour parcourir le tableau d'équipe
+        for(String equipe : equipes) {
+            // Le nom de l'équipe passé en commentaire existe
+            if (teamName.toLowerCase().equalsIgnoreCase(equipe)) {
+                switch (equipe) {
+                    // On va vérifier si l'équipe est pleine ou non
+                    // Si elle l'est, on retourne FALSE
+                    // Sinon, on l'ajoute et on le supprime de son équipe initiale
+                    case "red":
+                    case "rouge":
+                        this.teamRouge.addPlayerToTeam(joueur);
+                        break;
+
+                    case "jaune":
+                    case "yellow":
+                        this.teamJaune.addPlayerToTeam(joueur);
+                        break;
+
+                    case "blue":
+                    case "bleu":
+                        this.teamBleu.addPlayerToTeam(joueur);
+                        break;
+                }
+            }
+        }
+
+    }
+
+    public static boolean isGamePaused() {
+        return gamePaused;
+    }
+    public static void pauseGame() {
+        gamePaused = true;
+        for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
+            online.setGameMode(GameMode.SPECTATOR);
+            online.sendMessage(mineralcontest.prefixPrive + "La partie à été mise en pause ! Vous ne pouvez plus bouger.");
+            if(online.isOp()) {
+                online.sendMessage(mineralcontest.prefixPrive + "Pour redemarrer la partie, veuillez utiliser /resume");
+                online.sendMessage(mineralcontest.prefixPrive + "Pour switch un utilisateur qui s'est reconnecer, veuillez utiliser /switch <player> <team>");
+
+            }
+        }
+    }
+
+    public static boolean resumeGame() {
+        // EQUIPES PLEINE
+        if(!mineralcontest.plugin.teamRouge.isTeamFull()) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "[Verification] Equipe rouge pleine: " + ChatColor.RED + "X");
+            return false;
+        }
+        if(!mineralcontest.plugin.teamBleu.isTeamFull()) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "[Verification] Equipe bleu pleine: " + ChatColor.RED + "X");
+            return false;
+        }
+        if(!mineralcontest.plugin.teamJaune.isTeamFull()) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "[Verification] Equipe jaune pleine: " + ChatColor.RED + "X");
+            return false;
+        }
+
+        for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
+            online.setGameMode(GameMode.SURVIVAL);
+        }
+        gamePaused = true;
+
+        return true;
+    }
 
     public void setAreneLocation(Location areneLocation) {
         Bukkit.getServer().broadcastMessage(this.prefixGlobal + this.ARENA_SPAWN_ADDED);
@@ -558,17 +653,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         }
     }
 
-    public void spawnCoffre() throws Exception {
-        if(this.gameStarted != 1) {
-            throw new Exception(this.ERROR_GAME_NOT_STARTED);
-        }
-
-        if(this.coffre.getPosition() == null)
-            throw new Exception(this.ERROR_CHEST_NOT_DEFINED);
-
-
-
-    }
 
     // Retourne vrai si le joueur est dans une equipe
     public boolean isPlayerInATeam(Player P) {
