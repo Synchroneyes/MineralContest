@@ -24,7 +24,6 @@ public class SafeZoneEvent implements Listener {
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
         Entity p = event.getDamager();
-        p.sendMessage("interact");
 
         if(Radius.isBlockInRadius(mineralcontest.plugin.getAreneLocation(), p.getLocation(), 5 )){
             event.setCancelled(true);
