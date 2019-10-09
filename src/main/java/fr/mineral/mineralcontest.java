@@ -3,6 +3,7 @@ package fr.mineral;
 import fr.mineral.Events.PlayerJoin;
 import fr.mineral.Events.PlayerMort;
 import fr.mineral.Events.PlayerSpawn;
+import fr.mineral.Events.SafeZoneEvent;
 import fr.mineral.Exception.FullTeamException;
 
 import fr.mineral.Scoreboard.ScoreboardUtil;
@@ -94,46 +95,42 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getLogger().info("onEnable has beezn invoked!");
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
 
 
         new BukkitRunnable() {
             public void run() {
-
-
                 if(mineralcontest.isGameStarted()) {
                     if(timeLeft > 0) timeLeft--;
 
-                    for(Player online : Bukkit.getOnlinePlayers()) {
-                        Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+                        for(Player online : Bukkit.getOnlinePlayers()) {
+                            Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+                        }
 
+                        if(timeLeft % (15*60) == 0 ){ // on fais spawn un chest tous les 15 min
+                            if(!isCoffreSet){
+                                mineralcontest.coffre.spawn();
+                                mineralcontest.areneAuthozied = true;
+                                mineralcontest.areneTimer = 0;
+                            }
+                        }
+
+                        if (mineralcontest.areneTimer++ > 15){
+                            mineralcontest.areneAuthozied = false;
+                        }
+
+                    } else {
+                        for(Player online : Bukkit.getOnlinePlayers()) {
+                            Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
+                            if(equipe == null)
+                                ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                            else
+                                ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+                        }
                     }
-
-                } else {
-                    for(Player online : Bukkit.getOnlinePlayers()) {
-                        Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
-                        if(equipe == null)
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
-                        else
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_WAITING_START, "", equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
-
-                    }
-
                 }
 
-                if(timeLeft % (15*60) == 0 ){ // on fais spawn un chest tous les 15 min
-                    if(!isCoffreSet){
-                        mineralcontest.coffre.spawn();
-                        mineralcontest.areneAuthozied = true;
-                        mineralcontest.areneTimer = 0;
-                    }
-                }
-
-                if (mineralcontest.areneTimer++ > 15){
-                    mineralcontest.areneAuthozied = false;
-                }
-
-            }
         }.runTaskTimer(plugin, 0, 20);
 
 
@@ -611,4 +608,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         return true;
     }
 
+    public Location getAreneSpawnLoc() {
+        return this.positionSpawnArene;
+    }
+
+    public Coffre getCoffre() {
+        return this.coffre;
+    }
 }
