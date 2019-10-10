@@ -28,23 +28,28 @@ public class Arena {
 
     public void enableTeleport() { this.allowTeleport = true; }
     public void disableTeleport() { this.allowTeleport = false; }
-    public void setTeleportSpawn(Location z) { this.teleportSpawn = z; }
     public Location getTeleportSpawn() { return this.teleportSpawn; }
     public DeathZone getDeathZone() { return this.deathZone; }
 
+
     public Arena() {
         this.deathZone = new DeathZone();
+    }
+
+    public void setTeleportSpawn(Location z) {
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Ajout de la position de téléportation vers l'arène");
+        this.teleportSpawn = z;
     }
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
         this.coffre = new Coffre();
         this.coffre.setPosition(position);
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Position du coffre d'arene ajoutée");
+
     }
 
     public Coffre getCoffre() throws Exception {
-        if(this.coffre == null)
-            throw new Exception("Le coffre d'arene n'est pas définit");
         return this.coffre;
     }
 

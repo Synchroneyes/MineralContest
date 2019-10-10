@@ -31,6 +31,7 @@ public class DeathZone {
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
     public void setSpawnLocation(Location pos) {
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Position de la deathzone ajoutée");
         this.spawnLocation = pos;
     }
 
@@ -56,6 +57,7 @@ public class DeathZone {
 
                 // ON réduit son temps de 1
                 joueur.setValeur(joueur.getValeur()-1);
+                joueur.
             }
         }
     }

@@ -82,15 +82,19 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestBreaked(ItemSpawnEvent event) throws Exception {
-        //mineralcontest.plugin.getServer().broadcastMessage();
-        Location coffreArene = mineralcontest.plugin.getGame().getArene().getCoffre().getPosition();
 
-        // On regarde si les items qui ont spawn sont proche du coffre de l'arene
-        if(Radius.isBlockInRadius(coffreArene,event.getLocation(), 1)){
-            // Si l'item est un coffre
-            if(event.getEntity().getItemStack().equals(new ItemStack(Material.CHEST, 1)))
-                // On ne le fait pas apparaitre
-                event.setCancelled(true);
+        if(mineralcontest.plugin.getGame().isGameStarted()) {
+            Location coffreArene = mineralcontest.plugin.getGame().getArene().getCoffre().getPosition();
+
+            // On regarde si les items qui ont spawn sont proche du coffre de l'arene
+            if(Radius.isBlockInRadius(coffreArene,event.getLocation(), 1)){
+                // Si l'item est un coffre
+                if(event.getEntity().getItemStack().equals(new ItemStack(Material.CHEST, 1)))
+                    // On ne le fait pas apparaitre
+                    event.setCancelled(true);
+            }
         }
+        //mineralcontest.plugin.getServer().broadcastMessage();
+
     }
 }

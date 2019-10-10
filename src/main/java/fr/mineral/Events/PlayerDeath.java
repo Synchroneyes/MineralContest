@@ -14,12 +14,9 @@ import java.util.ListIterator;
 
 public class PlayerDeath implements Listener {
 
-    public PlayerDeath() {
-
-    }
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        Player joueur = (Player) e.getEntity();
+        Player p = (Player) e.getEntity();
 
         List<ItemStack> inventaire = e.getDrops();
         ListIterator<ItemStack> iterateur = inventaire.listIterator();
@@ -40,14 +37,6 @@ public class PlayerDeath implements Listener {
                 iterateur.remove();
             }
         }
-
-        for(ItemStack item : inventaire)
-            joueur.getWorld().dropItemNaturally(joueur.getLocation(), item);
-
-        // On l'ajoute à la deathzone
-        mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
-
-
 
     }
 }

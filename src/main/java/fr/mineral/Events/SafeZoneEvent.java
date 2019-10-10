@@ -24,14 +24,22 @@ public class SafeZoneEvent implements Listener {
 
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
-        Entity p = event.getDamager();
 
-        Player joueur = (Player) event.getDamager();
-        if(PlayerUtils.isPlayerInDeathZone(joueur))
-            event.setCancelled(true);
 
-        if(Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getTeleportSpawn(), p.getLocation(), 5 )){
-            event.setCancelled(true);
+        if(mineralcontest.plugin.getGame().isGameStarted()) {
+            if(event.getDamager() instanceof Player) {
+                Player p = (Player) event.getDamager();
+
+                Player joueur = (Player) event.getDamager();
+                if(PlayerUtils.isPlayerInDeathZone(joueur))
+                    event.setCancelled(true);
+
+                if(Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getTeleportSpawn(), p.getLocation(), 5 )){
+                    event.setCancelled(true);
+                }
+            }
         }
+
+
     }
 }

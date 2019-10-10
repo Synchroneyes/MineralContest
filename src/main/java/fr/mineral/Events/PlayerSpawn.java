@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,25 +21,13 @@ public class PlayerSpawn implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) throws Exception {
-        Player joueur = (Player) e.getPlayer();
-        joueur.sendMessage("Revie !");
-        // Si le joueur est dans une équipe, alors on le spawn dans sa maison
+        if(mineralcontest.plugin.getGame().isGameStarted()) {
+            // Si la game est démarrée
+            Player joueur = e.getPlayer();
+            // Si le joueur était dans la deathzone
 
-        try {
-            if(mineralcontest.plugin.getGame().getPlayerTeam(joueur) != null) {
-                Location house = mineralcontest.plugin.getGame().getPlayerTeam(joueur).getHouseLocation();
-                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, new Runnable() {
-                    public void run() {
-                        joueur.teleport(house); //send the message "test"
-                    }
-                }, 5);
+            PlayerUtils.resetPlayerDeathZone(joueur);
 
-
-            }
-        }catch(Exception err) {
-            joueur.sendMessage(mineralcontest.prefixErreur + err.getMessage());
         }
-
-
     }
 }

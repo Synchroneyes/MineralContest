@@ -1,11 +1,15 @@
 package fr.mineral.Core;
 
-import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Utils.FreezeLibrary;
+import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -14,7 +18,7 @@ import java.util.Random;
 /*
     Classe représentant une partie MineralContest
  */
-public class Game {
+public class Game implements Listener {
     /*
         Une game possède:
             - Une arene
@@ -27,8 +31,11 @@ public class Game {
     private Equipe teamJaune;
     private Equipe teamBleu;
 
+    // Temps de la partie en minute
+    private static int DUREE_PARTIE = 60;
+
     // Temps en minute
-    private int tempsPartie = 60;
+    private int tempsPartie = 60 * DUREE_PARTIE;
     public static int SCORE_IRON = 10;
     public static int SCORE_GOLD = 50;
     public static int SCORE_DIAMOND = 150;
@@ -41,6 +48,9 @@ public class Game {
     public boolean isGamePaused() { return this.GamePaused; }
 
     public Arena getArene() { return this.arene; }
+    public Equipe getTeamRouge() { return this.teamRouge; }
+    public Equipe getTeamJaune() { return this.teamJaune; }
+    public Equipe getTeamBleu() { return this.teamBleu; }
 
     public Game() {
         this.teamRouge = new Equipe("Rouge", ChatColor.RED);
@@ -51,16 +61,30 @@ public class Game {
 
         // On démarre le timer de la game
 
+    }
+
+    public void init() {
         new BukkitRunnable() {
             public void run() {
+
+                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
+
                 if(isGameStarted()) {
                     if(isGamePaused()) {
                         // La game est en pause
+
                     } else {
                         // La game est en cours
                         // Si le temps atteins 0, alors on arrête la game
                         if(tempsPartie == 0) {
                             terminerPartie();
+                        }
+
+                        // On gère la deathzone
+                        try {
+                            arene.getDeathZone().reducePlayerTimer();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
 
@@ -108,7 +132,7 @@ public class Game {
         return null;
     }
 
-    private void terminerPartie() {
+    public void terminerPartie() {
         this.GamePaused = false;
         this.GameStarted = false;
 
@@ -127,6 +151,7 @@ public class Game {
             // On averti les joueurs
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
                 online.sendMessage(mineralcontest.prefixPrive + "La partie a été mise en pause !");
+                //FreezeLibrary.freezePlayer(online);
                 if(online.isOnline()) {
                     online.sendMessage(mineralcontest.prefixPrive + "Pour reprendre la partie, il faut faire /resume");
                     online.sendMessage(mineralcontest.prefixPrive + "Pour switch un joueur qui s'est reconnecté, il faut faire /switch <joueur> <team>");
@@ -135,7 +160,21 @@ public class Game {
         }
     }
 
-    private boolean demarrerPartie() throws Exception {
+    public void resumeGame() {
+        if(isGamePaused()) {
+            if(!teamRouge.isTeamFull() || !teamBleu.isTeamFull() || !teamJaune.isTeamFull()) {
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Impossible de reprendre la partie, il manque des joueurs");
+            } else {
+                this.GamePaused = false;
+                for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
+                    online.sendMessage(mineralcontest.prefixPrive + "La partie a repris !");
+                    //FreezeLibrary.unfreezePlayer(online);
+                }
+            }
+        }
+    }
+
+    public boolean demarrerPartie() throws Exception {
 
         if(isGameStarted()) {
             throw new Exception(mineralcontest.plugin.ERROR_GAME_ALREADY_STARTED);
@@ -223,7 +262,17 @@ public class Game {
         mineralcontest.plugin.getServer().broadcastMessage("=============================");
 
 
+        for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
+        {
+            online.setHealth(20);
+            online.setGameMode(GameMode.SURVIVAL);
+            online.getInventory().clear();
+            PlayerUtils.givePlayerBaseItems(online);
+            online.teleport(getPlayerTeam(online).getHouseLocation());
+        }
+
         GameStarted = true;
+        this.tempsPartie = 60 * DUREE_PARTIE;
         return true;
 
     }
@@ -295,4 +344,49 @@ public class Game {
 
     }
 
+
+    public void switchPlayer(Player joueur, String teamName) throws Exception {
+        Equipe team = getPlayerTeam(joueur);
+
+        if(team != null)
+            team.removePlayer(joueur);
+        String[] equipes = {"rouge", "red", "bleu", "blue", "yellow", "jaune", "r", "b", "j", "y"};
+        // On fait un foreach pour parcourir le tableau d'équipe
+        for(String equipe : equipes) {
+            // Le nom de l'équipe passé en commentaire existe
+            if (teamName.toLowerCase().equalsIgnoreCase(equipe)) {
+                switch (equipe) {
+                    // On va vérifier si l'équipe est pleine ou non
+                    // Si elle l'est, on retourne FALSE
+                    // Sinon, on l'ajoute et on le supprime de son équipe initiale
+                    case "red":
+                    case "rouge":
+                    case "r":
+                        this.teamRouge.addPlayerToTeam(joueur);
+                        break;
+
+                    case "jaune":
+                    case "yellow":
+                    case "j":
+                    case "y":
+                        this.teamJaune.addPlayerToTeam(joueur);
+                        break;
+
+                    case "blue":
+                    case "bleu":
+                    case "b":
+                        this.teamBleu.addPlayerToTeam(joueur);
+                        break;
+                }
+            }
+        }
+
+    }
+
+    public String getTempsRestant() {
+        int minutes, secondes;
+        minutes = (tempsPartie % 3600) / 60;
+        secondes = tempsPartie % 60;
+        return String.format("%02d:%02d", minutes, secondes);
+    }
 }

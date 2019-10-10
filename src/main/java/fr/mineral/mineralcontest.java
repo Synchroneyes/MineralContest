@@ -1,24 +1,16 @@
 package fr.mineral;
 
+import fr.mineral.Commands.*;
 import fr.mineral.Core.Game;
 import fr.mineral.Events.*;
-import fr.mineral.Exception.FullTeamException;
 
-import fr.mineral.Scoreboard.ScoreboardUtil;
-import fr.mineral.Teams.Equipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.*;
 
 public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
 
@@ -28,17 +20,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static String prefixErreur = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ERREUR] " + ChatColor.WHITE;
     public static String prefixGlobal = ChatColor.BLUE + "[MINERALC] " + ChatColor.GREEN + "[GLOBAL] " + ChatColor.WHITE;
     public static String prefixPrive = ChatColor.BLUE + "[MINERALC] " + ChatColor.YELLOW + "[PRIVE] " + ChatColor.WHITE;
-
-
-    // 60*60 car dans 60min il y a 60*60 sec
-    public static int timeLeft = 60*60-1;
-    public static int teamMaxPlayers = 2;
-    private static int gameStarted = 0;
-    private static boolean gamePaused = false;
-
-    private Game partie;
-
-
 
     public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
     public static String ERROR_ALL_TEAM_NOT_FULL = "Au moins une équipe n'est pas complète. Il faut " + mineralcontest.teamMaxPlayers + " joueur(s) par équipe.";
@@ -66,12 +47,16 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     public static String GAME_STARTING_CHECKS = "Démarage des vérifications ...";
 
+
+
     public static mineralcontest plugin;
+    public static int teamMaxPlayers = 1;
+    private Game partie;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
-        this.partie = new Game();
         mineralcontest.plugin = this;
+        this.partie = new Game();
     }
 
     public Game getGame() {
@@ -81,11 +66,37 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     @Override
     public void onEnable() {
         // Plugin startup logic
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockSpread(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
+
+        this.getGame().init();
+
+
+        // Register les commands
+        getCommand("start").setExecutor(new StartGameCommand());
+        getCommand("pause").setExecutor(new PauseGameCommand());
+        getCommand("stopGame").setExecutor(new StopGameCommand());
+        getCommand("set").setExecutor(new SetCommand());
+        getCommand("resume").setExecutor(new ResumeGameCommand());
+
+
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 
 
