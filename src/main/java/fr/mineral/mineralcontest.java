@@ -75,6 +75,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
         //Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
@@ -92,6 +93,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("stopGame").setExecutor(new StopGameCommand());
         getCommand("set").setExecutor(new SetCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
+        getCommand("setup").setExecutor(new SetupCommand());
+        getCommand("valider").setExecutor(new ValiderCommand());
+
 
 
     }

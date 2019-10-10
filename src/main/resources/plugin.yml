@@ -44,6 +44,18 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  setup:
+    description: Permet de configurer la partie
+    use: /setup
+    permission: admin
+    permission-message: you do not have the permission
+
+  valider:
+    description: Permet de valider un choix
+    use: /valider
+    permission: admin
+    permission-message: you do not have the permission
+
   permissions:
     admin:
       description: allow all plugin command

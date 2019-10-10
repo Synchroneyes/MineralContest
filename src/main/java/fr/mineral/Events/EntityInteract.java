@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,5 +12,6 @@ public class EntityInteract implements Listener {
     public void onEntityInteract(EntityInteractEvent event) {
         if(mineralcontest.plugin.getGame().isGamePaused())
             event.setCancelled(true);
+
     }
 }

@@ -112,4 +112,9 @@ public class PlayerUtils {
             }
         }, 20);
     }
+
+
+    public static void sendTitle(Player joueur, String message) {
+        joueur.performCommand("title " + joueur.getDisplayName() + " title {\"text\":\"" + message + "\",\"color\":\"white\"}");
+    }
 }
