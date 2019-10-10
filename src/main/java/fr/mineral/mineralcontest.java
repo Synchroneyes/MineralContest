@@ -81,6 +81,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
 
+        Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
+
         this.getGame().init();
 
 

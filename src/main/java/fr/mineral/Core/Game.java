@@ -67,7 +67,7 @@ public class Game implements Listener {
         new BukkitRunnable() {
             public void run() {
 
-                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
+                //PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
 
                 if(isGameStarted()) {
                     if(isGamePaused()) {
