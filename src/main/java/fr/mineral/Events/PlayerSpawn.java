@@ -34,26 +34,6 @@ public class PlayerSpawn implements Listener {
                 }, 5);
 
 
-            /*
-            On donne au joueur:
-                - Arc
-                - 64 fleches
-                - Epée en fer
-                -
-             */
-                joueur.getInventory().addItem(new ItemStack(Material.BOW, 1));
-                joueur.getInventory().addItem(new ItemStack(Material.ARROW, 64));
-                joueur.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1));
-                joueur.getInventory().addItem(new ItemStack(Material.COOKED_BEEF,30));
-
-                // On protege le joueur
-                ItemStack[] armure = new ItemStack[4];
-                armure[0] = new ItemStack(Material.IRON_BOOTS, 1);
-                armure[1] = new ItemStack(Material.IRON_LEGGINGS, 1);
-                armure[2] = new ItemStack(Material.IRON_CHESTPLATE, 1);
-                armure[3] = new ItemStack(Material.IRON_HELMET, 1);
-
-                joueur.getInventory().setArmorContents(armure);
             }
         }catch(Exception err) {
             joueur.sendMessage(mineralcontest.prefixErreur + err.getMessage());
