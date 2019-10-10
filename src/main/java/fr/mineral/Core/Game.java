@@ -40,6 +40,8 @@ public class Game {
     public boolean isGameStarted() { return this.GameStarted; }
     public boolean isGamePaused() { return this.GamePaused; }
 
+    public Arena getArene() { return this.arene; }
+
     public Game() {
         this.teamRouge = new Equipe("Rouge", ChatColor.RED);
         this.teamBleu = new Equipe("Bleu", ChatColor.BLUE);
@@ -116,6 +118,21 @@ public class Game {
         this.afficherScores();
         // On affiche l'équipe gagnante
         this.afficherGagnant();
+    }
+
+    public void pauseGame() {
+        // Only si game started
+        if(isGameStarted()) {
+            this.GamePaused = true;
+            // On averti les joueurs
+            for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
+                online.sendMessage(mineralcontest.prefixPrive + "La partie a été mise en pause !");
+                if(online.isOnline()) {
+                    online.sendMessage(mineralcontest.prefixPrive + "Pour reprendre la partie, il faut faire /resume");
+                    online.sendMessage(mineralcontest.prefixPrive + "Pour switch un joueur qui s'est reconnecté, il faut faire /switch <joueur> <team>");
+                }
+            }
+        }
     }
 
     private boolean demarrerPartie() throws Exception {

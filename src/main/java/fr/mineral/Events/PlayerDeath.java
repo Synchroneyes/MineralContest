@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ public class PlayerDeath implements Listener {
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        Player p = (Player) e.getEntity();
+        Player joueur = (Player) e.getEntity();
 
         List<ItemStack> inventaire = e.getDrops();
         ListIterator<ItemStack> iterateur = inventaire.listIterator();
@@ -39,6 +40,14 @@ public class PlayerDeath implements Listener {
                 iterateur.remove();
             }
         }
+
+        for(ItemStack item : inventaire)
+            joueur.getWorld().dropItemNaturally(joueur.getLocation(), item);
+
+        // On l'ajoute à la deathzone
+        mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
+
+
 
     }
 }

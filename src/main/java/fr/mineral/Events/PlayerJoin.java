@@ -23,7 +23,7 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
 
-        if(mineralcontest.isGameStarted() && mineralcontest.isGamePaused() == false) {
+        if(mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getGame().isGamePaused() == false) {
             p.kickPlayer("Une partie est déjà en cours");
         }
 

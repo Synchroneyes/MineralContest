@@ -1,10 +1,19 @@
 package fr.mineral.Utils;
 
+import fr.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerUtils {
+
+    public static boolean isPlayerInDeathZone(Player joueur) {
+        for(CouplePlayer infoJoueur : mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayers())
+            if(infoJoueur.getJoueur().equals(joueur)) return true;
+
+        return false;
+    }
+
     public static void givePlayerBaseItems(Player joueur) {
             /*
             On donne au joueur:

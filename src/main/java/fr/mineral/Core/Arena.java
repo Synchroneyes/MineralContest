@@ -54,7 +54,7 @@ public class Arena {
             throw new Exception("La zone de spawn de l'arene n'est pas defini");
         }
 
-        Equipe team = mineralcontest.plugin.getPlayerTeam(joueur);
+        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
 
         if(team == null) {
             throw new Exception("Impossible de téléporter un joueur sans équipe.");

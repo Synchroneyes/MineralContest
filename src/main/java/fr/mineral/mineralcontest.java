@@ -74,6 +74,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         mineralcontest.plugin = this;
     }
 
+    public Game getGame() {
+        return this.partie;
+    }
+
     @Override
     public void onEnable() {
         // Plugin startup logic

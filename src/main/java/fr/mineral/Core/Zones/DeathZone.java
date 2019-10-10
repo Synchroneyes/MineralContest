@@ -28,6 +28,7 @@ public class DeathZone {
     public DeathZone() {
         this.joueurs = new LinkedList<CouplePlayer>();
     }
+    public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
     public void setSpawnLocation(Location pos) {
         this.spawnLocation = pos;
@@ -64,6 +65,7 @@ public class DeathZone {
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + "Vous êtes mort. Vous avez été placé dans la deathzone pendant " + timeInDeathzone + " secondes.");
+        joueur.teleport(this.spawnLocation);
     }
 
     private void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
@@ -73,7 +75,7 @@ public class DeathZone {
             Player joueur = DeathZonePlayer.getJoueur();
             joueur.setGameMode(GameMode.SURVIVAL);
 
-            Equipe team = mineralcontest.plugin.getPlayerTeam(joueur);
+            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
             if(team == null) {
                 // On le téléporte vers l'arene
                 throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone");

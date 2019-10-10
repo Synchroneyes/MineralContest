@@ -25,8 +25,8 @@ public class PlayerSpawn implements Listener {
         // Si le joueur est dans une équipe, alors on le spawn dans sa maison
 
         try {
-            if(mineralcontest.plugin.getPlayerTeam(joueur) != null) {
-                Location house = mineralcontest.plugin.getPlayerTeam(joueur).getHouseLocation();
+            if(mineralcontest.plugin.getGame().getPlayerTeam(joueur) != null) {
+                Location house = mineralcontest.plugin.getGame().getPlayerTeam(joueur).getHouseLocation();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, new Runnable() {
                     public void run() {
                         joueur.teleport(house); //send the message "test"

@@ -11,12 +11,12 @@ public class PlayerDisconnect implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         Player joueur = event.getPlayer();
-        Equipe team = mineralcontest.plugin.getPlayerTeam(joueur);
+        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
         if(team != null)
             team.removePlayer(joueur);
 
-        if(mineralcontest.isGameStarted()) {
-            mineralcontest.pauseGame();
+        if(mineralcontest.plugin.getGame().isGameStarted()) {
+            mineralcontest.plugin.getGame().pauseGame();
         }
     }
 }
