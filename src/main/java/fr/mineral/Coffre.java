@@ -1,6 +1,6 @@
 package fr.mineral;
 
-import org.bukkit.Bukkit;
+import fr.mineral.Utils.Range;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

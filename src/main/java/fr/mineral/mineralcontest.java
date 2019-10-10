@@ -63,6 +63,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     public static String GAME_SUCCESSFULLY_STARTED = "La partie vient de commencer";
     public static String GAME_STARTING = "La partie va démarrer";
+    public static String GAME_PAUSED = "La partie est en pause";
+
     public static String GAME_WAITING_START = "En attente du démarrage de la partie";
 
     public static String ARENA_SPAWN_ADDED = "Le spawn pour l'arène a bien été ajouté";
@@ -104,7 +106,18 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         new BukkitRunnable() {
             public void run() {
-                if(mineralcontest.isGameStarted()) {
+
+                if(isGamePaused()) {
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+                        Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
+                        if(equipe == null)
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_PAUSED, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                        else
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", mineralcontest.GAME_PAUSED, "", equipe.getCouleur() + "Equipe " + equipe.getNomEquipe(), " ", "Score: " + equipe.getScore() + " points");
+                      }
+                }
+
+                if(mineralcontest.isGameStarted() && !isGamePaused()) {
                     if(timeLeft > 0) timeLeft--;
 
                     if(timeLeft <= 0) {
@@ -114,7 +127,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
                         for(Player online : Bukkit.getOnlinePlayers()) {
                             Equipe equipe = mineralcontest.plugin.getPlayerTeam(online);
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe());
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   MineralContest   ", " ", "Temps restant", getTempsRestant(), equipe.getCouleur() + "Equipe " + equipe.getNomEquipe(), " ", "Score: " + equipe.getScore() + " points");
                         }
 
                         if(timeLeft % (mineralcontest.TIME_BETWEEN_ARENA_CHEST*60) == 0 ){ // on fait spawn un chest
