@@ -30,7 +30,7 @@ public class PlayerUtils {
              */
 
         joueur.getInventory().addItem(new ItemStack(Material.BOW, 1));
-        joueur.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+        joueur.getInventory().addItem(new ItemStack(Material.ARROW, 16));
         joueur.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1));
         joueur.getInventory().addItem(new ItemStack(Material.COOKED_BEEF,30));
 
