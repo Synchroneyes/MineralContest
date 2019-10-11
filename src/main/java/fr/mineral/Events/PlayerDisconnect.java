@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,5 +19,8 @@ public class PlayerDisconnect implements Listener {
         if(mineralcontest.plugin.getGame().isGameStarted()) {
             mineralcontest.plugin.getGame().pauseGame();
         }
+
+        joueur.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+
     }
 }
