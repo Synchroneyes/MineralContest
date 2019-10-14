@@ -2,6 +2,7 @@ package fr.mineral.Teams;
 
 import fr.mineral.Coffre;
 import fr.mineral.Exception.FullTeamException;
+import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,11 +22,21 @@ public class Equipe {
     private Location houseLocation;
     private Coffre coffre;
     private int score = 0;
+    private AutomaticDoors porte;
 
+
+    public Equipe(String nom, ChatColor c) {
+        this.joueurs = new LinkedList<Player>();
+        this.nomEquipe = nom;
+        this.couleur = c;
+        this.porte = new AutomaticDoors(this);
+    }
 
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
         this.coffre.setPosition(loc);
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le coffre de l'équipe " + getCouleur() + getNomEquipe() + ChatColor.WHITE + " a bien été placé");
+
     }
 
     public Location getCoffreEquipeLocation() throws Exception {
@@ -40,11 +51,6 @@ public class Equipe {
         loc.getBlock().setType(Material.CHEST);
      }
 
-    public Equipe(String nom, ChatColor c) {
-        this.joueurs = new LinkedList<Player>();
-        this.nomEquipe = nom;
-        this.couleur = c;
-    }
 
     public int getScore() { return this.score; }
     public void setScore(int score) {
@@ -119,6 +125,7 @@ public class Equipe {
     }
 
 
-
-
+    public AutomaticDoors getPorte() {
+        return porte;
+    }
 }

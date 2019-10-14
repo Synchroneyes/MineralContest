@@ -55,6 +55,36 @@ commands:
     use: /valider
     permission: admin
     permission-message: you do not have the permission
+  tprouge:
+    description: Permet de valider un choix
+    use: /tprouge
+    permission: admin
+    permission-message: you do not have the permission
+  tpbleu:
+    description: Permet de valider un choix
+    use: /tpbleu
+    permission: admin
+    permission-message: you do not have the permission
+  tpjaune:
+    description: Permet de valider un choix
+    use: /tpjaune
+    permission: admin
+    permission-message: you do not have the permission
+  spawnarene:
+    description: Permet de valider un choix
+    use: /tprouge
+    permission: admin
+    permission-message: you do not have the permission
+  fermer:
+    description: Permet de valider un choix
+    use: /fermer
+    permission: admin
+    permission-message: you do not have the permission
+  ouvrir:
+    description: Permet de valider un choix
+    use: /ouvrir
+    permission: admin
+    permission-message: you do not have the permission
 
   permissions:
     admin:

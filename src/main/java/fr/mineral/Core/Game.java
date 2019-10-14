@@ -1,8 +1,10 @@
 package fr.mineral.Core;
 
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.Utils.FreezeLibrary;
 import fr.mineral.Utils.PlayerUtils;
+import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,6 +46,8 @@ public class Game implements Listener {
     private boolean GameStarted = false;
     private boolean GamePaused = false;
 
+    private AutomaticDoors portes;
+
     public boolean isGameStarted() { return this.GameStarted; }
     public boolean isGamePaused() { return this.GamePaused; }
 
@@ -58,10 +62,13 @@ public class Game implements Listener {
         this.teamJaune = new Equipe("Jaune", ChatColor.YELLOW);
 
         this.arene = new Arena();
+        this.portes = new AutomaticDoors(this.teamBleu);
 
         // On démarre le timer de la game
 
     }
+
+    public AutomaticDoors getPortes() { return portes; }
 
     public void init() {
         new BukkitRunnable() {
@@ -92,6 +99,19 @@ public class Game implements Listener {
                         if(tempsPartie > 0) tempsPartie--;
                     }
                 }
+
+
+                if(portes.isSet()) {
+                    for(Player online : teamBleu.getJoueurs()) {
+                        if(Radius.isBlockInRadius(portes.getMiddleBlockLocation(), online.getLocation(), 4)) {
+                            portes.openDoor();
+                        } else {
+                            portes.closeDoor();
+                        }
+                    }
+                }
+
+
             }
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);

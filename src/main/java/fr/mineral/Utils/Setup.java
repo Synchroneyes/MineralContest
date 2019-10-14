@@ -59,7 +59,7 @@ public class Setup {
                 break;
 
             case 6:
-                mineralcontest.plugin.getGame().getTeamBleu().setCoffreEquipe(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getTeamBleu().setHouseLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez selectionner l'emplacement du coffre de l'équipe " +  ChatColor.BLUE + "BLEU");
                 break;
 
@@ -82,7 +82,6 @@ public class Setup {
                 mineralcontest.plugin.getGame().getArene().getDeathZone().setSpawnLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est terminé !");
                 joueur.sendMessage(mineralcontest.prefixPrive + "La partie peut être démarré grâce à la commande /start");
-
                 premierLancement = false;
                 break;
 

@@ -5,7 +5,6 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +22,7 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024);
+
         if(mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getGame().isGamePaused() == false) {
             p.kickPlayer("Une partie est déjà en cours");
         }

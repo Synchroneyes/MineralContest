@@ -96,6 +96,17 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("setup").setExecutor(new SetupCommand());
         getCommand("valider").setExecutor(new ValiderCommand());
 
+        getCommand("tprouge").setExecutor(new TestSetupCommand());
+        getCommand("tpjaune").setExecutor(new TestSetupCommand());
+        getCommand("tpbleu").setExecutor(new TestSetupCommand());
+        getCommand("spawnarene").setExecutor(new TestSetupCommand());
+
+        getCommand("ouvrir").setExecutor(new OpenDoor());
+        getCommand("fermer").setExecutor(new OpenDoor());
+
+
+
+
 
 
     }
