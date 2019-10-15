@@ -5,6 +5,7 @@ import fr.mineral.Utils.CouplePlayer;
 import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -58,9 +59,9 @@ public class DeathZone {
                     libererJoueur(joueur);
 
                 // ON réduit son temps de 1
-                if(joueur.getValeur() >= 1) joueur.getJoueur().performCommand("title " + joueur.getJoueur().getDisplayName() + " title {\"text\":\"Réapparition dans\",\"color\":\"orange\",\"extra\":[{\"text\":\" " +  joueur.getValeur() + " secondes\",\"color\":\"yellow\"}]}");
+
+                if(joueur.getValeur() >= 1) joueur.getJoueur().sendTitle(ChatColor.RED + "Vous êtes mort.", "Réapparition dans " + joueur.getValeur() + " secondes", 0, 20, 0);
                 joueur.setValeur(joueur.getValeur()-1);
-                //mineralcontest.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "title @a title [{\"text\":\"Blah blah\",\"color\":\"gold\"}]"); //JSON formatting is invalid!
             }
         }
     }
