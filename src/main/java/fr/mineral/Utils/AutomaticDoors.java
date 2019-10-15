@@ -24,6 +24,8 @@ public class AutomaticDoors {
     // On a une Liste de block
     private LinkedList<DisplayBlock> porte;
 
+    LinkedList<Player> playerNearDoor;
+
 
 
     private boolean estOuvert = false;
@@ -34,6 +36,7 @@ public class AutomaticDoors {
     public AutomaticDoors(Equipe equipe) {
         this.porte = new LinkedList<DisplayBlock>();
         this.proprietaire = equipe;
+        this.playerNearDoor = new LinkedList<Player>();
     }
 
     // On initialise la pile de blocs
@@ -73,19 +76,28 @@ public class AutomaticDoors {
     // On initialise la pile de blocs
     public void openDoor() {
         // Pour chaque bloc de la porte
-        for(DisplayBlock db : porte) {
-            db.hide();
+        if(playerNearDoor.size() > 0) {
+            // Pour chaque bloc de la porte
+
+            for(DisplayBlock db : porte) {
+                db.hide();
+            }
+            this.estOuvert = true;
         }
-        this.estOuvert = true;
     }
 
     public void closeDoor() {
-        // Pour chaque bloc de la porte
-        for(DisplayBlock db : porte) {
-            db.display();
+
+        // Si on a personne pres de la porte
+        if(playerNearDoor.size() == 0) {
+            // Pour chaque bloc de la porte
+
+            for(DisplayBlock db : porte) {
+                db.display();
+            }
+            this.estOuvert = false;
         }
 
-        this.estOuvert = false;
     }
 
     public LinkedList<DisplayBlock> getPorte() {
@@ -101,5 +113,19 @@ public class AutomaticDoors {
 
     public boolean isSet() {
         return (porte.size() == maxDoorSize);
+    }
+
+    public void playerIsNearDoor(Player joueur) {
+        if(!this.playerNearDoor.contains(joueur)) {
+            this.playerNearDoor.add(joueur);
+            openDoor();
+        }
+    }
+
+    public void playerIsNotNearDoor(Player joueur) {
+        if(this.playerNearDoor.contains(joueur)) {
+            this.playerNearDoor.remove(joueur);
+            closeDoor();
+        }
     }
 }

@@ -108,6 +108,7 @@ public class Setup {
     public static void validerChoix() {
         etape++;
         Joueur.sendMessage(mineralcontest.prefixPrive + "Votre choix a été validé");
+        emplacementTemporaire.setY(emplacementTemporaire.getY()+1);
         displayInfos(Joueur);
     }
 

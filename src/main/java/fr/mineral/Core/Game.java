@@ -9,6 +9,7 @@ import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,11 +71,62 @@ public class Game implements Listener {
 
     public AutomaticDoors getPortes() { return portes; }
 
+    public void handleDoors() {
+
+        int rayonPorte = 2;
+        int nomrbeTicks = 5;
+
+        new BukkitRunnable() {
+            public void run() {
+                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
+                if(isGameStarted()) {
+                    for(Player online : teamRouge.getJoueurs()) {
+                        Location blockCentralPorte = teamRouge.getPorte().getMiddleBlockLocation();
+                        if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
+                            // Si le joueur est proche de la porte
+                            teamRouge.getPorte().playerIsNearDoor(online);
+                        } else {
+                            teamRouge.getPorte().playerIsNotNearDoor(online);
+                        }
+                    }
+
+                    for(Player online : teamJaune.getJoueurs()) {
+                        Location blockCentralPorte = teamJaune.getPorte().getMiddleBlockLocation();
+                        if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
+                            // Si le joueur est proche de la porte
+                            teamJaune.getPorte().playerIsNearDoor(online);
+                        } else {
+                            teamJaune.getPorte().playerIsNotNearDoor(online);
+                        }
+                    }
+
+                    for(Player online : teamBleu.getJoueurs()) {
+                        Location blockCentralPorte = teamBleu.getPorte().getMiddleBlockLocation();
+                        if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
+                            // Si le joueur est proche de la porte
+                            teamBleu.getPorte().playerIsNearDoor(online);
+                        } else {
+                            teamBleu.getPorte().playerIsNotNearDoor(online);
+                        }
+                    }
+                }
+
+
+
+
+
+            }
+
+        }.runTaskTimer(mineralcontest.plugin, 0, nomrbeTicks);
+
+    }
+
     public void init() {
+
         new BukkitRunnable() {
             public void run() {
 
-                //PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
+                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused());
 
                 if(isGameStarted()) {
                     if(isGamePaused()) {
@@ -94,22 +146,13 @@ public class Game implements Listener {
                             e.printStackTrace();
                         }
 
-
                         // Si le temps n'est pas à zéro, on continue
                         if(tempsPartie > 0) tempsPartie--;
                     }
                 }
 
 
-                if(portes.isSet()) {
-                    for(Player online : teamBleu.getJoueurs()) {
-                        if(Radius.isBlockInRadius(portes.getMiddleBlockLocation(), online.getLocation(), 4)) {
-                            portes.openDoor();
-                        } else {
-                            portes.closeDoor();
-                        }
-                    }
-                }
+
 
 
             }
@@ -293,6 +336,9 @@ public class Game implements Listener {
 
         GameStarted = true;
         this.tempsPartie = 60 * DUREE_PARTIE;
+
+        // On démarre les portes
+        mineralcontest.plugin.getGame().handleDoors();
         return true;
 
     }
