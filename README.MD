@@ -12,7 +12,7 @@ Les règles du jeu sont les suivantes:
 ## Commandes
 
 ```
-mp_randomize_team <1 ou 2> # Permet d'activer ou non les équipes aléatoires (1 = oui, 0 = non aléatoire)
+mp_randomize_team <1 ou 0> # Permet d'activer ou non les équipes aléatoires (1 = oui, 0 = non aléatoire)
 mp_iron_score <valeur> # Permet de modifier les points rapporté par un lingot de fer
 mp_gold_score <valeur> # Permet de modifier les points rapporté par un lingot d'or
 mp_diamond_score <valeur> # Permet de modifier les points rapporté par un lingot de diamant
