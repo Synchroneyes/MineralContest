@@ -1,6 +1,5 @@
 package fr.mineral.Core;
 
-import com.google.common.collect.LinkedListMultimap;
 import fr.mineral.Core.Arena.Arena;
 import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.Utils.CouplePlayerTeam;
@@ -8,7 +7,6 @@ import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -32,6 +30,24 @@ public class Game implements Listener {
     private Equipe teamRouge;
     private Equipe teamJaune;
     private Equipe teamBleu;
+
+    /*
+        CVAR List
+        mp_randomize_team = 0 | 1
+                            0: false, player doit rejoindre soit même sa team
+                            1: true, team random
+
+        mp_iron_score <value>
+        mp_gold_score <value>
+        mp_diamond_score <value>
+        mp_emerald_score <value>
+        mp_team_max_players <value>
+
+     */
+
+    // CVAR
+
+    public int mp_randomize_team = 1;
 
     // Temps de la partie en minute
     private static int DUREE_PARTIE = 60;
@@ -234,6 +250,8 @@ public class Game implements Listener {
                     } else {
                         // La game est en cours
                         // Si le temps atteins 0, alors on arrête la game
+
+
                         if(tempsPartie == 0) {
                             terminerPartie();
                         }
@@ -344,6 +362,9 @@ public class Game implements Listener {
                 mineralcontest.plugin.getLogger().info("ON RESUME LA PARTIE");
                 this.PreGame = true;
                 this.PreGameTimeLeft = 5;
+
+
+
             }
         }
     }
@@ -442,6 +463,7 @@ public class Game implements Listener {
             online.setGameMode(GameMode.SURVIVAL);
             online.getInventory().clear();
             PlayerUtils.givePlayerBaseItems(online);
+
         }
 
 
@@ -455,6 +477,9 @@ public class Game implements Listener {
         this.tempsPartie = 60 * DUREE_PARTIE;
         mineralcontest.plugin.getGame().getArene().startArena();
         mineralcontest.plugin.getGame().getArene().startAutoMobKill();
+
+
+
 
         // On démarre les portes
         mineralcontest.plugin.getGame().handleDoors();

@@ -1,19 +1,15 @@
 package fr.mineral;
 
 import fr.mineral.Commands.*;
+import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Core.Game;
 import fr.mineral.Events.*;
 
-import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Save.FileToGame;
-import fr.mineral.Utils.Save.GameToFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +19,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         TODO: CVAR
      */
 
+    public String versionRequired = "1.14.4";
     public static boolean debug = false;
     public static String currentWorld = "world2";
 
@@ -76,6 +73,29 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     }
 
 
+    public boolean isVersionCompatible() {
+        String version = Bukkit.getBukkitVersion();
+
+        if(version.equalsIgnoreCase(versionRequired)) return true;
+
+        String currentV[] = version.split(".");
+
+        String requiredV[] = versionRequired.split(".");
+
+        // 1.14.4
+        // 1.14.5
+        //
+        for(int i = 0; i < currentV.length; i++) {
+
+            if(Integer.parseInt(currentV[i]) < Integer.parseInt(requiredV[i]))
+                return false;
+
+            if(Integer.parseInt(currentV[i]) > Integer.parseInt(requiredV[i]))
+                return true;
+        }
+
+        return true;
+    }
 
     public Game getGame() {
         return this.partie;
@@ -116,6 +136,17 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
         getCommand("loadWorld").setExecutor(new LoadWorldCommand());
+        getCommand("mp_randomize_team").setExecutor(new mp_randomize_team());
+        getCommand("mp_iron_score").setExecutor(new mp_iron_score());
+        getCommand("mp_gold_score").setExecutor(new mp_gold_score());
+        getCommand("mp_diamond_score").setExecutor(new mp_diamond_score());
+        getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
+        getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
+        getCommand("join").setExecutor(new JoinCommand());
+
+
+
+
 
 
         if(mineralcontest.plugin.getServer().getOnlinePlayers().size() > 0){
@@ -123,12 +154,17 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                 FileToGame fg = new FileToGame();
                 fg.readFile(currentWorld);
             }catch(Exception e) {
-
+                e.printStackTrace();
             }
-
         }
 
 
+        if(!isVersionCompatible()) {
+            ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
+            console.sendMessage(ChatColor.RED + "[MINERALC] [ERREUR] La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
+            //getServer().getLogger().info("La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
 
 
@@ -163,9 +199,4 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     }
 
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-        return true;
-    }
 }

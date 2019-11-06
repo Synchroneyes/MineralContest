@@ -32,11 +32,6 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  set:
-    description: Défini les différentes position
-    use: /set <coffre|spawn> <arene|house> <deathzone|tp|death|jaune|rouge|bleu>
-    permission: admin
-    permission-message: you do not have the permission
 
   switch:
     description: Change l'équipe d'un joueur
@@ -53,41 +48,6 @@ commands:
   valider:
     description: Permet de valider un choix
     use: /valider
-    permission: admin
-    permission-message: you do not have the permission
-  tprouge:
-    description: Permet de valider un choix
-    use: /tprouge
-    permission: admin
-    permission-message: you do not have the permission
-  tpbleu:
-    description: Permet de valider un choix
-    use: /tpbleu
-    permission: admin
-    permission-message: you do not have the permission
-  tpjaune:
-    description: Permet de valider un choix
-    use: /tpjaune
-    permission: admin
-    permission-message: you do not have the permission
-  spawnarene:
-    description: Permet de valider un choix
-    use: /tprouge
-    permission: admin
-    permission-message: you do not have the permission
-  fermer:
-    description: Permet de valider un choix
-    use: /fermer
-    permission: admin
-    permission-message: you do not have the permission
-  ouvrir:
-    description: Permet de valider un choix
-    use: /ouvrir
-    permission: admin
-    permission-message: you do not have the permission
-  cooldownchest:
-    description: Permet de valider un choix
-    use: /cooldownchest
     permission: admin
     permission-message: you do not have the permission
 
@@ -114,6 +74,50 @@ commands:
     use: /arene
     permission:
     permission-message: you do not have the permission
+
+  mp_randomize_team:
+    description: Permet de rendre les équipes aléatoire ou non
+    use: /mp_randomize_team <1 | 0>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_iron_score:
+    description: Permet de choisir le score d'un lingot de fer
+    use: /mp_iron_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_gold_score:
+    description: Permet de choisir le score d'un lingot d'or
+    use: /mp_gold_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_diamond_score:
+    description: Permet de choisir le score d'un lingot de diamand
+    use: /mp_diamond_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_emerald_score:
+    description: Permet de choisir le score d'un lingot d'émeraude
+    use: /mp_emerauld_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_team_max_players:
+    description: Permet de choisir le nombre de personne par équipe
+    use: /mp_teal_max_players <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  join:
+    description: Permet de rejoindre une équipe
+    use: /join <rouge | jaune | bleu>
+    permission:
+    permission-message: you do not have the permission
+
+
 
   permissions:
     admin:
