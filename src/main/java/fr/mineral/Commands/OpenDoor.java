@@ -3,6 +3,7 @@ package fr.mineral.Commands;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.Utils.Save.GameToFile;
 import fr.mineral.mineralcontest;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,8 +18,7 @@ public class OpenDoor implements CommandExecutor {
                 try {
                     GameToFile f = new GameToFile("world1");
                     //f.saveToFile();
-                    g.readFile("world1");
-
+                    //g.readFile("world1");
                 }catch(Exception e) {
                     mineralcontest.plugin.getServer().getLogger().info("ERREUR");
                     e.printStackTrace();

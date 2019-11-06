@@ -1,7 +1,7 @@
 package fr.mineral.Utils.Save;
 
-import fr.mineral.Core.Arena;
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Arena.Arena;
+import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.json.JSONArray;
 import org.json.JSONObject;

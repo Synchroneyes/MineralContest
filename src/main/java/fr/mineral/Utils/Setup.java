@@ -13,6 +13,7 @@ public class Setup {
     public static Setup instance;
     public static Location emplacementTemporaire;
     public static Player Joueur;
+    public static boolean addDoors = false;
     public Setup() {
         Setup.instance = this;
     }
@@ -81,8 +82,9 @@ public class Setup {
             case 10:
                 mineralcontest.plugin.getGame().getArene().getDeathZone().setSpawnLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est terminé !");
-                joueur.sendMessage(mineralcontest.prefixPrive + "La partie peut être démarré grâce à la commande /start");
+                joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez cliquer sur les blocs de la porte bleu");
                 premierLancement = false;
+                addDoors = true;
                 break;
 
 

@@ -9,6 +9,8 @@ public class AutomaticSetup {
     public static Location spawnRouge;
     public static Location spawnBleu;
     public static Location spawnJaune;
+    public static Location positionDeathZone;
+
 
     public static void setPositionSpawnArene(Location l) {
         try {

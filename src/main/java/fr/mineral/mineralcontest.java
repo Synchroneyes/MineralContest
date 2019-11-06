@@ -4,24 +4,34 @@ import fr.mineral.Commands.*;
 import fr.mineral.Core.Game;
 import fr.mineral.Events.*;
 
+import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.Utils.Save.GameToFile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
 
+    /*
+        TODO: CVAR
+     */
+
+    public static boolean debug = false;
+    public static String currentWorld = "world2";
 
 
     public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
     public static String prefixErreur = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ERREUR] " + ChatColor.WHITE;
     public static String prefixGlobal = ChatColor.BLUE + "[MINERALC] " + ChatColor.GREEN + "[GLOBAL] " + ChatColor.WHITE;
     public static String prefixPrive = ChatColor.BLUE + "[MINERALC] " + ChatColor.YELLOW + "[PRIVE] " + ChatColor.WHITE;
+    public static String prefixAdmin = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ADMIN] " + ChatColor.WHITE;
 
     public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
     public static String ERROR_ALL_TEAM_NOT_FULL = "Au moins une équipe n'est pas complète. Il faut " + mineralcontest.teamMaxPlayers + " joueur(s) par équipe.";
@@ -49,6 +59,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     public static String GAME_STARTING_CHECKS = "Démarage des vérifications ...";
 
+    public static int playZoneRadius = 1000;
+
 
 
     public static mineralcontest plugin;
@@ -59,7 +71,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
+        FileToGame fg = new FileToGame();
+
     }
+
+
 
     public Game getGame() {
         return this.partie;
@@ -75,6 +91,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
@@ -83,6 +100,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
 
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
 
@@ -93,18 +111,44 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("start").setExecutor(new StartGameCommand());
         getCommand("pause").setExecutor(new PauseGameCommand());
         getCommand("stopGame").setExecutor(new StopGameCommand());
-        getCommand("set").setExecutor(new SetCommand());
+        getCommand("vote").setExecutor(new VoteCommand());
+        getCommand("arene").setExecutor(new AreneTeleportCommand());
+        getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
-        getCommand("setup").setExecutor(new SetupCommand());
-        getCommand("valider").setExecutor(new ValiderCommand());
+        getCommand("loadWorld").setExecutor(new LoadWorldCommand());
 
-        getCommand("tprouge").setExecutor(new TestSetupCommand());
-        getCommand("tpjaune").setExecutor(new TestSetupCommand());
-        getCommand("tpbleu").setExecutor(new TestSetupCommand());
-        getCommand("spawnarene").setExecutor(new TestSetupCommand());
 
-        getCommand("ouvrir").setExecutor(new OpenDoor());
-        getCommand("fermer").setExecutor(new OpenDoor());
+        if(mineralcontest.plugin.getServer().getOnlinePlayers().size() > 0){
+            try {
+                FileToGame fg = new FileToGame();
+                fg.readFile(currentWorld);
+            }catch(Exception e) {
+
+            }
+
+        }
+
+
+
+
+
+        //getCommand("set").setExecutor(new SetCommand());
+        //getCommand("resume").setExecutor(new ResumeGameCommand());
+        //getCommand("setup").setExecutor(new SetupCommand());
+        //getCommand("valider").setExecutor(new ValiderCommand());
+
+        //getCommand("tprouge").setExecutor(new TestSetupCommand());
+        //getCommand("tpjaune").setExecutor(new TestSetupCommand());
+        //getCommand("tpbleu").setExecutor(new TestSetupCommand());
+        //getCommand("spawnarene").setExecutor(new TestSetupCommand());
+
+        //getCommand("ouvrir").setExecutor(new OpenDoor());
+        //getCommand("fermer").setExecutor(new OpenDoor());
+
+        //getCommand("cooldownchest").setExecutor(new SetCooldownChestCommand());
+
+        //getCommand("saveWorld").setExecutor(new SaveWorldCommand());
+
 
 
 

@@ -18,6 +18,7 @@ public class PlayerDeath implements Listener {
     public void onDeath(PlayerDeathEvent e) {
         Player p = (Player) e.getEntity();
 
+
         List<ItemStack> inventaire = e.getDrops();
         ListIterator<ItemStack> iterateur = inventaire.listIterator();
 

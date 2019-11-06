@@ -1,6 +1,6 @@
 package fr.mineral.Utils;
 
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,6 +12,8 @@ import java.util.LinkedList;
 
 /*
     On ne traite que des "portes" carrées
+
+    TODO: sauvegarder lla couleur des portes
  */
 public class AutomaticDoors {
 
@@ -46,15 +48,15 @@ public class AutomaticDoors {
 
         if(porte.size() == 0) {
             porte.add(new DisplayBlock(b));
-            mineralcontest.plugin.getServer().broadcastMessage(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté");
+            if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté");
         } else {
             for(DisplayBlock db : porte) {
                 if(db.getBlock().equals(b)) {
                     porte.remove(db);
-                    mineralcontest.plugin.getServer().broadcastMessage(ChatColor.YELLOW + "- Le bloc selectionné a été supprimé");
+                    if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.YELLOW + "- Le bloc selectionné a été supprimé");
                 } else {
                     if(porte.size() >= maxDoorSize) {
-                        mineralcontest.plugin.getServer().broadcastMessage(ChatColor.RED + "# - Porte pleine");
+                        if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.RED + "# - Porte pleine");
                     } else {
                         ajouter = true;
                     }
@@ -63,7 +65,7 @@ public class AutomaticDoors {
             }
             if(ajouter) {
                 porte.add(new DisplayBlock(b));
-                mineralcontest.plugin.getServer().broadcastMessage(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté");
+                if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté à la porte");
 
             }
         }
@@ -84,6 +86,17 @@ public class AutomaticDoors {
             }
             this.estOuvert = true;
         }
+    }
+
+
+    public void forceCloseDoor() {
+        for(DisplayBlock db : porte) {
+            db.display();
+        }
+        this.estOuvert = false;
+
+        for(Player p : playerNearDoor)
+            playerNearDoor.remove(p);
     }
 
     public void closeDoor() {
@@ -116,7 +129,7 @@ public class AutomaticDoors {
     }
 
     public void playerIsNearDoor(Player joueur) {
-        if(!this.playerNearDoor.contains(joueur)) {
+        if(!this.playerNearDoor.contains(joueur) && !mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(joueur)) {
             this.playerNearDoor.add(joueur);
             openDoor();
         }

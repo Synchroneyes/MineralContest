@@ -6,19 +6,28 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.type.GlassPane;
-import org.bukkit.material.Dye;
-import org.bukkit.material.Wool;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.material.MaterialData;
 
 public class DisplayBlock {
     private Block baseBlock;
     private Location position;
     private Material materiel;
+    private BlockState etat;
+    private MaterialData data;
 
     public DisplayBlock(Block baseBlock) {
-        this.baseBlock = baseBlock;
-        this.position = baseBlock.getLocation();
-        this.materiel = baseBlock.getType();
+
+        try {
+            this.baseBlock = baseBlock;
+            this.position = baseBlock.getLocation();
+            this.materiel = baseBlock.getState().getType();
+            this.etat = baseBlock.getState();
+            this.data = etat.getData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -28,13 +37,20 @@ public class DisplayBlock {
 
     public void display() {
 
-        position.getBlock().setType(materiel);
+
+        try {
+            position.getBlock().setType(materiel);
+            position.getBlock().setBlockData(baseBlock.getBlockData());
+            position.getBlock().getState().setData(this.data);
+
+            position.getBlock().getState().update();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
     public void hide() {
 
         position.getBlock().setType(Material.AIR);
-
-
     }
 }

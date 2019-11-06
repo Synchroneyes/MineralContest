@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.mineralcontest;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,8 +17,25 @@ import java.util.ListIterator;
 
 public class EntityDamage implements Listener {
 
+
     @EventHandler
-    public void onEntityDamage(EntityDamageByEntityEvent event) {
+    public void onPlayerFall(EntityDamageEvent event) {
+        if (mineralcontest.plugin.getGame().isGameStarted() && event.getEntity() instanceof Player) {
+            Player victime = (Player) event.getEntity();
+
+            if (victime.getHealth() - event.getDamage() < 0) {
+                victime.setHealth(20D);
+                event.setCancelled(true);
+
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName() + ChatColor.WHITE + " est décédé.");
+                mineralcontest.plugin.getGame().getArene().getDeathZone().add(victime);
+
+            }
+        }
+    }
+
+    @EventHandler
+    public boolean onEntityDamage(EntityDamageByEntityEvent event) {
         //Player joueur = (Player) event.getEntity();
         //joueur.sendMessage("Degats: " + (event.getDamage()) + " - Vie: " + joueur.getHealth());
 
@@ -26,8 +44,16 @@ public class EntityDamage implements Listener {
         if(mineralcontest.plugin.getGame().isGameStarted()) {
 
                 if(event.getEntity() instanceof  Player) {
+
                     Player victime = (Player) event.getEntity();
 
+                    if(mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(victime)){
+                        event.setCancelled(true);
+                        return true;
+                    }
+
+
+                    victime.sendMessage("AIE !");
 
                     if (victime.getHealth() - event.getDamage() < 0) {
                         victime.setHealth(20D);
@@ -37,14 +63,9 @@ public class EntityDamage implements Listener {
 
                         if(event.getDamager() instanceof Player) {
                             Player attaquant = (Player) event.getDamager();
-                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + attaquant.getDisplayName() + " a tué " + victime.getDisplayName());
-                        } else {
-                            for(EntityDamageEvent.DamageCause raison :  EntityDamageEvent.DamageCause.values()) {
-                                if(raison.equals(event.getCause())) {
-                                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + victime.getDisplayName() + "est décédé.");
-                                }
-                            }
+                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(attaquant).getCouleur() + attaquant.getDisplayName() + ChatColor.WHITE + " a tué " + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName());
                         }
+
 
 
                         try {
@@ -70,5 +91,6 @@ public class EntityDamage implements Listener {
                     }
                 }
         }
+        return false;
     }
 }

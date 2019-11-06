@@ -1,8 +1,8 @@
 package fr.mineral.Utils;
 
-import fr.mineral.Core.Zones.DeathZone;
+import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Scoreboard.ScoreboardUtil;
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -44,46 +44,60 @@ public class PlayerUtils {
         joueur.getInventory().setArmorContents(armure);
     }
 
-    public static void drawPlayersHUD(boolean gameStarted, boolean gamePaused) {
+    public static void drawPlayersHUD(boolean gameStarted, boolean gamePaused, boolean isPreGame, boolean voteMapEnabled) {
         Collection<? extends Player> onlinePlayers = mineralcontest.plugin.getServer().getOnlinePlayers();
         // Si la game n'a pas démarré
         for(Player online : onlinePlayers) {
 
-            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
-
-            if (!gameStarted) {
-                // Si le joueur n'a pas d'équipe
-                if (team == null) {
-                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
-                } else {
-                    // Le joueur a une équipe
-                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", team.getCouleur() + "Equipe " + team.getNomEquipe());
-                }
+            // Si on vote
+            if(voteMapEnabled) {
+                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + "Vote pour le biome à jouer", " " ,
+                        "0 - Neige (" + mineralcontest.plugin.getGame().votemap.voteNeige + " vote(s))",
+                        "1 - Desert (" + mineralcontest.plugin.getGame().votemap.voteDesert + " vote(s))",
+                        "2 - Foret (" + mineralcontest.plugin.getGame().votemap.voteForet + " vote(s))",
+                        "3 - Plaine (" + mineralcontest.plugin.getGame().votemap.votePlaine + " vote(s))",
+                        "4 - Montagne (" + mineralcontest.plugin.getGame().votemap.voteMontagne + " vote(s))",
+                        "5 - Marecage (" + mineralcontest.plugin.getGame().votemap.voteMarecage + " vote(s))");
 
             } else {
-                // Si la game est en pause
-                if (gamePaused) {
-                    // Pas de team
+                Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
+
+                if (!gameStarted || isPreGame) {
+                    // Si le joueur n'a pas d'équipe
                     if (team == null) {
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
                     } else {
                         // Le joueur a une équipe
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", team.getCouleur() + "Equipe " + team.getNomEquipe());
                     }
+
                 } else {
-                    // Game pas en pause
-                    // Si le joueur est mort
-                    if(PlayerUtils.isPlayerInDeathZone(online)) {
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points", " ", ChatColor.GOLD + "Vous allez réapparaitre dans " + PlayerUtils.getDeathZoneTime(online) + " secondes");
-
+                    // Si la game est en pause
+                    if (gamePaused) {
+                        // Pas de team
+                        if (team == null) {
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                        } else {
+                            // Le joueur a une équipe
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
+                        }
                     } else {
-                        // joueur pas mort
-                        // Le joueur a une équipe
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
+                        // Game pas en pause
+                        // Si le joueur est mort
+                        if(PlayerUtils.isPlayerInDeathZone(online)) {
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points", " ", ChatColor.GOLD + "Vous allez réapparaitre dans " + PlayerUtils.getDeathZoneTime(online) + " secondes");
 
+                        } else {
+                            // joueur pas mort
+                            // Le joueur a une équipe
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
+
+                        }
                     }
                 }
             }
+
+
         }
     }
 
@@ -114,7 +128,4 @@ public class PlayerUtils {
     }
 
 
-    public static void sendTitle(Player joueur, String message) {
-        joueur.performCommand("title " + joueur.getDisplayName() + " title {\"text\":\"" + message + "\",\"color\":\"white\"}");
-    }
 }

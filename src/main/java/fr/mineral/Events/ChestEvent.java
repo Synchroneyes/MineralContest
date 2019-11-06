@@ -1,7 +1,8 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Arena.ChestWithCooldown;
 import fr.mineral.Core.Game;
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Equipe;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -10,10 +11,9 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ChestEvent implements Listener {
@@ -21,8 +21,20 @@ public class ChestEvent implements Listener {
     // Lorsqu'on ferme un inventaire
     @EventHandler
     public void onChestClose(InventoryCloseEvent event) throws Exception {
+
+
         // Si l'inventaire est un coffre
-        if(mineralcontest.plugin.getGame().isGameStarted()) {
+        if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused() && !mineralcontest.plugin.getGame().isPreGame()) {
+
+            if(mineralcontest.plugin.getGame().getArene().getCoffre().coffre != null && mineralcontest.plugin.getGame().getArene().getCoffre().opened) {
+                Player p = (Player) event.getPlayer();
+
+                if(mineralcontest.plugin.getGame().getArene().getCoffre().openingPlayer.equals(p)) {
+                    mineralcontest.plugin.getGame().getArene().getCoffre().isCancelled = true;
+                    mineralcontest.plugin.getGame().getArene().getCoffre().close();
+                }
+            }
+
             if(event.getInventory().getHolder() instanceof Chest) {
 
                 Chest c = (Chest) event.getInventory().getHolder();
@@ -48,27 +60,32 @@ public class ChestEvent implements Listener {
                         try {
                             ItemStack[] items = c.getInventory().getContents();
                             for(ItemStack item : items) {
-                                if(item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
-                                    score += Game.SCORE_IRON*item.getAmount();
+
+                                if(item != null) {
+                                    if(item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
+                                        score += Game.SCORE_IRON*item.getAmount();
+                                    }
+
+                                    if(item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
+                                        score += Game.SCORE_GOLD*item.getAmount();
+                                    }
+
+                                    if(item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
+                                        score += Game.SCORE_DIAMOND*item.getAmount();
+                                    }
+
+                                    if(item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
+                                        score += Game.SCORE_EMERALD*item.getAmount();
+                                    }
                                 }
 
-                                if(item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
-                                    score += Game.SCORE_GOLD*item.getAmount();
-                                }
 
-                                if(item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
-                                    score += Game.SCORE_DIAMOND*item.getAmount();
-                                }
-
-                                if(item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
-                                    score += Game.SCORE_EMERALD*item.getAmount();
-                                }
                             }
 
                             team.setScore(score);
 
                         }catch(Exception e) {
-
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -83,18 +100,35 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onChestBreaked(ItemSpawnEvent event) throws Exception {
 
+
         if(mineralcontest.plugin.getGame().isGameStarted()) {
             Location coffreArene = mineralcontest.plugin.getGame().getArene().getCoffre().getPosition();
 
             // On regarde si les items qui ont spawn sont proche du coffre de l'arene
-            if(Radius.isBlockInRadius(coffreArene,event.getLocation(), 1)){
+            if(Radius.isBlockInRadius(coffreArene,event.getLocation(), 5)){
                 // Si l'item est un coffre
                 if(event.getEntity().getItemStack().equals(new ItemStack(Material.CHEST, 1)))
                     // On ne le fait pas apparaitre
                     event.setCancelled(true);
+                    // On marque le coffre comme usé
+                    mineralcontest.plugin.getGame().getArene().CHEST_USED = true;
             }
-        }
-        //mineralcontest.plugin.getServer().broadcastMessage();
 
+
+
+        }
+
+
+    }
+
+    @EventHandler
+    public void onChestOpen(InventoryOpenEvent event) throws Exception {
+        Player joueur = (Player) event.getPlayer();
+        if(ChestWithCooldown.coffre != null && Radius.isBlockInRadius(ChestWithCooldown.coffre.getPosition(), joueur.getLocation(), 5)) {
+            ChestWithCooldown.coffre.open((Player) event.getPlayer());
+            //joueur.sendMessage("OKAY BITCH");
+            //joueur.closeInventory();
+
+        }
     }
 }

@@ -20,6 +20,8 @@ public class FileToGame {
         setDoors(monde.getJSONObject("teams"));
         setTeamChestLocation(monde.getJSONObject("teams"));
         setArenaLocation(monde.getJSONObject("arene"));
+
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Configuration chargée avec succès");
         return true;
 
     }

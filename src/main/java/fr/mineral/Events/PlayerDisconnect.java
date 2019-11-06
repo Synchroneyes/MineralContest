@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,8 +15,10 @@ public class PlayerDisconnect implements Listener {
         if(team != null)
             team.removePlayer(joueur);
 
-        if(mineralcontest.plugin.getGame().isGameStarted()) {
+        if(mineralcontest.plugin.getGame().isGameStarted() && team != null) {
             mineralcontest.plugin.getGame().pauseGame();
+            mineralcontest.plugin.getGame().addDisconnectedPlayer(joueur.getDisplayName(), team);
+            team.getPorte().forceCloseDoor();
         }
     }
 }

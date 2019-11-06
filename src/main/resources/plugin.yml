@@ -85,6 +85,35 @@ commands:
     use: /ouvrir
     permission: admin
     permission-message: you do not have the permission
+  cooldownchest:
+    description: Permet de valider un choix
+    use: /cooldownchest
+    permission: admin
+    permission-message: you do not have the permission
+
+  loadWorld:
+    description: Permet de charger un monde
+    use: /load <world>
+    permission: admin
+    permission-message: you do not have the permission
+
+  vote:
+    description: Permet de voter pour un monde
+    use: /vote <worldId>
+    permission:
+    permission-message: you do not have the permission
+
+  saveWorld:
+    description: Permet de sauvegarder un monde
+    use: /save <worldName>
+    permission: admin
+    permission-message: you do not have the permission
+
+  arene:
+    description: Permet de se teleporter vers l'arene
+    use: /arene
+    permission:
+    permission-message: you do not have the permission
 
   permissions:
     admin:
