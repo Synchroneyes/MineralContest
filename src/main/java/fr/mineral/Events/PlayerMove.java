@@ -1,16 +1,23 @@
 package fr.mineral.Events;
 
+import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PlayerMove implements Listener {
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event){
-        // Si la partie est en pause, on annule le mouvement
-        if(mineralcontest.isGamePaused()) {
-            event.setCancelled(true);
+    public void onPlayerMove(PlayerMoveEvent event) {
+
+        if(mineralcontest.plugin.getGame().isGamePaused()) {
+            Location to = event.getFrom();
+            to.setPitch(event.getTo().getPitch());
+            to.setYaw(event.getTo().getYaw());
+            event.setTo(to);
         }
+
     }
 }

@@ -8,95 +8,116 @@ authors: [Groupe6]
 description: Plugin gamemode Mineral Contest
 website: http://synchroneyes.fr
 commands:
-  teamJaune:
-    description: Rejoindre l'equipe jaune
-    usage: /teamJaune
-    permission:
-    permission-message: This is an error
-
-  join:
-    description: Rejoindre une equipe, jaune, bleu, rouge
-    usage: /join <teamName>
-    permission:
-    permission-message: This is an error
-
-  leave:
-    description: quitter une equipe
-    usage: /leave
-    permission:
-    permission-message: This is an error
-
   start:
-    description: demarrer une partie
-    usage: /start
-    permission: admin
-    permission-message: This is an error
-
-  randomizeTeam:
-    description: Attribuer aleatoirement une equipe aux joueur
-    usage: /randomizeTeam
-    permission: admin
-    permission-message: This is an error
-
-  setHouse:
-    description: set le spawn de base d'une équipe
-    usage: /setHouse [couleur]
+    description: Démarre une partie
+    use: /start
     permission: admin
     permission-message: you do not have the permission
 
-  setSpawn:
-    description: set le spawn d'une equipe
-    usage: /setSpawn [couleur]
-    permission: admin
-    permission-message: you do not have the permission
-
-  arene:
-    description: teleport les joeurs de l equipe dans l arene
-    usage: /arene
-    permission:
-    permission-message:
-
-  teams:
-    description: Affiche les equipes
-    usage: /teams
-    permission:
-    permission-message:
-
-  setCoffre:
-    description: set le spawn du coffre
-    usage: /setCoffre
-    permission: admin
-    permission-message: you do not have the permission
-
-  spawnCoffre:
-    description: spawn le coffre
-    usage: /spawnCoffre
-    permission: admin
-    permission-message: you do not have the permission
-
-  setScoreBoard:
-    description: initialise les scoreboard
-    use: /setScoreBoard
+  pause:
+    description: Met une partie en pause
+    use: /pause
     permission: admin
     permission-message: you do not have the permission
 
   resume:
-    description: Reprend la partie
+    description: Reprend une partie
     use: /resume
     permission: admin
     permission-message: you do not have the permission
 
-  switch:
-    description: switch un joueur
-    use: /switch <player> <team>
+  stopGame:
+    description: Arrête une partie
+    use: /stopGame
     permission: admin
     permission-message: you do not have the permission
 
-  setCoffreTeam:
-    description: set le coffre d'une teal
-    use: /setCoffreTeam <team>
+
+  switch:
+    description: Change l'équipe d'un joueur
+    use: /switch <player> <jaune|rouge|bleu>
     permission: admin
     permission-message: you do not have the permission
+
+  setup:
+    description: Permet de configurer la partie
+    use: /setup
+    permission: admin
+    permission-message: you do not have the permission
+
+  valider:
+    description: Permet de valider un choix
+    use: /valider
+    permission: admin
+    permission-message: you do not have the permission
+
+  loadWorld:
+    description: Permet de charger un monde
+    use: /load <world>
+    permission: admin
+    permission-message: you do not have the permission
+
+  vote:
+    description: Permet de voter pour un monde
+    use: /vote <worldId>
+    permission:
+    permission-message: you do not have the permission
+
+  saveWorld:
+    description: Permet de sauvegarder un monde
+    use: /save <worldName>
+    permission: admin
+    permission-message: you do not have the permission
+
+  arene:
+    description: Permet de se teleporter vers l'arene
+    use: /arene
+    permission:
+    permission-message: you do not have the permission
+
+  mp_randomize_team:
+    description: Permet de rendre les équipes aléatoire ou non
+    use: /mp_randomize_team <1 | 0>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_iron_score:
+    description: Permet de choisir le score d'un lingot de fer
+    use: /mp_iron_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_gold_score:
+    description: Permet de choisir le score d'un lingot d'or
+    use: /mp_gold_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_diamond_score:
+    description: Permet de choisir le score d'un lingot de diamand
+    use: /mp_diamond_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_emerald_score:
+    description: Permet de choisir le score d'un lingot d'émeraude
+    use: /mp_emerauld_score <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_team_max_players:
+    description: Permet de choisir le nombre de personne par équipe
+    use: /mp_teal_max_players <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  join:
+    description: Permet de rejoindre une équipe
+    use: /join <rouge | jaune | bleu>
+    permission:
+    permission-message: you do not have the permission
+
+
 
   permissions:
     admin:

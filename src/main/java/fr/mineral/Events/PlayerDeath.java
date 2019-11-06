@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,14 +12,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class PlayerMort implements Listener {
+public class PlayerDeath implements Listener {
 
-    public PlayerMort() {
 
-    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         Player p = (Player) e.getEntity();
+
 
         List<ItemStack> inventaire = e.getDrops();
         ListIterator<ItemStack> iterateur = inventaire.listIterator();

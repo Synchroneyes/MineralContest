@@ -1,7 +1,6 @@
-package fr.mineral.Teams;
+package fr.mineral.Core;
 
-import fr.mineral.Coffre;
-import fr.mineral.Exception.FullTeamException;
+import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -11,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.util.LinkedList;
 
@@ -35,7 +33,14 @@ public class Equipe {
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
         this.coffre.setPosition(loc);
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le coffre de l'équipe " + getCouleur() + getNomEquipe() + ChatColor.WHITE + " a bien été placé");
+
+        // On reset le coffre actuel si il existe déjà
+        if(loc.getBlock().getType().toString().equalsIgnoreCase("chest")) {
+            Chest coffre = (Chest) loc.getBlock().getState();
+            coffre.getInventory().clear();
+        }
+
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + "Le coffre de l'équipe " + getCouleur() + getNomEquipe() + ChatColor.WHITE + " a bien été placé");
 
     }
 
@@ -49,6 +54,10 @@ public class Equipe {
         Location loc = coffre.getPosition();
         Block block = loc.getBlock();
         loc.getBlock().setType(Material.CHEST);
+
+        if(loc.getBlock() instanceof Chest) {
+            ((Chest)block).getInventory().clear();
+        }
      }
 
 
@@ -114,7 +123,7 @@ public class Equipe {
     }
 
     public void setHouseLocation(Location houseLocation){
-        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le spawn de l'équipe " +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + "  pour réapparaitre a bien été ajouter");
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + "Le spawn de l'équipe " +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + "  pour réapparaitre a bien été ajouter");
         this.houseLocation = houseLocation;
     }
 

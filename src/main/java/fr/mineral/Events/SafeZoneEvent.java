@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -23,10 +24,22 @@ public class SafeZoneEvent implements Listener {
 
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
-        Entity p = event.getDamager();
 
-        if(Radius.isBlockInRadius(mineralcontest.plugin.getAreneLocation(), p.getLocation(), 5 )){
-            event.setCancelled(true);
+
+        if(mineralcontest.plugin.getGame().isGameStarted()) {
+            if(event.getDamager() instanceof Player) {
+                Player p = (Player) event.getDamager();
+
+                Player joueur = (Player) event.getDamager();
+                if(PlayerUtils.isPlayerInDeathZone(joueur))
+                    event.setCancelled(true);
+
+                if(Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getTeleportSpawn(), p.getLocation(), 5 )){
+                    event.setCancelled(true);
+                }
+            }
         }
+
+
     }
 }
