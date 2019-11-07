@@ -18,6 +18,7 @@ public class SaveWorldCommand implements CommandExecutor {
                 }
 
             }else{
+                sender.sendMessage("usage: /saveworld <worldname>");
                 return true;
             }
         }

@@ -20,7 +20,28 @@ public class PlayerInteract implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player joueur = (Player) event.getPlayer();
 
-        if(!mineralcontest.plugin.getGame().isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+        if(Setup.addDoors) {
+            if(mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize) {
+                mineralcontest.plugin.getGame().getTeamBleu().getPorte().addToDoor(event.getClickedBlock());
+                joueur.sendMessage("porte bleu added");
+                event.setCancelled(true);
+
+            } else if(mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize){
+                mineralcontest.plugin.getGame().getTeamJaune().getPorte().addToDoor(event.getClickedBlock());
+                joueur.sendMessage("porte jaune added");
+
+                event.setCancelled(true);
+            } else if(mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize) {
+                mineralcontest.plugin.getGame().getTeamRouge().getPorte().addToDoor(event.getClickedBlock());
+                joueur.sendMessage("porte rouge added");
+
+                event.setCancelled(true);
+            } else {
+                mineralcontest.plugin.getServer().broadcastMessage("DONE");
+            }
+        }
+
+        if(!mineralcontest.plugin.getGame().isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(mineralcontest.prefixPrive + "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie");
         }
@@ -33,21 +54,7 @@ public class PlayerInteract implements Listener {
             }
         }
 
-        if(Setup.addDoors) {
-            if(mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize) {
-                mineralcontest.plugin.getGame().getTeamBleu().getPorte().addToDoor(event.getClickedBlock());
-                event.setCancelled(true);
 
-            } else if(mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize){
-                mineralcontest.plugin.getGame().getTeamJaune().getPorte().addToDoor(event.getClickedBlock());
-                event.setCancelled(true);
-            } else if(mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize) {
-                mineralcontest.plugin.getGame().getTeamRouge().getPorte().addToDoor(event.getClickedBlock());
-                event.setCancelled(true);
-            } else {
-                mineralcontest.plugin.getServer().broadcastMessage("DONE");
-            }
-        }
 
 
 

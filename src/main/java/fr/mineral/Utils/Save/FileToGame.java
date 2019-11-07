@@ -3,6 +3,7 @@ package fr.mineral.Utils.Save;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -13,6 +14,7 @@ public class FileToGame {
 
     public boolean readFile(String worldName) throws IOException {
 
+        mineralcontest.plugin.getServer().getLogger().info("readFIle !!!!!!");
         JSONTokener tokener = new JSONTokener(getClass().getResourceAsStream("/data_worlds/" + worldName + ".json"));
         JSONObject monde = new JSONObject(tokener).getJSONObject(worldName);
 
@@ -21,7 +23,18 @@ public class FileToGame {
         setTeamChestLocation(monde.getJSONObject("teams"));
         setArenaLocation(monde.getJSONObject("arene"));
 
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Configuration chargée avec succès");
+        for(Player online : Bukkit.getOnlinePlayers()) {
+            try {
+                online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
+                online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        mineralcontest.plugin.getGame().isGameInitialized = true;
+
         return true;
 
     }

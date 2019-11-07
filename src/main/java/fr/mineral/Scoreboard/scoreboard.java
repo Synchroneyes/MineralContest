@@ -1,9 +1,8 @@
 package fr.mineral.scoreboard;
 
-import fr.mineral.Teams.Equipe;
+import fr.mineral.Core.Equipe;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 

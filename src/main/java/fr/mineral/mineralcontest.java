@@ -57,6 +57,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static String GAME_STARTING_CHECKS = "Démarage des vérifications ...";
 
     public static int playZoneRadius = 1000;
+    public static boolean isGameInitialized = false;
 
 
 
@@ -68,7 +69,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
-        FileToGame fg = new FileToGame();
 
     }
 
@@ -112,15 +112,16 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new MapInitialize(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
-        //Bukkit.getServer().getPluginManager().registerEvents(new PlayerMort(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+
 
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
 
@@ -143,6 +144,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
         getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
         getCommand("join").setExecutor(new JoinCommand());
+        //getCommand("setup").setExecutor(new SetupCommand());
+        //getCommand("valider").setExecutor(new ValiderCommand());
+        //getCommand("saveworld").setExecutor(new SaveWorldCommand());
+
+
 
 
 
@@ -151,8 +157,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         if(mineralcontest.plugin.getServer().getOnlinePlayers().size() > 0){
             try {
-                FileToGame fg = new FileToGame();
-                fg.readFile(currentWorld);
+
+                Bukkit.getWorld("world").setAutoSave(false);
             }catch(Exception e) {
                 e.printStackTrace();
             }

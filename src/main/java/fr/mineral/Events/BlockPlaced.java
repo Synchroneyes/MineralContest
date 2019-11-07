@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Utils.Radius;
+import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +23,8 @@ public class BlockPlaced implements Listener {
                 e.printStackTrace();
             }
 
-        } else {
+
+        } else if(!Setup.premierLancement) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(mineralcontest.prefixPrive + "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie");
         }
