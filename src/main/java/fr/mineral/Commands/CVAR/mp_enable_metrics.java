@@ -13,22 +13,23 @@ public class mp_enable_metrics implements CommandExecutor {
                 int valeur = 1;
                 try {
                     valeur = Integer.parseInt(args[0]);
+                    switch(valeur) {
+                        case 0:
+                            SendInformation.disable();
+                            break;
+                        case 1:
+                            SendInformation.enable();
+                            break;
+
+                        default:
+                            sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
+                            break;
+                    }
                 }catch (NumberFormatException nfe){
                     nfe.printStackTrace();
+                    sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
                 }
-
-                switch(valeur) {
-                    case 0:
-                        SendInformation.disable();
-                        break;
-                    case 1:
-                        SendInformation.enable();
-                        break;
-
-                    default:
-                        sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
-                        break;
-                }
+                
             } else {
                 sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
             }
