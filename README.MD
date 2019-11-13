@@ -18,6 +18,7 @@ mp_gold_score <valeur> # Permet de modifier les points rapporté par un lingot d
 mp_diamond_score <valeur> # Permet de modifier les points rapporté par un lingot de diamant
 mp_emerald_score <valeur> # Permet de modifier les points rapporté par un lingot d'émeraude
 mp_team_max_player <valeur> # Permet de modifier le nombre de joueur requis par équipe pour lancer une partie
+mp_enable_metrics <1 ou 0> # Permet d'activer ou non l'envoie de statistique
 
 start # Permet de démarrer une partie
 resume # Permet de reprendre une partie en pause
