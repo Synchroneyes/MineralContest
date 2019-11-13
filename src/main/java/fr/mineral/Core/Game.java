@@ -67,6 +67,8 @@ public class Game implements Listener {
 
     public boolean isGameInitialized = false;
 
+    public int killCounter = 0;
+
     private AutomaticDoors portes;
 
     private LinkedList<CouplePlayerTeam> disconnectedPlayers;
@@ -226,7 +228,7 @@ public class Game implements Listener {
 
                                         // METRIC
                                         // On envoie les informations de la partie
-                                        SendInformation.sendGameStartedData();
+                                        SendInformation.sendGameData("started");
 
 
                                     }catch (Exception e) {
@@ -360,7 +362,7 @@ public class Game implements Listener {
                 PlayerUtils.setFirework(online, gagnant.toColor());
         }
 
-        SendInformation.sendGameEndedData();
+        SendInformation.sendGameData("ended");
     }
 
     public void pauseGame() {

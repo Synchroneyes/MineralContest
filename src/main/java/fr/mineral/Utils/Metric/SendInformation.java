@@ -9,63 +9,50 @@ import java.net.InetAddress;
 public class SendInformation {
 
     private static boolean enabled = true;
-    private static String ApiServerURL = "http://mineral.synchroneyes.fr/api/metrics";
+    private static String ApiServerURL = "http://127.0.0.1:8000/api/metrics";
 
     public static void enable() {
         enabled = true;
-        Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Activation de l'envoie de statistique");
+        Bukkit.getServer().broadcastMessage(mineralcontest.prefix + ChatColor.GOLD + "Activation de l'envoie de statistique");
+        mineralcontest.plugin.getConfig().set("config.metrics.allowSharing", true);
+        mineralcontest.plugin.saveConfig();
     }
     public static void disable() {
         enabled = false;
-        Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Désactivation de l'envoie de statistique");
+        Bukkit.getServer().broadcastMessage(mineralcontest.prefix + ChatColor.GOLD + "Désactivation de l'envoie de statistique");
+        mineralcontest.plugin.getConfig().set("config.metrics.allowSharing", false);
+        mineralcontest.plugin.saveConfig();
 
     }
 
-    public static void sendGameStartedData() throws Exception {
+    public static void sendGameData(String state) {
+        // On utilise des threads pour ne pas avoir à se soucier du temps de réponse
+        Thread thread = new Thread(() -> {
+            if(enabled) {
 
-        if(enabled) {
-            // On crée un nouvel objet request
-            URLRequest request = new URLRequest("POST");
-            request.setUrl(ApiServerURL);
+                try {
+                    // On crée un nouvel objet request
+                    URLRequest request = new URLRequest("POST");
+                    request.setUrl(ApiServerURL);
 
-            // On lui passe les paramètres
-            try {
-                request.addParameters("ServerIP", InetAddress.getLocalHost().getAddress());
-                request.addParameters("ServerPort", Bukkit.getServer().getPort());
-                request.addParameters("numberOfPlayers", Bukkit.getServer().getOnlinePlayers().size());
-                request.addParameters("biomePlayed", mineralcontest.plugin.getGame().votemap.getWinnerBiome());
-                request.addParameters("state", "started");
+                    // On lui passe les parametres
+                    request.addParameters("serverPort", Bukkit.getServer().getPort());
+                    request.addParameters("numberOfPlayers", Bukkit.getServer().getOnlinePlayers().size());
+                    request.addParameters("biomePlayed", mineralcontest.plugin.getGame().votemap.getWinnerBiome());
+                    request.addParameters("state", state);
+                    request.addParameters("killCounter", mineralcontest.plugin.getGame().killCounter);
 
-                String result = request.getQueryResult();
-                Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
-            }catch (Exception e) {
-                Bukkit.getLogger().info(mineralcontest.prefixErreur + "Erreur appel API: " + e.getMessage());
-                e.printStackTrace();
+                    String result = request.getQueryResult();
+                    Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             }
-        }
+        });
+
+        thread.start();
     }
 
-    public static void sendGameEndedData() throws Exception {
-
-        if(enabled) {
-            // On crée un nouvel objet request
-            URLRequest request = new URLRequest("POST");
-            request.setUrl(ApiServerURL);
-
-            // On lui passe les paramètres
-            try {
-                request.addParameters("ServerIP", InetAddress.getLocalHost().getAddress());
-                request.addParameters("ServerPort", Bukkit.getServer().getPort());
-                request.addParameters("numberOfPlayers", Bukkit.getServer().getOnlinePlayers().size());
-                request.addParameters("biomePlayed", mineralcontest.plugin.getGame().votemap.getWinnerBiome());
-                request.addParameters("state", "ended");
-
-                String result = request.getQueryResult();
-                Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
-            }catch (Exception e) {
-                Bukkit.getLogger().info(mineralcontest.prefixErreur + "Erreur appel API: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
 }

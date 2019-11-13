@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,8 +28,9 @@ public class EntityDamage implements Listener {
                 victime.setHealth(20D);
                 event.setCancelled(true);
 
+                PlayerUtils.killPlayer(victime);
+
                 mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName() + ChatColor.WHITE + " est décédé.");
-                mineralcontest.plugin.getGame().getArene().getDeathZone().add(victime);
 
             }
         }
@@ -36,57 +38,27 @@ public class EntityDamage implements Listener {
 
     @EventHandler
     public boolean onEntityDamage(EntityDamageByEntityEvent event) {
-        //Player joueur = (Player) event.getEntity();
-        //joueur.sendMessage("Degats: " + (event.getDamage()) + " - Vie: " + joueur.getHealth());
-
-
-
         if(mineralcontest.plugin.getGame().isGameStarted()) {
-
                 if(event.getEntity() instanceof  Player) {
-
                     Player victime = (Player) event.getEntity();
-
                     if(mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(victime)){
                         event.setCancelled(true);
                         return true;
                     }
 
-
-                    victime.sendMessage("AIE !");
-
+                    // Si une entité meurt d'un coup/explosion/...
                     if (victime.getHealth() - event.getDamage() < 0) {
                         victime.setHealth(20D);
                         event.setCancelled(true);
 
-
-
+                        // Si c'est un joueur qui a tué notre victime
                         if(event.getDamager() instanceof Player) {
                             Player attaquant = (Player) event.getDamager();
                             mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(attaquant).getCouleur() + attaquant.getDisplayName() + ChatColor.WHITE + " a tué " + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName());
+                            mineralcontest.plugin.getGame().killCounter++;
                         }
 
-
-
-                        try {
-                            for (ItemStack item : victime.getInventory().getContents()) {
-                                if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1)))
-                                    victime.getWorld().dropItemNaturally(victime.getLocation(), item);
-
-                                if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1)))
-                                    victime.getWorld().dropItemNaturally(victime.getLocation(), item);
-
-                                if (item.isSimilar(new ItemStack(Material.DIAMOND, 1)))
-                                    victime.getWorld().dropItemNaturally(victime.getLocation(), item);
-
-                                if (item.isSimilar(new ItemStack(Material.EMERALD, 1)))
-                                    victime.getWorld().dropItemNaturally(victime.getLocation(), item);
-                            }
-                        }catch(Exception e){
-
-                        }
-
-                        mineralcontest.plugin.getGame().getArene().getDeathZone().add(victime);
+                        PlayerUtils.killPlayer(victime);
 
                     }
                 }

@@ -15,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class PlayerUtils {
 
@@ -136,6 +139,10 @@ public class PlayerUtils {
         return 0;
     }
 
+
+    // Appelé lorsqu'un joueur meurs et qu'il était dans la deathzone par exemple
+    // On commence par le supprimé
+    // Et on le remet
     public static void resetPlayerDeathZone(Player joueur) {
 
         for(CouplePlayer infoJoueur : mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayers()) {
@@ -153,4 +160,35 @@ public class PlayerUtils {
     }
 
 
+    public static void killPlayer(Player player) {
+
+        // On récupère l'inventaire du joueur
+        List<ItemStack> inventaire = new LinkedList<>();
+        for(ItemStack item : player.getInventory().getContents())
+            if(item != null)
+                inventaire.add(item);
+
+        // On définit un itérateur pour parcourir la liste des items à drop
+        ListIterator<ItemStack> iterateur = inventaire.listIterator();
+
+        while(iterateur.hasNext()) {
+            ItemStack item = iterateur.next();
+
+            // Liste des items à drop
+            LinkedList<Material> item_a_drop = new LinkedList<Material>();
+            item_a_drop.add(Material.IRON_INGOT);
+            item_a_drop.add(Material.GOLD_INGOT);
+            item_a_drop.add(Material.DIAMOND);
+            item_a_drop.add(Material.EMERALD);
+
+            // Si l'item actuelle n'est pas dans la liste, on le supprime de la liste de drop
+            if(!item_a_drop.contains(item.getType())){
+                iterateur.remove();
+            }
+        }
+
+        // On l'ajoute à la deathzone
+        mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
+
+    }
 }

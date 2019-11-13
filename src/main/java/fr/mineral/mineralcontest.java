@@ -5,6 +5,7 @@ import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Core.Game;
 import fr.mineral.Events.*;
 
+import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Save.FileToGame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,9 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
 
-    /*
-        TODO: CVAR
-     */
 
     public String versionRequired = "1.14.4";
     public static boolean debug = false;
@@ -73,6 +71,29 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     }
 
 
+    private void loadConfig() {
+
+
+        getConfig().options().copyDefaults(true); // Reset le fichier de config à chaque fois
+        initConfig();
+        Bukkit.getLogger().info(mineralcontest.prefix + "Chargement de la configuration ...");
+
+    }
+
+    private void initConfig() {
+        // Si on a pas encore save le allowSharing
+        if(!getConfig().isSet("config.metrics.allowSharing"))
+            SendInformation.enable();
+        else {
+            boolean allowSharing = (boolean) getConfig().get("config.metrics.allowSharing");
+
+            if(allowSharing)
+                SendInformation.enable();
+            else
+                SendInformation.disable();
+        }
+    }
+
     public boolean isVersionCompatible() {
         String version = Bukkit.getBukkitVersion();
 
@@ -127,6 +148,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         this.getGame().init();
 
+        // On lit la config
+        loadConfig();
+
 
         // Register les commands
         getCommand("start").setExecutor(new StartGameCommand());
@@ -143,6 +167,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_diamond_score").setExecutor(new mp_diamond_score());
         getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
         getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
+        getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
+
         getCommand("join").setExecutor(new JoinCommand());
         //getCommand("setup").setExecutor(new SetupCommand());
         //getCommand("valider").setExecutor(new ValiderCommand());

@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Equipe;
 import fr.mineral.Utils.CouplePlayerTeam;
+import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,9 +19,8 @@ public class PlayerJoin implements Listener {
 
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         Player p = event.getPlayer();
-
 
         // SI la game n'a pas démarré et que tout le monde est connecté
         if(!mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getServer().getOnlinePlayers().size() == mineralcontest.teamMaxPlayers * 3){
