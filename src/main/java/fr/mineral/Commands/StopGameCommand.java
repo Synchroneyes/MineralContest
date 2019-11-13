@@ -14,7 +14,11 @@ public class StopGameCommand implements CommandExecutor {
                 // On est jamais trop prudent ...
                 if(mineralcontest.plugin.getGame().isGameStarted()) {
                     mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + "La partie a été arrêté par un ADMIN !");
-                    mineralcontest.plugin.getGame().terminerPartie();
+                    try {
+                        mineralcontest.plugin.getGame().terminerPartie();
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     sender.sendMessage(mineralcontest.prefixErreur + "La partie n'est pas encore démarrée.");
                 }

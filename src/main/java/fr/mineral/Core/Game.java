@@ -3,6 +3,7 @@ package fr.mineral.Core;
 import fr.mineral.Core.Arena.Arena;
 import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.Utils.CouplePlayerTeam;
+import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -210,18 +211,32 @@ public class Game implements Listener {
                                 GamePaused = false;
                             }else {
                                 // Début de partie
-                                if(tempsPartie == DUREE_PARTIE * 60) online.setHealth(20);
-                                if(tempsPartie == DUREE_PARTIE * 60) online.setGameMode(GameMode.SURVIVAL);
-                                if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
-                                if(tempsPartie == DUREE_PARTIE * 60) PlayerUtils.givePlayerBaseItems(online);
-                                if(tempsPartie == DUREE_PARTIE * 60) online.sendTitle(ChatColor.GOLD + "Go go go !", "", 0, 20*5, 0);
-                                if(tempsPartie != DUREE_PARTIE * 60) online.sendTitle("La partie a " + ChatColor.BLUE  + "repris !", "", 0, 20*5, 0);
-                                online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
-                                try {
-                                    if(tempsPartie == DUREE_PARTIE * 60) online.teleport(getPlayerTeam(online).getHouseLocation());
+                                if(tempsPartie == DUREE_PARTIE * 60) {
 
-                                }catch (Exception e) {
-                                    e.printStackTrace();
+                                    online.setHealth(20);
+                                    online.setGameMode(GameMode.SURVIVAL);
+                                    online.getInventory().clear();
+                                    PlayerUtils.givePlayerBaseItems(online);
+                                    online.sendTitle(ChatColor.GOLD + "Go go go !", "", 0, 20*5, 0);
+
+
+                                    // On TP le joueur dans sa maison
+                                    try {
+                                        online.teleport(getPlayerTeam(online).getHouseLocation());
+
+                                        // METRIC
+                                        // On envoie les informations de la partie
+                                        SendInformation.sendGameStartedData();
+
+
+                                    }catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else {
+                                    // La partie reprend
+                                    online.sendTitle("La partie a " + ChatColor.BLUE  + "repris !", "", 0, 20*5, 0);
+                                    online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
                                 }
                             }
                         }
@@ -251,22 +266,21 @@ public class Game implements Listener {
                         // La game est en cours
                         // Si le temps atteins 0, alors on arrête la game
 
-
-                        if(tempsPartie == 0) {
-                            terminerPartie();
-                        }
-
-                        // On gère la deathzone
                         try {
+
+                            if(tempsPartie == 0) {
+                                    terminerPartie();
+                            }
+
+                            // On gère la deathzone
                             arene.getDeathZone().reducePlayerTimer();
-                        } catch (Exception e) {
+
+
+                        }catch (Exception e) {
                             e.printStackTrace();
                         }
-
                         // Si le temps n'est pas à zéro, on continue
                         if(tempsPartie > 0) tempsPartie--;
-
-                        // On s'occupe du coffre
 
                     }
                 }
@@ -299,7 +313,7 @@ public class Game implements Listener {
         mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Score de l'équipe " + teamBleu.getCouleur() + teamBleu.getNomEquipe() + ChatColor.WHITE + ": " + teamBleu.getScore() + " points.");
     }
 
-    private void afficherGagnant() {
+    private Equipe afficherGagnant() {
         Equipe[] equipes = new Equipe[3];
         equipes[0] = teamBleu;
         equipes[1] = teamRouge;
@@ -317,7 +331,7 @@ public class Game implements Listener {
         }
 
         mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "L'équipe " + equipes[index].getCouleur() + equipes[index].getNomEquipe() + ChatColor.WHITE + " remporte la partie avec " + equipes[index].getScore());
-
+        return equipes[index];
     }
 
     public Equipe getPlayerTeam(Player j) {
@@ -328,7 +342,7 @@ public class Game implements Listener {
         return null;
     }
 
-    public void terminerPartie() {
+    public void terminerPartie() throws Exception {
         this.GamePaused = false;
         this.GameStarted = false;
 
@@ -337,7 +351,16 @@ public class Game implements Listener {
         // ON affiche le score des équipes
         this.afficherScores();
         // On affiche l'équipe gagnante
-        this.afficherGagnant();
+        // Et on récupère le gagnant
+        Equipe gagnant = this.afficherGagnant();
+
+
+        for(Player online : Bukkit.getServer().getOnlinePlayers()) {
+            if(getPlayerTeam(online).equals(gagnant))
+                PlayerUtils.setFirework(online, gagnant.toColor());
+        }
+
+        SendInformation.sendGameEndedData();
     }
 
     public void pauseGame() {

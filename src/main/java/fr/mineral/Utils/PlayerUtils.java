@@ -5,13 +5,38 @@ import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.block.data.type.Fire;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Collection;
 
 public class PlayerUtils {
+
+    public static void setFirework(Player joueur, Color couleur) {
+        Firework firework = (Firework) joueur.getWorld().spawn(joueur.getLocation(), Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+        // On ajoute un effet
+        fireworkMeta.addEffect(FireworkEffect.builder()
+                .flicker(true)
+                .trail(true)
+                .withColor(couleur)
+                .withFade(Color.WHITE)
+                .build()
+
+        );
+
+        fireworkMeta.setPower(0);
+        firework.setFireworkMeta(fireworkMeta);
+
+
+    }
 
     public static boolean isPlayerInDeathZone(Player joueur) {
         for(CouplePlayer infoJoueur : mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayers())

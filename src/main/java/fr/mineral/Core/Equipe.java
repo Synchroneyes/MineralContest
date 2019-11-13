@@ -3,10 +3,7 @@ package fr.mineral.Core;
 import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Utils.AutomaticDoors;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -120,6 +117,19 @@ public class Equipe {
 
     public ChatColor getCouleur() {
         return this.couleur;
+    }
+
+    public Color toColor() {
+        switch(couleur) {
+            case RED:
+                return Color.RED;
+            case BLUE:
+                return Color.BLUE;
+            case YELLOW:
+                return Color.YELLOW;
+        }
+
+        return Color.WHITE;
     }
 
     public void setHouseLocation(Location houseLocation){

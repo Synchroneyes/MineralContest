@@ -2,7 +2,6 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Equipe;
 import fr.mineral.Utils.CouplePlayerTeam;
-import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.server.MapInitializeEvent;
+
 
 
 public class PlayerJoin implements Listener {

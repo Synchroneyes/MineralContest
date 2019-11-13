@@ -99,7 +99,7 @@ public class Votemap {
         return true;
     }
 
-    private String getWinnerBiome() {
+    public String getWinnerBiome() {
         int[] valeurs = new int[6];
         valeurs[0] = voteNeige;
         valeurs[1] = voteDesert;
