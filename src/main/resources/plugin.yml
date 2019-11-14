@@ -1,12 +1,12 @@
 name: MineralContest
 version: ${project.version}
 main: fr.mineral.mineralcontest
-api-version: 1.13
+api-version: 1.14.4
 prefix: MINERALC
 load: STARTUP
 authors: [Groupe6]
 description: Plugin gamemode Mineral Contest
-website: http://synchroneyes.fr
+website: http://mineral.synchroneyes.fr
 commands:
   start:
     description: Démarre une partie
@@ -39,35 +39,12 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  setup:
-    description: Permet de configurer la partie
-    use: /setup
-    permission: admin
-    permission-message: you do not have the permission
-
-  valider:
-    description: Permet de valider un choix
-    use: /valider
-    permission: admin
-    permission-message: you do not have the permission
-
-  loadWorld:
-    description: Permet de charger un monde
-    use: /load <world>
-    permission: admin
-    permission-message: you do not have the permission
-
   vote:
     description: Permet de voter pour un monde
     use: /vote <worldId>
     permission:
     permission-message: you do not have the permission
 
-  saveWorld:
-    description: Permet de sauvegarder un monde
-    use: /save <worldName>
-    permission: admin
-    permission-message: you do not have the permission
 
   arene:
     description: Permet de se teleporter vers l'arene
@@ -108,6 +85,12 @@ commands:
   mp_team_max_players:
     description: Permet de choisir le nombre de personne par équipe
     use: /mp_teal_max_players <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_enable_metrics:
+    description: Permet d'activer ou non les statistiques
+    use: /mp_enable_metrics <1 ou 0>
     permission: admin
     permission-message: you do not have the permission
 
