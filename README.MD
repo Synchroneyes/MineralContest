@@ -1,4 +1,5 @@
-# MineralContest
+# MineralContest - [Site web](http://mineral.synchroneyes.fr)
+
 
 Ce mode de jeu a probablement été inventé par l'équipe de Squeezie, je ne m'avancerai pas sur ça.
 Les règles du jeu sont les suivantes:
