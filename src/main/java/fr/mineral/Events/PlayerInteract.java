@@ -1,17 +1,13 @@
 package fr.mineral.Events;
 
-import fr.mineral.Utils.AutomaticDoors;
-import fr.mineral.Utils.Radius;
+import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class PlayerInteract implements Listener {
     private static float saturation = 1;

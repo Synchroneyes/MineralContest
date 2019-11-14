@@ -9,7 +9,7 @@ import java.net.InetAddress;
 public class SendInformation {
 
     private static boolean enabled = true;
-    private static String ApiServerURL = "http://127.0.0.1:8000/api/metrics";
+    private static String ApiServerURL = "http://mineral.synchroneyes.fr/api/metrics";
 
     public static void enable() {
         enabled = true;

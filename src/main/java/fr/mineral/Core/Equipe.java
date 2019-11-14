@@ -1,7 +1,7 @@
 package fr.mineral.Core;
 
 import fr.mineral.Core.Arena.Coffre;
-import fr.mineral.Utils.AutomaticDoors;
+import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;

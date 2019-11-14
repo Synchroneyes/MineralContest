@@ -1,10 +1,10 @@
 package fr.mineral.Core;
 
 import fr.mineral.Core.Arena.Arena;
-import fr.mineral.Utils.AutomaticDoors;
-import fr.mineral.Utils.CouplePlayerTeam;
+import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
-import fr.mineral.Utils.PlayerUtils;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;

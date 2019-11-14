@@ -1,8 +1,8 @@
 package fr.mineral.Core.Arena.Zones;
 
 import fr.mineral.Core.Equipe;
-import fr.mineral.Utils.CouplePlayer;
-import fr.mineral.Utils.PlayerUtils;
+import fr.mineral.Utils.Player.CouplePlayer;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

@@ -1,6 +1,6 @@
 package fr.mineral.Core;
 
-import fr.mineral.Utils.CouplePlayer;
+import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;

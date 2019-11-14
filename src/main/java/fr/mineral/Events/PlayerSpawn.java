@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Utils.PlayerUtils;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

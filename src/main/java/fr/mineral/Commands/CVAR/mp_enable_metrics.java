@@ -29,7 +29,7 @@ public class mp_enable_metrics implements CommandExecutor {
                     nfe.printStackTrace();
                     sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
                 }
-                
+
             } else {
                 sender.sendMessage("Usage: /mp_enable_metrics <1 ou 0>");
             }

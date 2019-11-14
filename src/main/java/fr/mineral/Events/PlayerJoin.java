@@ -1,8 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Equipe;
-import fr.mineral.Utils.CouplePlayerTeam;
-import fr.mineral.Utils.Metric.SendInformation;
+import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
