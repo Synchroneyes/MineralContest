@@ -30,11 +30,12 @@ switch <player> <rouge | bleu | jaune> # Permet de mettre un joueur dans une éq
 
 ## Installation
 
-1. Télécharger le fichier [gamemode.zip](https://github.com/jaunefra/MineralContest/releases) 
-2. Extraire l'archive
-3. Glisser le dossier "world" dans le dossier du serveur
-4. Glisser  le fichier .jar dans le dossier plugin
+1. Télécharger la map http://mineral.synchroneyes.fr/
+2. Glisser le dossier la map dans le dossier du serveur et le renommer si necessaire en "world"
+3. Télécharger le fichier jar MineralContest-1.0.jar
+4. Glisser le fichier .jar dans le dossier plugin
 5. Lancer le jeu
+6. Have fun !
 
 ## Librairies externes
 [JSON.org](https://stleary.github.io/JSON-java/)
