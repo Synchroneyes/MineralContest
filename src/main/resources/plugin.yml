@@ -1,7 +1,7 @@
 name: MineralContest
 version: ${project.version}
 main: fr.mineral.mineralcontest
-api-version: 1.14.4
+api-version: 1.13
 prefix: MINERALC
 load: STARTUP
 authors: [Groupe6]
