@@ -45,3 +45,11 @@ switch <player> <rouge | bleu | jaune> # Permet de mettre un joueur dans une éq
 ## Auteurs
 [Synchroneyes](https://github.com/jaunefra)
 [Turtle](https://github.com/IliasElabbassi)
+
+
+___
+
+## A faire
+- Remplacer la lecture de fichier json en fichier yml
+- Ajouter la possibilité de créer ses propres map (déjà implémenter mais besoin de modification (plus de json, mais du yml))
+- Ajouter un système de langue
