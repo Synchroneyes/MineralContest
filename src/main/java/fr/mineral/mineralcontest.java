@@ -60,7 +60,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
 
     public static mineralcontest plugin;
-    public static int teamMaxPlayers = 1;
+    public static int teamMaxPlayers = 2;
     private Game partie;
 
     // Constructeur, on initialise les variables
@@ -103,9 +103,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         String requiredV[] = versionRequired.split(".");
 
-        // 1.14.4
-        // 1.14.5
-        //
         for(int i = 0; i < currentV.length; i++) {
 
             if(Integer.parseInt(currentV[i]) < Integer.parseInt(requiredV[i]))
