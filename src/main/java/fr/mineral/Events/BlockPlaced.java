@@ -17,7 +17,7 @@ public class BlockPlaced implements Listener {
             try {
                 if(Radius.isBlockInRadius(event.getBlock().getLocation(), mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), mineralcontest.plugin.getGame().getArene().arenaRadius)) {
                     //event.setCancelled(true);
-                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + "Vous ne pouvez pas placer de block dans cette zone.");
+                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("cant_break_block_here"));
                 }
             }catch(Exception e) {
                 e.printStackTrace();
@@ -26,7 +26,7 @@ public class BlockPlaced implements Listener {
 
         } else if(!Setup.premierLancement) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(mineralcontest.prefixPrive + "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie");
+            event.getPlayer().sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("cant_interact_block_pre_game"));
         }
     }
 }

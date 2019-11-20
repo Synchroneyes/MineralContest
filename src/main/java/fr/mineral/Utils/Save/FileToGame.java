@@ -25,7 +25,7 @@ public class FileToGame {
 
         for(Player online : Bukkit.getOnlinePlayers()) {
             try {
-                online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
+                //online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
                 online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
             }catch(Exception e) {
                 e.printStackTrace();

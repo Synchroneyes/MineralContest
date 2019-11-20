@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,14 +14,14 @@ public class StopGameCommand implements CommandExecutor {
             if(sender.isOp()) {
                 // On est jamais trop prudent ...
                 if(mineralcontest.plugin.getGame().isGameStarted()) {
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + "La partie a été arrêté par un ADMIN !");
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate((String) mineralcontest.LANG.get("game_over")));
                     try {
                         mineralcontest.plugin.getGame().terminerPartie();
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    sender.sendMessage(mineralcontest.prefixErreur + "La partie n'est pas encore démarrée.");
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_not_started")));
                 }
             }
         }

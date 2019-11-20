@@ -21,7 +21,7 @@ public class Coffre {
 
     public Location getPosition() throws Exception {
         if(this.position == null)
-            throw new Exception(mineralcontest.ERROR_CHEST_NOT_DEFINED);
+            throw new Exception("chestNotDefined");
         return this.position;
     }
 

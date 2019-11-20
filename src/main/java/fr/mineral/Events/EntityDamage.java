@@ -1,8 +1,8 @@
 package fr.mineral.Events;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +23,7 @@ public class EntityDamage implements Listener {
 
                 PlayerUtils.killPlayer(victime);
 
-                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName() + ChatColor.WHITE + " est décédé.");
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("player_died")));
 
             }
         }
@@ -47,7 +47,7 @@ public class EntityDamage implements Listener {
                         // Si c'est un joueur qui a tué notre victime
                         if(event.getDamager() instanceof Player) {
                             Player attaquant = (Player) event.getDamager();
-                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + mineralcontest.plugin.getGame().getPlayerTeam(attaquant).getCouleur() + attaquant.getDisplayName() + ChatColor.WHITE + " a tué " + mineralcontest.plugin.getGame().getPlayerTeam(victime).getCouleur() + victime.getDisplayName());
+                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("player_killed"), victime, attaquant));
                             mineralcontest.plugin.getGame().killCounter++;
                         }
 

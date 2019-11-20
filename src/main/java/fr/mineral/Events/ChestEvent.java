@@ -126,9 +126,6 @@ public class ChestEvent implements Listener {
         Player joueur = (Player) event.getPlayer();
         if(ChestWithCooldown.coffre != null && Radius.isBlockInRadius(ChestWithCooldown.coffre.getPosition(), joueur.getLocation(), 5)) {
             ChestWithCooldown.coffre.open((Player) event.getPlayer());
-            //joueur.sendMessage("OKAY BITCH");
-            //joueur.closeInventory();
-
         }
     }
 }

@@ -2,11 +2,11 @@ package fr.mineral.Core.Arena;
 
 import fr.mineral.Core.Equipe;
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -135,12 +135,12 @@ public class Arena {
 
     public void enableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle(ChatColor.GREEN + "Coffre d'arène apparu !", "Vous pouvez utiliser le /arene pour vous y téléporter", 20, 20*3, 20);
+            online.sendTitle(ChatColor.GREEN + Lang.translate((String) mineralcontest.LANG.get("arena_chest_spawned")), Lang.translate((String) mineralcontest.LANG.get("arena_teleport_now_enabled")), 20, 20*3, 20);
         this.allowTeleport = true;
     }
     public void disableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle(ChatColor.RED + "Téléportation désactivée", "Vous ne pouvez plus utiliser le /arene", 20, 20*3, 20);
+            online.sendTitle("", (String) mineralcontest.LANG.get("arena_teleport_now_disabled"), 20, 20*3, 20);
 
         this.allowTeleport = false;
     }
@@ -153,7 +153,7 @@ public class Arena {
     }
 
     public void setTeleportSpawn(Location z) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + "Ajout de la position de téléportation vers l'arène");
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("arena_spawn_added"));
         this.teleportSpawn = z;
     }
 
@@ -161,7 +161,7 @@ public class Arena {
     public void setCoffre(Location position) {
         this.coffre = new ChestWithCooldown(position);
         this.coffre.setPosition(position);
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + "Position du coffre d'arene ajoutée");
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("arena_chest_added"));
 
     }
 
@@ -172,21 +172,21 @@ public class Arena {
 
     public void teleportPlayerToArena(Player joueur) throws Exception {
         if(this.getTeleportSpawn() == null) {
-            throw new Exception("La zone de spawn de l'arene n'est pas defini");
+            throw new Exception("ArenaTeleportZoneNotAdded");
         }
 
         Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
 
         if(team == null) {
-            throw new Exception("Impossible de téléporter un joueur sans équipe.");
+            throw new Exception((String) mineralcontest.LANG.get("cant_teleport_player_without_team"));
         }
 
         for(Player membre : team.getJoueurs()) {
             if(allowTeleport){
-                membre.sendMessage(mineralcontest.prefixPrive + mineralcontest.ARENA_TELEPORTING);
+                membre.sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("arena_now_teleporting"));
                 membre.teleport(getTeleportSpawn());
             } else {
-                membre.sendMessage(mineralcontest.prefixPrive + mineralcontest.ARENA_TELEPORT_DISABLED);
+                membre.sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("arena_teleport_disabled"));
             }
         }
     }

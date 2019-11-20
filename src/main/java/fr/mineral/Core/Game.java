@@ -55,7 +55,7 @@ public class Game implements Listener {
 
     // Temps en minute
     private int tempsPartie = 60 * DUREE_PARTIE;
-    private int PreGameTimeLeft = 10;
+    public int PreGameTimeLeft = 10;
     public static int SCORE_IRON = 10;
     public static int SCORE_GOLD = 50;
     public static int SCORE_DIAMOND = 150;
@@ -397,12 +397,11 @@ public class Game implements Listener {
     public boolean demarrerPartie() throws Exception {
 
         if(isGameStarted()) {
-            throw new Exception(mineralcontest.plugin.ERROR_GAME_ALREADY_STARTED);
+            throw new Exception((String) mineralcontest.LANG.get("game_already_started"));
         }
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.GAME_STARTING);
+        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + (String) mineralcontest.LANG.get("game_starting"));
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.GAME_STARTING_CHECKS);
         // Pour démarrer la partie, il faut:
         // Tous les spawn maison défini
         // Spawn coffre arene définit
@@ -411,7 +410,7 @@ public class Game implements Listener {
 
         // SPAWN MAISON
         if(this.teamBleu.getHouseLocation() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison bleu: " + ChatColor.RED + "X");
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] Spawn maison bleu: " + ChatColor.RED + "X");
             return false;
         }
 
@@ -445,7 +444,7 @@ public class Game implements Listener {
 
         // SPAWN COFFRE ARENE
         if(this.arene.getCoffre().getPosition() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre arene: " + ChatColor.RED + "X");
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn coffre arene: " + ChatColor.RED + "X");
             return false;
         }
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
@@ -454,7 +453,7 @@ public class Game implements Listener {
 
         // SPAWN ARENE
         if(this.arene.getTeleportSpawn() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn arene: " + ChatColor.RED + "X");
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn arene: " + ChatColor.RED + "X");
             return false;
         }
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn arene: " + ChatColor.GREEN + "OK");
@@ -478,7 +477,7 @@ public class Game implements Listener {
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Equipes pleines: " + ChatColor.GREEN + "OK");
 
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.GAME_SUCCESSFULLY_STARTED);
+        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "GAME_SUCCESSFULLY_STARTED");
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
 
 
@@ -509,8 +508,6 @@ public class Game implements Listener {
         // On démarre les portes
         mineralcontest.plugin.getGame().handleDoors();
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.GAME_SUCCESSFULLY_STARTED);
-
         return true;
 
     }
@@ -518,11 +515,11 @@ public class Game implements Listener {
     // Créer les equipes aléatoirement
     public void randomizeTeam() throws Exception {
         if(isGameStarted()) {
-            throw new Exception(mineralcontest.plugin.ERROR_GAME_ALREADY_STARTED);
+            throw new Exception("gameAlreadyStarted");
         }
 
         if(mineralcontest.teamMaxPlayers*3 != mineralcontest.plugin.getServer().getOnlinePlayers().size())
-            throw new Exception(mineralcontest.plugin.ERROR_NOT_ENOUGHT_PLAYER);
+            throw new Exception("NotEnoughtPlayer");
 
         ArrayList<String> team = new ArrayList<String>();
 
@@ -530,7 +527,7 @@ public class Game implements Listener {
         mineralcontest.plugin.getServer().broadcastMessage("================");
 
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.RANDOMIZE_TEAM_BEGIN);
+        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "randomizeTeamBegin");
         for(int i = 0; i < mineralcontest.teamMaxPlayers; i++){
             team.add("jaune");
             team.add("rouge");
@@ -577,7 +574,7 @@ public class Game implements Listener {
             indexJoueur++;
         }
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + mineralcontest.plugin.RANDOMIZE_TEAM_END);
+        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "randomizeTeamEnd");
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("================");
 
     }

@@ -1,8 +1,8 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Core.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +20,10 @@ public class AreneTeleportCommand implements CommandExecutor {
 
                     for(Player membre : team.getJoueurs()) {
                         membre.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
-                        membre.sendMessage(mineralcontest.prefixPrive + "Vous avez été téléporté vers l'arène");
+                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate((String) mineralcontest.LANG.get("arena_teleporting")));
                     }
                 } else {
-                    joueur.sendMessage(mineralcontest.prefixErreur + "Impossible de se teleporter pour le moment");
+                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("arena_teleport_disabled")));
                 }
             }
         }

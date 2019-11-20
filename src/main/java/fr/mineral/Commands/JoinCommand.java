@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,7 +59,7 @@ public class JoinCommand implements CommandExecutor {
                     return true;
                 }
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + "Les équipes seront attribué de manière aléatoire. Pour changer ça, l'admin doit entrer la commande: mp_randomize_team 0");
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("admin_team_will_be_randomized")));
                 return true;
             }
         }

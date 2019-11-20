@@ -19,7 +19,6 @@ public class PlayerSpawn implements Listener {
             // Si la game est démarrée
             Player joueur = e.getPlayer();
             // Si le joueur était dans la deathzone
-
             PlayerUtils.resetPlayerDeathZone(joueur);
 
         }

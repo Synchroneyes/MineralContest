@@ -1,6 +1,7 @@
 package fr.mineral.Utils.Player;
 
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
@@ -78,13 +79,13 @@ public class PlayerUtils {
 
             // Si on vote
             if(voteMapEnabled) {
-                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + "Vote pour le biome à jouer", " " ,
-                        "0 - Neige (" + mineralcontest.plugin.getGame().votemap.voteNeige + " vote(s))",
-                        "1 - Desert (" + mineralcontest.plugin.getGame().votemap.voteDesert + " vote(s))",
-                        "2 - Foret (" + mineralcontest.plugin.getGame().votemap.voteForet + " vote(s))",
-                        "3 - Plaine (" + mineralcontest.plugin.getGame().votemap.votePlaine + " vote(s))",
-                        "4 - Montagne (" + mineralcontest.plugin.getGame().votemap.voteMontagne + " vote(s))",
-                        "5 - Marecage (" + mineralcontest.plugin.getGame().votemap.voteMarecage + " vote(s))");
+                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + (String) mineralcontest.LANG.get("vote_title"), " " ,
+                        "0 - " + (String) mineralcontest.LANG.get("vote_snow") + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " "+ (String) mineralcontest.LANG.get("vote_count"),
+                        "1 - "+ (String) mineralcontest.LANG.get("vote_desert") +" (" + mineralcontest.plugin.getGame().votemap.voteDesert + " "+ (String) mineralcontest.LANG.get("vote_count"),
+                        "2 - "+ (String) mineralcontest.LANG.get("vote_forest") +" (" + mineralcontest.plugin.getGame().votemap.voteForet + (String) mineralcontest.LANG.get("vote_count"),
+                        "3 - "+ (String) mineralcontest.LANG.get("vote_plain") +" (" + mineralcontest.plugin.getGame().votemap.votePlaine + (String) mineralcontest.LANG.get("vote_count"),
+                        "4 - "+ (String) mineralcontest.LANG.get("vote_mountain") +" (" + mineralcontest.plugin.getGame().votemap.voteMontagne + (String) mineralcontest.LANG.get("vote_count"),
+                        "5 - "+ (String) mineralcontest.LANG.get("vote_swamp") +" (" + mineralcontest.plugin.getGame().votemap.voteMarecage + (String) mineralcontest.LANG.get("vote_count"));
 
             } else {
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
@@ -92,10 +93,10 @@ public class PlayerUtils {
                 if (!gameStarted || isPreGame) {
                     // Si le joueur n'a pas d'équipe
                     if (team == null) {
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_you_are_not_in_team.toString());
                     } else {
                         // Le joueur a une équipe
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_WAITING_START, "", team.getCouleur() + "Equipe " + team.getNomEquipe());
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_waiting_start"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_name_no_score"), team));
                     }
 
                 } else {
@@ -103,23 +104,14 @@ public class PlayerUtils {
                     if (gamePaused) {
                         // Pas de team
                         if (team == null) {
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_paused"), "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
                         } else {
                             // Le joueur a une équipe
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", mineralcontest.GAME_PAUSED, "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_paused"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_score"), team));
                         }
                     } else {
                         // Game pas en pause
-                        // Si le joueur est mort
-                        if(PlayerUtils.isPlayerInDeathZone(online)) {
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points", " ", ChatColor.GOLD + "Vous allez réapparaitre dans " + PlayerUtils.getDeathZoneTime(online) + " secondes");
-
-                        } else {
-                            // joueur pas mort
-                            // Le joueur a une équipe
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest   ", " ", "Temps restant: " + mineralcontest.plugin.getGame().getTempsRestant(), "", team.getCouleur() + "Equipe " + team.getNomEquipe(), " ", "Score: " + team.getScore() + " points");
-
-                        }
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_time_left"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_score"), team));
                     }
                 }
             }

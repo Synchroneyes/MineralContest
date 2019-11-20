@@ -1,8 +1,8 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Core.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,8 +15,8 @@ public class ResumeGameCommand implements CommandExecutor {
             if(mineralcontest.plugin.getGame().isGamePaused() && teamNonPleine == null) {
                 mineralcontest.plugin.getGame().resumeGame();
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + "Cette commande n'est pas disponible: La partie n'est pas en pause ou une équipe n'est pas pleine");
-                if(teamNonPleine != null) sender.sendMessage(mineralcontest.prefixErreur + "L'équipe " + teamNonPleine.getCouleur() + teamNonPleine.getNomEquipe() + ChatColor.WHITE + " n'est pas pleine.");
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("error_when_resume")));
+                if(teamNonPleine != null) sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("admin_team_non_empty"), teamNonPleine));
             }
         }
         return false;

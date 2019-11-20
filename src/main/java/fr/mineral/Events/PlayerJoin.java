@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -27,11 +28,11 @@ public class PlayerJoin implements Listener {
         }
 
         if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-            p.kickPlayer("Une partie est déjà en cours");
+            p.kickPlayer((String) mineralcontest.LANG.get("kick_game_already_in_progress"));
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                 if(online.isOp())
-                    online.sendMessage(mineralcontest.prefixAdmin + "Le joueur " + p.getDisplayName() + " a tenté de se connecter alors qu'une partie est déjà en cours");
-            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + "Le joueur " + p.getDisplayName() + " a tenté de se connecter alors qu'une partie est déjà en cours");
+                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate((String) mineralcontest.LANG.get("admin_played_tried_to_login"), p));
+            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate((String) mineralcontest.LANG.get("admin_played_tried_to_login"), p));
         }
 
 
@@ -44,20 +45,10 @@ public class PlayerJoin implements Listener {
 
                 if(block == null || !block.getType().toString().equalsIgnoreCase("iron_block")){
                     ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Mauvaise map chargée, merci de télécharger la bonne map. Disponible sur le github");
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "http://github.com/jaunefra/mineralcontest");
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Désactivation du plugin ...");
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("bad_map_loaded"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("github_link"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("plugin_shutdown"));
                     Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
-                }else{
-
-                    /*if(!mineralcontest.isGameInitialized) {
-                        FileToGame fg = new FileToGame();
-                        fg.readFile(mineralcontest.currentWorld);
-
-                        Bukkit.getWorld("world").setAutoSave(false);
-                        mineralcontest.isGameInitialized = true;
-                    }*/
-
                 }
 
 

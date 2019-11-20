@@ -10,7 +10,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerInteract implements Listener {
-    private static float saturation = 1;
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -39,7 +38,7 @@ public class PlayerInteract implements Listener {
 
         if(!mineralcontest.plugin.getGame().isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(mineralcontest.prefixPrive + "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie");
+                event.getPlayer().sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("cant_interact_block_pre_game"));
         }
 
 

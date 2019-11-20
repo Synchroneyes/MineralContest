@@ -3,60 +3,44 @@ package fr.mineral;
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Core.Game;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
 
 import fr.mineral.Utils.Metric.SendInformation;
-import fr.mineral.Utils.Save.FileToGame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
 
 
     public String versionRequired = "1.14.4";
     public static boolean debug = false;
-    public static String currentWorld = "world2";
 
 
-    public static String prefix = ChatColor.BLUE + "[MINERALC] " + ChatColor.WHITE;
-    public static String prefixErreur = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ERREUR] " + ChatColor.WHITE;
-    public static String prefixGlobal = ChatColor.BLUE + "[MINERALC] " + ChatColor.GREEN + "[GLOBAL] " + ChatColor.WHITE;
-    public static String prefixPrive = ChatColor.BLUE + "[MINERALC] " + ChatColor.YELLOW + "[PRIVE] " + ChatColor.WHITE;
-    public static String prefixAdmin = ChatColor.BLUE + "[MINERALC] " + ChatColor.RED + "[ADMIN] " + ChatColor.WHITE;
+    public static String prefix;
+    public static String prefixErreur;
+    public static String prefixGlobal;
+    public static String prefixPrive;
+    public static String prefixAdmin;
 
-    public static String ERROR_GAME_ALREADY_STARTED = "La partie à déjà commence";
-    public static String ERROR_ALL_TEAM_NOT_FULL = "Au moins une équipe n'est pas complète. Il faut " + mineralcontest.teamMaxPlayers + " joueur(s) par équipe.";
-    public static String ERROR_NOT_ENOUGHT_PLAYER = "Il n'y a pas assez de joueur connecté";
-    public static String ERROR_PLAYER_NOT_IN_TEAM = "Vous devez être dans une équipe";
-    public static String ERROR_ARENA_NOT_DEFINED = "Le spawn pour l'arène n'a pas encore été ajouté";
-    public static String ERROR_GAME_NOT_STARTED = "La partie n'a pas encore démarrer.";
-    public static String ERROR_CHEST_NOT_DEFINED = "La position du coffre n'a pas été défini";
-
-    public static String GAME_SUCCESSFULLY_STARTED = "La partie vient de commencer";
-    public static String GAME_STARTING = "La partie va démarrer";
-    public static String GAME_PAUSED = "La partie est en pause";
-
-    public static String GAME_WAITING_START = "En attente du démarrage de la partie";
-
-    public static String ARENA_SPAWN_ADDED = "Le spawn pour l'arène a bien été ajouté";
-    public static String ARENA_TELEPORTING = "Téléportation vers l'arène.";
-    public static String ARENA_TELEPORT_DISABLED = "La téléportation vers l'arène n'est pas encore autorisée.";
-
-    public static String RANDOMIZE_TEAM_BEGIN = "Vous allez etre attribué à une equipe de manière aléatoire.";
-    public static String RANDOMIZE_TEAM_END = "Les équipes ont été crée !";
-
-    public static String GLOBAL_CHEST_SPAWNED = "Le coffre est apparu dans l'arène !";
-    public static String CHEST_DEFINED = "La position du coffre a bien été enregistrée";
-
-    public static String GAME_STARTING_CHECKS = "Démarage des vérifications ...";
 
     public static int playZoneRadius = 1000;
     public static boolean isGameInitialized = false;
 
+    public static YamlConfiguration LANG;
+    public static File LANG_FILE;
+
+    public static Logger log = Bukkit.getLogger();
 
 
     public static mineralcontest plugin;
@@ -68,15 +52,66 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         mineralcontest.plugin = this;
         this.partie = new Game();
 
+        prefix = Lang.title.toString() + ChatColor.WHITE;
+        prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE;
+        prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE;
+        prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE;
+        prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE;
+
+    }
+
+    public YamlConfiguration loadLang() throws IOException {
+
+
+        // Create a lang folder
+        InputStream defaultLang = getClass().getResourceAsStream("/lang/french.yml");
+
+        File folder = new File(getDataFolder() + File.separator + "lang");
+        if(! folder.exists())folder.mkdirs();
+
+        // Copy the default language (french)
+        InputStream is = getClass().getResourceAsStream("/lang/french.yml");
+        if(is == null)
+            log.severe("NULL");
+
+        File result = new File(folder + File.separator + "french.yml");
+
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(result);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = is.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+        finally{
+            if(outputStream != null) outputStream.close();
+        }
+
+        YamlConfiguration conf = YamlConfiguration.loadConfiguration(result);
+        for(Lang item:Lang.values()) {
+            if (conf.getString(item.getPath()) == null) {
+                conf.set(item.getPath(), item.getDefault());
+            }
+        }
+        Lang.setFile(conf);
+
+        try {
+            conf.save(result);
+        } catch(IOException e) {
+            log.log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
+            e.printStackTrace();
+        }
+        return conf;
     }
 
 
+
     private void loadConfig() {
-
-
         getConfig().options().copyDefaults(true); // Reset le fichier de config à chaque fois
         initConfig();
-        Bukkit.getLogger().info(mineralcontest.prefix + "Chargement de la configuration ...");
+        Bukkit.getLogger().info(mineralcontest.prefix + "LoadingCOnfig");
 
     }
 
@@ -121,6 +156,13 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     @Override
     public void onEnable() {
+
+        try {
+            loadLang();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Plugin startup logic
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
@@ -130,7 +172,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new MapInitialize(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
@@ -138,7 +179,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
 
 
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
@@ -157,7 +197,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
-        getCommand("loadWorld").setExecutor(new LoadWorldCommand());
         getCommand("mp_randomize_team").setExecutor(new mp_randomize_team());
         getCommand("mp_iron_score").setExecutor(new mp_iron_score());
         getCommand("mp_gold_score").setExecutor(new mp_gold_score());
@@ -165,14 +204,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
         getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
         getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
-
         getCommand("join").setExecutor(new JoinCommand());
-        //getCommand("setup").setExecutor(new SetupCommand());
-        //getCommand("valider").setExecutor(new ValiderCommand());
-        //getCommand("saveworld").setExecutor(new SaveWorldCommand());
-
-
-
 
 
 
@@ -190,36 +222,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         if(!isVersionCompatible()) {
             ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-            console.sendMessage(ChatColor.RED + "[MINERALC] [ERREUR] La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
+            console.sendMessage(ChatColor.RED + "[MINERALC] [ERREUR] Incompatible bukkit version, Version asked: " + versionRequired + ", current version: " + Bukkit.getBukkitVersion());
             //getServer().getLogger().info("La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
-
-
-        //getCommand("set").setExecutor(new SetCommand());
-        //getCommand("resume").setExecutor(new ResumeGameCommand());
-        //getCommand("setup").setExecutor(new SetupCommand());
-        //getCommand("valider").setExecutor(new ValiderCommand());
-
-        //getCommand("tprouge").setExecutor(new TestSetupCommand());
-        //getCommand("tpjaune").setExecutor(new TestSetupCommand());
-        //getCommand("tpbleu").setExecutor(new TestSetupCommand());
-        //getCommand("spawnarene").setExecutor(new TestSetupCommand());
-
-        //getCommand("ouvrir").setExecutor(new OpenDoor());
-        //getCommand("fermer").setExecutor(new OpenDoor());
-
-        //getCommand("cooldownchest").setExecutor(new SetCooldownChestCommand());
-
-        //getCommand("saveWorld").setExecutor(new SaveWorldCommand());
-
-
-
-
-
-
-
 
     }
 

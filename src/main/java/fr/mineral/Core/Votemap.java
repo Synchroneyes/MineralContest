@@ -1,5 +1,6 @@
 package fr.mineral.Core;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
@@ -11,7 +12,7 @@ import java.util.LinkedList;
 public class Votemap {
 
     private LinkedList<CouplePlayer> votant;
-    public String[] biomes = {"NEIGE", "DESERT", "FORET", "PLAINE", "MONTAGNE", "MARECAGE"};
+    public String[] biomes;
 
     public int voteNeige = 0;
     public int voteDesert = 0;
@@ -22,12 +23,11 @@ public class Votemap {
 
     public boolean voteEnabled = false;
 
-
     public void enableVote() {
         this.voteEnabled = true;
 
         for(Player online : Bukkit.getOnlinePlayers())
-            online.sendMessage(mineralcontest.prefixGlobal + "Le vote a démarré ! Veuillez voter pour votre biome préféré avec la commande /vote <numero biome>");
+            online.sendMessage(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("vote_started"));
     }
 
     public void disableVote() {
@@ -39,11 +39,18 @@ public class Votemap {
         voteMontagne = 0;
         voteMarecage = 0;
         for(Player online : Bukkit.getOnlinePlayers())
-            online.sendMessage(mineralcontest.prefixGlobal + "Le vote est terminé !");
+            online.sendMessage(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("vote_ended"));
     }
 
 
     public Votemap() {
+        biomes = new String[6];
+        biomes[0] = (String) Lang.vote_snow.toString();
+        biomes[1] = (String) Lang.vote_snow.toString();
+        biomes[2] = (String) Lang.vote_snow.toString();
+        biomes[3] = (String) Lang.vote_snow.toString();
+        biomes[4] = (String) Lang.vote_snow.toString();
+        biomes[5] = (String) Lang.vote_snow.toString();
         this.votant = new LinkedList<CouplePlayer>();
     }
 
@@ -56,25 +63,34 @@ public class Votemap {
         return false;
     }
 
+    public String getPlayerVote(Player joueur) {
+        if(havePlayerVoted(joueur))
+            for(CouplePlayer player : votant)
+                if(player.getJoueur().equals(joueur))
+                    return biomes[player.getValeur()];
+
+        return "no player vote";
+    }
+
     public boolean addPlayerVote(Player joueur, int numero_biome) {
 
         if(!voteEnabled) {
-            joueur.sendMessage(mineralcontest.prefixErreur + "Les votes ne sont pas actif");
+            joueur.sendMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("vote_not_enabled"));
             return false;
         }
 
         if(havePlayerVoted(joueur)) {
-            joueur.sendMessage(mineralcontest.prefixErreur + "Vous avez déjà voté");
+            joueur.sendMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("vote_already_voted"));
             return false;
         }
 
         if(numero_biome < 0 || numero_biome > biomes.length) {
-            joueur.sendMessage(mineralcontest.prefixErreur + "Ce biome n'existe pas");
+            joueur.sendMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get(""));
             return false;
         }
 
         this.votant.add(new CouplePlayer(joueur, numero_biome));
-        joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour le biome " + biomes[numero_biome]);
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate((String) mineralcontest.LANG.get("vote_you_have_voted_for"), joueur));
 
         switch(numero_biome) {
             case 0: voteNeige++;  break;
@@ -88,7 +104,7 @@ public class Votemap {
         if(allPlayerHaveVoted()){
             try {
                 FileToGame fg = new FileToGame();
-                fg.readFile(getWinnerBiome());
+                fg.readFile(getWinnerBiome(false));
                 disableVote();
             }catch(Exception e) {
                 e.printStackTrace();
@@ -99,7 +115,7 @@ public class Votemap {
         return true;
     }
 
-    public String getWinnerBiome() {
+    public String getWinnerBiome(boolean display) {
         int[] valeurs = new int[6];
         valeurs[0] = voteNeige;
         valeurs[1] = voteDesert;
@@ -116,7 +132,7 @@ public class Votemap {
                 index = i;
             }
         }
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le biome ayant gagné est: " + biomes[index].toLowerCase() + " avec " + max + " votes");
+        if(display) mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("vote_winning_biome")));
         return new String(biomes[index].toLowerCase());
     }
 

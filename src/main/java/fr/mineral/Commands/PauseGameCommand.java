@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,12 +12,12 @@ public class PauseGameCommand implements CommandExecutor {
         if(command.getName().equalsIgnoreCase("pause")) {
             if(mineralcontest.plugin.getGame().isGameStarted()) {
                 if(mineralcontest.plugin.getGame().isGamePaused()) {
-                    sender.sendMessage(mineralcontest.prefixErreur + "La partie est déjà en pause");
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_already_paused")));
                 } else {
                     mineralcontest.plugin.getGame().pauseGame();
                 }
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + "La partie n'est pas encore démarrée");
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_not_started")));
             }
         }
 
