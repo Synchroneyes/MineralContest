@@ -6,6 +6,7 @@ import fr.mineral.Core.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
 
+import fr.mineral.Translation.Language;
 import fr.mineral.Utils.Metric.SendInformation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,15 +53,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         mineralcontest.plugin = this;
         this.partie = new Game();
 
-        prefix = Lang.title.toString() + ChatColor.WHITE;
-        prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE;
-        prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE;
-        prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE;
-        prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE;
-
     }
 
-    public YamlConfiguration loadLang() throws IOException {
+    public void createLangFiles() throws IOException {
 
 
         // Create a lang folder
@@ -70,26 +65,40 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         if(! folder.exists())folder.mkdirs();
 
         // Copy the default language (french)
-        InputStream is = getClass().getResourceAsStream("/lang/french.yml");
-        if(is == null)
-            log.severe("NULL");
+        //InputStream is = getClass().getResourceAsStream("/lang/french.yml");
+        //if(is == null)
+            //log.severe("NULL");
 
-        File result = new File(folder + File.separator + "french.yml");
-
+        File langFile = null;
         OutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(result);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = is.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
+
+
+        for(Language item: Language.values()) {
+            if(item.getLanguageName() != null && !item.getLanguageName().contains("default")) {
+                InputStream is = getClass().getResourceAsStream("/lang/" + item.getLanguageName() + ".yml");
+                log.info(item.getLanguageName());
+                langFile = new File(folder + File.separator + item.getLanguageName() + ".yml");
+                try {
+                    outputStream = new FileOutputStream(langFile);
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+                    while ((read = is.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+                }
+                finally{
+                    if(outputStream != null) outputStream.close();
+                }
             }
         }
-        finally{
-            if(outputStream != null) outputStream.close();
-        }
 
-        YamlConfiguration conf = YamlConfiguration.loadConfiguration(result);
+    }
+
+    public void LoadLangFile(String lang) {
+        Bukkit.getLogger().info("Loading " + lang + " language");
+        Bukkit.broadcastMessage("Loading " + lang + " language");
+        File langFile = new File(getDataFolder() + File.separator + "lang" + File.separator + lang + ".yml");
+        YamlConfiguration conf = YamlConfiguration.loadConfiguration(langFile);
         for(Lang item:Lang.values()) {
             if (conf.getString(item.getPath()) == null) {
                 conf.set(item.getPath(), item.getDefault());
@@ -98,12 +107,26 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Lang.setFile(conf);
 
         try {
-            conf.save(result);
+            conf.save(langFile);
+            Bukkit.getLogger().info("Loaded " + lang + " language");
+            Bukkit.broadcastMessage("Loaded " + lang + " language");
+            prefix = Lang.title.toString() + ChatColor.WHITE;
+            prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE;
+            prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE;
+            prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE;
+            prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE;
+
+            getGame().getTeamRouge().setNomEquipe(Lang.red_team.toString());
+            getGame().getTeamJaune().setNomEquipe(Lang.yellow_team.toString());
+            getGame().getTeamBleu().setNomEquipe(Lang.blue_team.toString());
+
         } catch(IOException e) {
             log.log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
             e.printStackTrace();
         }
-        return conf;
+
+
+
     }
 
 
@@ -158,7 +181,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public void onEnable() {
 
         try {
-            loadLang();
+            createLangFiles();
+            LoadLangFile("english");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,6 +229,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
         getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
         getCommand("join").setExecutor(new JoinCommand());
+        getCommand("mp_set_language").setExecutor(new mp_set_language());
 
 
 

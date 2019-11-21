@@ -1,6 +1,7 @@
 package fr.mineral.Core;
 
 import fr.mineral.Core.Arena.Arena;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
@@ -397,10 +398,10 @@ public class Game implements Listener {
     public boolean demarrerPartie() throws Exception {
 
         if(isGameStarted()) {
-            throw new Exception((String) mineralcontest.LANG.get("game_already_started"));
+            throw new Exception(Lang.get("game_already_started"));
         }
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + (String) mineralcontest.LANG.get("game_starting"));
+        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + Lang.get("game_starting"));
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
         // Pour démarrer la partie, il faut:
         // Tous les spawn maison défini

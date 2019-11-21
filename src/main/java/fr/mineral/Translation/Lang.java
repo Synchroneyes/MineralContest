@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 
 public enum Lang {
 
-    title("title", "[" + ChatColor.GOLD + "Mineral" + ChatColor.BLUE + "Contest" + ChatColor.WHITE + "]"),
-    error("error", "Erreur"),
-    global("global", "Global"),
-    _private("private", "Privé"),
-    admin("admin", "Admin"),
+    title("title", "%white%[%gold%Mineral%blue%Contest%white%]"),
+    error("error", "[Erreur]"),
+    global("global", "[Global]"),
+    _private("private", "[Privé]"),
+    admin("admin", " [Admin]"),
     error_when_resume("error_when_resume", "Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine"),
     game_already_started("game_already_started", "La partie a déjà commencé !"),
     all_team_not_full("all_team_not_full", "Au moins une équipe n'est pas complète. Il faut %teamNumber% joueurs par équipe."),
@@ -46,6 +46,7 @@ public enum Lang {
     vote_count("vote_count", "Vote(s)"),
     vote_snow("vote_snow", "Neige"),
     vote_desert("vote_desert", "Desert"),
+    vote_forest("vote_forest", "Foret"),
     vote_plain("vote_plain", "Plaine"),
     vote_mountain("vote_mountain", "Montagne"),
     vote_swamp("vote_swamp", "Marécage"),
@@ -91,7 +92,10 @@ public enum Lang {
     team_welcome("team_welcome", "Bienvenue dans l'équipe %coloredTeamName%"),
     team_score_now("team_score_now", "Votre score est maintenant de %teamScore% points"),
     team_chest_added("team_chest_added", "Le coffre de l'équipe %coloredTeamName% a été ajouté"),
-    team_player_joined("team_player_joined", "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%");
+    team_player_joined("team_player_joined", "=>Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"),
+    red_team("red_team", "Red"),
+    yellow_team("yellow_team", "Yellow"),
+    blue_team("blue_team", "Blue");
 
 
     private String path;
@@ -119,11 +123,33 @@ public enum Lang {
         LANG = config;
     }
 
+    private Lang findByValue(String value) {
+        for(Lang item : Lang.values()) {
+            if(item.getDefault().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
-        if (this == title)
-            return ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def)) + " ";
-        return ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, def));
+
+        //return get(findByValue(LANG.getString(this.path, def)).getPath());
+        return translate((LANG.getString(this.path, def)));
+        //return "toString" + LANG.getString(this.path, def);
+    }
+
+    public static String get(String key) {
+        String result = "";
+        try {
+            result = translate(Lang.valueOf(key).getDefault());
+        }catch(Exception e) {
+            Bukkit.getLogger().severe("GET ERROR");
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     /**
@@ -142,43 +168,69 @@ public enum Lang {
         return this.path;
     }
 
+
+
     public static String translate(String string, Equipe team, Player p) {
-        string = string = translate(string, team);
-        string = string = translate(string, p);
+        string = translate(string);
+        string = translate(string, team);
+        string =  translate(string, p);
         return string;
     }
 
     public static String translate(String string, Equipe team) {
-        string = string.replace("%coloredTeamName%", team.getCouleur() + team.getNomEquipe() + ChatColor.WHITE);
-        string = string.replace("%teamScore%", ""  + team.getScore());
-        string = string.replace("%teamColor%", ""  + team.getCouleur());
-        string = string.replace("%teamName%", team.getNomEquipe());
-        Bukkit.broadcastMessage("translate(string, team)");
+        string = translate(string);
+        if(string.contains("%coloredTeamName%")) string = string.replace("%coloredTeamName%", team.getCouleur() + team.getNomEquipe() + ChatColor.WHITE);
+        if(string.contains("%teamScore%")) string = string.replace("%teamScore%", ""  + team.getScore());
+        if(string.contains("%teamColor%")) string = string.replace("%teamColor%", ""  + team.getCouleur());
+        if(string.contains("%teamName%")) string = string.replace("%teamName%", team.getNomEquipe());
         return  string;
     }
 
     public static String translate(String string, Player player) {
-        string = string.replace("%deathTime%", "" + mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayerDeathTime(player));
-        string = string.replace("%votedBiome%", mineralcontest.plugin.getGame().votemap.getPlayerVote(player));
-        string = string.replace("%playerName%", player.getDisplayName());
+        string = translate(string);
+        if(string.contains("%deathTime%")) string = string.replace("%deathTime%", "" + mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayerDeathTime(player));
+        if(string.contains("%votedBiome%")) string = string.replace("%votedBiome%", mineralcontest.plugin.getGame().votemap.getPlayerVote(player));
+        if(string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
         if(string.contains("%deadPlayer%") && !string.contains("%killingPlayer%"))
-            string = string.replace("%deadPlayer%", player.getDisplayName());
+            if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
 
         return string;
 
     }
 
     public static String translate(String string, Player player1, Player player2) {
-        string = string.replace("%deadPlayer%", player1.getDisplayName());
-        string = string.replace("%killingPlayer%", player2.getDisplayName());
+        string = translate(string);
+        if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player1.getDisplayName());
+        if(string.contains("%killingPlayer%")) string = string.replace("%killingPlayer%", player2.getDisplayName());
         return string;
     }
 
     public static String translate(String string) {
+        if(string.contains("%black%")) string = string.replace("%black%", "" + ChatColor.BLACK);
+        if(string.contains("%dark_blue%")) string = string.replace("%dark_blue%", "" + ChatColor.DARK_BLUE);
+        if(string.contains("%dark_green%")) string = string.replace("%dark_green%", "" + ChatColor.DARK_GREEN);
+        if(string.contains("%dark_aqua%")) string = string.replace("%dark_aqua%", "" + ChatColor.DARK_AQUA);
+        if(string.contains("%dark_red%")) string = string.replace("%dark_red%", "" + ChatColor.DARK_RED);
+        if(string.contains("%dark_purple%")) string = string.replace("%dark_purple%", "" + ChatColor.DARK_PURPLE);
+        if(string.contains("%gold%")) string = string.replace("%gold%", "" + ChatColor.GOLD);
+        if(string.contains("%gray%")) string = string.replace("%gray%", "" + ChatColor.GRAY);
+        if(string.contains("%dark_gray%")) string = string.replace("%dark_gray%", "" + ChatColor.DARK_GRAY);
+        if(string.contains("%blue%")) string = string.replace("%blue%", "" + ChatColor.BLUE);
+        if(string.contains("%green%")) string = string.replace("%green%", "" + ChatColor.GREEN);
+        if(string.contains("%aqua%")) string = string.replace("%aqua%", "" + ChatColor.AQUA);
+        if(string.contains("%red%")) string = string.replace("%red%", "" + ChatColor.AQUA);
+        if(string.contains("%light_purple%")) string = string.replace("%light_purple%", "" + ChatColor.LIGHT_PURPLE);
+        if(string.contains("%yellow%")) string = string.replace("%yellow%", "" + ChatColor.YELLOW);
+        if(string.contains("%white%")) string = string.replace("%white%", "" + ChatColor.WHITE);
+        if(string.contains("%magic%")) string = string.replace("%magic%", "" + ChatColor.MAGIC);
+        if(string.contains("%bold%")) string = string.replace("%bold%", "" + ChatColor.BOLD);
+        if(string.contains("%strikethrough%")) string = string.replace("%strikethrough%", "" + ChatColor.STRIKETHROUGH);
+        if(string.contains("%underline%")) string = string.replace("%underline%", "" + ChatColor.UNDERLINE);
+        if(string.contains("%italic%")) string = string.replace("%italic%", "" + ChatColor.ITALIC);
 
-        string = string.replace("%preGameTime%", "" + mineralcontest.plugin.getGame().PreGameTimeLeft);
-        string = string.replace("%winningBiome%", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
-        string = string.replace("%teamNumber%", "" + mineralcontest.plugin.teamMaxPlayers);
+        if(string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + mineralcontest.plugin.getGame().PreGameTimeLeft);
+        if(string.contains("%winningBiome%")) string = string.replace("%winningBiome%", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
+        if(string.contains("%teamNumber%")) string = string.replace("%teamNumber%", "" + mineralcontest.plugin.teamMaxPlayers);
 
         return string;
     }

@@ -59,7 +59,7 @@ public class JoinCommand implements CommandExecutor {
                     return true;
                 }
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("admin_team_will_be_randomized")));
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.admin_team_will_be_randomized.toString() ));
                 return true;
             }
         }

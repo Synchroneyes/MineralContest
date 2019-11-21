@@ -28,6 +28,10 @@ public class Equipe {
         this.porte = new AutomaticDoors(this);
     }
 
+    public void setNomEquipe(String nom) {
+        this.nomEquipe = nom;
+    }
+
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
         this.coffre.setPosition(loc);
@@ -38,7 +42,7 @@ public class Equipe {
             coffre.getInventory().clear();
         }
 
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("team_chest_added"), this));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), this));
 
     }
 
@@ -62,7 +66,7 @@ public class Equipe {
     public int getScore() { return this.score; }
     public void setScore(int score) {
         for(Player online : joueurs)
-            online.sendMessage(mineralcontest.prefixPrive + Lang.translate((String) mineralcontest.LANG.get("team_score_now"), this));
+            online.sendMessage(mineralcontest.prefixPrive + " " +  Lang.translate(Lang.team_score_now.toString(), this));
         this.score = score;
     }
 
@@ -78,9 +82,9 @@ public class Equipe {
         if(!isTeamFull()) {
             this.joueurs.add(p);
 
-            p.sendMessage(mineralcontest.prefix + Lang.translate((String) mineralcontest.LANG.get("team_welcome"), this));
+            p.sendMessage(mineralcontest.prefix + " " + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("team_player_joined"), this, p));
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + " " +  Lang.translate(Lang.team_player_joined.toString(), this, p));
             return true;
         }
         throw new Exception("L'equipe est pleine.");
@@ -89,7 +93,7 @@ public class Equipe {
     public boolean removePlayer(Player p) {
         if(isPlayerInTeam(p)) {
             this.joueurs.remove(p);
-            p.sendMessage(mineralcontest.prefix +(String) mineralcontest.LANG.get("team_kicked"));
+            p.sendMessage(mineralcontest.prefix + " " + Lang.team_kicked.toString());
             return true;
         }
         return false;
@@ -104,7 +108,7 @@ public class Equipe {
     }
 
     public String toString() {
-        String joueurs = "Equipe " + this.getCouleur() + this.nomEquipe + ChatColor.WHITE + ": ";
+        String joueurs = "Team " + this.getCouleur() + this.nomEquipe + ChatColor.WHITE + ": ";
         for(int i = 0; i < this.joueurs.size(); i++) {
             joueurs += this.joueurs.get(i).getDisplayName() + " ";
         }
@@ -134,13 +138,13 @@ public class Equipe {
     }
 
     public void setHouseLocation(Location houseLocation){
-        mineralcontest.plugin.getLogger().info(Lang.translate((String) mineralcontest.LANG.get("team_house_location_added"), this));
+        mineralcontest.plugin.getLogger().info(Lang.translate(Lang.team_house_location_added.toString(), this));
         this.houseLocation = houseLocation;
     }
 
     public Location getHouseLocation() throws Exception {
         if(this.houseLocation == null)
-            throw new Exception(Lang.translate((String) mineralcontest.LANG.get("team_house_location_not_added"), this));
+            throw new Exception(Lang.translate(Lang.team_house_location_not_added.toString(), this));
         return houseLocation;
     }
 

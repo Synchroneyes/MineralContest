@@ -79,13 +79,13 @@ public class PlayerUtils {
 
             // Si on vote
             if(voteMapEnabled) {
-                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + (String) mineralcontest.LANG.get("vote_title"), " " ,
-                        "0 - " + (String) mineralcontest.LANG.get("vote_snow") + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " "+ (String) mineralcontest.LANG.get("vote_count"),
-                        "1 - "+ (String) mineralcontest.LANG.get("vote_desert") +" (" + mineralcontest.plugin.getGame().votemap.voteDesert + " "+ (String) mineralcontest.LANG.get("vote_count"),
-                        "2 - "+ (String) mineralcontest.LANG.get("vote_forest") +" (" + mineralcontest.plugin.getGame().votemap.voteForet + (String) mineralcontest.LANG.get("vote_count"),
-                        "3 - "+ (String) mineralcontest.LANG.get("vote_plain") +" (" + mineralcontest.plugin.getGame().votemap.votePlaine + (String) mineralcontest.LANG.get("vote_count"),
-                        "4 - "+ (String) mineralcontest.LANG.get("vote_mountain") +" (" + mineralcontest.plugin.getGame().votemap.voteMontagne + (String) mineralcontest.LANG.get("vote_count"),
-                        "5 - "+ (String) mineralcontest.LANG.get("vote_swamp") +" (" + mineralcontest.plugin.getGame().votemap.voteMarecage + (String) mineralcontest.LANG.get("vote_count"));
+                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + Lang.get("vote_title"), " " ,
+                        "0 - " + Lang.get("vote_snow") + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " "+ Lang.get("vote_count"),
+                        "1 - "+ Lang.get("vote_desert") +" (" + mineralcontest.plugin.getGame().votemap.voteDesert + " "+ Lang.get("vote_count"),
+                        "2 - "+ Lang.get("vote_forest") +" (" + mineralcontest.plugin.getGame().votemap.voteForet + Lang.get("vote_count"),
+                        "3 - "+ Lang.get("vote_plain") +" (" + mineralcontest.plugin.getGame().votemap.votePlaine + Lang.get("vote_count"),
+                        "4 - "+ Lang.get("vote_mountain") +" (" + mineralcontest.plugin.getGame().votemap.voteMontagne + Lang.get("vote_count"),
+                        "5 - "+ Lang.get("vote_swamp") +" (" + mineralcontest.plugin.getGame().votemap.voteMarecage + Lang.get("vote_count"));
 
             } else {
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
@@ -96,7 +96,7 @@ public class PlayerUtils {
                         ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_you_are_not_in_team.toString());
                     } else {
                         // Le joueur a une équipe
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_waiting_start"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_name_no_score"), team));
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.translate(Lang.hud_team_name_no_score.toString(), team));
                     }
 
                 } else {
@@ -104,14 +104,14 @@ public class PlayerUtils {
                     if (gamePaused) {
                         // Pas de team
                         if (team == null) {
-                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_paused"), "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.get("hud_game_paused"), "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
                         } else {
                             // Le joueur a une équipe
-                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_game_paused"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_score"), team));
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.get("hud_game_paused"), "", Lang.translate(Lang.get("hud_team_score"), team));
                         }
                     } else {
                         // Game pas en pause
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + (String) mineralcontest.LANG.get("title") + "   ", " ", (String) mineralcontest.LANG.get("hud_time_left"), "", Lang.translate((String) mineralcontest.LANG.get("hud_team_score"), team));
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.get("hud_time_left"), "", Lang.translate(Lang.get("hud_team_score"), team));
                     }
                 }
             }

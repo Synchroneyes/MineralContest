@@ -1,6 +1,7 @@
 package fr.mineral.Core.Arena;
 
 import fr.mineral.Exception.MaterialNotInRangeException;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Range;
 import fr.mineral.Utils.XMaterial;
 import fr.mineral.mineralcontest;
@@ -101,7 +102,7 @@ public class ChestWithCooldown {
                         Block block = position.getBlock();
                         Chest chest = (Chest)block.getState();
                         Inventory inv = chest.getInventory();
-                        chest.setCustomName(ChatColor.RED + (String) mineralcontest.LANG.get("arena_chest_title"));
+                        chest.setCustomName(ChatColor.RED + Lang.get("arena_chest_title"));
                         inv.clear();
                         inv.setMaxStackSize(1);
 
@@ -165,7 +166,7 @@ public class ChestWithCooldown {
                 }
             }.runTaskTimer(mineralcontest.plugin, 0, 20);
         } else {
-            joueur.sendTitle((String) mineralcontest.LANG.get("error"), (String) mineralcontest.LANG.get("arena_chest_being_opened"), 1, 5, 1);
+            joueur.sendTitle(Lang.get("error"), Lang.get("arena_chest_being_opened"), 1, 5, 1);
         }
 
     }

@@ -23,7 +23,7 @@ public class EntityDamage implements Listener {
 
                 PlayerUtils.killPlayer(victime);
 
-                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("player_died")));
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.get("player_died")));
 
             }
         }
@@ -47,7 +47,7 @@ public class EntityDamage implements Listener {
                         // Si c'est un joueur qui a tué notre victime
                         if(event.getDamager() instanceof Player) {
                             Player attaquant = (Player) event.getDamager();
-                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("player_killed"), victime, attaquant));
+                            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.get("player_killed"), victime, attaquant));
                             mineralcontest.plugin.getGame().killCounter++;
                         }
 

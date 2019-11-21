@@ -12,12 +12,12 @@ public class PauseGameCommand implements CommandExecutor {
         if(command.getName().equalsIgnoreCase("pause")) {
             if(mineralcontest.plugin.getGame().isGameStarted()) {
                 if(mineralcontest.plugin.getGame().isGamePaused()) {
-                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_already_paused")));
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("game_already_paused")));
                 } else {
                     mineralcontest.plugin.getGame().pauseGame();
                 }
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_not_started")));
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("game_not_started")));
             }
         }
 

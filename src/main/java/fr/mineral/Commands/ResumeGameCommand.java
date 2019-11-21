@@ -15,8 +15,8 @@ public class ResumeGameCommand implements CommandExecutor {
             if(mineralcontest.plugin.getGame().isGamePaused() && teamNonPleine == null) {
                 mineralcontest.plugin.getGame().resumeGame();
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("error_when_resume")));
-                if(teamNonPleine != null) sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("admin_team_non_empty"), teamNonPleine));
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("error_when_resume")));
+                if(teamNonPleine != null) sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("admin_team_non_empty"), teamNonPleine));
             }
         }
         return false;

@@ -28,11 +28,11 @@ public class PlayerJoin implements Listener {
         }
 
         if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-            p.kickPlayer((String) mineralcontest.LANG.get("kick_game_already_in_progress"));
+            p.kickPlayer(Lang.get("kick_game_already_in_progress"));
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                 if(online.isOp())
-                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate((String) mineralcontest.LANG.get("admin_played_tried_to_login"), p));
-            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate((String) mineralcontest.LANG.get("admin_played_tried_to_login"), p));
+                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate(Lang.get("admin_played_tried_to_login"), p));
+            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate(Lang.get("admin_played_tried_to_login"), p));
         }
 
 
@@ -45,9 +45,9 @@ public class PlayerJoin implements Listener {
 
                 if(block == null || !block.getType().toString().equalsIgnoreCase("iron_block")){
                     ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("bad_map_loaded"));
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("github_link"));
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("plugin_shutdown"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("bad_map_loaded"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("github_link"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("plugin_shutdown"));
                     Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
                 }
 

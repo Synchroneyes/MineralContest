@@ -135,12 +135,12 @@ public class Arena {
 
     public void enableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle(ChatColor.GREEN + Lang.translate((String) mineralcontest.LANG.get("arena_chest_spawned")), Lang.translate((String) mineralcontest.LANG.get("arena_teleport_now_enabled")), 20, 20*3, 20);
+            online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.get("arena_chest_spawned")), Lang.translate(Lang.get("arena_teleport_now_enabled")), 20, 20*3, 20);
         this.allowTeleport = true;
     }
     public void disableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle("", (String) mineralcontest.LANG.get("arena_teleport_now_disabled"), 20, 20*3, 20);
+            online.sendTitle("", Lang.get("arena_teleport_now_disabled"), 20, 20*3, 20);
 
         this.allowTeleport = false;
     }
@@ -153,7 +153,7 @@ public class Arena {
     }
 
     public void setTeleportSpawn(Location z) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("arena_spawn_added"));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.get("arena_spawn_added"));
         this.teleportSpawn = z;
     }
 
@@ -161,7 +161,7 @@ public class Arena {
     public void setCoffre(Location position) {
         this.coffre = new ChestWithCooldown(position);
         this.coffre.setPosition(position);
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + (String) mineralcontest.LANG.get("arena_chest_added"));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.get("arena_chest_added"));
 
     }
 
@@ -178,15 +178,15 @@ public class Arena {
         Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
 
         if(team == null) {
-            throw new Exception((String) mineralcontest.LANG.get("cant_teleport_player_without_team"));
+            throw new Exception(Lang.get("cant_teleport_player_without_team"));
         }
 
         for(Player membre : team.getJoueurs()) {
             if(allowTeleport){
-                membre.sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("arena_now_teleporting"));
+                membre.sendMessage(mineralcontest.prefixPrive + Lang.get("arena_now_teleporting"));
                 membre.teleport(getTeleportSpawn());
             } else {
-                membre.sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("arena_teleport_disabled"));
+                membre.sendMessage(mineralcontest.prefixPrive + Lang.get("arena_teleport_disabled"));
             }
         }
     }

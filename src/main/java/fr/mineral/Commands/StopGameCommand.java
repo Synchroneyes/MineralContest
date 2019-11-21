@@ -14,14 +14,14 @@ public class StopGameCommand implements CommandExecutor {
             if(sender.isOp()) {
                 // On est jamais trop prudent ...
                 if(mineralcontest.plugin.getGame().isGameStarted()) {
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate((String) mineralcontest.LANG.get("game_over")));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.get("game_over")));
                     try {
                         mineralcontest.plugin.getGame().terminerPartie();
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("game_not_started")));
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("game_not_started")));
                 }
             }
         }

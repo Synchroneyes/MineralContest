@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.event.EventHandler;
@@ -17,7 +18,7 @@ public class BlockDestroyed implements Listener {
             try {
                 if(Radius.isBlockInRadius(event.getBlock().getLocation(), mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), mineralcontest.plugin.getGame().getArene().arenaRadius)) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + (String) mineralcontest.LANG.get("cant_break_block_here"));
+                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.get("cant_break_block_here"));
                 }
             }catch(Exception e) {
                 e.printStackTrace();
@@ -25,7 +26,7 @@ public class BlockDestroyed implements Listener {
 
         } else {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(mineralcontest.prefixPrive + (String) mineralcontest.LANG.get("cant_interact_block_pre_game"));
+            event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.get("cant_interact_block_pre_game"));
         }
     }
 }

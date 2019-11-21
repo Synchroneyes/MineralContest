@@ -20,10 +20,10 @@ public class AreneTeleportCommand implements CommandExecutor {
 
                     for(Player membre : team.getJoueurs()) {
                         membre.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
-                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate((String) mineralcontest.LANG.get("arena_teleporting")));
+                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.get("arena_teleporting")));
                     }
                 } else {
-                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate((String) mineralcontest.LANG.get("arena_teleport_disabled")));
+                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("arena_teleport_disabled")));
                 }
             }
         }

@@ -36,13 +36,13 @@ public class DeathZone {
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
     public void setSpawnLocation(Location pos) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.translate((String) mineralcontest.LANG.get("")));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.translate(Lang.get("")));
         this.spawnLocation = pos;
     }
 
     public Location getSpawnLocation() throws Exception {
         if(spawnLocation == null) {
-            throw new Exception(Lang.translate((String) mineralcontest.LANG.get("deathzone_spawn_location_undefined")));
+            throw new Exception(Lang.translate(Lang.get("deathzone_spawn_location_undefined")));
         }
 
         return this.spawnLocation;
@@ -62,7 +62,7 @@ public class DeathZone {
 
                 // ON réduit son temps de 1
 
-                if(joueur.getValeur() >= 1) joueur.getJoueur().sendTitle(ChatColor.RED + Lang.translate((String) mineralcontest.LANG.get("deathzone_you_are_dead")), Lang.translate((String) mineralcontest.LANG.get("deathzone_respawn_in"), joueur.getJoueur()), 0, 20, 0);
+                if(joueur.getValeur() >= 1) joueur.getJoueur().sendTitle(ChatColor.RED + Lang.translate(Lang.get("deathzone_you_are_dead")), Lang.translate(Lang.get("deathzone_respawn_in"), joueur.getJoueur()), 0, 20, 0);
                 joueur.setValeur(joueur.getValeur()-1);
                 joueur.getJoueur().setFireTicks(0);
 
@@ -83,7 +83,7 @@ public class DeathZone {
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
-        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate((String) mineralcontest.LANG.get("deathzone_respawn_in"), joueur));
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.get("deathzone_respawn_in"), joueur));
         //joueur.teleport(this.spawnLocation);
         try {
             joueur.teleport(mineralcontest.plugin.getGame().getPlayerTeam(joueur).getHouseLocation());
@@ -130,7 +130,7 @@ public class DeathZone {
 
             // On rend le stuff du joueur
             PlayerUtils.givePlayerBaseItems(joueur);
-            DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate((String) mineralcontest.LANG.get("deathzone_respawned")), "", 1, 2*20, 1);
+            DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.get("deathzone_respawned")), "", 1, 2*20, 1);
 
             // ON le supprime de la liste
             this.joueurs.remove(DeathZonePlayer);
