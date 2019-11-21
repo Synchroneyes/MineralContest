@@ -94,6 +94,12 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  mp_set_language:
+    description: Permet de changer le langage
+    use: /mp_set_language <lang>
+    permission: admin
+    permission-message: you do not have the permission
+
   join:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>
