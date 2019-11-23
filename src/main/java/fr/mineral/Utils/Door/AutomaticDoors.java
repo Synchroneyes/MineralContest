@@ -1,6 +1,6 @@
 package fr.mineral.Utils.Door;
 
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

@@ -1,17 +1,12 @@
 package fr.mineral.Teams;
 
-import fr.mineral.Coffre;
-import fr.mineral.Exception.FullTeamException;
-import fr.mineral.Utils.AutomaticDoors;
+import fr.mineral.Core.Arena.Coffre;
+import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.util.LinkedList;
 
@@ -31,6 +26,8 @@ public class Equipe {
         this.couleur = c;
         this.porte = new AutomaticDoors(this);
     }
+
+    public void setNomEquipe(String n ) { this.nomEquipe = n;}
 
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
@@ -127,5 +124,13 @@ public class Equipe {
 
     public AutomaticDoors getPorte() {
         return porte;
+    }
+
+    public Color toColor() {
+        if(this.nomEquipe.equals(Lang.red_team.toString())) return Color.RED;
+        if(this.nomEquipe.equals(Lang.yellow_team.toString())) return Color.YELLOW;
+        if(this.nomEquipe.equals(Lang.blue_team.toString())) return Color.BLUE;
+
+        return Color.WHITE;
     }
 }

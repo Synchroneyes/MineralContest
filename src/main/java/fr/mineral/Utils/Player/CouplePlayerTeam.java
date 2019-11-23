@@ -1,7 +1,6 @@
 package fr.mineral.Utils.Player;
 
-import fr.mineral.Core.Equipe;
-import org.bukkit.entity.Player;
+import fr.mineral.Teams.Equipe;
 
 public class CouplePlayerTeam {
     private Equipe team;

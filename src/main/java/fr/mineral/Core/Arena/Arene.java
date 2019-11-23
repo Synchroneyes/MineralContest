@@ -1,7 +1,7 @@
 package fr.mineral.Core.Arena;
 
-import fr.mineral.Core.Equipe;
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 /*
     Classe représentant une arène
  */
-public class Arena {
+public class Arene {
 
     /*
         Une arène contient:
@@ -26,7 +26,7 @@ public class Arena {
      */
 
     private Location teleportSpawn;
-    private ChestWithCooldown coffre;
+    private CoffreAvecCooldown coffre;
     private boolean allowTeleport;
     private DeathZone deathZone;
     private int MAX_TIME_BETWEEN_CHEST = 15; // mins
@@ -148,7 +148,7 @@ public class Arena {
     public DeathZone getDeathZone() { return this.deathZone; }
 
 
-    public Arena() {
+    public Arene() {
         this.deathZone = new DeathZone();
     }
 
@@ -159,13 +159,13 @@ public class Arena {
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
-        this.coffre = new ChestWithCooldown(position);
+        this.coffre = new CoffreAvecCooldown(position);
         this.coffre.setPosition(position);
         mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.get("arena_chest_added"));
 
     }
 
-    public ChestWithCooldown getCoffre() throws Exception {
+    public CoffreAvecCooldown getCoffre() throws Exception {
         return this.coffre;
     }
 

@@ -1,6 +1,6 @@
 package fr.mineral.Core.Arena.Zones;
 
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerUtils;

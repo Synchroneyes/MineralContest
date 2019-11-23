@@ -1,9 +1,9 @@
 package fr.mineral.Utils.Player;
 
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Scoreboard.ScoreboardUtil;
-import fr.mineral.Core.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

@@ -1,7 +1,8 @@
 package fr.mineral.Core;
 
-import fr.mineral.Core.Arena.Arena;
+import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
@@ -28,7 +29,7 @@ public class Game implements Listener {
             - Un temps de jeu
             -
      */
-    private Arena arene;
+    private Arene arene;
     private Equipe teamRouge;
     private Equipe teamJaune;
     private Equipe teamBleu;
@@ -79,7 +80,7 @@ public class Game implements Listener {
     public boolean isPreGame() { return this.PreGame; }
 
 
-    public Arena getArene() { return this.arene; }
+    public Arene getArene() { return this.arene; }
     public Equipe getTeamRouge() { return this.teamRouge; }
     public Equipe getTeamJaune() { return this.teamJaune; }
     public Equipe getTeamBleu() { return this.teamBleu; }
@@ -92,7 +93,7 @@ public class Game implements Listener {
         this.teamBleu = new Equipe("Bleu", ChatColor.BLUE);
         this.teamJaune = new Equipe("Jaune", ChatColor.YELLOW);
 
-        this.arene = new Arena();
+        this.arene = new Arene();
         this.portes = new AutomaticDoors(this.teamBleu);
         this.votemap = new Votemap();
 

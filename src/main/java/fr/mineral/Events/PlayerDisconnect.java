@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

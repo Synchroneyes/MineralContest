@@ -21,7 +21,7 @@ public class StopGameCommand implements CommandExecutor {
                         e.printStackTrace();
                     }
                 } else {
-                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("game_not_started")));
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_not_started.toString()));
                 }
             }
         }

@@ -1,6 +1,6 @@
 package fr.mineral.Commands;
 
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
@@ -12,7 +12,7 @@ public class AreneTeleportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-            if(command.getName().equals("arene")) {
+            if(command.getName().equals("arene") || command.getName().equals("arena")) {
                 Player joueur = (Player) sender;
 
                 if(mineralcontest.plugin.getGame().getArene().isTeleportAllowed()) {
@@ -20,10 +20,10 @@ public class AreneTeleportCommand implements CommandExecutor {
 
                     for(Player membre : team.getJoueurs()) {
                         membre.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
-                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.get("arena_teleporting")));
+                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_teleporting.toString()));
                     }
                 } else {
-                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("arena_teleport_disabled")));
+                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.arena_teleport_disabled.toString()));
                 }
             }
         }

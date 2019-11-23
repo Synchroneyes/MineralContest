@@ -1,4 +1,4 @@
-package fr.mineral.Commands;
+package fr.mineral.Commands.Developper;
 
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -8,6 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetCommand implements CommandExecutor {
+
+    /*
+            Old command, saved just in case ...
+     */
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 

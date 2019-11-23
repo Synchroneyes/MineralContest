@@ -1,6 +1,5 @@
 package fr.mineral.Core.Arena;
 
-import fr.mineral.Exception.MaterialNotInRangeException;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Range;
 import fr.mineral.Utils.XMaterial;
@@ -11,26 +10,25 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
-public class ChestWithCooldown {
+public class CoffreAvecCooldown {
     private Location position;
     public boolean opened = false;
     public boolean spawned = false;
     public boolean isCancelled = false;
     private int time = 5;
     private int timeLeft = time;
-    public static ChestWithCooldown coffre;
+    public static CoffreAvecCooldown coffre;
     public Player openingPlayer;
 
 
     public boolean isChestSpawned() { return this.spawned; }
 
-    public ChestWithCooldown(Location loc) {
+    public CoffreAvecCooldown(Location loc) {
         this.position = loc;
         coffre = this;
     }

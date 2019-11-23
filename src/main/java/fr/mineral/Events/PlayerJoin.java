@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.mineralcontest;

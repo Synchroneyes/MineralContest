@@ -12,7 +12,7 @@ public class StartGameCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(mineralcontest.plugin.getGame().isGameStarted()) {
-            sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.get("game_already_started")));
+            sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_already_started.toString()));
         } else {
 
             try {

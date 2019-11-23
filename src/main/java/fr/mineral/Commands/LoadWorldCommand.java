@@ -1,6 +1,7 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Utils.Save.FileToGame;
+import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,10 +20,10 @@ public class LoadWorldCommand implements CommandExecutor {
                     f.readFile(args[0]);
 
                 }catch (IOException e) {
-                    sender.sendMessage("Erreur " + e.getMessage());
+                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
 
                 }catch(Exception e) {
-                    sender.sendMessage("Erreur " + e.getMessage());
+                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
 
                 }
             }

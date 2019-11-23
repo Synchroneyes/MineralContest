@@ -1,4 +1,4 @@
-package fr.mineral.Commands;
+package fr.mineral.Commands.Developper;
 
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.Utils.Save.GameToFile;
@@ -10,6 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class OpenDoor implements CommandExecutor {
+
+    /*
+        Disabled command, used in testing
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(command.getName().equals("ouvrir")) {
@@ -17,8 +21,6 @@ public class OpenDoor implements CommandExecutor {
                 FileToGame g = new FileToGame();
                 try {
                     GameToFile f = new GameToFile("world1");
-                    //f.saveToFile();
-                    //g.readFile("world1");
                 }catch(Exception e) {
                     mineralcontest.plugin.getServer().getLogger().info("ERREUR");
                     e.printStackTrace();

@@ -1,7 +1,7 @@
 package fr.mineral.Utils.Save;
 
-import fr.mineral.Core.Arena.Arena;
-import fr.mineral.Core.Equipe;
+import fr.mineral.Core.Arena.Arene;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public class GameToFile {
     public String worldName;
     public Equipe teamRouge, teamJaune, teamBleu;
-    public Arena arene;
+    public Arene arene;
 
     public GameToFile(String nomMonde) {
         this.worldName = nomMonde;

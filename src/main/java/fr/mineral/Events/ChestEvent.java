@@ -1,8 +1,8 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Arena.ChestWithCooldown;
+import fr.mineral.Core.Arena.CoffreAvecCooldown;
 import fr.mineral.Core.Game;
-import fr.mineral.Core.Equipe;
+import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -124,8 +124,8 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
         Player joueur = (Player) event.getPlayer();
-        if(ChestWithCooldown.coffre != null && Radius.isBlockInRadius(ChestWithCooldown.coffre.getPosition(), joueur.getLocation(), 5)) {
-            ChestWithCooldown.coffre.open((Player) event.getPlayer());
+        if(CoffreAvecCooldown.coffre != null && Radius.isBlockInRadius(CoffreAvecCooldown.coffre.getPosition(), joueur.getLocation(), 5)) {
+            CoffreAvecCooldown.coffre.open((Player) event.getPlayer());
         }
     }
 }

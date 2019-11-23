@@ -1,4 +1,4 @@
-package fr.mineral.Commands;
+package fr.mineral.Commands.Developper;
 
 import fr.mineral.Utils.Save.GameToFile;
 import org.bukkit.command.Command;
@@ -6,6 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class SaveWorldCommand implements CommandExecutor {
+    /*
+        Dev command only
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(command.getName().equals("saveWorld")) {

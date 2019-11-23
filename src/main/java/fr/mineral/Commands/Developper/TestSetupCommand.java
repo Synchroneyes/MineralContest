@@ -1,4 +1,4 @@
-package fr.mineral.Commands;
+package fr.mineral.Commands.Developper;
 
 import fr.mineral.Utils.AutomaticSetup;
 import org.bukkit.command.Command;
