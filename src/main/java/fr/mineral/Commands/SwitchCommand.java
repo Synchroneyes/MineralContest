@@ -22,7 +22,7 @@ public class SwitchCommand implements CommandExecutor {
                     return true;
                 }
             } else {
-                sender.sendMessage(mineralcontest.prefixErreur + "Vous n'avez pas accès à cette commande");
+                sender.sendMessage(mineralcontest.prefixErreur + "access denied");
             }
         }
 

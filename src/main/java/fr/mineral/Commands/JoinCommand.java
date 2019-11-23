@@ -51,11 +51,11 @@ public class JoinCommand implements CommandExecutor {
                             break;
 
                         default:
-                            sender.sendMessage("Usage: /join <rouge | jaune | bleu>");
+                            sender.sendMessage("Usage: /join <"+ Lang.red_team.toString() + " | "+ Lang.yellow_team.toString() + " | "+ Lang.blue_team.toString() + ">");
                             return true;
                     }
                 }else{
-                    sender.sendMessage("Usage: /join <rouge | jaune | bleu>");
+                    sender.sendMessage("Usage: /join <"+ Lang.red_team.toString() + " | "+ Lang.yellow_team.toString() + " | "+ Lang.blue_team.toString() + ">");
                     return true;
                 }
             } else {

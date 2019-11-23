@@ -84,7 +84,6 @@ public class Arene {
             public void run() {
 
                 if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-                    //mineralcontest.plugin.getServer().broadcastMessage("Coffre apparait dans " + TIME_BEFORE_CHEST + " secs");
                     try {
                         // Si le coffre est initialisé et n'est pas encore apparu
                         if(CHEST_INITIALIZED && !getCoffre().isChestSpawned()) {
@@ -135,12 +134,12 @@ public class Arene {
 
     public void enableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.get("arena_chest_spawned")), Lang.translate(Lang.get("arena_teleport_now_enabled")), 20, 20*3, 20);
+            online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.arena_chest_spawned.toString()), Lang.translate(Lang.arena_teleport_now_enabled.toString()), 20, 20*3, 20);
         this.allowTeleport = true;
     }
     public void disableTeleport() {
         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-            online.sendTitle("", Lang.get("arena_teleport_now_disabled"), 20, 20*3, 20);
+            online.sendTitle("", Lang.arena_teleport_now_disabled.toString(), 20, 20*3, 20);
 
         this.allowTeleport = false;
     }
@@ -153,7 +152,7 @@ public class Arene {
     }
 
     public void setTeleportSpawn(Location z) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.get("arena_spawn_added"));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());
         this.teleportSpawn = z;
     }
 
@@ -161,7 +160,7 @@ public class Arene {
     public void setCoffre(Location position) {
         this.coffre = new CoffreAvecCooldown(position);
         this.coffre.setPosition(position);
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.get("arena_chest_added"));
+        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
 
     }
 
@@ -178,15 +177,15 @@ public class Arene {
         Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
 
         if(team == null) {
-            throw new Exception(Lang.get("cant_teleport_player_without_team"));
+            throw new Exception(Lang.cant_teleport_player_without_team.toString());
         }
 
         for(Player membre : team.getJoueurs()) {
             if(allowTeleport){
-                membre.sendMessage(mineralcontest.prefixPrive + Lang.get("arena_now_teleporting"));
+                membre.sendMessage(mineralcontest.prefixPrive + Lang.arena_now_teleporting.toString());
                 membre.teleport(getTeleportSpawn());
             } else {
-                membre.sendMessage(mineralcontest.prefixPrive + Lang.get("arena_teleport_disabled"));
+                membre.sendMessage(mineralcontest.prefixPrive + Lang.arena_teleport_disabled.toString());
             }
         }
     }

@@ -52,6 +52,7 @@ public enum Lang {
     vote_swamp("vote_swamp", "Marécage"),
     vote_started("vote_started", "Le vote a démarré ! Vous pouvez voter pour votre biome préféré avec la commande /vote <numero du biome>"),
     vote_ended("vote_ended", "Le vote est terminé"),
+    vote_explain("vote_explain", "Ex: pour voter neige: /vote 0"),
     game_successfully_started("game_successfully_started", "La partie vient de commencer"),
     game_starting("game_starting", "La partie va démarrer"),
     game_resumed("game_resumed", "La partie a repris !"),

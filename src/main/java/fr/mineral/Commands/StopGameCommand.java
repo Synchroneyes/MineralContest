@@ -14,7 +14,7 @@ public class StopGameCommand implements CommandExecutor {
             if(sender.isOp()) {
                 // On est jamais trop prudent ...
                 if(mineralcontest.plugin.getGame().isGameStarted()) {
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.get("game_over")));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()));
                     try {
                         mineralcontest.plugin.getGame().terminerPartie();
                     }catch (Exception e) {

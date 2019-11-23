@@ -100,7 +100,7 @@ public class CoffreAvecCooldown {
                         Block block = position.getBlock();
                         Chest chest = (Chest)block.getState();
                         Inventory inv = chest.getInventory();
-                        chest.setCustomName(ChatColor.RED + Lang.get("arena_chest_title"));
+                        chest.setCustomName(ChatColor.RED + Lang.arena_chest_title.toString());
                         inv.clear();
                         inv.setMaxStackSize(1);
 
@@ -164,7 +164,7 @@ public class CoffreAvecCooldown {
                 }
             }.runTaskTimer(mineralcontest.plugin, 0, 20);
         } else {
-            joueur.sendTitle(Lang.get("error"), Lang.get("arena_chest_being_opened"), 1, 5, 1);
+            joueur.sendTitle(mineralcontest.prefixErreur, Lang.arena_chest_being_opened.toString(), 1, 5, 1);
         }
 
     }

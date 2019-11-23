@@ -1,6 +1,7 @@
 package fr.mineral.Core.Zones;
 
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
@@ -33,13 +34,13 @@ public class DeathZone {
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
     public void setSpawnLocation(Location pos) {
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Position de la deathzone ajoutée");
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.deathzone_spawn_location_added.toString());
         this.spawnLocation = pos;
     }
 
     public Location getSpawnLocation() throws Exception {
         if(spawnLocation == null) {
-            throw new Exception("La position de spawn de la deathzone n'est pas défini");
+            throw new Exception(Lang.deathzone_spawn_location_undefined.toString());
         }
 
         return this.spawnLocation;
@@ -59,7 +60,7 @@ public class DeathZone {
 
                 // ON réduit son temps de 1
 
-                if(joueur.getValeur() >= 1) joueur.getJoueur().sendTitle(ChatColor.RED + "Vous êtes mort.", "Réapparition dans " + joueur.getValeur() + " secondes", 0, 20, 0);
+                if(joueur.getValeur() >= 1) joueur.getJoueur().sendTitle(ChatColor.RED + Lang.deathzone_you_are_dead.toString(), Lang.translate(Lang.deathzone_respawn_in.toString(), joueur.getJoueur()), 0, 20, 0);
                 joueur.setValeur(joueur.getValeur()-1);
             }
         }
@@ -69,7 +70,7 @@ public class DeathZone {
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
-        joueur.sendMessage(mineralcontest.prefixPrive + "Vous êtes mort. Vous avez été placé dans la deathzone pendant " + timeInDeathzone + " secondes.");
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.deathzone_you_are_dead.toString() + ". " + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         joueur.teleport(this.spawnLocation);
     }
 
@@ -91,8 +92,7 @@ public class DeathZone {
 
             // On rend le stuff du joueur
             PlayerUtils.givePlayerBaseItems(joueur);
-            DeathZonePlayer.getJoueur().performCommand("title " + DeathZonePlayer.getJoueur().getDisplayName() + " title {\"text\":\"Vous êtes libre\"}");
-
+            joueur.sendTitle("", Lang.deathzone_respawned.toString(), 0, 20, 0);
             // ON le supprime de la liste
             this.joueurs.remove(DeathZonePlayer);
 

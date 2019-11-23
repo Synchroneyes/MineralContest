@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,10 +16,10 @@ public class VoteCommand implements CommandExecutor {
                 try {
                     mineralcontest.plugin.getGame().votemap.addPlayerVote(joueur, Integer.parseInt(args[0]));
                 }catch(NumberFormatException nfe) {
-                    joueur.sendMessage("Usage: /vote <numero_biome> | Ex: pour voter neige: /vote 0");
+                    joueur.sendMessage("Usage: /vote <biome> | " + Lang.vote_explain.toString());
                 }
             }else{
-                joueur.sendMessage("Usage: /vote <numero_biome> | Ex: pour voter neige: /vote 0");
+                joueur.sendMessage("Usage: /vote <biome> | " + Lang.vote_explain.toString());
             }
         }
         return false;

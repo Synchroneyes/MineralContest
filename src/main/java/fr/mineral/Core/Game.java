@@ -105,7 +105,6 @@ public class Game implements Listener {
 
     public void addDisconnectedPlayer(String joueur, Equipe team) {
         // Si le joueur est déjà marqué comme déconnecté, on le supprime et on le réajoute
-
         disconnectedPlayers.add(new CouplePlayerTeam(joueur, team));
     }
 
@@ -210,7 +209,7 @@ public class Game implements Listener {
 
                             if(isGamePaused()) {
                                 // La partie était en cours, elle reprend
-                                online.sendTitle("La partie a " + ChatColor.BLUE  + "repris !", "", 0, 20*5, 0);
+                                online.sendTitle(Lang.game_resumed.toString(), "", 0, 20*5, 0);
                                 online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
                                 GamePaused = false;
                             }else {
@@ -221,7 +220,7 @@ public class Game implements Listener {
                                     online.setGameMode(GameMode.SURVIVAL);
                                     online.getInventory().clear();
                                     PlayerUtils.givePlayerBaseItems(online);
-                                    online.sendTitle(ChatColor.GOLD + "Go go go !", "", 0, 20*5, 0);
+                                    online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
 
 
                                     // On TP le joueur dans sa maison
@@ -239,7 +238,7 @@ public class Game implements Listener {
 
                                 } else {
                                     // La partie reprend
-                                    online.sendTitle("La partie a " + ChatColor.BLUE  + "repris !", "", 0, 20*5, 0);
+                                    online.sendTitle(Lang.game_resumed.toString(), "", 0, 20*5, 0);
                                     online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
                                 }
                             }
@@ -247,7 +246,7 @@ public class Game implements Listener {
 
                     } else {
                         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
-                            online.sendTitle("Démarrage dans " + ChatColor.GOLD + PreGameTimeLeft, "Attention ça va commencer !!", 0, 20*2, 0);
+                            online.sendTitle(Lang.translate(Lang.hud_game_starting.toString()), "", 0, 20*2, 0);
                             if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
                         }
                     }
@@ -264,8 +263,8 @@ public class Game implements Listener {
                     if(isGamePaused()) {
                         // La game est en pause
                         for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-                            if(!online.isOp()) online.sendTitle(ChatColor.GOLD + "PAUSE", "La partie reprendra bientôt", 0, 20*10, 0);
-                            else online.sendTitle(ChatColor.GOLD + "PAUSE", "Pour reprendre la partie, faites /resume", 0, 20*10, 0);
+                            if(!online.isOp()) online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_player_resume_soon.toString(), 0, 20*10, 0);
+                            else online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_admin_resume_help.toString(), 0, 20*10, 0);
                     } else {
                         // La game est en cours
                         // Si le temps atteins 0, alors on arrête la game
@@ -312,9 +311,9 @@ public class Game implements Listener {
     }
 
     private void afficherScores() {
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Score de l'équipe " + teamJaune.getCouleur() + teamJaune.getNomEquipe() + ChatColor.WHITE + ": " + teamJaune.getScore() + " points.");
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Score de l'équipe " + teamRouge.getCouleur() + teamRouge.getNomEquipe() + ChatColor.WHITE + ": " + teamRouge.getScore() + " points.");
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Score de l'équipe " + teamBleu.getCouleur() + teamBleu.getNomEquipe() + ChatColor.WHITE + ": " + teamBleu.getScore() + " points.");
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamJaune));
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamRouge));
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamBleu));
     }
 
     private Equipe afficherGagnant() {
@@ -334,7 +333,7 @@ public class Game implements Listener {
             }
         }
 
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "L'équipe " + equipes[index].getCouleur() + equipes[index].getNomEquipe() + ChatColor.WHITE + " remporte la partie avec " + equipes[index].getScore());
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_winning.toString(), equipes[index]));
         return equipes[index];
     }
 
@@ -350,7 +349,7 @@ public class Game implements Listener {
         this.GamePaused = false;
         this.GameStarted = false;
 
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "La partie est terminée !");
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.game_over.toString());
 
         // ON affiche le score des équipes
         this.afficherScores();
@@ -373,8 +372,8 @@ public class Game implements Listener {
             this.GamePaused = true;
             // On averti les joueurs
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
-                online.sendMessage(mineralcontest.prefixPrive + "La partie a été mise en pause !");
-                if(online.isOp()) online.sendMessage(mineralcontest.prefixAdmin + "Pour reprendre la partie, il faut faire /resume");
+                online.sendMessage(mineralcontest.prefixPrive + Lang.hud_game_paused.toString());
+                if(online.isOp()) online.sendMessage(mineralcontest.prefixAdmin + Lang.hud_admin_resume_help.toString());
             }
         }
     }
