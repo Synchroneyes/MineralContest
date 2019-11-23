@@ -27,7 +27,7 @@ public class Votemap {
         this.voteEnabled = true;
 
         for(Player online : Bukkit.getOnlinePlayers())
-            online.sendMessage(mineralcontest.prefixGlobal + Lang.get("vote_started"));
+            online.sendMessage(mineralcontest.prefixGlobal + Lang.vote_started.toString());
     }
 
     public void disableVote() {
@@ -39,19 +39,19 @@ public class Votemap {
         voteMontagne = 0;
         voteMarecage = 0;
         for(Player online : Bukkit.getOnlinePlayers())
-            online.sendMessage(mineralcontest.prefixGlobal + Lang.get("vote_ended"));
+            online.sendMessage(mineralcontest.prefixGlobal + Lang.vote_ended.toString());
     }
 
 
     public Votemap() {
         biomes = new String[6];
-        biomes[0] = (String) Lang.vote_snow.toString();
-        biomes[1] = (String) Lang.vote_desert.toString();
-        biomes[2] = (String) Lang.vote_forest.toString();
-        biomes[3] = (String) Lang.vote_plain.toString();
-        biomes[4] = (String) Lang.vote_mountain.toString();
-        biomes[5] = (String) Lang.vote_swamp.toString();
-        this.votant = new LinkedList<CouplePlayer>();
+        biomes[0] = Lang.vote_snow.toString();
+        biomes[1] = Lang.vote_desert.toString();
+        biomes[2] = Lang.vote_forest.toString();
+        biomes[3] = Lang.vote_plain.toString();
+        biomes[4] = Lang.vote_mountain.toString();
+        biomes[5] = Lang.vote_swamp.toString();
+        this.votant = new LinkedList<>();
     }
 
 
@@ -75,22 +75,22 @@ public class Votemap {
     public boolean addPlayerVote(Player joueur, int numero_biome) {
 
         if(!voteEnabled) {
-            joueur.sendMessage(mineralcontest.prefixErreur + Lang.get("vote_not_enabled"));
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.vote_not_enabled.toString());
             return false;
         }
 
         if(havePlayerVoted(joueur)) {
-            joueur.sendMessage(mineralcontest.prefixErreur + Lang.get("vote_already_voted"));
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.vote_already_voted.toString());
             return false;
         }
 
         if(numero_biome < 0 || numero_biome > biomes.length) {
-            joueur.sendMessage(mineralcontest.prefixErreur + Lang.get(""));
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.vote_selected_biome_doesnt_exist.toString());
             return false;
         }
 
         this.votant.add(new CouplePlayer(joueur, numero_biome));
-        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.get("vote_you_have_voted_for"), joueur));
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.vote_you_voted_for.toString(), joueur));
 
         switch(numero_biome) {
             case 0: voteNeige++;  break;
@@ -132,7 +132,7 @@ public class Votemap {
                 index = i;
             }
         }
-        if(display) mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.get("vote_winning_biome")));
+        if(display) mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.vote_winning_biome.toString()));
         return new String(biomes[index].toLowerCase());
     }
 
