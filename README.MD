@@ -19,21 +19,26 @@ mp_gold_score <valeur> # Permet de modifier les points rapporté par un lingot d
 mp_diamond_score <valeur> # Permet de modifier les points rapporté par un lingot de diamant
 mp_emerald_score <valeur> # Permet de modifier les points rapporté par un lingot d'émeraude
 mp_team_max_player <valeur> # Permet de modifier le nombre de joueur requis par équipe pour lancer une partie
-mp_enable_metrics <1 ou 0> # Permet d'activer ou non l'envoie de statistique
+mp_add_team_penality <valeur> <equipe> # Ajouter des points de pénalité à une équipe
+mp_reset_team_penality <equipe> # Reset la pénalité d'une équipe
+mp_set_language <langage> # Choisit le langage à utiliser
 
 start # Permet de démarrer une partie
 resume # Permet de reprendre une partie en pause
 pause # permet de mettre une partie en pause
 join <rouge | bleu | jaune> # permet de rejoindre une équipe
 switch <player> <rouge | bleu | jaune> # Permet de mettre un joueur dans une équipe
+arene # Permet de téléporter l'équipe dans l'arène
+arena # Permet de téléporter l'équipe dans l'arène
 ```
 
 ## Installation
 
-1. Télécharger la map http://mineral.synchroneyes.fr/
+1. Télécharger la map [http://mineral.synchroneyes.fr/](http://mineral.synchroneyes.fr/download/map/world.zip)
 2. Glisser le dossier la map dans le dossier du serveur et le renommer si necessaire en "world"
-3. Télécharger le fichier jar MineralContest-1.0.jar
-4. Glisser le fichier .jar dans le dossier plugin
+3. Télécharger le fichier jar [MineralContest-1.1.jar](https://github.com/jaunefra/MineralContest/releases/download/1.1/MineralContest-1.1.jar)
+4. Glisser  le fichier .jar dans le dossier plugin
+(OPTIONEL) Supprimer le fichier MineralContest-1.0.jar si il existe
 5. Lancer le jeu
 6. Have fun !
 
@@ -52,4 +57,3 @@ ___
 ## A faire
 - Remplacer la lecture de fichier json en fichier yml
 - Ajouter la possibilité de créer ses propres map (déjà implémenter mais besoin de modification (plus de json, mais du yml))
-- Ajouter un système de langue
