@@ -59,7 +59,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
 
         // Create a lang folder
-        InputStream defaultLang = getClass().getResourceAsStream("/lang/french.yml");
+        InputStream defaultLang = getClass().getResourceAsStream("/lang/english.yml");
 
         File folder = new File(getDataFolder() + File.separator + "lang");
         if(! folder.exists())folder.mkdirs();
@@ -93,6 +93,15 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getLogger().info("Loading " + lang + " language");
         Bukkit.broadcastMessage("Loading " + lang + " language");
         File langFile = new File(getDataFolder() + File.separator + "lang" + File.separator + lang + ".yml");
+
+        if(!langFile.exists()) {
+            Bukkit.getLogger().severe(lang + ".yml lang file doesnt exists or could not be loaded.");
+            Bukkit.getLogger().severe("Loading english language file");
+
+            LoadLangFile("english");
+            return;
+        }
+
         YamlConfiguration conf = YamlConfiguration.loadConfiguration(langFile);
         for(Lang item:Lang.values()) {
             if (conf.getString(item.getPath()) == null) {
@@ -114,6 +123,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             getGame().getTeamRouge().setNomEquipe(Lang.red_team.toString());
             getGame().getTeamJaune().setNomEquipe(Lang.yellow_team.toString());
             getGame().getTeamBleu().setNomEquipe(Lang.blue_team.toString());
+
+            mineralcontest.plugin.getConfig().set("config.lang.language", lang);
+            mineralcontest.plugin.saveConfig();
 
         } catch(IOException e) {
             log.log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
@@ -145,6 +157,11 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             else
                 SendInformation.disable();
         }
+
+        if(!getConfig().isSet("config.lang.language"))
+            LoadLangFile("english");
+        else
+            LoadLangFile((String) getConfig().get("config.lang.language"));
     }
 
     public boolean isVersionCompatible() {
