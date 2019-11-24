@@ -17,6 +17,7 @@ public class Equipe {
     private Location houseLocation;
     private Coffre coffre;
     private int score = 0;
+    private int penalty = 0;
     private AutomaticDoors porte;
 
 
@@ -25,6 +26,20 @@ public class Equipe {
         this.nomEquipe = nom;
         this.couleur = c;
         this.porte = new AutomaticDoors(this);
+    }
+
+    public int getPenalty() { return this.penalty; }
+
+
+    public void addPenalty(int penalty){
+        Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this));
+        this.penalty += penalty;
+    }
+
+    public void resetPenalty() {
+        Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this));
+
+        this.penalty = 0;
     }
 
     public void setNomEquipe(String n ) { this.nomEquipe = n;}
@@ -49,7 +64,7 @@ public class Equipe {
      }
 
 
-    public int getScore() { return this.score; }
+    public int getScore() { return this.score - this.penalty; }
     public void setScore(int score) {
         for(Player online : joueurs)
             online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));

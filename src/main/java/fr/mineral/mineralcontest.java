@@ -241,6 +241,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
         getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
         getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
+        getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
+        getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
+
         getCommand("join").setExecutor(new JoinCommand());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
 

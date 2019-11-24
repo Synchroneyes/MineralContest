@@ -58,9 +58,15 @@ commands:
     permission:
     permission-message: you do not have the permission
 
-  mp_randomize_team:
-    description: Permet de rendre les équipes aléatoire ou non
-    use: /mp_randomize_team <1 | 0>
+  mp_add_team_penality:
+    description: Add a team penalty
+    use: /mp_add_team_penality <amount> <team>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_reset_team_penality:
+    description: reset a team penalty
+    use: /mp_reset_team_penality <team>
     permission: admin
     permission-message: you do not have the permission
 

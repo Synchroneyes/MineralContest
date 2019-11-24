@@ -23,10 +23,13 @@ public enum Lang {
     game_not_started("game_not_started", "La partie n'a pas encore commencé"),
     chest_not_defined("chest_not_defined", "Le coffre n'a pas encore été défini"),
     arena_spawnzone_not_added("arena_spawnzone_not_added", "La zone de spawn de l'arene n'est pas defini"),
+    team_penalty("team_penalty", " point(s) de pénalité"),
     team_is_full("team_is_full", "L'équipe %coloredTeamName% est pleine"),
     team_chest_not_defined("chest_not_defined", "Le coffre de l'équipe %coloredTeamName% n'a pas encore été défini"),
     team_house_location_not_added("team_house_location_not_added", "Le spawn de l'équipe %coloredTeamName% n'a pas été ajouté"),
     team_house_location_added("team_house_location_added", "Le spawn de l'équipe %coloredTeamName% a pas été ajouté"),
+    team_got_penality("team_got_penality", "L'équipe %coloredTeamName% a reçu %penality% points de pénalité"),
+    team_got_penality_reseted("team_got_penality_reseted", "L'équipe %coloredTeamName% n'a plus de pénalité"),
     cant_teleport_player_without_team("cant_teleport_player_without_team", "Impossible de téléporter un joueur sans équipe"),
     vote_already_voted("vote_already_voted", "Vous avez déjà voté !"),
     vote_not_enabled("vote_not_enabled", "Les votes ne sont pas actif"),
@@ -174,37 +177,37 @@ public enum Lang {
 
 
     public static String translate(String string, Equipe team, Player p) {
-        string = translate(string);
         string = translate(string, team);
         string =  translate(string, p);
         return string;
     }
 
     public static String translate(String string, Equipe team) {
-        string = translate(string);
         if(string.contains("%coloredTeamName%")) string = string.replace("%coloredTeamName%", team.getCouleur() + team.getNomEquipe() + ChatColor.WHITE);
-        if(string.contains("%teamScore%")) string = string.replace("%teamScore%", ""  + team.getScore());
+        if(string.contains("%penality%")) string = string.replace("%penality", team.getPenalty() + "");
+        if(string.contains("%teamScore%")) string = string.replace("%teamScore%", (team.getPenalty() != 0) ? ""  + team.getScore() + " (%red%" + team.getPenalty() + Lang.team_penalty.toString() + ")" : team.getScore() + " point(s)");
         if(string.contains("%teamColor%")) string = string.replace("%teamColor%", ""  + team.getCouleur());
         if(string.contains("%teamName%")) string = string.replace("%teamName%", team.getNomEquipe());
+        string = translate(string);
         return  string;
     }
 
     public static String translate(String string, Player player) {
-        string = translate(string);
         if(string.contains("%deathTime%")) string = string.replace("%deathTime%", "" + mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayerDeathTime(player));
         if(string.contains("%votedBiome%")) string = string.replace("%votedBiome%", mineralcontest.plugin.getGame().votemap.getPlayerVote(player));
         if(string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
         if(string.contains("%deadPlayer%") && !string.contains("%killingPlayer%"))
-            if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
+        if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
 
+        string = translate(string);
         return string;
 
     }
 
     public static String translate(String string, Player player1, Player player2) {
-        string = translate(string);
         if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player1.getDisplayName());
         if(string.contains("%killingPlayer%")) string = string.replace("%killingPlayer%", player2.getDisplayName());
+        string = translate(string);
         return string;
     }
 
