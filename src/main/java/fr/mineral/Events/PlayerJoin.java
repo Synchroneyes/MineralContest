@@ -28,11 +28,11 @@ public class PlayerJoin implements Listener {
         }
 
         if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-            p.kickPlayer(Lang.get("kick_game_already_in_progress"));
+            p.kickPlayer(Lang.kick_game_already_in_progress.toString());
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                 if(online.isOp())
-                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate(Lang.get("admin_played_tried_to_login"), p));
-            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate(Lang.get("admin_played_tried_to_login"), p));
+                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
+            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
         }
 
 
@@ -45,9 +45,9 @@ public class PlayerJoin implements Listener {
 
                 if(block == null || !block.getType().toString().equalsIgnoreCase("iron_block")){
                     ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("bad_map_loaded"));
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("github_link"));
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.get("plugin_shutdown"));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.bad_map_loaded.toString());
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.github_link.toString());
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + Lang.plugin_shutdown.toString());
                     Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
                 }
 
@@ -75,14 +75,14 @@ public class PlayerJoin implements Listener {
                 // Un nouveau joueur s'est connecté
                 Equipe teamNonPleine = mineralcontest.plugin.getGame().getEquipeNonPleine();
                 if(teamNonPleine == null) {
-                    p.kickPlayer("Erreur: Toutes les équipes sont déjà pleine.");
+                    p.kickPlayer(Lang.kick_game_already_in_progress.toString());
                 } else {
                     for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers()) {
 
                         if(online.isOp()) {
-                            online.sendMessage(mineralcontest.prefixPrive + "Le joueur " + ChatColor.RED + p.getDisplayName()  + ChatColor.WHITE + " vient de se connecté et il ne fait pas partie d'une équipe.");
-                            online.sendMessage(mineralcontest.prefixPrive + "Il peut rejoindre l'équipe " + teamNonPleine.getCouleur() + teamNonPleine.getNomEquipe());
-                            online.sendMessage(mineralcontest.prefixPrive + "Pour se faire, veuillez taper " + ChatColor.RED + "/switch " + p.getDisplayName() + " " + teamNonPleine.getNomEquipe());
+                            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.admin_played_logged_in_pause_without_team.toString(), p));
+                            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.admin_team_non_empty.toString(), teamNonPleine));
+                            online.sendMessage(mineralcontest.prefixPrive + Lang.admin_switch_command_help.toString());
                         }
                     }
                 }

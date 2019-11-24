@@ -11,12 +11,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class SafeZoneEvent implements Listener {
 
-    Radius radius = new Radius();
-
-    public SafeZoneEvent(){
-
-    }
-
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
 

@@ -64,11 +64,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         File folder = new File(getDataFolder() + File.separator + "lang");
         if(! folder.exists())folder.mkdirs();
 
-        // Copy the default language (french)
-        //InputStream is = getClass().getResourceAsStream("/lang/french.yml");
-        //if(is == null)
-            //log.severe("NULL");
-
         File langFile = null;
         OutputStream outputStream = null;
 
@@ -196,7 +191,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
@@ -248,6 +242,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         if(!isVersionCompatible()) {
             ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
             console.sendMessage(ChatColor.RED + "[MINERALC] [ERREUR] Incompatible bukkit version, Version asked: " + versionRequired + ", current version: " + Bukkit.getBukkitVersion());
+            console.sendMessage(Lang.plugin_shutdown.toString());
             //getServer().getLogger().info("La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
             Bukkit.getPluginManager().disablePlugin(this);
         }

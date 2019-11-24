@@ -32,13 +32,13 @@ public class Equipe {
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
         this.coffre.setPosition(loc);
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le coffre de l'équipe " + getCouleur() + getNomEquipe() + ChatColor.WHITE + " a bien été placé");
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), this));
 
     }
 
     public Location getCoffreEquipeLocation() throws Exception {
         if(this.coffre.getPosition() == null)
-            throw new Exception("Le coffre de l'équipe " + nomEquipe + " n'a pas été défini");
+            throw new Exception(Lang.translate(Lang.chest_not_defined.toString(), this));
         return coffre.getPosition();
     }
 
@@ -52,7 +52,7 @@ public class Equipe {
     public int getScore() { return this.score; }
     public void setScore(int score) {
         for(Player online : joueurs)
-            online.sendMessage(mineralcontest.prefixPrive + "Votre score est désormais de " + ChatColor.BLUE + score + ChatColor.WHITE + " points !");
+            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
         this.score = score;
     }
 
@@ -64,22 +64,24 @@ public class Equipe {
         return false;
     }
 
-    public boolean addPlayerToTeam(Player p) throws Exception {
+    public boolean addPlayerToTeam(Player p) {
         if(!isTeamFull()) {
             this.joueurs.add(p);
 
-            p.sendMessage(mineralcontest.prefix + "Bienvenue dans l'équipe" + this.couleur + " " + this.nomEquipe.toLowerCase());
+            p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + ChatColor.GOLD + p.getDisplayName() + ChatColor.WHITE + " a rejoint l'équipe " + this.couleur + " " + this.nomEquipe.toLowerCase());
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this));
             return true;
         }
-        throw new Exception("L'equipe est pleine.");
+
+        p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_is_full.toString(), this));
+        return false;
     }
 
     public boolean removePlayer(Player p) {
         if(isPlayerInTeam(p)) {
             this.joueurs.remove(p);
-            p.sendMessage(mineralcontest.prefix + "Vous avez été retirer de l'équipe" + this.couleur + " " + this.nomEquipe.toLowerCase());
+            p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_kicked.toString(), this));
             return true;
         }
         return false;
@@ -94,7 +96,7 @@ public class Equipe {
     }
 
     public String toString() {
-        String joueurs = "Equipe " + this.getCouleur() + this.nomEquipe + ChatColor.WHITE + ": ";
+        String joueurs = "Team " + this.getCouleur() + this.nomEquipe + ChatColor.WHITE + ": ";
         for(int i = 0; i < this.joueurs.size(); i++) {
             joueurs += this.joueurs.get(i).getDisplayName() + " ";
         }
@@ -111,13 +113,13 @@ public class Equipe {
     }
 
     public void setHouseLocation(Location houseLocation){
-        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le spawn de l'équipe " +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + "  pour réapparaitre a bien été ajouter");
+        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), this));
         this.houseLocation = houseLocation;
     }
 
-    public Location getHouseLocation() throws Exception {
+    public Location getHouseLocation() {
         if(this.houseLocation == null)
-            throw new Exception("Le spawn de l'équipe" +this.getCouleur() + this.getNomEquipe() + ChatColor.WHITE + " pour la réapparition n'a pas encore ete ajouter");
+            Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), this));
         return houseLocation;
     }
 

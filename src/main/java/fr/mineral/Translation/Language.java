@@ -27,7 +27,8 @@ public enum Language {
     public static String getAvailableLanguages() {
         String result = "";
         for(Language item : Language.values()) {
-            result += item.getLanguageName() + ", ";
+            if(!item.getLanguageName().equals("default"))
+                result += item.getLanguageName() + ", ";
         }
 
         result = result.substring(0, result.length() -2);

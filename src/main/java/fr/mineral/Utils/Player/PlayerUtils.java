@@ -79,13 +79,13 @@ public class PlayerUtils {
 
             // Si on vote
             if(voteMapEnabled) {
-                ScoreboardUtil.unrankedSidebarDisplay(online, ChatColor.GOLD + Lang.get("vote_title"), " " ,
-                        "0 - " + Lang.get("vote_snow") + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " "+ Lang.get("vote_count"),
-                        "1 - "+ Lang.get("vote_desert") +" (" + mineralcontest.plugin.getGame().votemap.voteDesert + " "+ Lang.get("vote_count"),
-                        "2 - "+ Lang.get("vote_forest") +" (" + mineralcontest.plugin.getGame().votemap.voteForet + Lang.get("vote_count"),
-                        "3 - "+ Lang.get("vote_plain") +" (" + mineralcontest.plugin.getGame().votemap.votePlaine + Lang.get("vote_count"),
-                        "4 - "+ Lang.get("vote_mountain") +" (" + mineralcontest.plugin.getGame().votemap.voteMontagne + Lang.get("vote_count"),
-                        "5 - "+ Lang.get("vote_swamp") +" (" + mineralcontest.plugin.getGame().votemap.voteMarecage + Lang.get("vote_count"));
+                ScoreboardUtil.unrankedSidebarDisplay(online, Lang.vote_title.toString(), " " ,
+                        "0 - " + Lang.get("vote_snow") + " (" + Lang.vote_snow.toString() + " "+ Lang.vote_count.toString(),
+                        "1 - "+ Lang.get("vote_desert") +" (" + Lang.vote_desert.toString() + " "+ Lang.vote_count.toString(),
+                        "2 - "+ Lang.get("vote_forest") +" (" + Lang.vote_forest.toString() + Lang.vote_count.toString(),
+                        "3 - "+ Lang.get("vote_plain") +" (" + Lang.vote_plain.toString() + Lang.vote_count.toString(),
+                        "4 - "+ Lang.get("vote_mountain") +" (" + Lang.vote_mountain.toString() + Lang.vote_count.toString(),
+                        "5 - "+ Lang.get("vote_swamp") +" (" + Lang.vote_swamp.toString() + Lang.vote_count.toString());
 
             } else {
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
@@ -104,14 +104,14 @@ public class PlayerUtils {
                     if (gamePaused) {
                         // Pas de team
                         if (team == null) {
-                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.get("hud_game_paused"), "", "Vous n'êtes pas dans une " + ChatColor.RED + "équipe");
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.hud_game_paused.toString(), "", Lang.hud_you_are_not_in_team.toString());
                         } else {
                             // Le joueur a une équipe
-                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.get("hud_game_paused"), "", Lang.translate(Lang.get("hud_team_score"), team));
+                            ScoreboardUtil.unrankedSidebarDisplay(online,"   " + Lang.title.toString() + "   ", " ", Lang.hud_game_paused.toString(), "", Lang.translate(Lang.hud_team_name_score.toString(), team));
                         }
                     } else {
                         // Game pas en pause
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.get("hud_time_left"), "", Lang.translate(Lang.get("hud_team_score"), team));
+                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_time_left.toString(), "", Lang.translate(Lang.hud_team_name_score.toString(), team));
                     }
                 }
             }
