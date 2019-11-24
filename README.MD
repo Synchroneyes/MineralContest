@@ -33,10 +33,11 @@ arena # Permet de téléporter l'équipe dans l'arène
 
 ## Installation
 
-1. Télécharger la map http://mineral.synchroneyes.fr/
+1. Télécharger la map [http://mineral.synchroneyes.fr/](http://mineral.synchroneyes.fr/download/map/world.zip)
 2. Glisser le dossier la map dans le dossier du serveur et le renommer si necessaire en "world"
-3. Télécharger le fichier jar MineralContest-1.0.jar
-4. Glisser le fichier .jar dans le dossier plugin
+3. Télécharger le fichier jar [MineralContest-1.1.jar](https://github.com/jaunefra/MineralContest/releases/download/1.1/MineralContest-1.1.jar)
+4. Glisser  le fichier .jar dans le dossier plugin
+(OPTIONEL) Supprimer le fichier MineralContest-1.0.jar si il existe
 5. Lancer le jeu
 6. Have fun !
 
