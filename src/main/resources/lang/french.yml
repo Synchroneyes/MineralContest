@@ -85,9 +85,8 @@ team_score_now: "Votre score est maintenant de %teamScore% points"
 team_chest_added: "Le coffre de l'équipe %coloredTeamName% a été ajouté"
 team_player_joined: "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"
 team_is_full: "L'équipe %coloredTeamName% est pleine"
-team_got_penality: "L'équipe %coloredTeamName% a reçu %penality% points de pénalité"
-team_got_penality_reseted: "L'équipe %coloredTeamName% n'a plus de pénalité"
-
+team_got_penalty: "L'équipe %coloredTeamName% a reçu %penality% points de pénalité"),
+team_got_penalty_reseted: "L'équipe %coloredTeamName% n'a plus de pénalité",
 red_team: "Rouge"
 yellow_team: "Jaune"
 blue_team: "Bleu"
