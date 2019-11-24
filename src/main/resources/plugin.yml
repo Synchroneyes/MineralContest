@@ -52,6 +52,12 @@ commands:
     permission:
     permission-message: you do not have the permission
 
+  arena:
+    description: Teleport to the arena
+    use: /arena
+    permission:
+    permission-message: you do not have the permission
+
   mp_randomize_team:
     description: Permet de rendre les équipes aléatoire ou non
     use: /mp_randomize_team <1 | 0>
