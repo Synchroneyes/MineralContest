@@ -1,7 +1,9 @@
 package fr.mineral.Utils.Save;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -14,26 +16,34 @@ public class FileToGame {
 
     public boolean readFile(String worldName) throws IOException {
 
-        mineralcontest.plugin.getServer().getLogger().info("readFIle !!!!!!");
-        JSONTokener tokener = new JSONTokener(getClass().getResourceAsStream("/data_worlds/" + worldName + ".json"));
-        JSONObject monde = new JSONObject(tokener).getJSONObject(worldName);
+        try {
+            JSONTokener tokener = new JSONTokener(getClass().getResourceAsStream("/data_worlds/" + worldName + ".json"));
+            JSONObject monde = new JSONObject(tokener).getJSONObject(worldName);
 
-        setHousesLocation(monde.getJSONObject("teams"));
-        setDoors(monde.getJSONObject("teams"));
-        setTeamChestLocation(monde.getJSONObject("teams"));
-        setArenaLocation(monde.getJSONObject("arene"));
+            setHousesLocation(monde.getJSONObject("teams"));
+            setDoors(monde.getJSONObject("teams"));
+            setTeamChestLocation(monde.getJSONObject("teams"));
+            setArenaLocation(monde.getJSONObject("arene"));
 
-        for(Player online : Bukkit.getOnlinePlayers()) {
-            try {
-                //online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
-                online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
-            }catch(Exception e) {
-                e.printStackTrace();
+            for(Player online : Bukkit.getOnlinePlayers()) {
+                try {
+                    //online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
+                    online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
+                }catch(Exception e) {
+                    Bukkit.broadcastMessage("Error while loading world");
+                    Bukkit.broadcastMessage("This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+                    e.printStackTrace();
+                }
+
             }
 
+            mineralcontest.plugin.getGame().isGameInitialized = true;
+        }catch (Exception e) {
+            Bukkit.broadcastMessage("Error while loading world");
+            Bukkit.broadcastMessage("This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+            e.printStackTrace();
         }
 
-        mineralcontest.plugin.getGame().isGameInitialized = true;
 
         return true;
 

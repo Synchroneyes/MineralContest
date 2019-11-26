@@ -234,6 +234,7 @@ public enum Lang {
         if(string.contains("%underline%")) string = string.replace("%underline%", "" + ChatColor.UNDERLINE);
         if(string.contains("%italic%")) string = string.replace("%italic%", "" + ChatColor.ITALIC);
 
+        if(string.contains("%timeLeft%")) string = string.replace("%timeLeft%", mineralcontest.plugin.getGame().getTempsRestant());
         if(string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + mineralcontest.plugin.getGame().PreGameTimeLeft);
         if(string.contains("%winningBiome%")) string = string.replace("%winningBiome%", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
         if(string.contains("%teamNumber%")) string = string.replace("%teamNumber%", "" + mineralcontest.plugin.teamMaxPlayers);

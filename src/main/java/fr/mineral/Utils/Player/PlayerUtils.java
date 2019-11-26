@@ -80,12 +80,12 @@ public class PlayerUtils {
             // Si on vote
             if(voteMapEnabled) {
                 ScoreboardUtil.unrankedSidebarDisplay(online, Lang.vote_title.toString(), " " ,
-                        "0 - " + Lang.get("vote_snow") + " (" + Lang.vote_snow.toString() + " "+ Lang.vote_count.toString(),
-                        "1 - "+ Lang.get("vote_desert") +" (" + Lang.vote_desert.toString() + " "+ Lang.vote_count.toString(),
-                        "2 - "+ Lang.get("vote_forest") +" (" + Lang.vote_forest.toString() + Lang.vote_count.toString(),
-                        "3 - "+ Lang.get("vote_plain") +" (" + Lang.vote_plain.toString() + Lang.vote_count.toString(),
-                        "4 - "+ Lang.get("vote_mountain") +" (" + Lang.vote_mountain.toString() + Lang.vote_count.toString(),
-                        "5 - "+ Lang.get("vote_swamp") +" (" + Lang.vote_swamp.toString() + Lang.vote_count.toString());
+                        "0 - " + Lang.vote_snow.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " " + Lang.vote_count.toString(),
+                        "1 - "+ Lang.vote_desert.toString() +" (" + mineralcontest.plugin.getGame().votemap.voteDesert + " "+ Lang.vote_count.toString(),
+                        "2 - "+ Lang.vote_forest.toString() +" (" + mineralcontest.plugin.getGame().votemap.voteForet + " "+ Lang.vote_count.toString(),
+                        "3 - "+ Lang.vote_plain.toString() +" (" + mineralcontest.plugin.getGame().votemap.votePlaine + " "+ Lang.vote_count.toString(),
+                        "4 - "+ Lang.vote_mountain.toString() +" (" + mineralcontest.plugin.getGame().votemap.voteMontagne +" "+  Lang.vote_count.toString(),
+                        "5 - "+ Lang.vote_swamp.toString() +" (" + mineralcontest.plugin.getGame().votemap.voteMarecage +" "+  Lang.vote_count.toString());
 
             } else {
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);

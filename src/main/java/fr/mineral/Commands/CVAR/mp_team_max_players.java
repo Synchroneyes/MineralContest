@@ -30,6 +30,7 @@ public class mp_team_max_players implements CommandExecutor {
 
                     mineralcontest.teamMaxPlayers = Integer.parseInt(args[0]);
                     mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le nombre de joueur requis par équipe a été mis à " + Integer.parseInt(args[0]));
+                    mineralcontest.plugin.getGame().votemap.enableVote();
                     return false;
                 }catch (NumberFormatException nfe) {
                     sender.sendMessage("[mp_team_max_players] La valeur doit être un nombre inferieur à 5");

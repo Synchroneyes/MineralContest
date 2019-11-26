@@ -4,6 +4,7 @@ import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -230,6 +231,7 @@ public class Game implements Listener {
                                         // METRIC
                                         // On envoie les informations de la partie
                                         SendInformation.sendGameData("started");
+                                        MobKiller.killMobNearArena(80);
 
 
                                     }catch (Exception e) {
@@ -253,6 +255,7 @@ public class Game implements Listener {
                     PreGameTimeLeft--;
                     for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                         if(PreGameTimeLeft > 0) online.playNote(online.getLocation(), Instrument.PIANO, new Note(1));
+                        else online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
 
                 }
 

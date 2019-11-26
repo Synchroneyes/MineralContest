@@ -85,7 +85,7 @@ public class Equipe {
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this));
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p));
             return true;
         }
 

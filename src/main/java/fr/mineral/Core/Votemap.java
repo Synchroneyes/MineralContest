@@ -24,10 +24,19 @@ public class Votemap {
     public boolean voteEnabled = false;
 
     public void enableVote() {
-        this.voteEnabled = true;
+        if(!mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getServer().getOnlinePlayers().size() == mineralcontest.teamMaxPlayers * 3){
+            this.voteEnabled = true;
 
-        for(Player online : Bukkit.getOnlinePlayers())
-            online.sendMessage(mineralcontest.prefixGlobal + Lang.vote_started.toString());
+            biomes[0] = Lang.vote_snow.toString();
+            biomes[1] = Lang.vote_desert.toString();
+            biomes[2] = Lang.vote_forest.toString();
+            biomes[3] = Lang.vote_plain.toString();
+            biomes[4] = Lang.vote_mountain.toString();
+            biomes[5] = Lang.vote_swamp.toString();
+
+            for(Player online : Bukkit.getOnlinePlayers())
+                online.sendMessage(mineralcontest.prefixGlobal + Lang.vote_started.toString());
+        }
     }
 
     public void disableVote() {
@@ -104,7 +113,8 @@ public class Votemap {
         if(allPlayerHaveVoted()){
             try {
                 FileToGame fg = new FileToGame();
-                fg.readFile(getWinnerBiome(false));
+                fg.readFile(getWinnerBiome(true));
+
                 disableVote();
             }catch(Exception e) {
                 e.printStackTrace();
@@ -136,8 +146,12 @@ public class Votemap {
         return new String(biomes[index].toLowerCase());
     }
 
+    private int getVoteNumber() {
+        return votant.size();
+    }
+
     private boolean allPlayerHaveVoted() {
-        if(voteNeige + voteDesert + voteForet + votePlaine + voteMarecage + voteMontagne >= Bukkit.getOnlinePlayers().size())
+        if(getVoteNumber() >= Bukkit.getOnlinePlayers().size())
             return true;
         return false;
     }

@@ -64,6 +64,13 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  mp_randomize_team:
+    description: set team random
+    use: /mp_randomize_team <1 | 0>
+    permission: admin
+    permission-message: you do not have the permission
+
+
   mp_reset_team_penality:
     description: reset a team penalty
     use: /mp_reset_team_penality <team>

@@ -73,16 +73,19 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
                 InputStream is = getClass().getResourceAsStream("/lang/" + item.getLanguageName() + ".yml");
                 log.info(item.getLanguageName());
                 langFile = new File(folder + File.separator + item.getLanguageName() + ".yml");
-                try {
-                    outputStream = new FileOutputStream(langFile);
-                    int read = 0;
-                    byte[] bytes = new byte[1024];
-                    while ((read = is.read(bytes)) != -1) {
-                        outputStream.write(bytes, 0, read);
+
+                if(!langFile.exists() && langFile.getTotalSpace() < 1){
+                    try {
+                        outputStream = new FileOutputStream(langFile);
+                        int read = 0;
+                        byte[] bytes = new byte[1024];
+                        while ((read = is.read(bytes)) != -1) {
+                            outputStream.write(bytes, 0, read);
+                        }
                     }
-                }
-                finally{
-                    if(outputStream != null) outputStream.close();
+                    finally{
+                        if(outputStream != null) outputStream.close();
+                    }
                 }
             }
         }
@@ -207,6 +210,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
+
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);

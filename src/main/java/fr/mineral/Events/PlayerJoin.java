@@ -23,9 +23,8 @@ public class PlayerJoin implements Listener {
         Player p = event.getPlayer();
 
         // SI la game n'a pas démarré et que tout le monde est connecté
-        if(!mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getServer().getOnlinePlayers().size() == mineralcontest.teamMaxPlayers * 3){
-            mineralcontest.plugin.getGame().votemap.enableVote();
-        }
+        mineralcontest.plugin.getGame().votemap.enableVote();
+
 
         if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
             p.kickPlayer(Lang.kick_game_already_in_progress.toString());
