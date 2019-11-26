@@ -1,6 +1,7 @@
 package fr.mineral.Commands.CVAR;
 
 import fr.mineral.Core.Game;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,14 +20,14 @@ public class mp_diamond_score implements CommandExecutor {
             if(args.length == 1) {
                 try {
                     Game.SCORE_DIAMOND = Integer.parseInt(args[0]);
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le score pour le diamant a été mis à " + Integer.parseInt(args[0]));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.cvar_diamond_score.toString() + Integer.parseInt(args[0]));
                     return false;
                 }catch (NumberFormatException nfe) {
-                    sender.sendMessage("[mp_diamond_score] La valeur doit être un nombre");
+                    sender.sendMessage("[mp_diamond_score] Incorrect value");
                     return true;
                 }
             } else if(args.length == 0) {
-                sender.sendMessage("[mp_diamond_score] Valeur actuelle: " + Game.SCORE_DIAMOND);
+                sender.sendMessage("[mp_diamond_score] Value: " + Game.SCORE_DIAMOND);
                 return true;
             }else {
                 sender.sendMessage("Usage: /mp_diamond_score <valeur | default: 150>");

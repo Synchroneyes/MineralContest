@@ -113,8 +113,8 @@ public class Votemap {
         if(allPlayerHaveVoted()){
             try {
                 FileToGame fg = new FileToGame();
-                fg.readFile(getWinnerBiome(true));
-
+                fg.readFile(getWinnerBiome());
+                getWinnerBiome(true);
                 disableVote();
             }catch(Exception e) {
                 e.printStackTrace();
@@ -123,6 +123,26 @@ public class Votemap {
         }
 
         return true;
+    }
+
+    public String getWinnerBiome() {
+        int[] valeurs = new int[6];
+        valeurs[0] = voteNeige;
+        valeurs[1] = voteDesert;
+        valeurs[2] = voteForet;
+        valeurs[3] = votePlaine;
+        valeurs[4] = voteMontagne;
+        valeurs[5] = voteMarecage;
+
+        int max = -1;
+        int index = -1;
+        for(int i = 0; i < valeurs.length; i++) {
+            if (valeurs[i] >= max) {
+                max = valeurs[i];
+                index = i;
+            }
+        }
+        return "" + index;
     }
 
     public String getWinnerBiome(boolean display) {

@@ -1,5 +1,6 @@
 package fr.mineral.Commands.CVAR;
 
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +10,7 @@ public class mp_team_max_players implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(mineralcontest.plugin.getGame().isGameStarted()){
-            sender.sendMessage(mineralcontest.prefixErreur + "La partie est déjà en cours, la modification de valeur n'est pas permis.");
+            sender.sendMessage(mineralcontest.prefixErreur + Lang.kick_game_already_in_progress.toString());
             return true;
         }
 
@@ -19,17 +20,17 @@ public class mp_team_max_players implements CommandExecutor {
                 try {
 
                     if(Integer.parseInt(args[0]) > 5) {
-                        sender.sendMessage("[mp_team_max_players] La valeur doit être un nombre inferieur à 5");
+                        sender.sendMessage("[mp_team_max_players] Must be less than 5");
                         return true;
                     }
 
                     if(Integer.parseInt(args[0]) < 1) {
-                        sender.sendMessage("[mp_team_max_players] La valeur doit être un nombre supérieur à 1");
+                        sender.sendMessage("[mp_team_max_players] Must be higher than 1");
                         return true;
                     }
 
                     mineralcontest.teamMaxPlayers = Integer.parseInt(args[0]);
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + "Le nombre de joueur requis par équipe a été mis à " + Integer.parseInt(args[0]));
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.cvar_team_max_player.toString()));
                     mineralcontest.plugin.getGame().votemap.enableVote();
                     return false;
                 }catch (NumberFormatException nfe) {

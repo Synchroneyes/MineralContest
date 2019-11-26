@@ -10,6 +10,11 @@ import org.bukkit.entity.Player;
 public enum Lang {
 
     title("title", "%white%[%gold%Mineral%blue%Contest%white%]"),
+    cvar_diamond_score("cvar_diamond_score", "Le score du diamand est maintenant de"),
+    cvar_iron_score("cvar_iron_score", "Le score du fer est maintenant de "),
+    cvar_emerald_score("cvar_emerald_score", "Le score de l'émeraude est maintenant de "),
+    cvar_gold_score("cvar_gold_score", "Le score de l'or est maintenant de "),
+    cvar_team_max_player("cvar_team_max_player", "Le nombre de joueur requis par equipe est maintenant de %teamNumber%"),
     error("error", "[Erreur]"),
     global("global", "[Global]"),
     _private("private", "[Privé]"),
