@@ -22,8 +22,9 @@ mp_team_max_player <valeur> # Permet de modifier le nombre de joueur requis par 
 mp_add_team_penality <valeur> <equipe> # Ajouter des points de pénalité à une équipe
 mp_reset_team_penality <equipe> # Reset la pénalité d'une équipe
 mp_set_language <langage> # Choisit le langage à utiliser
+mp_start_vote # Démarre un vote
 
-start # Permet de démarrer une partie
+start <force> # Permet de démarrer une partie
 resume # Permet de reprendre une partie en pause
 pause # permet de mettre une partie en pause
 join <rouge | bleu | jaune> # permet de rejoindre une équipe
