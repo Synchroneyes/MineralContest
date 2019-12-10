@@ -41,6 +41,7 @@ public class SendInformation {
                     request.addParameters("biomePlayed", "0");
                     request.addParameters("state", state);
                     request.addParameters("killCounter", mineralcontest.plugin.getGame().killCounter);
+                    request.addParameters("version", mineralcontest.plugin.getDescription().getVersion());
 
                     String result = request.getQueryResult();
                     Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
