@@ -72,11 +72,16 @@ public class PlayerUtils {
         joueur.getInventory().setArmorContents(armure);
     }
 
-    public static void drawPlayersHUD(boolean gameStarted, boolean gamePaused, boolean isPreGame, boolean voteMapEnabled) {
+    public static void drawPlayersHUD() {
         Collection<? extends Player> onlinePlayers = mineralcontest.plugin.getServer().getOnlinePlayers();
+
+        boolean gameStarted = mineralcontest.plugin.getGame().isGameStarted();
+        boolean gamePaused = mineralcontest.plugin.getGame().isGamePaused();
+        boolean voteMapEnabled = mineralcontest.plugin.getGame().votemap.voteEnabled;
+        boolean isPreGame = mineralcontest.plugin.getGame().isPreGame();
+
         // Si la game n'a pas démarré
         for(Player online : onlinePlayers) {
-
             // Si on vote
             if(voteMapEnabled) {
                 ScoreboardUtil.unrankedSidebarDisplay(online, Lang.vote_title.toString(), " " ,
@@ -91,14 +96,7 @@ public class PlayerUtils {
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
 
                 if (!gameStarted || isPreGame) {
-                    // Si le joueur n'a pas d'équipe
-                    if (team == null) {
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_you_are_not_in_team.toString());
-                    } else {
-                        // Le joueur a une équipe
-                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.translate(Lang.hud_team_name_no_score.toString(), team));
-                    }
-
+                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_awaiting_players.toString(), Lang.hud_you_are_not_in_team.toString());
                 } else {
                     // Si la game est en pause
                     if (gamePaused) {

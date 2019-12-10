@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
@@ -23,10 +24,16 @@ public class PlayerJoin implements Listener {
         Player p = event.getPlayer();
 
         // SI la game n'a pas démarré et que tout le monde est connecté
-        mineralcontest.plugin.getGame().votemap.enableVote();
+        Game game = mineralcontest.plugin.getGame();
+
+        game.votemap.enableVote(false);
+
+        if(!game.isGameStarted())
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
 
 
-        if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
+
+        if(game.isGameStarted() && !game.isGamePaused()) {
             p.kickPlayer(Lang.kick_game_already_in_progress.toString());
             for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                 if(online.isOp())
@@ -36,7 +43,7 @@ public class PlayerJoin implements Listener {
 
 
         // Lorsque le premier joueur se connecte, on génère tous les points de spawn etc ...
-        if(mineralcontest.plugin.getServer().getOnlinePlayers().size() == 1 && !mineralcontest.plugin.getGame().isGameInitialized){
+        if(mineralcontest.plugin.getServer().getOnlinePlayers().size() == 1 && !game.isGameInitialized){
             try {
 
                 // 111 168 -166
@@ -58,21 +65,21 @@ public class PlayerJoin implements Listener {
         }
 
 
-        if(mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getGame().isGamePaused()) {
+        if(game.isGameStarted() && game.isGamePaused()) {
             // On regarde si le joueur connecté était un joueur qui s'est déconnecté
-            if(mineralcontest.plugin.getGame().havePlayerDisconnected(p.getDisplayName())) {
+            if(game.havePlayerDisconnected(p.getDisplayName())) {
                 // Il s'était déconnecté
-                CouplePlayerTeam infoJoueur = mineralcontest.plugin.getGame().getDisconnectedPlayerInfo(p.getDisplayName());
+                CouplePlayerTeam infoJoueur = game.getDisconnectedPlayerInfo(p.getDisplayName());
                 try {
                     // On le remet dans son équipe automatiquement
                     infoJoueur.getTeam().addPlayerToTeam(p);
-                    mineralcontest.plugin.getGame().resumeGame();
+                    game.resumeGame();
                 }catch(Exception e) {
                     e.printStackTrace();
                 }
             } else {
                 // Un nouveau joueur s'est connecté
-                Equipe teamNonPleine = mineralcontest.plugin.getGame().getEquipeNonPleine();
+                Equipe teamNonPleine = game.getEquipeNonPleine();
                 if(teamNonPleine == null) {
                     p.kickPlayer(Lang.kick_game_already_in_progress.toString());
                 } else {

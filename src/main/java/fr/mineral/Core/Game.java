@@ -9,6 +9,7 @@ import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
+import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -67,6 +68,7 @@ public class Game implements Listener {
     private boolean GameStarted = false;
     private boolean GamePaused = false;
     private boolean PreGame = false;
+    private boolean GameEnded = false;
 
     public boolean isGameInitialized = false;
 
@@ -79,6 +81,7 @@ public class Game implements Listener {
     public boolean isGameStarted() { return this.GameStarted; }
     public boolean isGamePaused() { return this.GamePaused; }
     public boolean isPreGame() { return this.PreGame; }
+    public boolean isGameEnded() { return this.GameEnded; }
 
 
     public Arene getArene() { return this.arene; }
@@ -150,7 +153,8 @@ public class Game implements Listener {
 
         new BukkitRunnable() {
             public void run() {
-                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused(), isPreGame(), votemap.voteEnabled);
+                PlayerUtils.drawPlayersHUD();
+
                 if(isGameStarted() && !isPreGame() && !isGamePaused()) {
                     for(Player online : teamRouge.getJoueurs()) {
                         Location blockCentralPorte = teamRouge.getPorte().getMiddleBlockLocation();
@@ -197,7 +201,7 @@ public class Game implements Listener {
 
         new BukkitRunnable() {
             public void run() {
-                PlayerUtils.drawPlayersHUD(isGameStarted(), isGamePaused(), isPreGame(), votemap.voteEnabled);
+                PlayerUtils.drawPlayersHUD();
 
 
 
@@ -351,6 +355,7 @@ public class Game implements Listener {
     public void terminerPartie() throws Exception {
         this.GamePaused = false;
         this.GameStarted = false;
+        this.GameEnded = true;
 
         mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.game_over.toString());
 
@@ -398,11 +403,28 @@ public class Game implements Listener {
         }
     }
 
-    public boolean demarrerPartie() throws Exception {
+    public boolean demarrerPartie(boolean force) throws Exception {
+
+        if(isGameEnded()) {
+            throw new Exception("Please, " + ChatColor.RED + ChatColor.BOLD + "restart your server to avoid any issue.");
+        }
 
         if(isGameStarted()) {
             throw new Exception(Lang.get("game_already_started"));
         }
+
+        if(force){
+            tempsPartie = 60*60;
+            PreGameTimeLeft = 10;
+        }
+
+        // Si on force le démarrage, et que le vote n'a pas été fait
+        if(force && !mineralcontest.plugin.getGame().isGameInitialized) {
+            int random = new Random().nextInt(6);
+            new FileToGame().readFile("" + random);
+            mineralcontest.log.info("Randomly loaded world #" + random);
+        }
+
 
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + Lang.get("game_starting"));
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
@@ -463,21 +485,25 @@ public class Game implements Listener {
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn arene: " + ChatColor.GREEN + "OK");
 
 
-        randomizeTeam();
+        if(mp_randomize_team == 1) randomizeTeam(force);
 
         // EQUIPES PLEINE
-        if(!this.teamRouge.isTeamFull()) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe rouge pleine: " + ChatColor.RED + "X");
-            return false;
+
+        if(!force) {
+            if(!this.teamRouge.isTeamFull()) {
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe rouge pleine: " + ChatColor.RED + "X");
+                return false;
+            }
+            if(!this.teamBleu.isTeamFull()) {
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe bleu pleine: " + ChatColor.RED + "X");
+                return false;
+            }
+            if(!this.teamJaune.isTeamFull()) {
+                mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe jaune pleine: " + ChatColor.RED + "X");
+                return false;
+            }
         }
-        if(!this.teamBleu.isTeamFull()) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe bleu pleine: " + ChatColor.RED + "X");
-            return false;
-        }
-        if(!this.teamJaune.isTeamFull()) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe jaune pleine: " + ChatColor.RED + "X");
-            return false;
-        }
+
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Equipes pleines: " + ChatColor.GREEN + "OK");
 
 
@@ -517,12 +543,12 @@ public class Game implements Listener {
     }
 
     // Créer les equipes aléatoirement
-    public void randomizeTeam() throws Exception {
+    public void randomizeTeam(boolean force) throws Exception {
         if(isGameStarted()) {
             throw new Exception("gameAlreadyStarted");
         }
 
-        if(mineralcontest.teamMaxPlayers*3 != mineralcontest.plugin.getServer().getOnlinePlayers().size())
+        if((mineralcontest.teamMaxPlayers*3 != mineralcontest.plugin.getServer().getOnlinePlayers().size()) && !force)
             throw new Exception("NotEnoughtPlayer");
 
         ArrayList<String> team = new ArrayList<String>();

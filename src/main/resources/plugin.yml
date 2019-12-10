@@ -119,6 +119,12 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  mp_start_vote:
+    description: Démarrer un vote
+    use: /mp_start_vote
+    permission: admin
+    permission-message: you do not have the permission
+
   join:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>

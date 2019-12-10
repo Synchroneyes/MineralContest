@@ -14,6 +14,8 @@ public class Votemap {
     private LinkedList<CouplePlayer> votant;
     public String[] biomes;
 
+    private boolean voteHasBeenEnabled = false;
+
     public int voteNeige = 0;
     public int voteDesert = 0;
     public int voteForet = 0;
@@ -23,8 +25,13 @@ public class Votemap {
 
     public boolean voteEnabled = false;
 
-    public void enableVote() {
-        if(!mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getServer().getOnlinePlayers().size() == mineralcontest.teamMaxPlayers * 3){
+    public void resetVotes() {
+        this.votant.clear();
+        voteHasBeenEnabled = false;
+    }
+
+    public void enableVote(boolean force) {
+        if((!mineralcontest.plugin.getGame().isGameStarted() && mineralcontest.plugin.getServer().getOnlinePlayers().size() == mineralcontest.teamMaxPlayers * 3 && !voteHasBeenEnabled) || force){
             this.voteEnabled = true;
 
             biomes[0] = Lang.vote_snow.toString();
@@ -112,6 +119,7 @@ public class Votemap {
 
         if(allPlayerHaveVoted()){
             try {
+                voteHasBeenEnabled = true;
                 FileToGame fg = new FileToGame();
                 fg.readFile(getWinnerBiome());
                 getWinnerBiome(true);

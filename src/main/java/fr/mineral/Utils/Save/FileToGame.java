@@ -30,8 +30,8 @@ public class FileToGame {
                     //online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
                     online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
                 }catch(Exception e) {
-                    Bukkit.broadcastMessage("Error while loading world");
-                    Bukkit.broadcastMessage("This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
+                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
                     e.printStackTrace();
                 }
 
@@ -39,8 +39,8 @@ public class FileToGame {
 
             mineralcontest.plugin.getGame().isGameInitialized = true;
         }catch (Exception e) {
-            Bukkit.broadcastMessage("Error while loading world");
-            Bukkit.broadcastMessage("This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
             e.printStackTrace();
         }
 

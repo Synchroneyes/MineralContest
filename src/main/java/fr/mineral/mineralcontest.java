@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,6 +41,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
     public static YamlConfiguration LANG;
     public static File LANG_FILE;
+
 
     public static Logger log = Bukkit.getLogger();
 
@@ -118,10 +120,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             Bukkit.getLogger().info("Loaded " + lang + " language");
             Bukkit.broadcastMessage("Loaded " + lang + " language");
             prefix = Lang.title.toString() + ChatColor.WHITE;
-            prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE;
-            prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE;
-            prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE;
-            prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE;
+            prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE + " ";
+            prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE+ " ";
+            prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE+ " ";
+            prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE+ " ";
 
             getGame().getTeamRouge().setNomEquipe(Lang.red_team.toString());
             getGame().getTeamJaune().setNomEquipe(Lang.yellow_team.toString());
@@ -248,6 +250,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
         getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
         getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
+        getCommand("mp_start_vote").setExecutor(new mp_start_vote());
+
 
         getCommand("join").setExecutor(new JoinCommand());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
@@ -273,12 +277,15 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             //getServer().getLogger().info("La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
+        log.info("Stopping all timers");
 
+        for(Player player : mineralcontest.plugin.getServer().getOnlinePlayers())
+            player.sendMessage(ChatColor.WHITE + "### PLEASE " + ChatColor.RED + "DONT" + ChatColor.WHITE + " RELOAD THE PLUGIN, " + ChatColor.RED + ChatColor.BOLD + ChatColor.UNDERLINE+  "RESTART IT INSTEAD " + ChatColor.RESET + ChatColor.WHITE + "###");
     }
 
 }

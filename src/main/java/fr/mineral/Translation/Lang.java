@@ -83,6 +83,7 @@ public enum Lang {
     hud_team_name_no_score("hud_team_name_no_score", "%teamColor% Equipe %teamName%"),
     hud_team_name_score("hud_team_name_score", "%teamColor% Equipe %teamName% : %teamScore% points"),
     hud_time_left("hud_time_left", "Temps restant: %timeLeft%"),
+    hud_awaiting_players("hud_awaiting_players", "%onlinePlayers%/%requiredPlayers% joueurs connectés"),
     admin_played_tried_to_login("admin_played_tried_to_login", "Le joueur %playerName% a tenté de se connecter alors que la partie est déjà en cours"),
     admin_played_logged_in_pause_without_team("admin_played_logged_in_pause_without_team", "Le joueur %playerName% s'est connecté alors qu'il ne faisait pas partie d'une équipe"),
     admin_team_non_empty("admin_team_non_empty", "L'équipe %coloredTeamName% n'est pas pleine"),
@@ -217,6 +218,8 @@ public enum Lang {
     }
 
     public static String translate(String string) {
+        if(string.contains("%onlinePlayers%")) string = string.replace("%onlinePlayers%", "" + mineralcontest.plugin.getServer().getOnlinePlayers().size());
+        if(string.contains("%requiredPlayers%")) string = string.replace("%requiredPlayers%", "" + 3*mineralcontest.teamMaxPlayers);
         if(string.contains("%black%")) string = string.replace("%black%", "" + ChatColor.BLACK);
         if(string.contains("%dark_blue%")) string = string.replace("%dark_blue%", "" + ChatColor.DARK_BLUE);
         if(string.contains("%dark_green%")) string = string.replace("%dark_green%", "" + ChatColor.DARK_GREEN);

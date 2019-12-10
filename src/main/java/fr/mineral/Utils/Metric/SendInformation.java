@@ -38,7 +38,7 @@ public class SendInformation {
                     // On lui passe les parametres
                     request.addParameters("serverPort", Bukkit.getServer().getPort());
                     request.addParameters("numberOfPlayers", Bukkit.getServer().getOnlinePlayers().size());
-                    request.addParameters("biomePlayed", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
+                    request.addParameters("biomePlayed", "0");
                     request.addParameters("state", state);
                     request.addParameters("killCounter", mineralcontest.plugin.getGame().killCounter);
 
