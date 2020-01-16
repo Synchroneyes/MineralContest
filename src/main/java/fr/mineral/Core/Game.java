@@ -32,9 +32,9 @@ public class Game implements Listener {
             -
      */
     private Arene arene;
-    private Equipe teamRouge;
-    private Equipe teamJaune;
-    private Equipe teamBleu;
+    private House redHouse;
+    private House yellowHouse;
+    private House blueHouse;
 
     /*
         CVAR List
@@ -85,20 +85,19 @@ public class Game implements Listener {
 
 
     public Arene getArene() { return this.arene; }
-    public Equipe getTeamRouge() { return this.teamRouge; }
-    public Equipe getTeamJaune() { return this.teamJaune; }
-    public Equipe getTeamBleu() { return this.teamBleu; }
+    public House getRedHouse() { return this.redHouse; }
+    public House getYellowHouse() { return this.yellowHouse; }
+    public House getBlueHouse() { return this.blueHouse; }
     public Votemap votemap;
 
 
 
     public Game() {
-        this.teamRouge = new Equipe("Rouge", ChatColor.RED);
-        this.teamBleu = new Equipe("Bleu", ChatColor.BLUE);
-        this.teamJaune = new Equipe("Jaune", ChatColor.YELLOW);
+        this.redHouse = new House("Rouge", ChatColor.RED);
+        this.blueHouse = new House("Bleu", ChatColor.BLUE);
+        this.yellowHouse = new House("Jaune", ChatColor.YELLOW);
 
         this.arene = new Arene();
-        this.portes = new AutomaticDoors(this.teamBleu);
         this.votemap = new Votemap();
 
         //votemap.enableVote();
@@ -153,36 +152,35 @@ public class Game implements Listener {
 
         new BukkitRunnable() {
             public void run() {
-                PlayerUtils.drawPlayersHUD();
 
                 if(isGameStarted() && !isPreGame() && !isGamePaused()) {
-                    for(Player online : teamRouge.getJoueurs()) {
-                        Location blockCentralPorte = teamRouge.getPorte().getMiddleBlockLocation();
+                    for(Player online : redHouse.getTeam().getJoueurs()) {
+                        Location blockCentralPorte = redHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
-                            teamRouge.getPorte().playerIsNearDoor(online);
+                            redHouse.getPorte().playerIsNearDoor(online);
                         } else {
-                            teamRouge.getPorte().playerIsNotNearDoor(online);
+                            redHouse.getPorte().playerIsNotNearDoor(online);
                         }
                     }
 
-                    for(Player online : teamJaune.getJoueurs()) {
-                        Location blockCentralPorte = teamJaune.getPorte().getMiddleBlockLocation();
+                    for(Player online : yellowHouse.getTeam().getJoueurs()) {
+                        Location blockCentralPorte = yellowHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
-                            teamJaune.getPorte().playerIsNearDoor(online);
+                            yellowHouse.getPorte().playerIsNearDoor(online);
                         } else {
-                            teamJaune.getPorte().playerIsNotNearDoor(online);
+                            yellowHouse.getPorte().playerIsNotNearDoor(online);
                         }
                     }
 
-                    for(Player online : teamBleu.getJoueurs()) {
-                        Location blockCentralPorte = teamBleu.getPorte().getMiddleBlockLocation();
+                    for(Player online : blueHouse.getTeam().getJoueurs()) {
+                        Location blockCentralPorte = blueHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
-                            teamBleu.getPorte().playerIsNearDoor(online);
+                            blueHouse.getPorte().playerIsNearDoor(online);
                         } else {
-                            teamBleu.getPorte().playerIsNotNearDoor(online);
+                            blueHouse.getPorte().playerIsNotNearDoor(online);
                         }
                     }
                 }
@@ -230,7 +228,7 @@ public class Game implements Listener {
 
                                     // On TP le joueur dans sa maison
                                     try {
-                                        online.teleport(getPlayerTeam(online).getHouseLocation());
+                                        online.teleport(getPlayerHouse(online).getHouseLocation());
 
                                         // METRIC
                                         // On envoie les informations de la partie
@@ -305,29 +303,29 @@ public class Game implements Listener {
     }
 
     public Equipe getEquipeNonPleine() {
-        if(teamJaune.getJoueurs().size() < mineralcontest.teamMaxPlayers)
-            return teamJaune;
+        if(yellowHouse.getTeam().getJoueurs().size() < mineralcontest.teamMaxPlayers)
+            return yellowHouse.getTeam();
 
-        if(teamRouge.getJoueurs().size() < mineralcontest.teamMaxPlayers)
-            return teamRouge;
+        if(redHouse.getTeam().getJoueurs().size() < mineralcontest.teamMaxPlayers)
+            return redHouse.getTeam();
 
-        if(teamBleu.getJoueurs().size() < mineralcontest.teamMaxPlayers)
-            return teamBleu;
+        if(blueHouse.getTeam().getJoueurs().size() < mineralcontest.teamMaxPlayers)
+            return blueHouse.getTeam();
 
         return null;
     }
 
     private void afficherScores() {
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamJaune));
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamRouge));
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), teamBleu));
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), yellowHouse.getTeam()));
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), redHouse.getTeam()));
+        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), blueHouse.getTeam()));
     }
 
     private Equipe afficherGagnant() {
         Equipe[] equipes = new Equipe[3];
-        equipes[0] = teamBleu;
-        equipes[1] = teamRouge;
-        equipes[2] = teamJaune;
+        equipes[0] = blueHouse.getTeam();
+        equipes[1] = redHouse.getTeam();
+        equipes[2] = yellowHouse.getTeam();
 
         int[] resultats = new int[3];
         int max = 0;
@@ -345,9 +343,17 @@ public class Game implements Listener {
     }
 
     public Equipe getPlayerTeam(Player j) {
-        if(teamRouge.isPlayerInTeam(j)) return teamRouge;
-        if(teamBleu.isPlayerInTeam(j)) return teamBleu;
-        if(teamJaune.isPlayerInTeam(j)) return teamJaune;
+        if(redHouse.getTeam().isPlayerInTeam(j)) return redHouse.getTeam();
+        if(blueHouse.getTeam().isPlayerInTeam(j)) return blueHouse.getTeam();
+        if(yellowHouse.getTeam().isPlayerInTeam(j)) return yellowHouse.getTeam();
+
+        return null;
+    }
+
+    public House getPlayerHouse(Player j) {
+        if(redHouse.getTeam().isPlayerInTeam(j)) return redHouse;
+        if(blueHouse.getTeam().isPlayerInTeam(j)) return blueHouse;
+        if(yellowHouse.getTeam().isPlayerInTeam(j)) return yellowHouse;
 
         return null;
     }
@@ -435,16 +441,16 @@ public class Game implements Listener {
         // Toutes les equipes soient pleine
 
         // SPAWN MAISON
-        if(this.teamBleu.getHouseLocation() == null) {
+        if(this.blueHouse.getHouseLocation() == null) {
             mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] Spawn maison bleu: " + ChatColor.RED + "X");
             return false;
         }
 
-        if(this.teamRouge.getHouseLocation() == null) {
+        if(this.redHouse.getHouseLocation() == null) {
             mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison rouge: " + ChatColor.RED + "X");
             return false;
         }
-        if(this.teamJaune.getHouseLocation() == null) {
+        if(this.yellowHouse.getHouseLocation() == null) {
             mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison jaune: " + ChatColor.RED + "X");
             return false;
         }
@@ -452,18 +458,18 @@ public class Game implements Listener {
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison: " + ChatColor.GREEN + "OK");
 
         // SPAWN COFFRE MAISON
-        if(this.teamJaune.getCoffreEquipeLocation() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamJaune.getNomEquipe() + ": " + ChatColor.RED + "X");
+        if(this.yellowHouse.getCoffreEquipeLocation() == null) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.yellowHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
             return false;
         }
 
-        if(this.teamRouge.getCoffreEquipeLocation() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamRouge.getNomEquipe() + ": " + ChatColor.RED + "X");
+        if(this.redHouse.getCoffreEquipeLocation() == null) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.redHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
             return false;
         }
 
-        if(this.teamBleu.getCoffreEquipeLocation() == null) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.teamBleu.getNomEquipe() + ": " + ChatColor.RED + "X");
+        if(this.blueHouse.getCoffreEquipeLocation() == null) {
+            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.blueHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
             return false;
         }
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
@@ -490,15 +496,15 @@ public class Game implements Listener {
         // EQUIPES PLEINE
 
         if(!force) {
-            if(!this.teamRouge.isTeamFull()) {
+            if(!this.redHouse.getTeam().isTeamFull()) {
                 mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe rouge pleine: " + ChatColor.RED + "X");
                 return false;
             }
-            if(!this.teamBleu.isTeamFull()) {
+            if(!this.blueHouse.getTeam().isTeamFull()) {
                 mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe bleu pleine: " + ChatColor.RED + "X");
                 return false;
             }
-            if(!this.teamJaune.isTeamFull()) {
+            if(!this.yellowHouse.getTeam().isTeamFull()) {
                 mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Equipe jaune pleine: " + ChatColor.RED + "X");
                 return false;
             }
@@ -522,9 +528,9 @@ public class Game implements Listener {
 
 
         // On spawn les coffres
-        mineralcontest.plugin.getGame().getTeamJaune().spawnCoffreEquipe();
-        mineralcontest.plugin.getGame().getTeamRouge().spawnCoffreEquipe();
-        mineralcontest.plugin.getGame().getTeamBleu().spawnCoffreEquipe();
+        mineralcontest.plugin.getGame().getYellowHouse().spawnCoffreEquipe();
+        mineralcontest.plugin.getGame().getRedHouse().spawnCoffreEquipe();
+        mineralcontest.plugin.getGame().getBlueHouse().spawnCoffreEquipe();
 
         PreGame = true;
         GameStarted = true;
@@ -564,16 +570,16 @@ public class Game implements Listener {
             team.add("bleu");
         }
 
-        for(Player joueur : this.teamRouge.getJoueurs()) {
-            this.teamRouge.removePlayer(joueur);
+        for(Player joueur : this.redHouse.getTeam().getJoueurs()) {
+            this.redHouse.getTeam().removePlayer(joueur);
         }
 
-        for(Player joueur : this.teamJaune.getJoueurs()) {
-            this.teamJaune.removePlayer(joueur);
+        for(Player joueur : this.yellowHouse.getTeam().getJoueurs()) {
+            this.yellowHouse.getTeam().removePlayer(joueur);
         }
 
-        for(Player joueur : this.teamBleu.getJoueurs()) {
-            this.teamBleu.removePlayer(joueur);
+        for(Player joueur : this.blueHouse.getTeam().getJoueurs()) {
+            this.blueHouse.getTeam().removePlayer(joueur);
         }
 
         int random;
@@ -587,17 +593,17 @@ public class Game implements Listener {
             result = team.get(random);
 
             if(result.equals("jaune")) {
-                this.teamJaune.addPlayerToTeam((Player) joueurs[indexJoueur]);
+                this.yellowHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
                 team.remove(random);
             }
 
             if(result.equals("rouge")) {
-                this.teamRouge.addPlayerToTeam((Player) joueurs[indexJoueur]);
+                this.redHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
                 team.remove(random);
             }
 
             if(result.equals("bleu")) {
-                this.teamBleu.addPlayerToTeam((Player) joueurs[indexJoueur]);
+                this.blueHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
                 team.remove(random);
             }
 
@@ -627,7 +633,7 @@ public class Game implements Listener {
                     case "red":
                     case "rouge":
                     case "r":
-                        this.teamRouge.addPlayerToTeam(joueur);
+                        this.redHouse.getTeam().addPlayerToTeam(joueur);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
                         break;
 
@@ -635,14 +641,14 @@ public class Game implements Listener {
                     case "yellow":
                     case "j":
                     case "y":
-                        this.teamJaune.addPlayerToTeam(joueur);
+                        this.yellowHouse.getTeam().addPlayerToTeam(joueur);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
                         break;
 
                     case "blue":
                     case "bleu":
                     case "b":
-                        this.teamBleu.addPlayerToTeam(joueur);
+                        this.blueHouse.getTeam().addPlayerToTeam(joueur);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
                         break;
                 }

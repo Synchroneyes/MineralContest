@@ -37,35 +37,35 @@ public class Setup {
 
                 break;
             case 2:
-                mineralcontest.plugin.getGame().getTeamRouge().setHouseLocation(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getRedHouse().setHouseLocation(getEmplacementTemporaire());
                 joueur.sendMessage("======================");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez selectionner l'emplacement du coffre de l'équipe " +  ChatColor.RED + "ROUGE");
                 break;
 
             case 3:
-                mineralcontest.plugin.getGame().getTeamRouge().setCoffreEquipe(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getRedHouse().setCoffreEquipe(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez vous rendre dans la base " + ChatColor.YELLOW + "JAUNE");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Et effectuez un clic droit sur le bloc où les joueurs apparaitrons");
                 break;
 
             case 4:
-                mineralcontest.plugin.getGame().getTeamJaune().setHouseLocation(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getYellowHouse().setHouseLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez selectionner l'emplacement du coffre de l'équipe " +  ChatColor.YELLOW + "JAUNE");
                 break;
 
             case 5:
-                mineralcontest.plugin.getGame().getTeamJaune().setCoffreEquipe(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getYellowHouse().setCoffreEquipe(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez vous rendre dans la base " + ChatColor.BLUE + "BLEU");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Et effectuez un clic droit sur le bloc où les joueurs apparaitrons");
                 break;
 
             case 6:
-                mineralcontest.plugin.getGame().getTeamBleu().setHouseLocation(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getBlueHouse().setHouseLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez selectionner l'emplacement du coffre de l'équipe " +  ChatColor.BLUE + "BLEU");
                 break;
 
             case 7:
-                mineralcontest.plugin.getGame().getTeamBleu().setCoffreEquipe(getEmplacementTemporaire());
+                mineralcontest.plugin.getGame().getBlueHouse().setCoffreEquipe(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez vous rendre dans l'arène et cliquer où le coffre d'arène doit apparaitre");
                 break;
 

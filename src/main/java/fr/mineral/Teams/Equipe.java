@@ -14,18 +14,14 @@ public class Equipe {
     private LinkedList<Player> joueurs;
     private String nomEquipe;
     private ChatColor couleur;
-    private Location houseLocation;
-    private Coffre coffre;
     private int score = 0;
     private int penalty = 0;
-    private AutomaticDoors porte;
 
 
     public Equipe(String nom, ChatColor c) {
         this.joueurs = new LinkedList<Player>();
         this.nomEquipe = nom;
         this.couleur = c;
-        this.porte = new AutomaticDoors(this);
     }
 
     public int getPenalty() { return this.penalty; }
@@ -44,24 +40,7 @@ public class Equipe {
 
     public void setNomEquipe(String n ) { this.nomEquipe = n;}
 
-    public void setCoffreEquipe(Location loc) {
-        this.coffre = new Coffre();
-        this.coffre.setPosition(loc);
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), this));
 
-    }
-
-    public Location getCoffreEquipeLocation() throws Exception {
-        if(this.coffre.getPosition() == null)
-            throw new Exception(Lang.translate(Lang.chest_not_defined.toString(), this));
-        return coffre.getPosition();
-    }
-
-    public void spawnCoffreEquipe() throws Exception {
-        Location loc = coffre.getPosition();
-        Block block = loc.getBlock();
-        loc.getBlock().setType(Material.CHEST);
-     }
 
 
     public int getScore() { return this.score - this.penalty; }
@@ -125,22 +104,6 @@ public class Equipe {
 
     public ChatColor getCouleur() {
         return this.couleur;
-    }
-
-    public void setHouseLocation(Location houseLocation){
-        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), this));
-        this.houseLocation = houseLocation;
-    }
-
-    public Location getHouseLocation() {
-        if(this.houseLocation == null)
-            Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), this));
-        return houseLocation;
-    }
-
-
-    public AutomaticDoors getPorte() {
-        return porte;
     }
 
     public Color toColor() {

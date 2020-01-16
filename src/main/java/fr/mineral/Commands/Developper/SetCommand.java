@@ -1,7 +1,6 @@
 package fr.mineral.Commands.Developper;
 
 import fr.mineral.mineralcontest;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -83,10 +82,10 @@ public class SetCommand implements CommandExecutor {
                                                             case "coffre" :
                                                                 // On spawn le coffre rouge
                                                                 joueur.sendMessage(mineralcontest.prefixPrive + "Ajout du coffre de l'équipe ROUGE");
-                                                                mineralcontest.plugin.getGame().getTeamRouge().setCoffreEquipe(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getRedHouse().setCoffreEquipe(joueur.getLocation());
                                                                 break;
                                                             case "spawn":
-                                                                mineralcontest.plugin.getGame().getTeamRouge().setHouseLocation(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getRedHouse().setHouseLocation(joueur.getLocation());
                                                                 break;
                                                         }
                                                 break;
@@ -100,10 +99,10 @@ public class SetCommand implements CommandExecutor {
                                                             case "coffre" :
                                                                 // On spawn le coffre rouge
                                                                 joueur.sendMessage(mineralcontest.prefixPrive + "Ajout du coffre de l'équipe BLEU");
-                                                                mineralcontest.plugin.getGame().getTeamBleu().setCoffreEquipe(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getBlueHouse().setCoffreEquipe(joueur.getLocation());
                                                                 break;
                                                             case "spawn":
-                                                                mineralcontest.plugin.getGame().getTeamBleu().setHouseLocation(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getBlueHouse().setHouseLocation(joueur.getLocation());
                                                                 break;
                                                         }
                                                 break;
@@ -118,10 +117,10 @@ public class SetCommand implements CommandExecutor {
                                                             case "coffre" :
                                                                 // On spawn le coffre rouge
                                                                 joueur.sendMessage(mineralcontest.prefixPrive + "Ajout du coffre de l'équipe JAUNE");
-                                                                mineralcontest.plugin.getGame().getTeamJaune().setCoffreEquipe(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getYellowHouse().setCoffreEquipe(joueur.getLocation());
                                                                 break;
                                                             case "spawn":
-                                                                mineralcontest.plugin.getGame().getTeamJaune().setHouseLocation(joueur.getLocation());
+                                                                mineralcontest.plugin.getGame().getYellowHouse().setHouseLocation(joueur.getLocation());
                                                                 break;
                                                         }
                                                 break;

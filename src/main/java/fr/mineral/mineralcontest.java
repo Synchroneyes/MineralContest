@@ -125,9 +125,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
             prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE+ " ";
             prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE+ " ";
 
-            getGame().getTeamRouge().setNomEquipe(Lang.red_team.toString());
-            getGame().getTeamJaune().setNomEquipe(Lang.yellow_team.toString());
-            getGame().getTeamBleu().setNomEquipe(Lang.blue_team.toString());
+            getGame().getRedHouse().getTeam().setNomEquipe(Lang.red_team.toString());
+            getGame().getYellowHouse().getTeam().setNomEquipe(Lang.yellow_team.toString());
+            getGame().getBlueHouse().getTeam().setNomEquipe(Lang.blue_team.toString());
 
             mineralcontest.plugin.getConfig().set("config.lang.language", lang);
             mineralcontest.plugin.saveConfig();

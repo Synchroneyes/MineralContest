@@ -13,7 +13,6 @@ public class DisplayBlock {
     private Block baseBlock;
     private Location position;
     private Material materiel;
-    private BlockState etat;
     private MaterialData data;
 
     public DisplayBlock(Block baseBlock) {
@@ -22,8 +21,7 @@ public class DisplayBlock {
             this.baseBlock = baseBlock;
             this.position = baseBlock.getLocation();
             this.materiel = baseBlock.getState().getType();
-            this.etat = baseBlock.getState();
-            this.data = etat.getData();
+            this.data = baseBlock.getState().getData();
         }catch (Exception e){
             e.printStackTrace();
         }

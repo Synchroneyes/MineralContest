@@ -1,6 +1,5 @@
 package fr.mineral.Utils.Save;
 
-import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,7 +59,7 @@ public class FileToGame {
             emplacementCoordonne.setX(objet.getDouble("x"));
             emplacementCoordonne.setY(objet.getDouble("y"));
             emplacementCoordonne.setZ(objet.getDouble("z"));
-            mineralcontest.plugin.getGame().getTeamRouge().getPorte().addToDoor(emplacementCoordonne.getBlock());
+            mineralcontest.plugin.getGame().getRedHouse().getPorte().addToDoor(emplacementCoordonne.getBlock());
 
         }
 
@@ -74,7 +73,7 @@ public class FileToGame {
             emplacementCoordonne.setZ(objet.getDouble("z"));
 
 
-            mineralcontest.plugin.getGame().getTeamJaune().getPorte().addToDoor(emplacementCoordonne.getBlock());
+            mineralcontest.plugin.getGame().getYellowHouse().getPorte().addToDoor(emplacementCoordonne.getBlock());
 
         }
 
@@ -86,7 +85,7 @@ public class FileToGame {
             emplacementCoordonne.setX(objet.getDouble("x"));
             emplacementCoordonne.setY(objet.getDouble("y"));
             emplacementCoordonne.setZ(objet.getDouble("z"));
-            mineralcontest.plugin.getGame().getTeamBleu().getPorte().addToDoor(emplacementCoordonne.getBlock());
+            mineralcontest.plugin.getGame().getBlueHouse().getPorte().addToDoor(emplacementCoordonne.getBlock());
 
         }
     }
@@ -98,7 +97,7 @@ public class FileToGame {
         emplacementCoordonne.setX(teams.getJSONObject("rouge").getJSONObject("spawn").getDouble("x"));
         emplacementCoordonne.setY(teams.getJSONObject("rouge").getJSONObject("spawn").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("rouge").getJSONObject("spawn").getDouble("z"));
-        mineralcontest.plugin.getGame().getTeamRouge().setHouseLocation(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getRedHouse().setHouseLocation(emplacementCoordonne);
 
 
         // On récupère les coordonnées du spawn bleu
@@ -106,7 +105,7 @@ public class FileToGame {
         emplacementCoordonne.setX(teams.getJSONObject("bleu").getJSONObject("spawn").getDouble("x"));
         emplacementCoordonne.setY(teams.getJSONObject("bleu").getJSONObject("spawn").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("bleu").getJSONObject("spawn").getDouble("z"));
-        mineralcontest.plugin.getGame().getTeamBleu().setHouseLocation(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getBlueHouse().setHouseLocation(emplacementCoordonne);
 
 
         // On récupère les coordonnées du spawn rouge
@@ -115,7 +114,7 @@ public class FileToGame {
         emplacementCoordonne.setY(teams.getJSONObject("jaune").getJSONObject("spawn").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("jaune").getJSONObject("spawn").getDouble("z"));
 
-        mineralcontest.plugin.getGame().getTeamJaune().setHouseLocation(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getYellowHouse().setHouseLocation(emplacementCoordonne);
     }
 
     public void setTeamChestLocation(JSONObject teams) {
@@ -125,7 +124,7 @@ public class FileToGame {
         emplacementCoordonne.setX(teams.getJSONObject("rouge").getJSONObject("coffre").getDouble("x"));
         emplacementCoordonne.setY(teams.getJSONObject("rouge").getJSONObject("coffre").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("rouge").getJSONObject("coffre").getDouble("z"));
-        mineralcontest.plugin.getGame().getTeamRouge().setCoffreEquipe(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getRedHouse().setCoffreEquipe(emplacementCoordonne);
 
         emplacementCoordonne = new Location(Bukkit.getServer().getWorld("World"), 0d, 0d, 0d);
 
@@ -133,7 +132,7 @@ public class FileToGame {
         emplacementCoordonne.setX(teams.getJSONObject("bleu").getJSONObject("coffre").getDouble("x"));
         emplacementCoordonne.setY(teams.getJSONObject("bleu").getJSONObject("coffre").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("bleu").getJSONObject("coffre").getDouble("z"));
-        mineralcontest.plugin.getGame().getTeamBleu().setCoffreEquipe(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getBlueHouse().setCoffreEquipe(emplacementCoordonne);
 
         emplacementCoordonne = new Location(Bukkit.getServer().getWorld("World"), 0d, 0d, 0d);
         // On récupère les coordonnées du spawn rouge
@@ -141,7 +140,7 @@ public class FileToGame {
         emplacementCoordonne.setY(teams.getJSONObject("jaune").getJSONObject("coffre").getDouble("y"));
         emplacementCoordonne.setZ(teams.getJSONObject("jaune").getJSONObject("coffre").getDouble("z"));
 
-        mineralcontest.plugin.getGame().getTeamJaune().setCoffreEquipe(emplacementCoordonne);
+        mineralcontest.plugin.getGame().getYellowHouse().setCoffreEquipe(emplacementCoordonne);
     }
 
     public void setArenaLocation(JSONObject arene) {

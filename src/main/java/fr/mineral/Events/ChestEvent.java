@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Arena.CoffreAvecCooldown;
 import fr.mineral.Core.Game;
+import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -53,7 +54,8 @@ public class ChestEvent implements Listener {
                 // Ne devrait pas arriver, mais sait-on jamais
                 if(team != null) {
                     // On regarde si le coffre de l'équipe correspond à celui qui a été ouvert
-                    Location emplacementCoffreEquipe = team.getCoffreEquipeLocation();
+                    House house = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
+                    Location emplacementCoffreEquipe = house.getCoffreEquipeLocation();
                     if(Radius.isBlockInRadius(c.getBlock().getLocation(), emplacementCoffreEquipe, 1)) {
                         int score = 0;
                         // C'est un coffre d'équipe

@@ -20,7 +20,7 @@ public class mp_reset_team_penality implements CommandExecutor {
                         case "y":
                         case "yellow":
                             try {
-                                mineralcontest.plugin.getGame().getTeamJaune().resetPenalty();
+                                mineralcontest.plugin.getGame().getYellowHouse().getTeam().resetPenalty();
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -32,7 +32,7 @@ public class mp_reset_team_penality implements CommandExecutor {
                         case "bleue":
                         case "blue":
                             try {
-                                mineralcontest.plugin.getGame().getTeamBleu().resetPenalty();
+                                mineralcontest.plugin.getGame().getBlueHouse().getTeam().resetPenalty();
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -43,7 +43,7 @@ public class mp_reset_team_penality implements CommandExecutor {
                         case "rouge":
                         case "red":
                             try {
-                                mineralcontest.plugin.getGame().getTeamRouge().resetPenalty();
+                                mineralcontest.plugin.getGame().getRedHouse().getTeam().resetPenalty();
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());

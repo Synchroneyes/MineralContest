@@ -15,9 +15,9 @@ public class GameToFile {
     public GameToFile(String nomMonde) {
         this.worldName = nomMonde;
         // On récupère les valeurs du monde actuel
-        this.teamBleu = mineralcontest.plugin.getGame().getTeamBleu();
-        this.teamRouge = mineralcontest.plugin.getGame().getTeamRouge();
-        this.teamJaune = mineralcontest.plugin.getGame().getTeamJaune();
+        this.teamBleu = mineralcontest.plugin.getGame().getBlueHouse().getTeam();
+        this.teamRouge = mineralcontest.plugin.getGame().getRedHouse().getTeam();
+        this.teamJaune = mineralcontest.plugin.getGame().getYellowHouse().getTeam();
         this.arene = mineralcontest.plugin.getGame().getArene();
     }
 
@@ -29,31 +29,31 @@ public class GameToFile {
 
         JSONArray porteRouge = new JSONArray();
 
-        for(int i = 0; i < mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().size(); i++) {
+        for(int i = 0; i < mineralcontest.plugin.getGame().getRedHouse().getPorte().getPorte().size(); i++) {
             JSONObject tempBlock = new JSONObject();
-            tempBlock.put("x", mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().get(i).getBlock().getLocation().getX());
-            tempBlock.put("y", mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().get(i).getBlock().getLocation().getY());
-            tempBlock.put("z", mineralcontest.plugin.getGame().getTeamRouge().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            tempBlock.put("x", mineralcontest.plugin.getGame().getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            tempBlock.put("y", mineralcontest.plugin.getGame().getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            tempBlock.put("z", mineralcontest.plugin.getGame().getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
             porteRouge.put(tempBlock);
         }
 
 
         JSONArray porteJaune = new JSONArray();
-        for(int i = 0; i < mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().size(); i++) {
+        for(int i = 0; i < mineralcontest.plugin.getGame().getYellowHouse().getPorte().getPorte().size(); i++) {
             JSONObject tempBlock = new JSONObject();
-            tempBlock.put("x", mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().get(i).getBlock().getLocation().getX());
-            tempBlock.put("y", mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().get(i).getBlock().getLocation().getY());
-            tempBlock.put("z", mineralcontest.plugin.getGame().getTeamJaune().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            tempBlock.put("x", mineralcontest.plugin.getGame().getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            tempBlock.put("y", mineralcontest.plugin.getGame().getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            tempBlock.put("z", mineralcontest.plugin.getGame().getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
             porteJaune.put(tempBlock);
 
         }
 
         JSONArray porteBleu = new JSONArray();
-        for(int i = 0; i < mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().size(); i++) {
+        for(int i = 0; i < mineralcontest.plugin.getGame().getBlueHouse().getPorte().getPorte().size(); i++) {
             JSONObject tempBlock = new JSONObject();
-            tempBlock.put("x", mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().get(i).getBlock().getLocation().getX());
-            tempBlock.put("y", mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().get(i).getBlock().getLocation().getY());
-            tempBlock.put("z", mineralcontest.plugin.getGame().getTeamBleu().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            tempBlock.put("x", mineralcontest.plugin.getGame().getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            tempBlock.put("y", mineralcontest.plugin.getGame().getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            tempBlock.put("z", mineralcontest.plugin.getGame().getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
             porteBleu.put(tempBlock);
 
         }
@@ -66,14 +66,14 @@ public class GameToFile {
                                             .put("rouge", new JSONObject()
 
                                                     .put("spawn", new JSONObject()
-                                                                .put("x", mineralcontest.plugin.getGame().getTeamRouge().getHouseLocation().getX())
-                                                                .put("y", mineralcontest.plugin.getGame().getTeamRouge().getHouseLocation().getY())
-                                                                .put("z", mineralcontest.plugin.getGame().getTeamRouge().getHouseLocation().getZ())
+                                                                .put("x", mineralcontest.plugin.getGame().getRedHouse().getHouseLocation().getX())
+                                                                .put("y", mineralcontest.plugin.getGame().getRedHouse().getHouseLocation().getY())
+                                                                .put("z", mineralcontest.plugin.getGame().getRedHouse().getHouseLocation().getZ())
                                                     )
                                                     .put("coffre", new JSONObject()
-                                                            .put("x", mineralcontest.plugin.getGame().getTeamRouge().getCoffreEquipeLocation().getX())
-                                                            .put("y", mineralcontest.plugin.getGame().getTeamRouge().getCoffreEquipeLocation().getY())
-                                                            .put("z", mineralcontest.plugin.getGame().getTeamRouge().getCoffreEquipeLocation().getZ())
+                                                            .put("x", mineralcontest.plugin.getGame().getRedHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.plugin.getGame().getRedHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.plugin.getGame().getRedHouse().getCoffreEquipeLocation().getZ())
                                                     )
                                                     .put("porte", porteRouge)
 
@@ -81,14 +81,14 @@ public class GameToFile {
                                             .put("jaune", new JSONObject()
 
                                                     .put("spawn", new JSONObject()
-                                                            .put("x", mineralcontest.plugin.getGame().getTeamJaune().getHouseLocation().getX())
-                                                            .put("y", mineralcontest.plugin.getGame().getTeamJaune().getHouseLocation().getY())
-                                                            .put("z", mineralcontest.plugin.getGame().getTeamJaune().getHouseLocation().getZ())
+                                                            .put("x", mineralcontest.plugin.getGame().getYellowHouse().getHouseLocation().getX())
+                                                            .put("y", mineralcontest.plugin.getGame().getYellowHouse().getHouseLocation().getY())
+                                                            .put("z", mineralcontest.plugin.getGame().getYellowHouse().getHouseLocation().getZ())
                                                     )
                                                     .put("coffre", new JSONObject()
-                                                            .put("x", mineralcontest.plugin.getGame().getTeamJaune().getCoffreEquipeLocation().getX())
-                                                            .put("y", mineralcontest.plugin.getGame().getTeamJaune().getCoffreEquipeLocation().getY())
-                                                            .put("z", mineralcontest.plugin.getGame().getTeamJaune().getCoffreEquipeLocation().getZ())
+                                                            .put("x", mineralcontest.plugin.getGame().getYellowHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.plugin.getGame().getYellowHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.plugin.getGame().getYellowHouse().getCoffreEquipeLocation().getZ())
                                                     )
                                                     .put("porte", porteJaune)
 
@@ -96,14 +96,14 @@ public class GameToFile {
                                             .put("bleu", new JSONObject()
 
                                                     .put("spawn", new JSONObject()
-                                                            .put("x", mineralcontest.plugin.getGame().getTeamBleu().getHouseLocation().getX())
-                                                            .put("y", mineralcontest.plugin.getGame().getTeamBleu().getHouseLocation().getY())
-                                                            .put("z", mineralcontest.plugin.getGame().getTeamBleu().getHouseLocation().getZ())
+                                                            .put("x", mineralcontest.plugin.getGame().getBlueHouse().getHouseLocation().getX())
+                                                            .put("y", mineralcontest.plugin.getGame().getBlueHouse().getHouseLocation().getY())
+                                                            .put("z", mineralcontest.plugin.getGame().getBlueHouse().getHouseLocation().getZ())
                                                     )
                                                     .put("coffre", new JSONObject()
-                                                            .put("x", mineralcontest.plugin.getGame().getTeamBleu().getCoffreEquipeLocation().getX())
-                                                            .put("y", mineralcontest.plugin.getGame().getTeamBleu().getCoffreEquipeLocation().getY())
-                                                            .put("z", mineralcontest.plugin.getGame().getTeamBleu().getCoffreEquipeLocation().getZ())
+                                                            .put("x", mineralcontest.plugin.getGame().getBlueHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.plugin.getGame().getBlueHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.plugin.getGame().getBlueHouse().getCoffreEquipeLocation().getZ())
                                                     )
                                                     .put("porte", porteBleu)
 

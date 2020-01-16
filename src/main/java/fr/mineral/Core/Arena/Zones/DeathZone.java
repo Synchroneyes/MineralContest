@@ -1,5 +1,6 @@
 package fr.mineral.Core.Arena.Zones;
 
+import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
@@ -86,7 +87,7 @@ public class DeathZone {
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //joueur.teleport(this.spawnLocation);
         try {
-            joueur.teleport(mineralcontest.plugin.getGame().getPlayerTeam(joueur).getHouseLocation());
+            joueur.teleport(mineralcontest.plugin.getGame().getPlayerHouse(joueur).getHouseLocation());
 
         }catch(Exception e) {
             e.printStackTrace();
@@ -116,12 +117,13 @@ public class DeathZone {
             joueur.setHealth(20f);
 
             Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
+            House teamHouse = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
             if(team == null) {
                 // On le téléporte vers l'arene
-                throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone");
+                throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone et n'a pas de team");
             } else {
                 // ON le TP vers son spawn equipe
-                joueur.teleport(team.getHouseLocation());
+                joueur.teleport(teamHouse.getHouseLocation());
                 joueur.removePotionEffect(PotionEffectType.INVISIBILITY);
                 joueur.removePotionEffect(PotionEffectType.BLINDNESS);
 

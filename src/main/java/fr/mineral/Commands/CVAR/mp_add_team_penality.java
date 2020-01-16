@@ -29,7 +29,7 @@ public class mp_add_team_penality implements CommandExecutor {
                         case "y":
                         case "yellow":
                             try {
-                                mineralcontest.plugin.getGame().getTeamJaune().addPenalty(valeur);
+                                mineralcontest.plugin.getGame().getYellowHouse().getTeam().addPenalty(valeur);
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -41,7 +41,7 @@ public class mp_add_team_penality implements CommandExecutor {
                         case "bleue":
                         case "blue":
                             try {
-                                mineralcontest.plugin.getGame().getTeamBleu().addPenalty(valeur);
+                                mineralcontest.plugin.getGame().getBlueHouse().getTeam().addPenalty(valeur);
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -52,7 +52,7 @@ public class mp_add_team_penality implements CommandExecutor {
                         case "rouge":
                         case "red":
                             try {
-                                mineralcontest.plugin.getGame().getTeamRouge().addPenalty(valeur);
+                                mineralcontest.plugin.getGame().getRedHouse().getTeam().addPenalty(valeur);
 
                             } catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());

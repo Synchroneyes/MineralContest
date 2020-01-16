@@ -1,5 +1,6 @@
 package fr.mineral.Core.Zones;
 
+import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
@@ -82,12 +83,14 @@ public class DeathZone {
             joueur.setGameMode(GameMode.SURVIVAL);
 
             Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
+            House house = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
+
             if(team == null) {
                 // On le téléporte vers l'arene
                 throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone");
             } else {
                 // ON le TP vers son spawn equipe
-                joueur.teleport(team.getHouseLocation());
+                joueur.teleport(house.getHouseLocation());
             }
 
             // On rend le stuff du joueur

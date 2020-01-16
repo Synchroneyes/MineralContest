@@ -20,7 +20,7 @@ public class JoinCommand implements CommandExecutor {
                         case "y":
                         case "yellow":
                             try {
-                                mineralcontest.plugin.getGame().getTeamJaune().addPlayerToTeam((Player)sender);
+                                mineralcontest.plugin.getGame().getYellowHouse().getTeam().addPlayerToTeam((Player)sender);
 
                             }catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -32,7 +32,7 @@ public class JoinCommand implements CommandExecutor {
                         case "bleue":
                         case "blue":
                             try {
-                                mineralcontest.plugin.getGame().getTeamBleu().addPlayerToTeam((Player)sender);
+                                mineralcontest.plugin.getGame().getBlueHouse().getTeam().addPlayerToTeam((Player)sender);
 
                             }catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -43,7 +43,7 @@ public class JoinCommand implements CommandExecutor {
                         case "rouge":
                         case "red":
                             try {
-                                mineralcontest.plugin.getGame().getTeamRouge().addPlayerToTeam((Player)sender);
+                                mineralcontest.plugin.getGame().getRedHouse().getTeam().addPlayerToTeam((Player)sender);
 
                             }catch (Exception e) {
                                 sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
