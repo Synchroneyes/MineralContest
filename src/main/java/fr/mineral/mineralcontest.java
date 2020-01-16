@@ -2,6 +2,7 @@ package fr.mineral;
 
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
+import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Core.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
@@ -252,10 +253,14 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
 
+        getCommand("setup").setExecutor(new SetupCommand());
+
+
 
         getCommand("join").setExecutor(new JoinCommand());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
 
+        getCommand("listMaps").setExecutor(new listMaps());
 
 
 

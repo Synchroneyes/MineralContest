@@ -70,6 +70,11 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  setup:
+    description: set team random
+    use: /setup <1 | 0>
+    permission: admin
+    permission-message: you do not have the permission
 
   mp_reset_team_penality:
     description: reset a team penalty
@@ -122,6 +127,12 @@ commands:
   mp_start_vote:
     description: Démarrer un vote
     use: /mp_start_vote
+    permission: admin
+    permission-message: you do not have the permission
+
+  listMaps:
+    description: Démarrer un vote
+    use: /listMaps
     permission: admin
     permission-message: you do not have the permission
 

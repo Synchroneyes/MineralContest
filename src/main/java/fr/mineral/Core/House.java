@@ -19,6 +19,8 @@ import java.util.Map;
 public class House {
     private Equipe team;
     private AutomaticDoors doors;
+
+
     private LinkedHashMap<Block, MaterialData> blocks;
     private Coffre coffre;
     private Location spawnLocation;
@@ -78,6 +80,11 @@ public class House {
         }
     }
 
+
+    public LinkedHashMap<Block, MaterialData> getBlocks() {
+        return blocks;
+    }
+
     /*
     -------------------------------------------
      */
@@ -112,6 +119,8 @@ public class House {
             Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), team));
         return spawnLocation;
     }
+
+
 
 
     public AutomaticDoors getPorte() {
