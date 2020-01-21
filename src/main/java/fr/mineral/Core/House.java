@@ -4,6 +4,7 @@ import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.SaveableBlock;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +22,7 @@ public class House {
     private AutomaticDoors doors;
 
 
-    private LinkedHashMap<Block, MaterialData> blocks;
+    private LinkedList<SaveableBlock> blocks;
     private Coffre coffre;
     private Location spawnLocation;
     private String teamName;
@@ -33,7 +34,7 @@ public class House {
         this.color = couleur;
         this.team = new Equipe(this.teamName, this.color);
         this.doors = new AutomaticDoors(team);
-        this.blocks = new LinkedHashMap<>();
+        this.blocks = new LinkedList<>();
     }
 
     /*
@@ -52,7 +53,7 @@ public class House {
             throw new Exception("Impossible d'ajouter de l'air comme block");
         }
         materialData = block.getState().getData();
-        this.blocks.put(block, materialData);
+        this.blocks.add(new SaveableBlock(block));
         mineralcontest.log.info(mineralcontest.prefix + ChatColor.GOLD + "Block " + block.getType().toString() + " successfully added");
     }
 
@@ -66,22 +67,15 @@ public class House {
         }
         materialData = block.getState().getData();
         /* For each "value<block, materialdata> in saved blocks*/
-        for (Map.Entry<Block, MaterialData> data : blocks.entrySet()) {
-            Block foreachBlock;
-            MaterialData foreachMaterialData;
-            foreachBlock = data.getKey();
-            foreachMaterialData = data.getValue();
-
-            if(foreachBlock.getLocation().equals(location) && foreachMaterialData.equals(location.getBlock().getState().getData())) {
-                this.blocks.remove(foreachBlock, foreachMaterialData);
-                mineralcontest.log.info(mineralcontest.prefix + ChatColor.RED + "Block " + foreachBlock.getType().toString() + " successfully removed");
+        for(SaveableBlock saveableBlock : blocks)
+            if(saveableBlock.getLocation().equals(location)) {
+                blocks.remove(saveableBlock);
                 return;
-            }
         }
     }
 
 
-    public LinkedHashMap<Block, MaterialData> getBlocks() {
+    public LinkedList<SaveableBlock> getBlocks() {
         return blocks;
     }
 

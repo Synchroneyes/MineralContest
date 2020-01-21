@@ -1,5 +1,6 @@
 package fr.mineral.Utils.Door;
 
+import fr.mineral.Utils.SaveableBlock;
 import fr.mineral.mineralcontest;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -15,6 +16,9 @@ public class DisplayBlock {
     private Material materiel;
     private MaterialData data;
 
+
+    private SaveableBlock saveableBlock;
+
     public DisplayBlock(Block baseBlock) {
 
         try {
@@ -22,11 +26,17 @@ public class DisplayBlock {
             this.position = baseBlock.getLocation();
             this.materiel = baseBlock.getState().getType();
             this.data = baseBlock.getState().getData();
+            this.saveableBlock = new SaveableBlock(baseBlock);
         }catch (Exception e){
             e.printStackTrace();
         }
 
 
+    }
+
+
+    public SaveableBlock getSaveableBlock() {
+        return saveableBlock;
     }
 
 

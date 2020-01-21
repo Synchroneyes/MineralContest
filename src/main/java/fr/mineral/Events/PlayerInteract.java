@@ -7,6 +7,8 @@ import fr.mineral.Utils.HouseSetup;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,14 +22,20 @@ public class PlayerInteract implements Listener {
         Player joueur = (Player) event.getPlayer();
         mineralcontest plugin = mineralcontest.plugin;
         House bleu = plugin.getGame().getBlueHouse();
-        if(HouseSetup.addBlock) {
+        
+
+        if(HouseSetup.addBlock && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {
             bleu.addBlock(event.getClickedBlock().getLocation());
             joueur.sendMessage("Block de maison ajouté");
+
+            event.getClickedBlock().setType(Material.AIR);
         }
 
-        if(HouseSetup.addDoors) {
+        if(HouseSetup.addDoors && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {
             bleu.getPorte().addToDoor(event.getClickedBlock());
             joueur.sendMessage("Block de porte ajouté");
+            event.getClickedBlock().setType(Material.AIR);
+
 
         }
 

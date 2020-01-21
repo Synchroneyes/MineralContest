@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -31,6 +32,14 @@ public class listMaps implements CommandExecutor {
                 sender.sendMessage("Erreur lors de la sauvegarde");
             }
             return true;
+        } else if(args[0].equals("load")) {
+            sender.sendMessage("Loading ...");
+            SaveHouse sh = new SaveHouse();
+            try {
+                sh.load("blue_house", (Player) sender);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
