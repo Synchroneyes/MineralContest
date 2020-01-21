@@ -49,9 +49,6 @@ public class House {
         MaterialData materialData;
         Block block = location.getBlock();
 
-        if(block.getType().equals(Material.AIR)) {
-            throw new Exception("Impossible d'ajouter de l'air comme block");
-        }
         materialData = block.getState().getData();
         this.blocks.add(new SaveableBlock(block));
         mineralcontest.log.info(mineralcontest.prefix + ChatColor.GOLD + "Block " + block.getType().toString() + " successfully added");

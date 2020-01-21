@@ -1,8 +1,12 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Core.House;
 import fr.mineral.Utils.Save.SaveHouse;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,11 +25,13 @@ public class listMaps implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         sender.sendMessage("Listing maps for folder: " + args[0]);
+        SaveHouse sh = mineralcontest.plugin.getSaveHouse();
 
         if(args[0].equals("save")) {
             sender.sendMessage("Saving to file ...");
-            SaveHouse sh = new SaveHouse();
             try {
+
+
                 sh.saveToFile();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -34,11 +40,38 @@ public class listMaps implements CommandExecutor {
             return true;
         } else if(args[0].equals("load")) {
             sender.sendMessage("Loading ...");
-            SaveHouse sh = new SaveHouse();
             try {
                 sh.load("blue_house", (Player) sender);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }else if(args[0].equals("revert")) {
+            sh.revert();
+        } else if (args[0].equals("house")) {
+
+            House bleu = mineralcontest.plugin.getGame().getBlueHouse();
+            Location l = ((Player)sender).getLocation();
+            World world =   l.getWorld();
+            mineralcontest.plugin.getServer().broadcastMessage("for(int x = " + ((int)l.getX() + 10) + "; x > " + ((int) l.getX() - 10) + "; x--) {\n");
+            mineralcontest.plugin.getServer().broadcastMessage("for(int y = " + ((int)l.getY()) + "; y < " + ((int) l.getY() + 10) + "; y++) {\n");
+            mineralcontest.plugin.getServer().broadcastMessage("for(int z = " + ((int)l.getZ() + 9) + "; z > " + ((int) l.getZ() - 9) + "; z--) {\n");
+
+            for(int x = (int)l.getX() + 10; x > (int) l.getX() - 10; x--) {
+                for(int y = (int)l.getY()-1; y < l.getY() + 10; y++) {
+                    for(int z = (int) l.getZ() + 9; z > (int) l.getZ() - 9; z--) {
+                        try {
+
+                            Location tmp = new Location(world, x,y,z);
+                            if(!tmp.getBlock().getType().equals(Material.GRASS_BLOCK) && !tmp.getBlock().getType().equals(Material.DIRT)){
+                                bleu.addBlock(tmp);
+                                tmp.getBlock().setType(Material.AIR);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
 

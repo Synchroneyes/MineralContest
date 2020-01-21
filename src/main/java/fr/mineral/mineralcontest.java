@@ -9,6 +9,7 @@ import fr.mineral.Events.*;
 
 import fr.mineral.Translation.Language;
 import fr.mineral.Utils.Metric.SendInformation;
+import fr.mineral.Utils.Save.SaveHouse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -51,12 +52,17 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static int teamMaxPlayers = 2;
     private Game partie;
 
+    private SaveHouse saveHouse;
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
+        this.saveHouse = new SaveHouse();
 
     }
+
+    public SaveHouse getSaveHouse() { return this.saveHouse;}
 
     public void createLangFiles() throws IOException {
 

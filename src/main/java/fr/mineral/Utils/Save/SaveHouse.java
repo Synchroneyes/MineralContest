@@ -4,10 +4,7 @@ import fr.mineral.Core.House;
 import fr.mineral.Utils.Door.DisplayBlock;
 import fr.mineral.Utils.SaveableBlock;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +13,7 @@ import org.bukkit.material.MaterialData;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class SaveHouse {
@@ -27,14 +25,20 @@ public class SaveHouse {
     FileConfiguration data;
     File dataFile;
 
+    private static LinkedList<SaveableBlock> revert;
+    private static World world;
+
     public SaveHouse() {
         this.house = mineralcontest.plugin.getGame().getBlueHouse();
         this.configFile = new File(mineralcontest.plugin.getDataFolder() + File.separator + "house.yml");
         this.configuration = YamlConfiguration.loadConfiguration(configFile);
+        SaveHouse.revert = new LinkedList<>();
     }
 
 
     public void load(String fileName, Player p) throws IOException {
+
+        SaveHouse.world = p.getWorld();
         ClassLoader classLoader = getClass().getClassLoader();
         File config = new File(mineralcontest.plugin.getDataFolder() + "/" + fileName + ".yml");
         if(!config.exists())  {
@@ -65,28 +69,74 @@ public class SaveHouse {
             newZ = (int) (z + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.z").toString()));
             Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
 
+            SaveHouse.revert.add(new SaveableBlock(locTMP.getBlock()));
+            mineralcontest.plugin.getServer().broadcastMessage("taille: " + revert.size());
+
 
             Material blockMaterial = Material.valueOf(this.data.get("house.blocks." + i + ".block.type").toString());
-            mineralcontest.plugin.getServer().broadcastMessage(i + " - Material:" + blockMaterial.toString());
             Byte blockByte = Byte.parseByte(this.data.get("house.blocks." + i + ".block.data").toString());
-
-
-            mineralcontest.plugin.getServer().broadcastMessage(i + " - X:" + locTMP.getX() + ", Y:" + locTMP.getY() + ", Z:" + locTMP.getZ());
-            mineralcontest.plugin.getServer().broadcastMessage(i + " - Byte:" + blockByte);
-
-
 
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
             locTMP.getBlock().getLocation().setY(locTMP.getY());
             locTMP.getBlock().getLocation().setZ(locTMP.getZ());
             locTMP.getBlock().getState().getData().setData(blockByte);
-            mineralcontest.plugin.getServer().broadcastMessage("================");
-
         }
 
+        for(int i = 0; i < doorCount; ++i) {
 
 
+            int newX, newY, newZ;
+            newX = (int) (x + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.x").toString()));
+            newY = (int) (y + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.y").toString()));
+            newZ = (int) (z + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.z").toString()));
+            Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
+            SaveHouse.revert.add(new SaveableBlock(locTMP.getBlock()));
+
+
+
+            Material blockMaterial = Material.valueOf(this.data.get("house.door.blocks." + i + ".block.type").toString());
+            Byte blockByte = Byte.parseByte(this.data.get("house.door.blocks." + i + ".block.data").toString());
+
+            locTMP.getBlock().setType(blockMaterial);
+            locTMP.getBlock().getLocation().setX(locTMP.getX());
+            locTMP.getBlock().getLocation().setY(locTMP.getY());
+            locTMP.getBlock().getLocation().setZ(locTMP.getZ());
+            locTMP.getBlock().getState().getData().setData(blockByte);
+        }
+
+        int newX, newY, newZ;
+        newX = (int) (x + Double.parseDouble(this.data.get("house.chest.location.x").toString()));
+        newY = (int) (y + Double.parseDouble(this.data.get("house.chest.location.y").toString()));
+        newZ = (int) (z + Double.parseDouble(this.data.get("house.chest.location.z").toString()));
+        Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
+
+        locTMP.getBlock().setType(Material.CHEST);
+        mineralcontest.plugin.getGame().getBlueHouse().setCoffreEquipe(locTMP);
+
+        newX = (int) (x + Double.parseDouble(this.data.get("house.spawn.location.x").toString()));
+        newY = (int) (y + Double.parseDouble(this.data.get("house.spawn.location.y").toString()));
+        newZ = (int) (z + Double.parseDouble(this.data.get("house.spawn.location.z").toString()));
+        Location spawnTMP = new Location(loc.getWorld(), newX, newY, newZ);
+        mineralcontest.plugin.getGame().getBlueHouse().setHouseLocation(spawnTMP);
+
+        mineralcontest.plugin.getServer().broadcastMessage(revert.size() + ": taille FINAL");
+
+
+
+
+    }
+
+    public void revert() {
+        mineralcontest.plugin.getServer().broadcastMessage(revert.size() + ": taille");
+        for(SaveableBlock block : revert) {
+            Location location = new Location(SaveHouse.world, block.getPosX(), block.getPosY(), block.getPosZ());
+            Block b = location.getBlock();
+            b.setType(block.getMaterial());
+            b.getState().getData().setData(block.getBlockByte());
+        }
+
+        revert.clear();
     }
 
     public void saveToFile() throws Exception {
