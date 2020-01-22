@@ -1,6 +1,7 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Core.House;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.SaveHouse;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -27,6 +28,8 @@ public class listMaps implements CommandExecutor {
         sender.sendMessage("Listing maps for folder: " + args[0]);
         SaveHouse sh = mineralcontest.plugin.getSaveHouse();
 
+        sender.sendMessage(PlayerUtils.getLookingDirection((Player) sender));
+
         if(args[0].equals("save")) {
             sender.sendMessage("Saving to file ...");
             try {
@@ -47,6 +50,7 @@ public class listMaps implements CommandExecutor {
             }
         }else if(args[0].equals("revert")) {
             sh.revert();
+            sh.reset();
         } else if (args[0].equals("house")) {
 
             House bleu = mineralcontest.plugin.getGame().getBlueHouse();
@@ -56,14 +60,15 @@ public class listMaps implements CommandExecutor {
             mineralcontest.plugin.getServer().broadcastMessage("for(int y = " + ((int)l.getY()) + "; y < " + ((int) l.getY() + 10) + "; y++) {\n");
             mineralcontest.plugin.getServer().broadcastMessage("for(int z = " + ((int)l.getZ() + 9) + "; z > " + ((int) l.getZ() - 9) + "; z--) {\n");
 
-            for(int x = (int)l.getX() + 10; x > (int) l.getX() - 10; x--) {
+            for(int x = (int)l.getX() + 10; x > (int) l.getX() - 11; x--) {
                 for(int y = (int)l.getY()-1; y < l.getY() + 10; y++) {
-                    for(int z = (int) l.getZ() + 9; z > (int) l.getZ() - 9; z--) {
+                    for(int z = (int) l.getZ() + 9; z > (int) l.getZ() - 12; z--) {
                         try {
 
                             Location tmp = new Location(world, x,y,z);
                             if(!tmp.getBlock().getType().equals(Material.GRASS_BLOCK) && !tmp.getBlock().getType().equals(Material.DIRT)){
                                 bleu.addBlock(tmp);
+                                sh.addBlock(tmp);
                                 tmp.getBlock().setType(Material.AIR);
                             }
 

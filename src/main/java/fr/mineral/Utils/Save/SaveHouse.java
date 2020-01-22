@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Stack;
 
 public class SaveHouse {
 
@@ -25,14 +26,14 @@ public class SaveHouse {
     FileConfiguration data;
     File dataFile;
 
-    private static LinkedList<SaveableBlock> revert;
+    private static Stack<SaveableBlock> revert;
     private static World world;
 
     public SaveHouse() {
         this.house = mineralcontest.plugin.getGame().getBlueHouse();
         this.configFile = new File(mineralcontest.plugin.getDataFolder() + File.separator + "house.yml");
         this.configuration = YamlConfiguration.loadConfiguration(configFile);
-        SaveHouse.revert = new LinkedList<>();
+        SaveHouse.revert = new Stack<>();
     }
 
 
@@ -58,19 +59,17 @@ public class SaveHouse {
         blockCount = Integer.parseInt(this.data.get("house.blocks.count").toString());
         doorCount = Integer.parseInt(this.data.get("house.door.count").toString());
 
-        p.sendMessage("blockCount: " + blockCount + " - doorCOunt: " + doorCount);
 
         for(int i = 0; i < blockCount; ++i) {
 
 
             int newX, newY, newZ;
-            newX = (int) (x + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.x").toString()));
-            newY = (int) (y + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.y").toString()));
-            newZ = (int) (z + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.z").toString()));
+            newX = (int) (x + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.x").toString())) * -1;
+            newY = (int) (y + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.y").toString())) * -1;
+            newZ = (int) (z + Double.parseDouble(this.data.get("house.blocks." + i + ".block.location.z").toString())) * -1;
             Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
 
             SaveHouse.revert.add(new SaveableBlock(locTMP.getBlock()));
-            mineralcontest.plugin.getServer().broadcastMessage("taille: " + revert.size());
 
 
             Material blockMaterial = Material.valueOf(this.data.get("house.blocks." + i + ".block.type").toString());
@@ -87,9 +86,9 @@ public class SaveHouse {
 
 
             int newX, newY, newZ;
-            newX = (int) (x + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.x").toString()));
-            newY = (int) (y + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.y").toString()));
-            newZ = (int) (z + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.z").toString()));
+            newX = (int) (x + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.x").toString())) * -1;
+            newY = (int) (y + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.y").toString())) * -1;
+            newZ = (int) (z + Double.parseDouble(this.data.get("house.door.blocks." + i + ".block.location.z").toString())) * -1;
             Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
             SaveHouse.revert.add(new SaveableBlock(locTMP.getBlock()));
 
@@ -106,30 +105,39 @@ public class SaveHouse {
         }
 
         int newX, newY, newZ;
-        newX = (int) (x + Double.parseDouble(this.data.get("house.chest.location.x").toString()));
-        newY = (int) (y + Double.parseDouble(this.data.get("house.chest.location.y").toString()));
-        newZ = (int) (z + Double.parseDouble(this.data.get("house.chest.location.z").toString()));
+        newX = (int) (x + Double.parseDouble(this.data.get("house.chest.location.x").toString())) * -1;
+        newY = (int) (y + Double.parseDouble(this.data.get("house.chest.location.y").toString())) * -1;
+        newZ = (int) (z + Double.parseDouble(this.data.get("house.chest.location.z").toString())) * -1;
         Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
 
         locTMP.getBlock().setType(Material.CHEST);
         mineralcontest.plugin.getGame().getBlueHouse().setCoffreEquipe(locTMP);
 
-        newX = (int) (x + Double.parseDouble(this.data.get("house.spawn.location.x").toString()));
-        newY = (int) (y + Double.parseDouble(this.data.get("house.spawn.location.y").toString()));
-        newZ = (int) (z + Double.parseDouble(this.data.get("house.spawn.location.z").toString()));
+        newX = (int) (x + Double.parseDouble(this.data.get("house.spawn.location.x").toString())) * -1;
+        newY = (int) (y + Double.parseDouble(this.data.get("house.spawn.location.y").toString())) * -1;
+        newZ = (int) (z + Double.parseDouble(this.data.get("house.spawn.location.z").toString())) * -1;
         Location spawnTMP = new Location(loc.getWorld(), newX, newY, newZ);
         mineralcontest.plugin.getGame().getBlueHouse().setHouseLocation(spawnTMP);
 
-        mineralcontest.plugin.getServer().broadcastMessage(revert.size() + ": taille FINAL");
 
 
 
 
     }
 
+    public void addBlock(Location l) {
+        revert.add(new SaveableBlock(l.getBlock()));
+    }
+
+    public void reset() {
+        this.house.getBlocks().clear();
+        this.house.getPorte().getPorte().clear();
+        mineralcontest.plugin.getServer().broadcastMessage("SaveHouse Reset");
+    }
+
     public void revert() {
-        mineralcontest.plugin.getServer().broadcastMessage(revert.size() + ": taille");
-        for(SaveableBlock block : revert) {
+        while(!revert.empty()) {
+            SaveableBlock block = revert.pop();
             Location location = new Location(SaveHouse.world, block.getPosX(), block.getPosY(), block.getPosZ());
             Block b = location.getBlock();
             b.setType(block.getMaterial());
