@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.House;
+import fr.mineral.Core.MapBuilder.Item.HouseEgg;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.HouseSetup;
@@ -14,14 +15,30 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerInteract implements Listener {
+
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) throws Exception {
         Player joueur = (Player) event.getPlayer();
         mineralcontest plugin = mineralcontest.plugin;
         House bleu = plugin.getGame().getBlueHouse();
+
+        if(event.getItem() != null) {
+            if(event.getItem().getType().equals(Material.EGG)) {
+                ItemStack egg = event.getItem();
+                ItemMeta im = egg.getItemMeta();
+
+                if(im.getDisplayName().equals(Lang.map_builder_item_name.toString())) {
+                    HouseEgg eg = new HouseEgg("test", joueur);
+                    eg.spawnHouse();
+                }
+            }
+        }
+
         
 
         if(HouseSetup.addBlock && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {

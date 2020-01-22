@@ -1,6 +1,7 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Core.House;
+import fr.mineral.Core.MapBuilder.Item.HouseEgg;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.SaveHouse;
 import fr.mineral.mineralcontest;
@@ -28,7 +29,7 @@ public class listMaps implements CommandExecutor {
         sender.sendMessage("Listing maps for folder: " + args[0]);
         SaveHouse sh = mineralcontest.plugin.getSaveHouse();
 
-        sender.sendMessage(PlayerUtils.getLookingDirection((Player) sender));
+        HouseEgg he = new HouseEgg("name", (Player) sender);
 
         if(args[0].equals("save")) {
             sender.sendMessage("Saving to file ...");

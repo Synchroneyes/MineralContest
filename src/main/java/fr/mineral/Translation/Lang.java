@@ -107,7 +107,11 @@ public enum Lang {
     team_player_joined("team_player_joined", "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"),
     red_team("red_team", "Red"),
     yellow_team("yellow_team", "Yellow"),
-    blue_team("blue_team", "Blue");
+    blue_team("blue_team", "Blue"),
+    map_builder_item_name("map_builder_item_name", "Oeuf de maison"),
+    map_builder_hud("map_builder_hud", "Création de map"),
+    map_builder_hud_commands("map_builder_hud_commands", "Ouvrir le menu: /map_builder");
+
 
 
     private String path;
