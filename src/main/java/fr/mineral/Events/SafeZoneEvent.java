@@ -13,8 +13,6 @@ public class SafeZoneEvent implements Listener {
 
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
-
-
         if(mineralcontest.plugin.getGame().isGameStarted()) {
             if(event.getDamager() instanceof Player) {
                 Player p = (Player) event.getDamager();

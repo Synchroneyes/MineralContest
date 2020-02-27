@@ -15,6 +15,10 @@ public class PlayerDisconnect implements Listener {
         Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
         House house = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
 
+        if(joueur.isOp())
+            if(mineralcontest.plugin.getGame().isReferee(joueur)) mineralcontest.plugin.getGame().removeReferee(joueur);
+
+
         if(team != null)
             team.removePlayer(joueur);
 

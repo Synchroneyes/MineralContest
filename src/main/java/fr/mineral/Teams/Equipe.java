@@ -45,9 +45,9 @@ public class Equipe {
 
     public int getScore() { return this.score - this.penalty; }
     public void setScore(int score) {
+        this.score = score;
         for(Player online : joueurs)
             online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
-        this.score = score;
     }
 
 

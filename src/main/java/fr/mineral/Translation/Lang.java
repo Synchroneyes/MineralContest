@@ -107,11 +107,7 @@ public enum Lang {
     team_player_joined("team_player_joined", "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"),
     red_team("red_team", "Red"),
     yellow_team("yellow_team", "Yellow"),
-    blue_team("blue_team", "Blue"),
-    map_builder_item_name("map_builder_item_name", "Oeuf de maison"),
-    map_builder_hud("map_builder_hud", "Création de map"),
-    map_builder_hud_commands("map_builder_hud_commands", "Ouvrir le menu: /map_builder");
-
+    blue_team("blue_team", "Blue");
 
 
     private String path;
@@ -206,7 +202,6 @@ public enum Lang {
         if(string.contains("%deathTime%")) string = string.replace("%deathTime%", "" + mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayerDeathTime(player));
         if(string.contains("%votedBiome%")) string = string.replace("%votedBiome%", mineralcontest.plugin.getGame().votemap.getPlayerVote(player));
         if(string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
-        if(string.contains("%deadPlayer%") && !string.contains("%killingPlayer%"))
         if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
 
         string = translate(string);

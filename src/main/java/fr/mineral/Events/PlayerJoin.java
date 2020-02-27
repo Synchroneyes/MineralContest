@@ -34,11 +34,17 @@ public class PlayerJoin implements Listener {
 
 
         if(game.isGameStarted() && !game.isGamePaused()) {
-            p.kickPlayer(Lang.kick_game_already_in_progress.toString());
-            for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
-                if(online.isOp())
-                    online.sendMessage(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
-            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
+            if(p.isOp()) {
+                mineralcontest.plugin.getGame().addReferee(p);
+            } else {
+                p.kickPlayer(Lang.kick_game_already_in_progress.toString());
+                for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
+                    if(online.isOp())
+                        online.sendMessage(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
+                mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixAdmin + Lang.translate(Lang.admin_played_tried_to_login.toString(), p));
+            }
+
+
         }
 
 

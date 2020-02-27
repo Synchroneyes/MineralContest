@@ -3,6 +3,7 @@ package fr.mineral.Core;
 import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
@@ -12,12 +13,16 @@ import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /*
@@ -53,6 +58,7 @@ public class Game implements Listener {
     // CVAR
 
     public int mp_randomize_team = 1;
+    public int mp_enable_item_drop = 0;
 
     // Temps de la partie en minute
     private static int DUREE_PARTIE = 60;
@@ -74,6 +80,7 @@ public class Game implements Listener {
 
     public int killCounter = 0;
 
+
     private AutomaticDoors portes;
 
     private LinkedList<CouplePlayerTeam> disconnectedPlayers;
@@ -90,6 +97,11 @@ public class Game implements Listener {
     public House getBlueHouse() { return this.blueHouse; }
     public Votemap votemap;
 
+    // Save the blocks
+    public LinkedList<BlockSaver> affectedBlocks;
+
+    private LinkedList<Player> referees;
+
 
 
     public Game() {
@@ -101,9 +113,53 @@ public class Game implements Listener {
         this.votemap = new Votemap();
 
         //votemap.enableVote();
-
         this.disconnectedPlayers = new LinkedList<CouplePlayerTeam>();
+        this.affectedBlocks = new LinkedList<>();
+        this.referees = new LinkedList<>();
+    }
 
+    public void addBlock(Block b, BlockSaver.Type type) {
+        Bukkit.getLogger().info("A new block has been saved");
+        this.affectedBlocks.add(new BlockSaver(b, type));
+    }
+
+    public void addReferee(Player player) {
+        if(!isReferee(player)) this.referees.add(player);
+    }
+
+    public void removeReferee(Player player) {
+        if(isReferee(player)) this.referees.remove(player);
+    }
+
+    public int getRefereeCount() { return this.referees.size();}
+
+    private LinkedList<Player> getReferees() { return this.referees;}
+
+    public boolean isReferee(Player p) {
+        return this.referees.contains(p);
+    }
+
+    private void resetMap() {
+        for(BlockSaver block : affectedBlocks) {
+            block.applyMethod();
+        }
+        removeAllDroppedItems();
+
+        Bukkit.broadcastMessage("Map has been restored");
+    }
+
+    /*
+    Credit: https://bukkit.org/threads/remove-dropped-items-on-ground.100750/
+     */
+    private void removeAllDroppedItems() {
+        World world = Bukkit.getServer().getWorld("world");//get the world
+        List<Entity> entList = world.getEntities();//get all entities in the world
+
+        for(Entity current : entList) {//loop through the list
+            if (current instanceof Item) {//make sure we aren't deleting mobs/players
+                current.remove();//remove it
+            }
+        }
     }
 
     public void addDisconnectedPlayer(String joueur, Equipe team) {
@@ -154,7 +210,16 @@ public class Game implements Listener {
             public void run() {
 
                 if(isGameStarted() && !isPreGame() && !isGamePaused()) {
-                    for(Player online : redHouse.getTeam().getJoueurs()) {
+
+                    LinkedList<Player> blueTeam = blueHouse.getTeam().getJoueurs();
+                    LinkedList<Player> redTeam = redHouse.getTeam().getJoueurs();
+                    LinkedList<Player> yellowTeam = yellowHouse.getTeam().getJoueurs();
+
+                    blueTeam.addAll(getReferees());
+                    redTeam.addAll(getReferees());
+                    yellowTeam.addAll(getReferees());
+
+                    for(Player online : redTeam) {
                         Location blockCentralPorte = redHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
@@ -164,7 +229,7 @@ public class Game implements Listener {
                         }
                     }
 
-                    for(Player online : yellowHouse.getTeam().getJoueurs()) {
+                    for(Player online : yellowTeam) {
                         Location blockCentralPorte = yellowHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
@@ -174,7 +239,7 @@ public class Game implements Listener {
                         }
                     }
 
-                    for(Player online : blueHouse.getTeam().getJoueurs()) {
+                    for(Player online : blueTeam) {
                         Location blockCentralPorte = blueHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
@@ -228,7 +293,7 @@ public class Game implements Listener {
 
                                     // On TP le joueur dans sa maison
                                     try {
-                                        online.teleport(getPlayerHouse(online).getHouseLocation());
+                                        if(!isReferee(online)) online.teleport(getPlayerHouse(online).getHouseLocation());
 
                                         // METRIC
                                         // On envoie les informations de la partie
@@ -359,6 +424,12 @@ public class Game implements Listener {
     }
 
     public void terminerPartie() throws Exception {
+
+        /* Teleport everyone to the arena */
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            getArene().teleportPlayerToArena(player);
+        }
+
         this.GamePaused = false;
         this.GameStarted = false;
         this.GameEnded = true;
@@ -378,6 +449,7 @@ public class Game implements Listener {
         }
 
         SendInformation.sendGameData("ended");
+        this.resetMap();
     }
 
     public void pauseGame() {
@@ -554,7 +626,7 @@ public class Game implements Listener {
             throw new Exception("gameAlreadyStarted");
         }
 
-        if((mineralcontest.teamMaxPlayers*3 != mineralcontest.plugin.getServer().getOnlinePlayers().size()) && !force)
+        if((mineralcontest.teamMaxPlayers*3 != (mineralcontest.plugin.getServer().getOnlinePlayers().size() - this.getRefereeCount()) && !force))
             throw new Exception("NotEnoughtPlayer");
 
         ArrayList<String> team = new ArrayList<String>();
@@ -589,25 +661,29 @@ public class Game implements Listener {
         Object[] joueurs = Bukkit.getServer().getOnlinePlayers().toArray();
 
         while(team.size() > 0 && indexJoueur != joueurs.length) {
-            random = r.nextInt(team.size());
-            result = team.get(random);
 
-            if(result.equals("jaune")) {
-                this.yellowHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                team.remove(random);
-            }
+            if(!isReferee((Player) joueurs[indexJoueur])) {
+                random = r.nextInt(team.size());
+                result = team.get(random);
 
-            if(result.equals("rouge")) {
-                this.redHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                team.remove(random);
-            }
+                if(result.equals("jaune")) {
+                    this.yellowHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                    team.remove(random);
+                }
 
-            if(result.equals("bleu")) {
-                this.blueHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                team.remove(random);
+                if(result.equals("rouge")) {
+                    this.redHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                    team.remove(random);
+                }
+
+                if(result.equals("bleu")) {
+                    this.blueHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                    team.remove(random);
+                }
             }
 
             indexJoueur++;
+
         }
 
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "randomizeTeamEnd");
