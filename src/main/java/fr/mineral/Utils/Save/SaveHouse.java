@@ -37,7 +37,7 @@ public class SaveHouse {
     }
 
 
-    public void load(String fileName, Player p) throws IOException {
+    public void loadHouse(String fileName, Player p) throws IOException {
 
         SaveHouse.world = p.getWorld();
         ClassLoader classLoader = getClass().getClassLoader();

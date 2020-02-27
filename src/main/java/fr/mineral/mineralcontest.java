@@ -4,6 +4,7 @@ import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Core.Game;
+import fr.mineral.Core.MapBuilder.Event.InventoryClick;
 import fr.mineral.Core.MapBuilder.Event.SpawnHouse;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
@@ -230,7 +231,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
 
+
         Bukkit.getServer().getPluginManager().registerEvents(new SpawnHouse(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+
 
 
 
@@ -264,6 +268,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
 
         getCommand("setup").setExecutor(new SetupCommand());
+        getCommand("build").setExecutor(new BuildCommand());
 
 
 

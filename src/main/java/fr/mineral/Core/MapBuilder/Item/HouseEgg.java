@@ -21,7 +21,6 @@ public class HouseEgg {
     private ItemStack item;
     private String itemName;
 
-    private String name;
     private String direction;
     private Player player;
 
@@ -29,41 +28,47 @@ public class HouseEgg {
 
 
 
-    public HouseEgg(String Name, Player p) {
+    public HouseEgg() {
         this.item = new ItemStack(Material.EGG);
         this.itemName = Lang.map_builder_item_name.toString();
 
         ItemMeta m = this.item.getItemMeta();
         m.setDisplayName(this.itemName);
         this.item.setItemMeta(m);
+    }
 
-        this.name = Name;
+    private void setPlayer(Player p) {
         this.player = p;
-        p.getInventory().setItemInMainHand(this.item);
+    }
+
+    public static void giveEggToPlayer(Player p) {
+        HouseEgg houseEgg = new HouseEgg();
+        houseEgg.setPlayer(p);
+        p.getInventory().setItemInMainHand(houseEgg.item);
     }
 
     public String getItemName() { return this.itemName;}
 
-    public void spawnHouse() {
-        this.direction = PlayerUtils.getLookingDirection(this.player);
-        assert this.direction != null;
-        switch(this.direction) {
+    public static void spawnHouse(Player player) {
+        String direction = PlayerUtils.getLookingDirection(player);
+        assert direction != null;
+        switch(direction) {
             case "NE":
             case "NW":
-                this.direction = "N";
+                direction = "N";
                 break;
 
             case "SE":
             case "SW":
-                this.direction = "S";
+                direction = "S";
                 break;
         }
 
         SaveHouse sh = mineralcontest.plugin.getSaveHouse();
         try {
-            sh.load(mineralcontest.plugin.getDataFolder() + "/data/houses/" + this.direction + ".yml", this.player);
+            sh.loadHouse(mineralcontest.plugin.getDataFolder() + "/data/houses/" + direction + ".yml", player);
         }catch(IOException ioe) {
-            this.player.sendMessage("Unable to load the file " + mineralcontest.plugin.getDataFolder() + "/data/houses/" + this.direction + ".yml");
+            player.sendMessage("Unable to load the file " + mineralcontest.plugin.getDataFolder() + "/data/houses/" + direction + ".yml");
         }
     }
 }

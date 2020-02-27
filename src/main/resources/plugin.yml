@@ -58,6 +58,12 @@ commands:
     permission:
     permission-message: you do not have the permission
 
+  build:
+    description: Create a custom map
+    use: /build
+    permission:
+    permission-message: you do not have the permission
+
   mp_add_team_penality:
     description: Add a team penalty
     use: /mp_add_team_penality <amount> <team>

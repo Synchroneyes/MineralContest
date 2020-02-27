@@ -27,8 +27,6 @@ public class listMaps implements CommandExecutor {
         sender.sendMessage("Listing maps for folder: " + args[0]);
         SaveHouse sh = mineralcontest.plugin.getSaveHouse();
 
-        HouseEgg he = new HouseEgg("name", (Player) sender);
-
         if(args[0].equals("save")) {
             sender.sendMessage("Saving to file ...");
             try {
@@ -43,7 +41,7 @@ public class listMaps implements CommandExecutor {
         } else if(args[0].equals("load")) {
             sender.sendMessage("Loading ...");
             try {
-                sh.load("blue_house", (Player) sender);
+                sh.loadHouse("blue_house", (Player) sender);
             } catch (IOException e) {
                 e.printStackTrace();
             }
