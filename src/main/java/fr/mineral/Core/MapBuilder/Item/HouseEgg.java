@@ -39,7 +39,7 @@ public class HouseEgg {
 
         this.name = Name;
         this.player = p;
-        p.getInventory().setItemInOffHand(this.item);
+        p.getInventory().setItemInMainHand(this.item);
     }
 
     public String getItemName() { return this.itemName;}

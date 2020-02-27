@@ -4,7 +4,7 @@ import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Core.Game;
-import fr.mineral.Core.MapBuilder.Item.Event.EggThrown;
+import fr.mineral.Core.MapBuilder.Event.SpawnHouse;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
 
@@ -230,7 +230,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new EggThrown(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new SpawnHouse(), this);
 
 
 
