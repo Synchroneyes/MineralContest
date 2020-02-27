@@ -238,6 +238,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("vote").setExecutor(new VoteCommand());
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
+        getCommand("join").setExecutor(new JoinCommand());
+        getCommand("referee").setExecutor(new RefereeCommand());
+
 
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
@@ -251,9 +254,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
         getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
-
-
-        getCommand("join").setExecutor(new JoinCommand());
+        getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
 
 

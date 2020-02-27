@@ -125,10 +125,22 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  mp_enable_item_drop:
+    description: Autoriser le fait de dropper ses items à la mort
+    use: /mp_enable_item_drop
+    permission: admin
+    permission-message: you do not have the permission
+
   join:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>
     permission:
+    permission-message: you do not have the permission
+
+  referee:
+    description: Devenir un arbitre
+    use: /referee
+    permission: admin
     permission-message: you do not have the permission
 
 
