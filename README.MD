@@ -1,4 +1,5 @@
 # MineralContest - [Site web](http://mineral.synchroneyes.fr)
+[Discord](https://discord.gg/VFuUKVC)
 
 
 Ce mode de jeu a probablement été inventé par l'équipe de Squeezie, je ne m'avancerai pas sur ça.
