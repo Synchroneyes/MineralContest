@@ -15,7 +15,13 @@ public class mp_enable_item_drop implements CommandExecutor {
                     int valeur = 1;
                     try {
                         valeur = Integer.parseInt(args[0]);
+                        if(valeur > 1 || valeur < 0) {
+                            sender.sendMessage("Usage: /mp_enable_item_drop <1 ou 0>");
+                            return false;
+                        }
+
                         mineralcontest.plugin.getGame().mp_enable_item_drop = valeur;
+                        sender.sendMessage(mineralcontest.prefixPrive + "mp_enable_item_drop value is now " + valeur);
                         return false;
                     }catch (NumberFormatException nfe){
                         nfe.printStackTrace();

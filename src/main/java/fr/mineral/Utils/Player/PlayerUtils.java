@@ -157,7 +157,11 @@ public class PlayerUtils {
         // On ajoute un delai pour remettre en deathzone
         mineralcontest.plugin.getServer().getScheduler().runTaskLater(mineralcontest.plugin, new Runnable() {
             public void run() {
-                mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
+                try {
+                    mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, 20);
     }
@@ -191,7 +195,12 @@ public class PlayerUtils {
         }
 
         // On l'ajoute à la deathzone
-        mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
+        try {
+            mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

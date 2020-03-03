@@ -80,7 +80,16 @@ public class DeathZone {
         return 0;
     }
 
-    public void add(Player joueur) {
+    public void add(Player joueur) throws Exception {
+
+        if(mineralcontest.plugin.getGame().isReferee(joueur) && mineralcontest.plugin.getGame().isGameStarted()) {
+            joueur.setGameMode(GameMode.SURVIVAL);
+            joueur.setFireTicks(0);
+            joueur.setHealth(20f);
+            joueur.teleport(mineralcontest.plugin.getGame().getArene().getCoffre().getPosition());
+            return;
+        }
+
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();

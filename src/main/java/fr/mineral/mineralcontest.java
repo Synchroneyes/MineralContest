@@ -240,6 +240,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("arena").setExecutor(new AreneTeleportCommand());
         getCommand("join").setExecutor(new JoinCommand());
         getCommand("referee").setExecutor(new RefereeCommand());
+        getCommand("arbitre").setExecutor(new RefereeCommand());
 
 
         getCommand("switch").setExecutor(new SwitchCommand());

@@ -107,7 +107,9 @@ public enum Lang {
     team_player_joined("team_player_joined", "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"),
     red_team("red_team", "Red"),
     yellow_team("yellow_team", "Yellow"),
-    blue_team("blue_team", "Blue");
+    blue_team("blue_team", "Blue"),
+    no_longer_referee("no_longer_referee", "Vous n'êtes plus arbitre !"),
+    now_referee("now_referee", "Vous êtes désormais arbitre de la partie");
 
 
     private String path;
