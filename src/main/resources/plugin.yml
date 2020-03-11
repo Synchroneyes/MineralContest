@@ -143,12 +143,6 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  arbitre:
-    description: Devenir un arbitre
-    use: /arbitre
-    permission: admin
-    permission-message: you do not have the permission
-
 
 
   permissions:

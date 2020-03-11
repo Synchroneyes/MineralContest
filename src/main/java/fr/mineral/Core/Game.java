@@ -283,7 +283,7 @@ public class Game implements Listener {
                             }else {
                                 // Début de partie
                                 if(tempsPartie == DUREE_PARTIE * 60) {
-                                    GameStarted = true;
+
                                     online.setHealth(20);
                                     online.setGameMode(GameMode.SURVIVAL);
                                     online.getInventory().clear();
@@ -319,11 +319,10 @@ public class Game implements Listener {
                             if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
                         }
                     }
+                    PreGameTimeLeft--;
                     for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                         if(PreGameTimeLeft > 0) online.playNote(online.getLocation(), Instrument.PIANO, new Note(1));
                         else online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
-
-                    PreGameTimeLeft--;
 
                 }
 
@@ -606,7 +605,7 @@ public class Game implements Listener {
         mineralcontest.plugin.getGame().getBlueHouse().spawnCoffreEquipe();
 
         PreGame = true;
-        GameStarted = false;
+        GameStarted = true;
         this.tempsPartie = 60 * DUREE_PARTIE;
         mineralcontest.plugin.getGame().getArene().startArena();
         mineralcontest.plugin.getGame().getArene().startAutoMobKill();
