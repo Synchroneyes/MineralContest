@@ -38,38 +38,38 @@ public class EntityDamage implements Listener {
     @EventHandler
     public boolean onEntityDamage(EntityDamageByEntityEvent event) {
         if(mineralcontest.plugin.getGame().isGameStarted()) {
-                if(event.getEntity() instanceof  Player) {
-                    Player victime = (Player) event.getEntity();
+            if(event.getEntity() instanceof  Player) {
+                Player victime = (Player) event.getEntity();
 
-                    if(event.getDamager() instanceof Player && mineralcontest.plugin.getGame().isReferee((Player) event.getDamager())) {
-                        event.setCancelled(true);
-                        return true;
-                    }
-
-                    if(mineralcontest.plugin.getGame().isReferee(victime)){
-                        event.setCancelled(true);
-                        return true;
-                    }
-
-                    if(mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(victime)){
-                        event.setCancelled(true);
-                        return true;
-                    }
-
-                    // Si une entité meurt d'un coup/explosion/...
-                    if (victime.getHealth() - event.getDamage() < 0) {
-                        victime.setHealth(20D);
-                        event.setCancelled(true);
-
-                        // Si c'est un joueur qui a tué notre victime
-                        if(event.getDamager() instanceof Player) {
-                            registerKill(victime, (Player) event.getDamager());
-                        }
-
-                        PlayerUtils.killPlayer(victime);
-
-                    }
+                if(event.getDamager() instanceof Player && mineralcontest.plugin.getGame().isReferee((Player) event.getDamager())) {
+                    event.setCancelled(true);
+                    return true;
                 }
+
+                if(mineralcontest.plugin.getGame().isReferee(victime)){
+                    event.setCancelled(true);
+                    return true;
+                }
+
+                if(mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(victime)){
+                    event.setCancelled(true);
+                    return true;
+                }
+
+                // Si une entité meurt d'un coup/explosion/...
+                if (victime.getHealth() - event.getDamage() < 0) {
+                    victime.setHealth(20D);
+                    event.setCancelled(true);
+
+                    // Si c'est un joueur qui a tué notre victime
+                    if(event.getDamager() instanceof Player) {
+                        registerKill(victime, (Player) event.getDamager());
+                    }
+
+                    PlayerUtils.killPlayer(victime);
+
+                }
+            }
         } else {
             event.setCancelled(true);
         }

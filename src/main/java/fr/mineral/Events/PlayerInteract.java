@@ -1,22 +1,55 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.House;
+import fr.mineral.Core.MapBuilder.Item.HouseEgg;
 import fr.mineral.Translation.Lang;
-import fr.mineral.Utils.Door.AutomaticDoors;
-import fr.mineral.Utils.Setup;
+import fr.mineral.Utils.HouseSetup;
 import fr.mineral.mineralcontest;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerInteract implements Listener {
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player joueur = (Player) event.getPlayer();
 
-        if(Setup.addDoors) {
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) throws Exception {
+        Player joueur = (Player) event.getPlayer();
+        mineralcontest plugin = mineralcontest.plugin;
+        House bleu = plugin.getGame().getBlueHouse();
+
+
+        if(HouseSetup.addBlock && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {
+            bleu.addBlock(event.getClickedBlock().getLocation());
+            joueur.sendMessage("Block de maison ajouté");
+
+            event.getClickedBlock().setType(Material.AIR);
+        }
+
+        if(HouseSetup.addDoors && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {
+            bleu.getPorte().addToDoor(event.getClickedBlock());
+            joueur.sendMessage("Block de porte ajouté");
+            event.getClickedBlock().setType(Material.AIR);
+
+
+        }
+
+        if(HouseSetup.addSpawn) {
+            Location l = event.getClickedBlock().getLocation();
+            l.setY(l.getY()+1);
+            bleu.setHouseLocation(l);
+        }
+
+        if(HouseSetup.addChest) {
+            bleu.setCoffreEquipe(event.getClickedBlock().getLocation());
+        }
+
+        /*if(Setup.addDoors) {
             if(mineralcontest.plugin.getGame().getBlueHouse().getPorte().getPorte().size() < AutomaticDoors.maxDoorSize) {
                 mineralcontest.plugin.getGame().getBlueHouse().getPorte().addToDoor(event.getClickedBlock());
                 joueur.sendMessage("porte bleu added");
@@ -49,7 +82,7 @@ public class PlayerInteract implements Listener {
                 Setup.setEmplacementTemporaire(event.getClickedBlock().getLocation());
             }
         }
-
+        */
 
 
 

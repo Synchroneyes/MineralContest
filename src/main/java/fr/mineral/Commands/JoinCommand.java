@@ -13,10 +13,6 @@ public class JoinCommand implements CommandExecutor {
 
         if(command.getName().equalsIgnoreCase("join")) {
             if(mineralcontest.plugin.getGame().mp_randomize_team == 0) {
-                if(mineralcontest.plugin.getGame().isReferee((Player) sender)) {
-                    sender.sendMessage("You cant join a team, you are a referee");
-                    return false;
-                }
                 if(args.length == 1) {
                     switch(args[0].toLowerCase()) {
                         case "j":

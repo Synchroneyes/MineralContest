@@ -15,12 +15,16 @@ public class AreneTeleportCommand implements CommandExecutor {
             if(command.getName().equals("arene") || command.getName().equals("arena")) {
                 Player joueur = (Player) sender;
 
+                if(mineralcontest.plugin.getGame().isReferee(joueur)) {
+                    teleportToArena(joueur);
+                    return false;
+                }
+
                 if(mineralcontest.plugin.getGame().getArene().isTeleportAllowed()) {
                     Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
 
                     for(Player membre : team.getJoueurs()) {
-                        membre.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
-                        membre.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_teleporting.toString()));
+                        teleportToArena(membre);
                     }
                 } else {
                     joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.arena_teleport_disabled.toString()));
@@ -28,5 +32,10 @@ public class AreneTeleportCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private void teleportToArena(Player p) {
+        p.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
+        p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_teleporting.toString()));
     }
 }

@@ -50,6 +50,10 @@ public class ChestEvent implements Listener {
                 // Si c'est un coffre d'équipe
                 // On récupere le joueur en question
                 Player joueur = (Player) event.getPlayer();
+                if(mineralcontest.plugin.getGame().isReferee(joueur)) {
+                    return;
+                }
+
                 Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
                 // Ne devrait pas arriver, mais sait-on jamais
                 if(team != null) {
@@ -127,7 +131,13 @@ public class ChestEvent implements Listener {
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
         Player joueur = (Player) event.getPlayer();
         if(CoffreAvecCooldown.coffre != null && Radius.isBlockInRadius(CoffreAvecCooldown.coffre.getPosition(), joueur.getLocation(), 5)) {
-            CoffreAvecCooldown.coffre.open((Player) event.getPlayer());
+            Player p = (Player) event.getPlayer();
+            if(mineralcontest.plugin.getGame().isReferee(p)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            CoffreAvecCooldown.coffre.open(p);
         }
     }
 }

@@ -1,13 +1,19 @@
 package fr.mineral;
 
 import fr.mineral.Commands.*;
+import fr.mineral.Commands.BuildCommand;
 import fr.mineral.Commands.CVAR.*;
+import fr.mineral.Commands.Developper.SetupCommand;
+import fr.mineral.Commands.listMaps;
 import fr.mineral.Core.Game;
+import fr.mineral.Core.MapBuilder.Event.InventoryClick;
+import fr.mineral.Core.MapBuilder.Event.SpawnHouse;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
 
 import fr.mineral.Translation.Language;
 import fr.mineral.Utils.Metric.SendInformation;
+import fr.mineral.Utils.Save.SaveHouse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -50,12 +56,19 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static int teamMaxPlayers = 2;
     private Game partie;
 
+    private SaveHouse saveHouse;
+    public static String world_name = "world";
+
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
+        this.saveHouse = new SaveHouse();
 
     }
+
+    public SaveHouse getSaveHouse() { return this.saveHouse;}
 
     public void createLangFiles() throws IOException {
 
@@ -223,6 +236,12 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
 
 
+        Bukkit.getServer().getPluginManager().registerEvents(new SpawnHouse(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+
+
+
+
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
 
         this.getGame().init();
@@ -238,9 +257,6 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("vote").setExecutor(new VoteCommand());
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
-        getCommand("join").setExecutor(new JoinCommand());
-        getCommand("referee").setExecutor(new RefereeCommand());
-
 
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
@@ -254,9 +270,16 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
         getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
-        getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
+
+        getCommand("setup").setExecutor(new SetupCommand());
+        getCommand("build").setExecutor(new BuildCommand());
+
+
+
+        getCommand("join").setExecutor(new JoinCommand());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
 
+        getCommand("listMaps").setExecutor(new listMaps());
 
 
 
@@ -264,7 +287,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         if(mineralcontest.plugin.getServer().getOnlinePlayers().size() > 0){
             try {
 
-                Bukkit.getWorld("world").setAutoSave(false);
+                Bukkit.getWorld(world_name).setAutoSave(false);
             }catch(Exception e) {
                 e.printStackTrace();
             }

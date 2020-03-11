@@ -5,10 +5,7 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.mineralcontest;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,6 +67,39 @@ public class PlayerUtils {
         armure[3] = new ItemStack(Material.IRON_HELMET, 1);
 
         joueur.getInventory().setArmorContents(armure);
+    }
+
+
+
+    /*
+        Credit; https://bukkit.org/threads/solved-player-direction.72789/
+     */
+    public static String getLookingDirection(Player player) {
+        double rotation = (player.getLocation().getYaw() - 90) % 360;
+        if (rotation < 0) {
+            rotation += 360.0;
+        }
+        if (0 <= rotation && rotation < 22.5) {
+            return "N";
+        } else if (22.5 <= rotation && rotation < 67.5) {
+            return "NE";
+        } else if (67.5 <= rotation && rotation < 112.5) {
+            return "E";
+        } else if (112.5 <= rotation && rotation < 157.5) {
+            return "SE";
+        } else if (157.5 <= rotation && rotation < 202.5) {
+            return "S";
+        } else if (202.5 <= rotation && rotation < 247.5) {
+            return "SW";
+        } else if (247.5 <= rotation && rotation < 292.5) {
+            return "W";
+        } else if (292.5 <= rotation && rotation < 337.5) {
+            return "NW";
+        } else if (337.5 <= rotation && rotation < 360.0) {
+            return "N";
+        } else {
+            return null;
+        }
     }
 
     public static void drawPlayersHUD() {
@@ -157,11 +187,7 @@ public class PlayerUtils {
         // On ajoute un delai pour remettre en deathzone
         mineralcontest.plugin.getServer().getScheduler().runTaskLater(mineralcontest.plugin, new Runnable() {
             public void run() {
-                try {
-                    mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
             }
         }, 20);
     }
@@ -188,19 +214,30 @@ public class PlayerUtils {
             item_a_drop.add(Material.DIAMOND);
             item_a_drop.add(Material.EMERALD);
 
-            // Si l'item actuelle n'est pas dans la liste, on le supprime de la liste de drop
-            if(!item_a_drop.contains(item.getType()) && mineralcontest.plugin.getGame().mp_enable_item_drop == 0){
+            int mp_enable_item_drop = mineralcontest.plugin.getGame().mp_enable_item_drop;
+
+            // DROP ONLY INGOTS
+            if(mp_enable_item_drop == 2) {
+                // IF ITEM IS NOT TO DROP
+                if(!item_a_drop.contains(item.getType())) {
+                    iterateur.remove();
+                }
+            }
+
+            // IF NO DROP AT ALL
+            if(mp_enable_item_drop == 0) {
                 iterateur.remove();
+            }
+
+            // Drop items
+            for(ItemStack itemInventaire : inventaire) {
+                if(!itemInventaire.getType().equals(Material.AIR))
+                    Bukkit.getWorld(mineralcontest.world_name).dropItemNaturally(player.getLocation(), itemInventaire);
             }
         }
 
         // On l'ajoute à la deathzone
-        try {
-            mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
 
     }
 }

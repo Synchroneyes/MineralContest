@@ -58,6 +58,12 @@ commands:
     permission:
     permission-message: you do not have the permission
 
+  build:
+    description: Create a custom map
+    use: /build
+    permission:
+    permission-message: you do not have the permission
+
   mp_add_team_penality:
     description: Add a team penalty
     use: /mp_add_team_penality <amount> <team>
@@ -70,6 +76,11 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  setup:
+    description: set team random
+    use: /setup <1 | 0>
+    permission: admin
+    permission-message: you do not have the permission
 
   mp_reset_team_penality:
     description: reset a team penalty
@@ -125,9 +136,9 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  mp_enable_item_drop:
-    description: Autoriser le fait de dropper ses items à la mort
-    use: /mp_enable_item_drop
+  listMaps:
+    description: Démarrer un vote
+    use: /listMaps
     permission: admin
     permission-message: you do not have the permission
 
@@ -135,12 +146,6 @@ commands:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>
     permission:
-    permission-message: you do not have the permission
-
-  referee:
-    description: Devenir un arbitre
-    use: /referee
-    permission: admin
     permission-message: you do not have the permission
 
 

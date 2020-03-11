@@ -58,7 +58,7 @@ public class Game implements Listener {
     // CVAR
 
     public int mp_randomize_team = 1;
-    public int mp_enable_item_drop = 0;
+    public int mp_enable_item_drop = 2;
 
     // Temps de la partie en minute
     private static int DUREE_PARTIE = 60;
@@ -79,7 +79,6 @@ public class Game implements Listener {
     public boolean isGameInitialized = false;
 
     public int killCounter = 0;
-
 
     private AutomaticDoors portes;
 
@@ -103,7 +102,6 @@ public class Game implements Listener {
     private LinkedList<Player> referees;
 
 
-
     public Game() {
         this.redHouse = new House("Rouge", ChatColor.RED);
         this.blueHouse = new House("Bleu", ChatColor.BLUE);
@@ -113,9 +111,11 @@ public class Game implements Listener {
         this.votemap = new Votemap();
 
         //votemap.enableVote();
+
         this.disconnectedPlayers = new LinkedList<CouplePlayerTeam>();
         this.affectedBlocks = new LinkedList<>();
         this.referees = new LinkedList<>();
+
     }
 
     public void addBlock(Block b, BlockSaver.Type type) {
@@ -128,7 +128,7 @@ public class Game implements Listener {
     }
 
     public void removeReferee(Player player) {
-        if(isReferee(player)) this.referees.remove(player);
+        this.referees.remove(player);
     }
 
     public int getRefereeCount() { return this.referees.size();}
@@ -152,7 +152,7 @@ public class Game implements Listener {
     Credit: https://bukkit.org/threads/remove-dropped-items-on-ground.100750/
      */
     private void removeAllDroppedItems() {
-        World world = Bukkit.getServer().getWorld("world");//get the world
+        World world = Bukkit.getServer().getWorld(mineralcontest.world_name);//get the world
         List<Entity> entList = world.getEntities();//get all entities in the world
 
         for(Entity current : entList) {//loop through the list
@@ -211,13 +211,19 @@ public class Game implements Listener {
 
                 if(isGameStarted() && !isPreGame() && !isGamePaused()) {
 
-                    LinkedList<Player> blueTeam = blueHouse.getTeam().getJoueurs();
-                    LinkedList<Player> redTeam = redHouse.getTeam().getJoueurs();
-                    LinkedList<Player> yellowTeam = yellowHouse.getTeam().getJoueurs();
+                    LinkedList<Player> blueTeam = new LinkedList<>(); //LinkedList<Player>) blueHouse.getTeam().getJoueurs().clone();
+                    LinkedList<Player> redTeam = new LinkedList<>();//(LinkedList<Player>) redHouse.getTeam().getJoueurs().clone();
+                    LinkedList<Player> yellowTeam = new LinkedList<>();//(LinkedList<Player>) yellowHouse.getTeam().getJoueurs().clone();
 
-                    blueTeam.addAll(getReferees());
-                    redTeam.addAll(getReferees());
-                    yellowTeam.addAll(getReferees());
+                    for(Player p : redHouse.getTeam().getJoueurs()) if (!redTeam.contains(p))  redTeam.add(p);
+                    for(Player p : blueHouse.getTeam().getJoueurs()) if (!blueTeam.contains(p))  blueTeam.add(p);
+                    for(Player p : yellowHouse.getTeam().getJoueurs()) if (!yellowTeam.contains(p))  yellowTeam.add(p);
+
+                    for(Player p : mineralcontest.plugin.getGame().referees) {
+                        if (!redTeam.contains(p))  redTeam.add(p);
+                        if (!blueTeam.contains(p))  blueTeam.add(p);
+                        if (!yellowTeam.contains(p))  yellowTeam.add(p);
+                    }
 
                     for(Player online : redTeam) {
                         Location blockCentralPorte = redHouse.getPorte().getMiddleBlockLocation();
@@ -295,6 +301,8 @@ public class Game implements Listener {
                                     try {
                                         if(!isReferee(online)) online.teleport(getPlayerHouse(online).getHouseLocation());
 
+                                        online.teleport(getPlayerHouse(online).getHouseLocation());
+
                                         // METRIC
                                         // On envoie les informations de la partie
                                         SendInformation.sendGameData("started");
@@ -319,11 +327,11 @@ public class Game implements Listener {
                             if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
                         }
                     }
-                    PreGameTimeLeft--;
                     for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
                         if(PreGameTimeLeft > 0) online.playNote(online.getLocation(), Instrument.PIANO, new Note(1));
                         else online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
 
+                    PreGameTimeLeft--;
                 }
 
                 // FIN PREGAME
@@ -424,12 +432,6 @@ public class Game implements Listener {
     }
 
     public void terminerPartie() throws Exception {
-
-        /* Teleport everyone to the arena */
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            getArene().teleportPlayerToArena(player);
-        }
-
         this.GamePaused = false;
         this.GameStarted = false;
         this.GameEnded = true;
@@ -449,7 +451,6 @@ public class Game implements Listener {
         }
 
         SendInformation.sendGameData("ended");
-        this.resetMap();
     }
 
     public void pauseGame() {
@@ -626,7 +627,7 @@ public class Game implements Listener {
             throw new Exception("gameAlreadyStarted");
         }
 
-        if((mineralcontest.teamMaxPlayers*3 != (mineralcontest.plugin.getServer().getOnlinePlayers().size() - this.getRefereeCount()) && !force))
+        if((mineralcontest.teamMaxPlayers*3 != mineralcontest.plugin.getServer().getOnlinePlayers().size()) && !force)
             throw new Exception("NotEnoughtPlayer");
 
         ArrayList<String> team = new ArrayList<String>();
@@ -661,29 +662,25 @@ public class Game implements Listener {
         Object[] joueurs = Bukkit.getServer().getOnlinePlayers().toArray();
 
         while(team.size() > 0 && indexJoueur != joueurs.length) {
+            random = r.nextInt(team.size());
+            result = team.get(random);
 
-            if(!isReferee((Player) joueurs[indexJoueur])) {
-                random = r.nextInt(team.size());
-                result = team.get(random);
+            if(result.equals("jaune")) {
+                this.yellowHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                team.remove(random);
+            }
 
-                if(result.equals("jaune")) {
-                    this.yellowHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                    team.remove(random);
-                }
+            if(result.equals("rouge")) {
+                this.redHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                team.remove(random);
+            }
 
-                if(result.equals("rouge")) {
-                    this.redHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                    team.remove(random);
-                }
-
-                if(result.equals("bleu")) {
-                    this.blueHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
-                    team.remove(random);
-                }
+            if(result.equals("bleu")) {
+                this.blueHouse.getTeam().addPlayerToTeam((Player) joueurs[indexJoueur]);
+                team.remove(random);
             }
 
             indexJoueur++;
-
         }
 
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "randomizeTeamEnd");
