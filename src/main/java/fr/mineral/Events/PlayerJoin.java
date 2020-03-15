@@ -7,6 +7,7 @@ import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -23,8 +24,11 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         Player p = event.getPlayer();
 
+
         // SI la game n'a pas démarré et que tout le monde est connecté
         Game game = mineralcontest.plugin.getGame();
+
+        if(!game.isGameStarted() && p.isOp()) p.setGameMode(GameMode.CREATIVE);
 
         game.votemap.enableVote(false);
 

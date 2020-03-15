@@ -5,8 +5,11 @@ import fr.mineral.Core.MapBuilder.Item.HouseEgg;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.HouseSetup;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Ladder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +26,9 @@ public class PlayerInteract implements Listener {
         mineralcontest plugin = mineralcontest.plugin;
         House bleu = plugin.getGame().getBlueHouse();
 
+        Block b = event.getClickedBlock();
+
+        //Block b1 = new Location(b.getWorld(), b.getLocation().getX(), b.getLocation().getY(), b.getLocation().getZ()-1).getBlock();
 
         if(HouseSetup.addBlock && event.getClickedBlock() != null && !event.getClickedBlock().getType().equals(Material.AIR)) {
             bleu.addBlock(event.getClickedBlock().getLocation());

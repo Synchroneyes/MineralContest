@@ -82,7 +82,7 @@ public class DeathZone {
 
     public void add(Player joueur) {
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
-        joueur.setGameMode(GameMode.ADVENTURE);
+        joueur.setGameMode(GameMode.SURVIVAL);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //joueur.teleport(this.spawnLocation);

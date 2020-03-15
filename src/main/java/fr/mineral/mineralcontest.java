@@ -4,8 +4,9 @@ import fr.mineral.Commands.*;
 import fr.mineral.Commands.BuildCommand;
 import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Commands.Developper.SetupCommand;
-import fr.mineral.Commands.listMaps;
 import fr.mineral.Core.Game;
+import fr.mineral.Core.MapBuilder.Commands.listMaps;
+import fr.mineral.Core.MapBuilder.Event.BlockPhysic;
 import fr.mineral.Core.MapBuilder.Event.InventoryClick;
 import fr.mineral.Core.MapBuilder.Event.SpawnHouse;
 import fr.mineral.Translation.Lang;
@@ -238,6 +239,9 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
 
         Bukkit.getServer().getPluginManager().registerEvents(new SpawnHouse(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockPhysic(), this);
+
+
 
 
 
