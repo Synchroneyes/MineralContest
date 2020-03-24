@@ -37,7 +37,7 @@ public class CoffreAvecCooldown {
 
     public void clear() {
         this.position.getBlock().setType(Material.AIR);
-        ((Chest)this.position.getBlock().getState()).getInventory().clear();
+        if(this.position.getBlock().getState() instanceof Chest) ((Chest)this.position.getBlock().getState()).getInventory().clear();
         opened = false;
         spawned = false;
         isCancelled = false;

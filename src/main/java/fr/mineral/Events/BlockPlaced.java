@@ -17,6 +17,12 @@ public class BlockPlaced implements Listener {
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
 
+            if(!mineralcontest.plugin.getGame().isGameStarted()) {
+                event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
+                event.setCancelled(true);
+                return;
+            }
+
             if (mineralcontest.plugin.getGame().isGamePaused()) {
                 event.setCancelled(true);
                 return;

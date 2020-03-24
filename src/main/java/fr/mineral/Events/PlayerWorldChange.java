@@ -15,9 +15,11 @@ public class PlayerWorldChange implements Listener {
             ScoreboardUtil.unrankedSidebarDisplay(event.getPlayer(), "");
         }
 
-        if(event.getPlayer().getWorld().equals(mineralcontest.plugin.pluginWorld) && mineralcontest.plugin.getGame().isGameStarted()) {
+        // miltivers support kick
+
+        /*if(event.getPlayer().getWorld().equals(mineralcontest.plugin.pluginWorld) && mineralcontest.plugin.getGame().isGameStarted()) {
             World oldWorld = event.getPlayer().getWorld();
             event.getPlayer().teleport(new Location(event.getFrom(), 0, 70, 0));
-        }
+        }*/
     }
 }

@@ -160,6 +160,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static void broadcastMessage(String message) {
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
             player.sendMessage(message);
+        Bukkit.getLogger().info(message);
     }
 
 }

@@ -4,8 +4,10 @@ import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
+import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -140,7 +142,13 @@ public class DeathZone {
             }
 
             // On rend le stuff du joueur
-            PlayerUtils.givePlayerBaseItems(joueur);
+            //PlayerUtils.givePlayerBaseItems(joueur);
+            try {
+                PlayerBaseItem.givePlayerItems(joueur, PlayerBaseItem.everyRespawnName);
+            }catch (Exception e) {
+                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+                e.printStackTrace();
+            }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2*20, 1);
 
             // ON le supprime de la liste

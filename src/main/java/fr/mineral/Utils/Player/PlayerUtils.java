@@ -47,14 +47,14 @@ public class PlayerUtils {
         return false;
     }
 
-    public static void givePlayerBaseItems(Player joueur) {
-            /*
+    /*public static void givePlayerBaseItems(Player joueur) {
+
             On donne au joueur:
                 - Arc
                 - 64 fleches
                 - Epée en fer
                 -
-             */
+
 
         joueur.getInventory().addItem(new ItemStack(Material.BOW, 1));
         joueur.getInventory().addItem(new ItemStack(Material.ARROW, 64));
@@ -69,7 +69,7 @@ public class PlayerUtils {
         armure[3] = new ItemStack(Material.IRON_HELMET, 1);
 
         joueur.getInventory().setArmorContents(armure);
-    }
+    }*/
 
     public static void drawPlayersHUD() {
 

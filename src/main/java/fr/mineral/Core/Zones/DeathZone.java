@@ -4,6 +4,7 @@ import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
+import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
@@ -94,7 +95,8 @@ public class DeathZone {
             }
 
             // On rend le stuff du joueur
-            PlayerUtils.givePlayerBaseItems(joueur);
+            //PlayerUtils.givePlayerBaseItems(joueur);
+            PlayerBaseItem.givePlayerItems(joueur, PlayerBaseItem.everyRespawnName);
             joueur.sendTitle("", Lang.deathzone_respawned.toString(), 0, 20, 0);
             // ON le supprime de la liste
             this.joueurs.remove(DeathZonePlayer);

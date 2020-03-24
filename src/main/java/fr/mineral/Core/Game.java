@@ -8,6 +8,7 @@ import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Metric.SendInformation;
+import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Save.FileToGame;
@@ -358,7 +359,14 @@ public class Game implements Listener {
                                     online.setHealth(20);
                                     online.setGameMode(GameMode.SURVIVAL);
                                     online.getInventory().clear();
-                                    PlayerUtils.givePlayerBaseItems(online);
+                                    //PlayerUtils.givePlayerBaseItems(online);
+                                    try {
+                                        PlayerBaseItem.givePlayerItems(online, PlayerBaseItem.onFirstSpawnName);
+                                    } catch (Exception e) {
+                                        mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console");
+                                        e.printStackTrace();
+                                    }
+
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
 
 
@@ -685,7 +693,8 @@ public class Game implements Listener {
                 PlayerUtils.setMaxHealth(online);
                 online.setGameMode(GameMode.SURVIVAL);
                 online.getInventory().clear();
-                PlayerUtils.givePlayerBaseItems(online);
+                //PlayerUtils.givePlayerBaseItems(online);
+                //PlayerBaseItem.givePlayerItems(online, PlayerBaseItem.onFirstSpawnName);
             }
 
 

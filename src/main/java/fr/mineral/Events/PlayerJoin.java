@@ -5,6 +5,7 @@ import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
+import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -27,9 +28,13 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
+
             mineralcontest.checkIfMapIsCorrect();
             Player p = event.getPlayer();
             PlayerUtils.setMaxHealth(p);
+
+
             // SI la game n'a pas démarré et que tout le monde est connecté
             Game game = mineralcontest.plugin.getGame();
 
@@ -50,6 +55,13 @@ public class PlayerJoin implements Listener {
                 // Téléportation à la plateforme initiale
                 PlayerUtils.teleportToLobby(p);
                 PlayerUtils.clearPlayer(p);
+            }
+
+            try {
+                PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
+            }catch (Exception e) {
+                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+                e.printStackTrace();
             }
 
 
