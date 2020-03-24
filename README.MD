@@ -1,5 +1,4 @@
 # MineralContest - [Site web](http://mineral.synchroneyes.fr)
-# Discord - [Lien d'invitation](https://discord.gg/dggP3Nv)
 
 
 Ce mode de jeu a probablement été inventé par l'équipe de Squeezie, je ne m'avancerai pas sur ça.
@@ -24,7 +23,6 @@ mp_add_team_penality <valeur> <equipe> # Ajouter des points de pénalité à une
 mp_reset_team_penality <equipe> # Reset la pénalité d'une équipe
 mp_set_language <langage> # Choisit le langage à utiliser
 mp_start_vote # Démarre un vote
-mp_enable_item_drop <0 ou 1 ou 2> #0 = aucun drop, 1 = drop de minerais, 2 = drop tout l'inventaire
 
 start <force> # Permet de démarrer une partie
 resume # Permet de reprendre une partie en pause

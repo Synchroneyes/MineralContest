@@ -5,61 +5,67 @@ import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class mp_reset_team_penality implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender.isOp() && command.getName().equals("mp_reset_team_penality")) {
-            if (args.length == 1) {
-                String usage = "Usage: /mp_reset_team_penality <" + Lang.red_team.toString() + " | " + Lang.yellow_team.toString() + " | " + Lang.blue_team.toString() + ">";
 
+        Player player = (Player) sender;
+        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if (sender.isOp() && command.getName().equals("mp_reset_team_penality")) {
                 if (args.length == 1) {
-                    switch (args[0].toLowerCase()) {
-                        case "j":
-                        case "jaune":
-                        case "y":
-                        case "yellow":
-                            try {
-                                mineralcontest.plugin.getGame().getYellowHouse().getTeam().resetPenalty();
+                    String usage = "Usage: /mp_reset_team_penality <" + Lang.red_team.toString() + " | " + Lang.yellow_team.toString() + " | " + Lang.blue_team.toString() + ">";
 
-                            } catch (Exception e) {
-                                sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                            }
-                            break;
+                    if (args.length == 1) {
+                        switch (args[0].toLowerCase()) {
+                            case "j":
+                            case "jaune":
+                            case "y":
+                            case "yellow":
+                                try {
+                                    mineralcontest.plugin.getGame().getYellowHouse().getTeam().resetPenalty();
 
-                        case "b":
-                        case "bleu":
-                        case "bleue":
-                        case "blue":
-                            try {
-                                mineralcontest.plugin.getGame().getBlueHouse().getTeam().resetPenalty();
+                                } catch (Exception e) {
+                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                                }
+                                break;
 
-                            } catch (Exception e) {
-                                sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                            }
-                            break;
+                            case "b":
+                            case "bleu":
+                            case "bleue":
+                            case "blue":
+                                try {
+                                    mineralcontest.plugin.getGame().getBlueHouse().getTeam().resetPenalty();
 
-                        case "r":
-                        case "rouge":
-                        case "red":
-                            try {
-                                mineralcontest.plugin.getGame().getRedHouse().getTeam().resetPenalty();
+                                } catch (Exception e) {
+                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                                }
+                                break;
 
-                            } catch (Exception e) {
-                                sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                            }
-                            break;
+                            case "r":
+                            case "rouge":
+                            case "red":
+                                try {
+                                    mineralcontest.plugin.getGame().getRedHouse().getTeam().resetPenalty();
 
-                        default:
-                            sender.sendMessage(usage);
-                            return true;
+                                } catch (Exception e) {
+                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                                }
+                                break;
+
+                            default:
+                                sender.sendMessage(usage);
+                                return true;
+                        }
+                    } else {
+                        sender.sendMessage(usage);
                     }
-                } else {
-                    sender.sendMessage(usage);
                 }
+                return false;
             }
-            return false;
         }
+
         return true;
     }
 }

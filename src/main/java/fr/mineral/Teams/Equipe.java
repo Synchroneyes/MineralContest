@@ -1,6 +1,7 @@
 package fr.mineral.Teams;
 
 import fr.mineral.Core.Arena.Coffre;
+import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.mineralcontest;
@@ -24,47 +25,66 @@ public class Equipe {
         this.couleur = c;
     }
 
+    public void clear() {
+        this.joueurs.clear();
+        this.score = 0;
+        this.penalty = 0;
+    }
+
     public int getPenalty() { return this.penalty; }
 
+    public void updateScore() {
+
+    }
+
+    public void sendMessage(String message, Player sender) {
+        if(this.joueurs.contains(sender)) {
+            for(Player member : joueurs)
+                member.sendMessage(mineralcontest.prefixTeamChat + sender.getDisplayName() + ": " + message);
+
+        }
+    }
 
     public void addPenalty(int penalty){
-        Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this));
         this.penalty += penalty;
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this));
     }
 
     public void resetPenalty() {
-        Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this));
 
         this.penalty = 0;
     }
 
     public void setNomEquipe(String n ) { this.nomEquipe = n;}
 
-
-
-
     public int getScore() { return this.score - this.penalty; }
     public void setScore(int score) {
+        this.score = score;
         for(Player online : joueurs)
             online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
-        this.score = score;
     }
 
 
     // Retourne true si la team est pleine, false si non
     public boolean isTeamFull() {
-        if(this.joueurs.size() >= mineralcontest.teamMaxPlayers)
+        if(this.joueurs.size() >= (int) GameSettingsCvar.mp_team_max_player.getValue())
             return true;
         return false;
     }
 
     public boolean addPlayerToTeam(Player p) {
         if(!isTeamFull()) {
+
+            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(p);
+            if(team != null) team.removePlayer(p);
+
             this.joueurs.add(p);
+
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p));
             return true;
         }
 

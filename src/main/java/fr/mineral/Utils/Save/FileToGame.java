@@ -16,7 +16,9 @@ public class FileToGame {
     public boolean readFile(String worldName) throws IOException {
 
         try {
-            JSONTokener tokener = new JSONTokener(getClass().getResourceAsStream("/data_worlds/" + worldName + ".json"));
+            mineralcontest plugin = mineralcontest.plugin;
+            InputStream worldStream = new FileInputStream(plugin.getDataFolder() + File.separator + MapFileHandler.biome_data_folderPath + File.separator + worldName + ".json");
+            JSONTokener tokener = new JSONTokener(worldStream);
             JSONObject monde = new JSONObject(tokener).getJSONObject(worldName);
 
             setHousesLocation(monde.getJSONObject("teams"));
@@ -24,13 +26,13 @@ public class FileToGame {
             setTeamChestLocation(monde.getJSONObject("teams"));
             setArenaLocation(monde.getJSONObject("arene"));
 
-            for(Player online : Bukkit.getOnlinePlayers()) {
+            for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
                 try {
                     //online.sendMessage(mineralcontest.prefixGlobal + "Configuration du monde chargée avec succès");
                     online.teleport(mineralcontest.plugin.getGame().getArene().getDeathZone().getSpawnLocation());
                 }catch(Exception e) {
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
-                    mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+                    mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
+                    mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
                     e.printStackTrace();
                 }
 
@@ -38,8 +40,8 @@ public class FileToGame {
 
             mineralcontest.plugin.getGame().isGameInitialized = true;
         }catch (Exception e) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
             e.printStackTrace();
         }
 

@@ -1,24 +1,26 @@
 package fr.mineral;
 
 import fr.mineral.Commands.*;
-import fr.mineral.Commands.BuildCommand;
 import fr.mineral.Commands.CVAR.*;
-import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Core.Game;
-import fr.mineral.Core.MapBuilder.Commands.listMaps;
-import fr.mineral.Core.MapBuilder.Event.BlockPhysic;
-import fr.mineral.Core.MapBuilder.Event.InventoryClick;
-import fr.mineral.Core.MapBuilder.Event.SpawnHouse;
+import fr.mineral.Core.GameSettings;
+import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
 
 import fr.mineral.Translation.Language;
 import fr.mineral.Utils.Metric.SendInformation;
-import fr.mineral.Utils.Save.SaveHouse;
+import fr.mineral.Utils.Player.PlayerUtils;
+import fr.mineral.Utils.Save.MapFileHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -26,182 +28,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 import java.io.*;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
 
-
-    public String versionRequired = "1.14.4";
     public static boolean debug = false;
-
+    private GameSettings gameSettings;
 
     public static String prefix;
     public static String prefixErreur;
     public static String prefixGlobal;
     public static String prefixPrive;
     public static String prefixAdmin;
-
-
-    public static int playZoneRadius = 1000;
-    public static boolean isGameInitialized = false;
-
-    public static YamlConfiguration LANG;
-    public static File LANG_FILE;
-
-
+    public static String prefixTeamChat;
     public static Logger log = Bukkit.getLogger();
-
-
     public static mineralcontest plugin;
-    public static int teamMaxPlayers = 2;
     private Game partie;
-
-    private SaveHouse saveHouse;
-    public static String world_name = "world";
-
+    public World pluginWorld;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
-        this.saveHouse = new SaveHouse();
-
-    }
-
-    public SaveHouse getSaveHouse() { return this.saveHouse;}
-
-    public void createLangFiles() throws IOException {
-
-
-        // Create a lang folder
-        InputStream defaultLang = getClass().getResourceAsStream("/lang/english.yml");
-
-        File folder = new File(getDataFolder() + File.separator + "lang");
-        if(! folder.exists())folder.mkdirs();
-
-        File langFile = null;
-        OutputStream outputStream = null;
-
-
-        for(Language item: Language.values()) {
-            if(item.getLanguageName() != null && !item.getLanguageName().contains("default")) {
-                InputStream is = getClass().getResourceAsStream("/lang/" + item.getLanguageName() + ".yml");
-                log.info(item.getLanguageName());
-                langFile = new File(folder + File.separator + item.getLanguageName() + ".yml");
-
-                if(!langFile.exists() && langFile.getTotalSpace() < 1){
-                    try {
-                        outputStream = new FileOutputStream(langFile);
-                        int read = 0;
-                        byte[] bytes = new byte[1024];
-                        while ((read = is.read(bytes)) != -1) {
-                            outputStream.write(bytes, 0, read);
-                        }
-                    }
-                    finally{
-                        if(outputStream != null) outputStream.close();
-                    }
-                }
-            }
-        }
-
-    }
-
-    public void LoadLangFile(String lang) {
-        Bukkit.getLogger().info("Loading " + lang + " language");
-        Bukkit.broadcastMessage("Loading " + lang + " language");
-        File langFile = new File(getDataFolder() + File.separator + "lang" + File.separator + lang + ".yml");
-
-        if(!langFile.exists()) {
-            Bukkit.getLogger().severe(lang + ".yml lang file doesnt exists or could not be loaded.");
-            Bukkit.getLogger().severe("Loading english language file");
-
-            LoadLangFile("english");
-            return;
-        }
-
-        YamlConfiguration conf = YamlConfiguration.loadConfiguration(langFile);
-        for(Lang item:Lang.values()) {
-            if (conf.getString(item.getPath()) == null) {
-                conf.set(item.getPath(), item.getDefault());
-            }
-        }
-        Lang.setFile(conf);
-
-        try {
-            conf.save(langFile);
-            Bukkit.getLogger().info("Loaded " + lang + " language");
-            Bukkit.broadcastMessage("Loaded " + lang + " language");
-            prefix = Lang.title.toString() + ChatColor.WHITE;
-            prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE + " ";
-            prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE+ " ";
-            prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE+ " ";
-            prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE+ " ";
-
-            getGame().getRedHouse().getTeam().setNomEquipe(Lang.red_team.toString());
-            getGame().getYellowHouse().getTeam().setNomEquipe(Lang.yellow_team.toString());
-            getGame().getBlueHouse().getTeam().setNomEquipe(Lang.blue_team.toString());
-
-            mineralcontest.plugin.getConfig().set("config.lang.language", lang);
-            mineralcontest.plugin.saveConfig();
-
-        } catch(IOException e) {
-            log.log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
-            e.printStackTrace();
-        }
-
-
-
-    }
-
-
-
-    private void loadConfig() {
-        getConfig().options().copyDefaults(true); // Reset le fichier de config à chaque fois
-        initConfig();
-        Bukkit.getLogger().info(mineralcontest.prefix + "LoadingCOnfig");
-
-    }
-
-    private void initConfig() {
-        // Si on a pas encore save le allowSharing
-        if(!getConfig().isSet("config.metrics.allowSharing"))
-            SendInformation.enable();
-        else {
-            boolean allowSharing = (boolean) getConfig().get("config.metrics.allowSharing");
-
-            if(allowSharing)
-                SendInformation.enable();
-            else
-                SendInformation.disable();
-        }
-
-        if(!getConfig().isSet("config.lang.language"))
-            LoadLangFile("english");
-        else
-            LoadLangFile((String) getConfig().get("config.lang.language"));
-    }
-
-    public boolean isVersionCompatible() {
-        String version = Bukkit.getBukkitVersion();
-
-        if(version.equalsIgnoreCase(versionRequired)) return true;
-
-        String currentV[] = version.split(".");
-
-        String requiredV[] = versionRequired.split(".");
-
-        for(int i = 0; i < currentV.length; i++) {
-
-            if(Integer.parseInt(currentV[i]) < Integer.parseInt(requiredV[i]))
-                return false;
-
-            if(Integer.parseInt(currentV[i]) > Integer.parseInt(requiredV[i]))
-                return true;
-        }
-
-        return true;
+        this.gameSettings = GameSettings.getInstance();
     }
 
     public Game getGame() {
@@ -211,14 +62,31 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     @Override
     public void onEnable() {
 
-        try {
-            createLangFiles();
-            LoadLangFile("english");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Lang.copyLangFilesFromRessources();
+        Lang.loadLang("french");
+        Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
+        this.getGame().init();
+        this.gameSettings.createGameSettings();
+        this.gameSettings.loadGameSettings();
+        registerCommands();
+        registerEvents();
+        MapFileHandler.copyMapFileToPluginRessourceFolder();
 
-        // Plugin startup logic
+        pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
+
+    }
+
+    @Override
+    public void onDisable() {
+        for(Player player : pluginWorld.getPlayers()) {
+            PlayerUtils.teleportToLobby(player);
+            PlayerUtils.clearPlayer(player);
+        }
+        getGame().resetMap();
+        Bukkit.getScheduler().cancelTasks(this);
+    }
+
+    private void registerEvents() {
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockSpread(), this);
@@ -235,25 +103,15 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerChat(), this);
 
 
-        Bukkit.getServer().getPluginManager().registerEvents(new SpawnHouse(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new BlockPhysic(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new RefereeEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new WorldLoaded(), this);
+    }
 
-
-
-
-
-
-        Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
-
-        this.getGame().init();
-
-        // On lit la config
-        loadConfig();
-
-
+    private void registerCommands() {
         // Register les commands
         getCommand("start").setExecutor(new StartGameCommand());
         getCommand("pause").setExecutor(new PauseGameCommand());
@@ -261,6 +119,14 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("vote").setExecutor(new VoteCommand());
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
+        getCommand("join").setExecutor(new JoinCommand());
+        getCommand("referee").setExecutor(new RefereeCommand());
+        getCommand("arbitre").setExecutor(new RefereeCommand());
+        getCommand("ready").setExecutor(new ReadyCommand());
+        getCommand("t").setExecutor(new TeamChat());
+        getCommand("team").setExecutor(new TeamChat());
+
+
 
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
@@ -274,46 +140,26 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
         getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
-
-        getCommand("setup").setExecutor(new SetupCommand());
-        getCommand("build").setExecutor(new BuildCommand());
-
-
-
-        getCommand("join").setExecutor(new JoinCommand());
+        getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
 
-        getCommand("listMaps").setExecutor(new listMaps());
+    }
 
 
-
-
-        if(mineralcontest.plugin.getServer().getOnlinePlayers().size() > 0){
-            try {
-
-                Bukkit.getWorld(world_name).setAutoSave(false);
-            }catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        if(!isVersionCompatible()) {
+    public static void checkIfMapIsCorrect() {
+        if (mineralcontest.plugin.pluginWorld == null) {
             ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-            console.sendMessage(ChatColor.RED + "[MINERALC] [ERREUR] Incompatible bukkit version, Version asked: " + versionRequired + ", current version: " + Bukkit.getBukkitVersion());
-            console.sendMessage(Lang.plugin_shutdown.toString());
-            //getServer().getLogger().info("La version de bukkit n'est pas compatible avec ce plugin. Version demandée: " + versionRequired + ", version actuelle: " + Bukkit.getBukkitVersion());
-            Bukkit.getPluginManager().disablePlugin(this);
+            log.severe("NULL");
+            log.severe(mineralcontest.prefixErreur + Lang.bad_map_loaded.toString());
+            log.severe(mineralcontest.prefixErreur + Lang.github_link.toString());
+            log.severe(mineralcontest.prefixErreur + Lang.plugin_shutdown.toString());
+            Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
         }
     }
 
-    @Override
-    public void onDisable() {
-        Bukkit.getScheduler().cancelTasks(this);
-        log.info("Stopping all timers");
-
-        for(Player player : mineralcontest.plugin.getServer().getOnlinePlayers())
-            player.sendMessage(ChatColor.WHITE + "### PLEASE " + ChatColor.RED + "DONT" + ChatColor.WHITE + " RELOAD THE PLUGIN, " + ChatColor.RED + ChatColor.BOLD + ChatColor.UNDERLINE+  "RESTART IT INSTEAD " + ChatColor.RESET + ChatColor.WHITE + "###");
+    public static void broadcastMessage(String message) {
+        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+            player.sendMessage(message);
     }
 
 }

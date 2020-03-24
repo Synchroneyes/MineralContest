@@ -11,26 +11,32 @@ import org.bukkit.entity.Player;
 public class AreneTeleportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
-            if(command.getName().equals("arene") || command.getName().equals("arena")) {
-                Player joueur = (Player) sender;
 
-                if(mineralcontest.plugin.getGame().isReferee(joueur)) {
-                    teleportToArena(joueur);
-                    return false;
-                }
+        Player player = (Player) sender;
+        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
+                if(command.getName().equals("arene") || command.getName().equals("arena")) {
+                    Player joueur = (Player) sender;
 
-                if(mineralcontest.plugin.getGame().getArene().isTeleportAllowed()) {
-                    Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
-
-                    for(Player membre : team.getJoueurs()) {
-                        teleportToArena(membre);
+                    if(mineralcontest.plugin.getGame().isReferee(joueur)) {
+                        teleportToArena(joueur);
+                        return false;
                     }
-                } else {
-                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.arena_teleport_disabled.toString()));
+
+                    if(mineralcontest.plugin.getGame().getArene().isTeleportAllowed()) {
+                        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
+
+                        for(Player membre : team.getJoueurs()) {
+                            if(!mineralcontest.plugin.getGame().isReferee(membre))
+                                teleportToArena(membre);
+                        }
+                    } else {
+                        joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.arena_teleport_disabled.toString()));
+                    }
                 }
             }
         }
+
         return false;
     }
 

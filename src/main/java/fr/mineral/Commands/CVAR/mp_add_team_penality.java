@@ -5,14 +5,15 @@ import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class mp_add_team_penality implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender.isOp() && command.getName().equals("mp_add_team_penality")) {
-            String usage = "Usage: /mp_add_team_penality <amount> <" + Lang.red_team.toString() + " | " + Lang.yellow_team.toString() + " | " + Lang.blue_team.toString() + ">";
-            if (args.length == 2) {
-
+        Player player = (Player) sender;
+        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if (sender.isOp() && command.getName().equals("mp_add_team_penality")) {
+                String usage = "Usage: /mp_add_team_penality <" + Lang.red_team.toString() + " | " + Lang.yellow_team.toString() + " | " + Lang.blue_team.toString() + ">  <amount> ";
                 if (args.length == 2) {
 
                     int valeur = 0;
@@ -63,12 +64,11 @@ public class mp_add_team_penality implements CommandExecutor {
                             sender.sendMessage(usage);
                             return true;
                     }
-                } else {
-                    sender.sendMessage(usage);
                 }
+                return false;
             }
-            return false;
         }
+
         return true;
     }
 }

@@ -2,9 +2,7 @@ package fr.mineral.Translation;
 
 public enum Language {
     FRENCH("french"),
-    ENGLISH("english"),
-    defaultLanguage("default");
-
+    ENGLISH("english");
     private String name;
 
     Language(String name) {
@@ -21,7 +19,7 @@ public enum Language {
         if(locale.contains("en_"))
             return ENGLISH.getLanguageName();
 
-        return defaultLanguage.getLanguageName();
+        return FRENCH.getLanguageName();
     }
 
     public static String getAvailableLanguages() {

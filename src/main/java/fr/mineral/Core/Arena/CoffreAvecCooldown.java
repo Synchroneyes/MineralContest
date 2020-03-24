@@ -25,13 +25,27 @@ public class CoffreAvecCooldown {
     public static CoffreAvecCooldown coffre;
     public Player openingPlayer;
 
-
-    public boolean isChestSpawned() { return this.spawned; }
-
+    private BukkitRunnable chestTimer;
     public CoffreAvecCooldown(Location loc) {
         this.position = loc;
         coffre = this;
+        fillChestTimer();
     }
+
+
+    public boolean isChestSpawned() { return this.spawned; }
+
+    public void clear() {
+        this.position.getBlock().setType(Material.AIR);
+        ((Chest)this.position.getBlock().getState()).getInventory().clear();
+        opened = false;
+        spawned = false;
+        isCancelled = false;
+        time = 5;
+        timeLeft = time;
+        openingPlayer = null;
+    }
+
 
     public void setPosition(Location p) {
         this.position = p;
@@ -45,6 +59,9 @@ public class CoffreAvecCooldown {
 
     public void spawn() {
         try {
+            mineralcontest.plugin.getGame().getArene().enableTeleport();
+            mineralcontest.plugin.getGame().getArene().generateTimeBetweenChest();
+
             position = this.getPosition();
             Block block = position.getBlock();
             position.getBlock().setType(Material.CHEST);
@@ -61,7 +78,7 @@ public class CoffreAvecCooldown {
 
 
         }catch (Exception e) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
 
         }
 
@@ -69,104 +86,104 @@ public class CoffreAvecCooldown {
 
     public void close() {
 
-        if(timeLeft == 0) {
+        if(timeLeft <= 0) {
             Block block = position.getBlock();
             block.breakNaturally();
         }
 
+        if(!this.chestTimer.isCancelled()) this.chestTimer.cancel();
+
         timeLeft = time;
         opened = false;
         spawned = false;
+        openingPlayer = null;
     }
 
-    public void open(Player joueur) {
-        if(!opened) {
-            opened = true;
-            openingPlayer = joueur;
+    private void startChestTimer() {
+        this.chestTimer.runTaskTimer(mineralcontest.plugin, 0, 20);
+    }
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    joueur.sendMessage(timeLeft + " - " + time);
-                    joueur.updateInventory();
-                    // SI l'utilisateur a fermé le menu, on arrête le timer
-                    if(isCancelled) {
-                        this.cancel();
-                        isCancelled = false;
-                    }
-
-
-                    if(opened && timeLeft >= 0) {
-                        Block block = position.getBlock();
-                        Chest chest = (Chest)block.getState();
-                        Inventory inv = chest.getInventory();
-                        chest.setCustomName(ChatColor.RED + Lang.arena_chest_title.toString());
-                        inv.clear();
-                        inv.setMaxStackSize(1);
-
-                        for(int i = 0; i < 5; i++) {
-
-                            ItemStack vert = new ItemStack(XMaterial.WOOL.parse(), 1);
-                            ItemStack rouge = new ItemStack(XMaterial.WOOL.parse(), 1);
-
-                            vert.setDurability(new Wool(DyeColor.GREEN).getData());
-                            rouge.setDurability(new Wool(DyeColor.RED).getData());
-
-                            if(i <= 5 - timeLeft) {
-                                inv.setItem(i, vert);
-                            } else {
-                                inv.setItem(i, rouge);
-                            }
-                        }
-
-
-
-
-                        if(--timeLeft > 0) {
-
-                            joueur.playNote(joueur.getLocation(), Instrument.PIANO, new Note(1));
-                        }else{
-                            try {
-                                joueur.playNote(joueur.getLocation(), Instrument.PIANO, new Note(24));
-                                inv.clear();
-                                inv.setMaxStackSize(64);
-                                generateChestContent();
-
-                                for(ItemStack item : inv.getContents()) {
-                                    if(item != null) {
-                                        joueur.getInventory().addItem(item);
-                                        joueur.playSound(joueur.getLocation(), Sound.ENTITY_ITEM_PICKUP, 50, 1);
-                                    }
-
-
-                                }
-                                inv.clear();
-                                position.getBlock().breakNaturally();
-                                joueur.closeInventory();
-
-                                opened = false;
-                                mineralcontest.plugin.getGame().getArene().disableTeleport();
-
-                                this.cancel();
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        // Si coffre non ouvert/fermé
-                    } else {
-                        this.cancel();
-                    }
-
-
+    private void fillChestTimer() {
+        this.chestTimer = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Player joueur = openingPlayer;
+                Block block = position.getBlock();
+                if(!position.getBlock().getType().equals(Material.CHEST)) {
+                    this.cancel();
+                    return;
                 }
-            }.runTaskTimer(mineralcontest.plugin, 0, 20);
-        } else {
-            joueur.sendTitle(mineralcontest.prefixErreur, Lang.arena_chest_being_opened.toString(), 1, 5, 1);
-        }
+                Chest chest = (Chest)block.getState();
+                Inventory inv = chest.getInventory();
 
+                if(!opened || openingPlayer == null) {
+                    this.cancel();
+                    close();
+                }
+                if(timeLeft >= 0) {
+
+                    chest.setCustomName(ChatColor.RED + Lang.arena_chest_title.toString());
+                    chest.update();
+                    inv.clear();
+                    inv.setMaxStackSize(1);
+                    // Fill inventory with coloured concrete
+                    for(int i = 0; i < 5; i++) {
+                        ItemStack vert = new ItemStack(Material.GREEN_CONCRETE, 1);
+                        ItemStack rouge = new ItemStack(Material.RED_CONCRETE, 1);
+                        if(i <= 5 - timeLeft) {
+                            inv.setItem(i, vert);
+                        } else {
+                            inv.setItem(i, rouge);
+                        }
+                    }
+                }
+
+                if(openingPlayer != null) {
+                    if(--timeLeft > 0) openingPlayer.playNote(openingPlayer.getLocation(), Instrument.PIANO, new Note(1));
+                    else {
+                        joueur.playNote(joueur.getLocation(), Instrument.PIANO, new Note(24));
+                        inv.clear();
+                        inv.setMaxStackSize(64);
+                        generateChestContent();
+
+                        // Give chest items to user
+                        for(ItemStack item : inv.getContents()) {
+                            if(item != null) {
+                                joueur.getInventory().addItem(item);
+                                joueur.playSound(joueur.getLocation(), Sound.ENTITY_ITEM_PICKUP, 50, 1);
+                            }
+                        }
+                        inv.clear();
+                        position.getBlock().breakNaturally();
+                        joueur.closeInventory();
+                        close();
+                        mineralcontest.plugin.getGame().getArene().disableTeleport();
+                        this.cancel();
+
+                    }
+                }
+
+
+            }
+        };
+    }
+
+    public void openChest(Player joueur) {
+
+        if(openingPlayer == null) {
+            openingPlayer = joueur;
+            opened = true;
+            fillChestTimer();
+            startChestTimer();
+        } else {
+            // prevent player from cheating
+            if(openingPlayer.equals(joueur)) {
+                close();
+                return;
+            }
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.arena_chest_being_opened.toString());
+            return;
+        }
     }
 
     private void generateChestContent() {

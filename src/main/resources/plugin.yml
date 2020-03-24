@@ -39,6 +39,24 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  t:
+    description: Permet d'envoyer un message à sa team
+    use: /t <message>
+    permission:
+    permission-message: you do not have the permission
+
+  team:
+    description: Permet d'envoyer un message à sa team
+    use: /team <message>
+    permission:
+    permission-message: you do not have the permission
+
+  ready:
+    description: Permet de se mettre prêt
+    use: /ready
+    permission:
+    permission-message: you do not have the permission
+
   vote:
     description: Permet de voter pour un monde
     use: /vote <worldId>
@@ -58,12 +76,6 @@ commands:
     permission:
     permission-message: you do not have the permission
 
-  build:
-    description: Create a custom map
-    use: /build
-    permission:
-    permission-message: you do not have the permission
-
   mp_add_team_penality:
     description: Add a team penalty
     use: /mp_add_team_penality <amount> <team>
@@ -76,11 +88,6 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  setup:
-    description: set team random
-    use: /setup <1 | 0>
-    permission: admin
-    permission-message: you do not have the permission
 
   mp_reset_team_penality:
     description: reset a team penalty
@@ -136,9 +143,9 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
-  listMaps:
-    description: Démarrer un vote
-    use: /listMaps
+  mp_enable_item_drop:
+    description: Autoriser le fait de dropper ses items à la mort
+    use: /mp_enable_item_drop <0, 1, 2>
     permission: admin
     permission-message: you do not have the permission
 
@@ -146,6 +153,18 @@ commands:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>
     permission:
+    permission-message: you do not have the permission
+
+  referee:
+    description: Devenir un arbitre
+    use: /referee
+    permission: admin
+    permission-message: you do not have the permission
+
+  arbitre:
+    description: Devenir un arbitre
+    use: /arbitre
+    permission: admin
     permission-message: you do not have the permission
 
 

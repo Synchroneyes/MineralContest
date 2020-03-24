@@ -25,6 +25,11 @@ public class Coffre {
         return this.position;
     }
 
+    public void clear() {
+        Block b = this.position.getBlock();
+        ((Chest)b.getState()).getInventory().clear();
+    }
+
     public void spawn() {
         Location loc;
         try {
@@ -53,7 +58,7 @@ public class Coffre {
 
 
         }catch (Exception e) {
-            mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
 
         }
     }

@@ -28,10 +28,7 @@ public class AutomaticDoors {
 
     LinkedList<Player> playerNearDoor;
 
-
-
     private boolean estOuvert = false;
-
 
 
     // Prend un bloc, et un rayon
@@ -39,6 +36,11 @@ public class AutomaticDoors {
         this.porte = new LinkedList<DisplayBlock>();
         this.proprietaire = equipe;
         this.playerNearDoor = new LinkedList<Player>();
+    }
+
+    public void clear() {
+        this.porte.clear();
+        this.playerNearDoor.clear();
     }
 
     // On initialise la pile de blocs

@@ -26,10 +26,10 @@ public class AutomaticSetup {
                 spawn.setX(x + 46);
                 spawn.setY(y + 10);
                 spawn.setZ(z + 0);
-                mineralcontest.plugin.getServer().broadcastMessage(toString(spawn));
-                mineralcontest.plugin.getServer().broadcastMessage(toString(l));
+                mineralcontest.broadcastMessage(toString(spawn));
+                mineralcontest.broadcastMessage(toString(l));
 
-                mineralcontest.plugin.getServer().broadcastMessage("=============");
+                mineralcontest.broadcastMessage("=============");
 
 
 
@@ -38,10 +38,10 @@ public class AutomaticSetup {
                 spawn.setY(y + 10);
                 spawn.setZ(z + 46);
                 AutomaticSetup.spawnBleu = spawn;
-                mineralcontest.plugin.getServer().broadcastMessage(toString(spawn));
-                mineralcontest.plugin.getServer().broadcastMessage(toString(l));
+                mineralcontest.broadcastMessage(toString(spawn));
+                mineralcontest.broadcastMessage(toString(l));
 
-                mineralcontest.plugin.getServer().broadcastMessage("=============");
+                mineralcontest.broadcastMessage("=============");
 
 
                 // ROUGE
@@ -49,10 +49,10 @@ public class AutomaticSetup {
                 spawn.setY(y + 10);
                 spawn.setZ(z - 46);
                 AutomaticSetup.spawnRouge = spawn;
-                mineralcontest.plugin.getServer().broadcastMessage(toString(spawn));
-                mineralcontest.plugin.getServer().broadcastMessage(toString(l));
+                mineralcontest.broadcastMessage(toString(spawn));
+                mineralcontest.broadcastMessage(toString(l));
 
-                mineralcontest.plugin.getServer().broadcastMessage("=============");
+                mineralcontest.broadcastMessage("=============");
 
             }
         }catch(Exception e) {

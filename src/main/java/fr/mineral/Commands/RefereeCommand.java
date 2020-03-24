@@ -11,20 +11,26 @@ import org.bukkit.entity.Player;
 public class RefereeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(command.getName().equalsIgnoreCase("referee") || command.getName().equalsIgnoreCase("arbitre") ) {
-            if(sender.isOp()) {
-                Player player = (Player) sender;
-                Game game = mineralcontest.plugin.getGame();
-                if(!mineralcontest.plugin.getGame().isReferee(player)) {
-                    player.sendMessage(mineralcontest.prefixPrive + Lang.now_referee.toString());
-                    game.addReferee(player);
-                    return false;
-                } else {
-                    player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
-                    game.removeReferee(player);
-                    return false;
+        Player player = (Player) sender;
+        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if(command.getName().equalsIgnoreCase("referee") || command.getName().equalsIgnoreCase("arbitre") ) {
+                if(sender.isOp()) {
+                    Game game = mineralcontest.plugin.getGame();
+                    if(!mineralcontest.plugin.getGame().isReferee(player)) {
+                        game.addReferee(player);
+                        return false;
+                    } else {
+
+                        if(game.isGameStarted() || game.isPreGame()) {
+                            player.sendMessage(mineralcontest.prefixPrive + Lang.cant_remove_admin_game_in_progress.toString());
+                            return false;
+                        }
+                        game.removeReferee(player);
+                        return false;
+                    }
                 }
             }
+            return false;
         }
         return false;
     }

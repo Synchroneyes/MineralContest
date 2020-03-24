@@ -4,19 +4,13 @@ import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
-import fr.mineral.Utils.SaveableBlock;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.LinkedList;
 
 /*
     Classe représentant une arène
@@ -44,49 +38,12 @@ public class Arene {
     public boolean CHEST_USED = false;
     public int arenaRadius = 60;
 
-    private LinkedList<SaveableBlock> blocks;
 
-
-    public Arene() {
-        this.deathZone = new DeathZone();
-        this.blocks = new LinkedList<>();
-
+    public void clear() {
+        this.coffre.clear();
     }
 
-    public void addBlock(Location location) throws Exception{
-        MaterialData materialData;
-        org.bukkit.block.Block block = location.getBlock();
-
-        materialData = block.getState().getData();
-        this.blocks.add(new SaveableBlock(block));
-        //mineralcontest.log.info("[" + location.getX() + "," + location.getY() + "," + location.getZ() + "] Block " + block.getType().toString() + " successfully added");
-    }
-
-
-    public void removeBlock(Location location) throws Exception {
-        MaterialData materialData;
-        Block block = location.getBlock();
-
-        if(block.getType().equals(Material.AIR)) {
-            throw new Exception("Impossible d'ajouter de l'air comme block");
-        }
-        materialData = block.getState().getData();
-        /* For each "value<block, materialdata> in saved blocks*/
-        for(SaveableBlock saveableBlock : blocks)
-            if(saveableBlock.getLocation().equals(location)) {
-                blocks.remove(saveableBlock);
-                return;
-            }
-    }
-
-
-    public LinkedList<SaveableBlock> getBlocks() {
-        return blocks;
-    }
-
-
-
-    private void generateTimeBetweenChest() {
+    public void generateTimeBetweenChest() {
         // On va générer une valeur comprise entre MAX_TIME et MIN_TIME en minute
         // puis y ajouter des secondes
         int time = (int) ((Math.random() * ((MAX_TIME_BETWEEN_CHEST - MIN_TIME_BETWEEN_CHEST) + 1)) + MIN_TIME_BETWEEN_CHEST);
@@ -139,8 +96,8 @@ public class Arene {
                             } else {
                                 // LE coffre doit apparaitre !
                                 coffre.spawn();
-                                enableTeleport();
-                                generateTimeBetweenChest();
+                                //enableTeleport();
+                                //generateTimeBetweenChest();
 
                             }
 
@@ -179,12 +136,12 @@ public class Arene {
 
 
     public void enableTeleport() {
-        for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
+        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
             online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.arena_chest_spawned.toString()), Lang.translate(Lang.arena_teleport_now_enabled.toString()), 20, 20*3, 20);
         this.allowTeleport = true;
     }
     public void disableTeleport() {
-        for(Player online : mineralcontest.plugin.getServer().getOnlinePlayers())
+        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
             online.sendTitle("", Lang.arena_teleport_now_disabled.toString(), 20, 20*3, 20);
 
         this.allowTeleport = false;
@@ -193,6 +150,9 @@ public class Arene {
     public DeathZone getDeathZone() { return this.deathZone; }
 
 
+    public Arene() {
+        this.deathZone = new DeathZone();
+    }
 
     public void setTeleportSpawn(Location z) {
         mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());

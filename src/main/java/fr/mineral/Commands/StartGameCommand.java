@@ -11,21 +11,28 @@ public class StartGameCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(mineralcontest.plugin.getGame().isGameStarted()) {
-            sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_already_started.toString()));
-        } else {
+        Player player = (Player) sender;
+        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if(mineralcontest.plugin.getGame().isGameStarted()) {
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_already_started.toString()));
+            } else {
 
-            try {
-                if(args.length == 1 && args[0].equals("force"))
-                     mineralcontest.plugin.getGame().demarrerPartie(true);
-                else mineralcontest.plugin.getGame().demarrerPartie(false);
+                try {
+                    if(args.length == 1 && args[0].equals("force"))
+                        mineralcontest.plugin.getGame().demarrerPartie(true);
+                    else mineralcontest.plugin.getGame().demarrerPartie(false);
 
 
-            } catch (Exception e) {
-                sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                e.printStackTrace();
+                } catch (Exception e) {
+                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                    e.printStackTrace();
+                }
             }
+            return false;
+        }else{
+            sender.sendMessage("Only available on mineral contest map");
+            return false;
         }
-        return false;
+
     }
 }

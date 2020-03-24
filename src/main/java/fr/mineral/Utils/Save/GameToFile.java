@@ -129,7 +129,7 @@ public class GameToFile {
                 );
 
 
-        mineralcontest.plugin.getServer().broadcastMessage(json.toString());
+        mineralcontest.broadcastMessage(json.toString());
         mineralcontest.plugin.getServer().getLogger().info(json.toString());
         return true;
     }

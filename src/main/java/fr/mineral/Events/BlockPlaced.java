@@ -5,6 +5,7 @@ import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -12,30 +13,37 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockPlaced implements Listener {
     @EventHandler
     public void onBlockPlaced(BlockPlaceEvent event) {
-        if(mineralcontest.plugin.getGame().isGamePaused()) {
-            event.setCancelled(true);
-            return;
-        }
 
-        if(mineralcontest.plugin.getGame().isGameStarted()) {
-            try {
-                if(Radius.isBlockInRadius(event.getBlock().getLocation(), mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), mineralcontest.plugin.getGame().getArene().arenaRadius)) {
-                    //event.setCancelled(true);
-                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
-                    return;
-                }
-            }catch(Exception e) {
-                e.printStackTrace();
+        World worldEvent = event.getPlayer().getWorld();
+        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
+            if (mineralcontest.plugin.getGame().isGamePaused()) {
+                event.setCancelled(true);
+                return;
             }
 
+            if (mineralcontest.plugin.getGame().isGameStarted()) {
+                try {
+                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), mineralcontest.plugin.getGame().getArene().arenaRadius)) {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        } else if(!Setup.premierLancement) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
-            return;
+
+            } else if (!Setup.premierLancement) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
+                return;
+            }
+
+            // Save the block
+            mineralcontest.plugin.getGame().addBlock(event.getBlock(), BlockSaver.Type.PLACED);
         }
-
-        // Save the block
-        mineralcontest.plugin.getGame().addBlock(event.getBlock(), BlockSaver.Type.PLACED);
     }
+
 }
+

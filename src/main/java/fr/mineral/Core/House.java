@@ -4,7 +4,6 @@ import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
-import fr.mineral.Utils.SaveableBlock;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,9 +19,7 @@ import java.util.Map;
 public class House {
     private Equipe team;
     private AutomaticDoors doors;
-
-
-    private LinkedList<SaveableBlock> blocks;
+    private LinkedHashMap<Block, MaterialData> blocks;
     private Coffre coffre;
     private Location spawnLocation;
     private String teamName;
@@ -34,8 +31,17 @@ public class House {
         this.color = couleur;
         this.team = new Equipe(this.teamName, this.color);
         this.doors = new AutomaticDoors(team);
-        this.blocks = new LinkedList<>();
+        this.blocks = new LinkedHashMap<>();
     }
+
+    public void clearHouse() {
+        this.doors.clear();
+        this.blocks.clear();
+        this.team.clear();
+        this.coffre.clear();
+    }
+
+    public Coffre getCoffre() { return this.coffre;}
 
     /*
             Used to save house blocks
@@ -49,8 +55,11 @@ public class House {
         MaterialData materialData;
         Block block = location.getBlock();
 
+        if(block.getType().equals(Material.AIR)) {
+            throw new Exception("Impossible d'ajouter de l'air comme block");
+        }
         materialData = block.getState().getData();
-        this.blocks.add(new SaveableBlock(block));
+        this.blocks.put(block, materialData);
         mineralcontest.log.info(mineralcontest.prefix + ChatColor.GOLD + "Block " + block.getType().toString() + " successfully added");
     }
 
@@ -64,16 +73,18 @@ public class House {
         }
         materialData = block.getState().getData();
         /* For each "value<block, materialdata> in saved blocks*/
-        for(SaveableBlock saveableBlock : blocks)
-            if(saveableBlock.getLocation().equals(location)) {
-                blocks.remove(saveableBlock);
+        for (Map.Entry<Block, MaterialData> data : blocks.entrySet()) {
+            Block foreachBlock;
+            MaterialData foreachMaterialData;
+            foreachBlock = data.getKey();
+            foreachMaterialData = data.getValue();
+
+            if(foreachBlock.getLocation().equals(location) && foreachMaterialData.equals(location.getBlock().getState().getData())) {
+                this.blocks.remove(foreachBlock, foreachMaterialData);
+                mineralcontest.log.info(mineralcontest.prefix + ChatColor.RED + "Block " + foreachBlock.getType().toString() + " successfully removed");
                 return;
+            }
         }
-    }
-
-
-    public LinkedList<SaveableBlock> getBlocks() {
-        return blocks;
     }
 
     /*
@@ -84,7 +95,7 @@ public class House {
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre();
         this.coffre.setPosition(loc);
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team));
 
     }
 
@@ -101,17 +112,15 @@ public class House {
     }
 
     public void setHouseLocation(Location houseLocation){
-        Bukkit.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team));
         this.spawnLocation = houseLocation;
     }
 
     public Location getHouseLocation() {
         if(this.spawnLocation == null)
-            Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), team));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), team));
         return spawnLocation;
     }
-
-
 
 
     public AutomaticDoors getPorte() {

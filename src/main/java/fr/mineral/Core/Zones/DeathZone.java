@@ -35,7 +35,7 @@ public class DeathZone {
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
     public void setSpawnLocation(Location pos) {
-        mineralcontest.plugin.getServer().broadcastMessage(mineralcontest.prefixGlobal + Lang.deathzone_spawn_location_added.toString());
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.deathzone_spawn_location_added.toString());
         this.spawnLocation = pos;
     }
 
