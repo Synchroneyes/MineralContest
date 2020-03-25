@@ -1,5 +1,6 @@
 package fr.mineral.Core.Arena;
 
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -28,6 +29,8 @@ public class Coffre {
     public void clear() {
         Block b = this.position.getBlock();
         ((Chest)b.getState()).getInventory().clear();
+        if(!b.getType().equals(Material.AIR)) b.breakNaturally();
+
     }
 
     public void spawn() {

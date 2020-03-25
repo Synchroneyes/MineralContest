@@ -11,6 +11,7 @@ import fr.mineral.Events.*;
 
 import fr.mineral.Translation.Language;
 import fr.mineral.Utils.Metric.SendInformation;
+import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
 import org.bukkit.Bukkit;
@@ -71,6 +72,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         registerCommands();
         registerEvents();
         MapFileHandler.copyMapFileToPluginRessourceFolder();
+        PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
         pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
 
@@ -160,6 +162,12 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     public static void broadcastMessage(String message) {
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
             player.sendMessage(message);
+        Bukkit.getLogger().info(message);
+    }
+
+    public static void broadcastMessageToAdmins(String message) {
+        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+            if(player.isOp()) player.sendMessage(message);
         Bukkit.getLogger().info(message);
     }
 

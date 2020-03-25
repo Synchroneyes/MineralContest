@@ -61,6 +61,9 @@ public class Game implements Listener {
     public int killCounter = 0;
     private AutomaticDoors portes;
     private LinkedList<CouplePlayerTeam> disconnectedPlayers;
+    // <username, allowed to login>
+    private HashMap<String, Boolean> PlayerThatTriedToLogIn;
+
     public Votemap votemap;
 
     // Save the blocks
@@ -83,6 +86,34 @@ public class Game implements Listener {
         this.affectedBlocks = new LinkedList<>();
         this.referees = new LinkedList<>();
         this.playersReady = new LinkedList<>();
+        this.PlayerThatTriedToLogIn = new HashMap<>();
+    }
+
+    public boolean isThereAnAdminLoggedIn() {
+        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+            if(player.isOp()) return true;
+        return false;
+    }
+
+    public void addPlayerTriedToLogin(String playerDisplayName) {
+        if( ! havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.put(playerDisplayName, false);
+    }
+
+    public boolean havePlayerTriedToLogin(String playerDisplayName) {
+        return this.PlayerThatTriedToLogIn.containsKey(playerDisplayName);
+    }
+
+    public void allowPlayerLogin(String playerDisplayName) {
+        if(havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.replace(playerDisplayName, true);
+    }
+
+    public void removePlayerLoginAttempt(String playerDisplayName) {
+        if(havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.remove(playerDisplayName);
+    }
+
+    public boolean isPlayerAllowedToLogIn(String playerName) {
+        if(havePlayerTriedToLogin(playerName)) return this.PlayerThatTriedToLogIn.get(playerName);
+        return false;
     }
 
     public boolean areAllPlayersReady() {

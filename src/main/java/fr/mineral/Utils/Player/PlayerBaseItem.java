@@ -33,7 +33,7 @@ public class PlayerBaseItem {
     private static HashMap<ItemStack, String> itemsToGive;
 
 
-    private static void copyDefaultFileToPluginDataFolder() {
+    public static void copyDefaultFileToPluginDataFolder() {
         String file_name = "player_base_items.yml";
         baseItemFile = new File(plugin.getDataFolder(), file_name);
         if(!baseItemFile.exists())
