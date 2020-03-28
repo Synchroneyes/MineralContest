@@ -35,6 +35,7 @@ public class House {
     }
 
     public void clearHouse() {
+
         this.doors.clear();
         this.blocks.clear();
         this.team.clear();
@@ -107,8 +108,10 @@ public class House {
 
     public void spawnCoffreEquipe() throws Exception {
         Location loc = coffre.getPosition();
+        coffre.clear();
         Block block = loc.getBlock();
         loc.getBlock().setType(Material.CHEST);
+        mineralcontest.plugin.getGame().addAChest(loc.getBlock());
     }
 
     public void setHouseLocation(Location houseLocation){

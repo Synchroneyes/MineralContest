@@ -25,7 +25,11 @@ public class RefereeCommand implements CommandExecutor {
                             player.sendMessage(mineralcontest.prefixPrive + Lang.cant_remove_admin_game_in_progress.toString());
                             return false;
                         }
-                        game.removeReferee(player);
+                        try {
+                            game.removeReferee(player);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         return false;
                     }
                 }

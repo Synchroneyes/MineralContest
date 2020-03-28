@@ -39,6 +39,7 @@ public class AutomaticDoors {
     }
 
     public void clear() {
+        this.forceCloseDoor();
         this.porte.clear();
         this.playerNearDoor.clear();
     }

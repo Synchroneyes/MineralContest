@@ -46,6 +46,7 @@ public class BlockPlaced implements Listener {
                 return;
             }
 
+            mineralcontest.plugin.getGame().addAChest(event.getBlock());
             // Save the block
             mineralcontest.plugin.getGame().addBlock(event.getBlock(), BlockSaver.Type.PLACED);
         }

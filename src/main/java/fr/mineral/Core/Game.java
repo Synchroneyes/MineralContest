@@ -15,12 +15,15 @@ import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -42,9 +45,6 @@ public class Game implements Listener {
 
     private LinkedList<Player> playersReady;
 
-
-
-
     // Temps de la partie en minute
     private static int DUREE_PARTIE = 60;
 
@@ -63,6 +63,7 @@ public class Game implements Listener {
     private LinkedList<CouplePlayerTeam> disconnectedPlayers;
     // <username, allowed to login>
     private HashMap<String, Boolean> PlayerThatTriedToLogIn;
+    private LinkedList<Block> addedChests;
 
     public Votemap votemap;
 
@@ -70,8 +71,6 @@ public class Game implements Listener {
     public LinkedList<BlockSaver> affectedBlocks;
 
     private LinkedList<Player> referees;
-
-
 
     public Game() {
         this.redHouse = new House("Rouge", ChatColor.RED);
@@ -87,6 +86,44 @@ public class Game implements Listener {
         this.referees = new LinkedList<>();
         this.playersReady = new LinkedList<>();
         this.PlayerThatTriedToLogIn = new HashMap<>();
+
+        this.addedChests = new LinkedList<>();
+    }
+
+    public boolean isTheBlockAChest(Block b) {
+        return (b.getState() instanceof Chest);
+    }
+
+    public void addAChest(Block block) {
+        if(isTheBlockAChest(block))
+            if(!this.addedChests.contains(block)) this.addedChests.add(block);
+    }
+
+    public boolean isThisBlockAGameChest(Block b) {
+        if(!isTheBlockAChest(b)) return false;
+        return this.addedChests.contains(b);
+    }
+
+    public void remove(Block block) {
+        if(!this.addedChests.contains(block)) this.addedChests.remove(block);
+    }
+
+    public boolean areAllPlayerLoggedIn() {
+        int number_of_team = 3;
+        return ((mineralcontest.plugin.pluginWorld.getPlayers().size() - getRefereeCount()) >= ((int) GameSettingsCvar.getValueFromCVARName("mp_team_max_player") * number_of_team));
+    }
+
+    public void teleportToLobby(Player player) {
+        Location spawnLocation = mineralcontest.plugin.pluginWorld.getSpawnLocation();
+
+        Vector playerVelocity = player.getVelocity();
+
+        player.setFallDistance(0);
+        playerVelocity.setY(0.05);
+
+        player.setVelocity(playerVelocity);
+        player.teleport(spawnLocation);
+
     }
 
     public boolean isThereAnAdminLoggedIn() {
@@ -103,8 +140,12 @@ public class Game implements Listener {
         return this.PlayerThatTriedToLogIn.containsKey(playerDisplayName);
     }
 
-    public void allowPlayerLogin(String playerDisplayName) {
-        if(havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.replace(playerDisplayName, true);
+    public boolean allowPlayerLogin(String playerDisplayName) {
+        if(havePlayerTriedToLogin(playerDisplayName)) {
+            this.PlayerThatTriedToLogIn.replace(playerDisplayName, true);
+            return true;
+        }
+        return false;
     }
 
     public void removePlayerLoginAttempt(String playerDisplayName) {
@@ -152,6 +193,7 @@ public class Game implements Listener {
             }
         }
     }
+
 
     private void startAllPlayerHaveTeamTimer() {
         new BukkitRunnable(){
@@ -207,13 +249,28 @@ public class Game implements Listener {
             player.sendMessage(mineralcontest.prefixPrive + Lang.now_referee.toString());
             this.referees.add(player);
             PlayerUtils.equipReferee(player);
+
+            if(!isGameStarted()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
+                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                }, 20);
+            }
         }
     }
 
-    public void removeReferee(Player player) {
+    public void removeReferee(Player player) throws Exception {
         if(isReferee(player)) {
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);
+            PlayerUtils.clearPlayer(player);
+            PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
+            if(!isGameStarted()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
+                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                }, 20);
+            }
         }
 
     }
@@ -236,6 +293,14 @@ public class Game implements Listener {
             mineralcontest.broadcastMessage(Lang.map_has_been_restored.toString());
         }
     }
+
+    public void cancelPreGame() {
+        if(!isPreGame()) return;
+        this.PreGame = false;
+        this.PreGameTimeLeft = 10;
+        mineralcontest.broadcastMessage("Pregame cancelled");
+    }
+
 
     /*
     Credit: https://bukkit.org/threads/remove-dropped-items-on-ground.100750/
@@ -355,6 +420,7 @@ public class Game implements Listener {
 
     }
 
+
     public void init() {
 
         new BukkitRunnable() {
@@ -373,7 +439,7 @@ public class Game implements Listener {
                         if(tempsPartie == DUREE_PARTIE * 60) {
                             // METRIC
                             // On envoie les informations de la partie
-                            SendInformation.sendGameData("started");
+                            SendInformation.sendGameData(SendInformation.start);
                         }
 
                         for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
@@ -449,6 +515,9 @@ public class Game implements Listener {
                     } else {
                         // La game est en cours
                         // Si le temps atteins 0, alors on arrête la game
+
+                        //
+
 
                         try {
 
@@ -538,7 +607,7 @@ public class Game implements Listener {
 
         /* Teleport everyone to the hub */
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
-            PlayerUtils.teleportToLobby(player);
+            teleportToLobby(player);
             PlayerUtils.clearPlayer(player);
 
         }
@@ -561,7 +630,7 @@ public class Game implements Listener {
                     PlayerUtils.setFirework(online, gagnant.toColor());
         }
 
-        SendInformation.sendGameData("ended");
+        SendInformation.sendGameData(SendInformation.ended);
         this.resetMap();
         this.clear();
     }
@@ -737,17 +806,18 @@ public class Game implements Listener {
         mineralcontest.plugin.getGame().getRedHouse().spawnCoffreEquipe();
         mineralcontest.plugin.getGame().getBlueHouse().spawnCoffreEquipe();
 
+        // On clear l'arene
+        mineralcontest.plugin.getGame().getArene().clear();
+
         PreGame = true;
         GameStarted = false;
         this.tempsPartie = 60 * DUREE_PARTIE;
         mineralcontest.plugin.getGame().getArene().startArena();
         mineralcontest.plugin.getGame().getArene().startAutoMobKill();
 
-
-
-
         // On démarre les portes
         mineralcontest.plugin.getGame().handleDoors();
+        removeAllDroppedItems();
 
         return true;
 
@@ -775,13 +845,13 @@ public class Game implements Listener {
                 randomTeamIndex = randomObject.nextInt(equipesTMP.size());
                 switch(equipesTMP.get(randomTeamIndex)) {
                     case "red":
-                        this.redHouse.getTeam().addPlayerToTeam(playerRandomized);
+                        this.redHouse.getTeam().addPlayerToTeam(playerRandomized, false);
                         break;
                     case "blue":
-                        this.blueHouse.getTeam().addPlayerToTeam(playerRandomized);
+                        this.blueHouse.getTeam().addPlayerToTeam(playerRandomized, false);
                         break;
                     case "yellow":
-                        this.yellowHouse.getTeam().addPlayerToTeam(playerRandomized);
+                        this.yellowHouse.getTeam().addPlayerToTeam(playerRandomized, false);
                         break;
                     default:
                         mineralcontest.broadcastMessage("erreur");
@@ -817,23 +887,26 @@ public class Game implements Listener {
                     case "red":
                     case "rouge":
                     case "r":
-                        this.redHouse.getTeam().addPlayerToTeam(joueur);
+                        this.redHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
+                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "jaune":
                     case "yellow":
                     case "j":
                     case "y":
-                        this.yellowHouse.getTeam().addPlayerToTeam(joueur);
+                        this.yellowHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
+                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "blue":
                     case "bleu":
                     case "b":
-                        this.blueHouse.getTeam().addPlayerToTeam(joueur);
+                        this.blueHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
+                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
                         break;
                 }
             }

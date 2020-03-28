@@ -87,7 +87,7 @@ team_chest_not_defined: "Le coffre de l'équipe %coloredTeamName% n'a pas encore
 team_randomizer_begin: "Vous allez être attribué à une équipe aléatoire"
 team_kicked: "Vous avez été retiré de votre équipe"
 team_welcome: "Bienvenue dans l'équipe %coloredTeamName%"
-team_score_now: "Votre score est maintenant de %teamScore% points"
+team_score_now: "Votre score est maintenant de %teamScore%"
 team_chest_added: "Le coffre de l'équipe %coloredTeamName% a été ajouté"
 team_player_joined: "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"
 team_is_full: "L'équipe %coloredTeamName% est pleine"

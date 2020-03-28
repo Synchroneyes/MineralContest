@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -12,7 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerDisconnect implements Listener {
     @EventHandler
-    public void onPlayerDisconnect(PlayerQuitEvent event) {
+    public void onPlayerDisconnect(PlayerQuitEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
             Player joueur = event.getPlayer();
@@ -28,7 +29,7 @@ public class PlayerDisconnect implements Listener {
             if(team != null)
                 team.removePlayer(joueur);
 
-            if(mineralcontest.plugin.getGame().isGameStarted() && team != null) {
+            if((mineralcontest.plugin.getGame().isGameStarted()  || mineralcontest.plugin.getGame().isPreGame()) && team != null) {
                 mineralcontest.plugin.getGame().pauseGame();
                 mineralcontest.plugin.getGame().addDisconnectedPlayer(joueur.getDisplayName(), team);
                 house.getPorte().forceCloseDoor();
@@ -36,9 +37,18 @@ public class PlayerDisconnect implements Listener {
 
             if(mineralcontest.plugin.getGame().votemap.voteEnabled) mineralcontest.plugin.getGame().votemap.removePlayerVote(joueur);
 
+            if(!mineralcontest.plugin.getGame().isGameStarted()) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
+                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                }, 20);
+            }
+
+
             int number_of_player_online = mineralcontest.plugin.pluginWorld.getPlayers().size() - 1;
             if(number_of_player_online == 0) {
                 mineralcontest.plugin.getGame().resetMap();
+                mineralcontest.plugin.getGame().terminerPartie();
             }
         }
 

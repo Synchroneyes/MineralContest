@@ -11,7 +11,8 @@ public class SendInformation {
 
     private static boolean enabled = true;
     private static String ApiServerURL = "http://mineral.synchroneyes.fr/api/metrics";
-
+    public static String start = "start";
+    public static String ended = "ended";
 
     public static void sendGameData(String state) {
         // On utilise des threads pour ne pas avoir à se soucier du temps de réponse

@@ -9,10 +9,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerInteract implements Listener {
@@ -66,5 +67,26 @@ public class PlayerInteract implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void blockVillagerTrades(PlayerInteractAtEntityEvent entityEvent) {
+        World current_world = entityEvent.getPlayer().getWorld();
+
+        if(current_world.equals(mineralcontest.plugin.pluginWorld)) {
+            Player p = entityEvent.getPlayer();
+
+            if(entityEvent.getRightClicked() instanceof Villager ||
+                    entityEvent.getRightClicked() instanceof Witch    ||
+                    entityEvent.getRightClicked() instanceof TraderLlama ||
+                    entityEvent.getRightClicked() instanceof WanderingTrader ||
+                    entityEvent.getRightClicked() instanceof Golem ||
+                    entityEvent.getRightClicked() instanceof IronGolem) {
+                entityEvent.setCancelled(true);
+                entityEvent.getPlayer().closeInventory();
+                entityEvent.getRightClicked().remove();
+            }
+        }
+
     }
 }

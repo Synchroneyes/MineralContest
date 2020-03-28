@@ -64,7 +64,7 @@ public class EntityDamage implements Listener {
                         return;
                     }
 
-                    if(mineralcontest.plugin.getGame().getArene().getCoffre().openingPlayer.equals(victime))
+                    if(mineralcontest.plugin.getGame().getArene().getCoffre().openingPlayer != null && mineralcontest.plugin.getGame().getArene().getCoffre().openingPlayer.equals(victime))
                         mineralcontest.plugin.getGame().getArene().getCoffre().close();
 
                     // Si une entité meurt d'un coup/explosion/...

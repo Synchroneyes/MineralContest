@@ -97,7 +97,6 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestBreaked(ItemSpawnEvent event) throws Exception {
-
         World world = event.getEntity().getWorld();
         if(world.equals(mineralcontest.plugin.pluginWorld)) {
             if(mineralcontest.plugin.getGame().isGameStarted()) {
@@ -118,11 +117,21 @@ public class ChestEvent implements Listener {
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
 
         World world = event.getPlayer().getWorld();
+        Game game = mineralcontest.plugin.getGame();
         if(world.equals(mineralcontest.plugin.pluginWorld)) {
             Player player = (Player) event.getPlayer();
             CoffreAvecCooldown arenaChest = mineralcontest.plugin.getGame().getArene().getCoffre();
             if(event.getInventory().getHolder() instanceof Chest) {
+
                 Chest openedChest = (Chest) event.getInventory().getHolder();
+                Block openedChestBlock = openedChest.getBlock();
+
+                // the inventory opened comes from a chest.
+
+                if(! game.isThisBlockAGameChest(openedChestBlock)) {
+                    openedChest.getInventory().clear();
+                }
+
                 if(arenaChest != null) {
                     if(arenaChest.getPosition().equals(openedChest.getLocation())) {
                         if(arenaChest.openingPlayer == null) {

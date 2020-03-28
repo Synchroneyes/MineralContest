@@ -75,16 +75,22 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
         pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
+        PlayerUtils.runScoreboardManager();
 
     }
 
     @Override
     public void onDisable() {
-        for(Player player : pluginWorld.getPlayers()) {
-            PlayerUtils.teleportToLobby(player);
-            PlayerUtils.clearPlayer(player);
+
+        if(pluginWorld != null) {
+            for(Player player : pluginWorld.getPlayers()) {
+                getGame().teleportToLobby(player);
+                PlayerUtils.clearPlayer(player);
+            }
         }
+
         getGame().resetMap();
+        SendInformation.sendGameData(SendInformation.ended);
         Bukkit.getScheduler().cancelTasks(this);
     }
 
@@ -144,6 +150,8 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
         getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
+        getCommand("allow").setExecutor(new AllowCommand());
+        getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
 
     }
 

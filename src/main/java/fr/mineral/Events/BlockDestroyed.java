@@ -1,10 +1,12 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.World;
+import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,6 +16,8 @@ public class BlockDestroyed implements Listener {
     @EventHandler
     public void onBlockDestroyed(BlockBreakEvent event) {
         World worldEvent = event.getPlayer().getWorld();
+        Game game = mineralcontest.plugin.getGame();
+
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
             if(mineralcontest.plugin.getGame().isGamePaused()) {
                 event.setCancelled(true);
@@ -30,6 +34,13 @@ public class BlockDestroyed implements Listener {
                 }catch(Exception e) {
                     e.printStackTrace();
                     return;
+                }
+
+                if(!game.isThisBlockAGameChest(event.getBlock())) {
+                    if(game.isTheBlockAChest(event.getBlock())) {
+                        Chest chest = (Chest) event.getBlock().getState();
+                        chest.getInventory().clear();
+                    }
                 }
 
             } else {

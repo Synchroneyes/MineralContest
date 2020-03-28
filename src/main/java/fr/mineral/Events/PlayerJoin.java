@@ -23,34 +23,49 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
 
+    private boolean isPlayerFirstJoinAttempt = false;
+    private boolean isPlayerAllowedToJoin = false;
+    private boolean havePlayerDisconnectedEarlier = false;
+    private boolean thereIsAnAdminLoggedIn = false;
+    // If true, we allow every admin login
+    private boolean enable_admin_login = true;
+
+
+    private Game game;
+    private String playerName;
+
+    private Player player;
+    private Equipe oldPlayerTeam;
+
+
+    private void initVariables(Player player) {
+        mineralcontest plugin = mineralcontest.plugin;
+        this.game = plugin.getGame();
+        this.thereIsAnAdminLoggedIn = game.isThereAnAdminLoggedIn();
+        this.player = player;
+        this.playerName = player.getDisplayName();
+        // havePlayerTriedTOLogin returns true if player have already tried to login
+        this.isPlayerFirstJoinAttempt = !game.havePlayerTriedToLogin(playerName);
+        this.isPlayerAllowedToJoin = (!this.isPlayerFirstJoinAttempt) && game.isPlayerAllowedToLogIn(playerName);
+        this.havePlayerDisconnectedEarlier = game.havePlayerDisconnected(playerName);
+        this.oldPlayerTeam = (this.havePlayerDisconnectedEarlier) ? game.getDisconnectedPlayerTeam(playerName) : null;
+    }
+
+
+
+
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
         if (worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
 
-            // Init variables
-            mineralcontest plugin = mineralcontest.plugin;
-            Game game = plugin.getGame();
-            Player player = event.getPlayer();
-            String playerName = player.getDisplayName();
-            // if havePlayerTriedToJoin = true, then it's not player's first attempt
-            boolean isPlayerFirstJoinAttempt = !game.havePlayerTriedToLogin(playerName);
-            boolean isPlayerAllowedToJoin = game.isPlayerAllowedToLogIn(playerName);
-            boolean havePlayerDisconnectedEarlier = game.havePlayerDisconnected(playerName);
-            boolean thereIsAnAdminLoggedIn = game.isThereAnAdminLoggedIn();
-            // If true, we allow every admin login
-            boolean allow_player_to_join = false;
-
-            CouplePlayerTeam playerInfos = (havePlayerDisconnectedEarlier) ? game.getDisconnectedPlayerInfo(playerName) : null;
-            Equipe oldPlayerTeam = (playerInfos != null) ? playerInfos.getTeam() : null;
-
-            // SETTINGS
-            boolean enable_admin_login = true;
+            initVariables(event.getPlayer());
 
 
             // First, we check if the map is correct
             mineralcontest.checkIfMapIsCorrect();
+
 
             // If the game is started
             if(game.isGameStarted()) {
@@ -75,6 +90,7 @@ public class PlayerJoin implements Listener {
                                 mineralcontest.broadcastMessageToAdmins(playerName + " joined the game, he was connected earlier but it seems like we dont know his team. You can switch him into a team by using /switch " + playerName + " <team>");
                                 mineralcontest.log.info("Player " + playerName + " joined the game, he was NOT OP, he had no team but was registered inside the disconnected players, admin needs to decide what to do.");
                                 if(!game.isGamePaused()) game.pauseGame();
+
                             } else {
                                 player.kickPlayer("PlayerJoin-L-74 - There is no admin logged in and the system doesn't know what to do. Please contact the plugin author");
                                 mineralcontest.log.severe("PlayerJoin-L-74 - " + playerName + " tried to join but There is no admin logged in and the system doesn't know what to do. Please contact the plugin author");
@@ -84,7 +100,7 @@ public class PlayerJoin implements Listener {
 
                     } else {
                         // His old team isnt null, we add him back
-                        oldPlayerTeam.addPlayerToTeam(player);
+                        oldPlayerTeam.addPlayerToTeam(player, true);
                         game.resumeGame();
                         return;
                     }
@@ -101,12 +117,13 @@ public class PlayerJoin implements Listener {
                         game.addPlayerTriedToLogin(playerName);
                         // We inform the admins
                         informAdminsThatAPlayerTriedToJoin(playerName);
+                        player.kickPlayer(Lang.kick_game_already_in_progress.toString());
                         return;
                     } else {
                         // This is not player first attempt
                         if(! isPlayerAllowedToJoin) {
                             // Player is NOT allowed to join, an admin needs to do /allow <playername>
-                            player.kickPlayer("You are not allowed to join the game");
+                            player.kickPlayer(Lang.kick_game_already_in_progress.toString());
                             // We inform the admins
                             informAdminsThatAPlayerTriedToJoin(playerName);
                         } else {
@@ -119,33 +136,79 @@ public class PlayerJoin implements Listener {
                 }
             }
 
+            // If we are in the pregame timer (game starting in ...)
             if(game.isPreGame()) {
                 // If the player have disconnected during preGame
                 if(havePlayerDisconnectedEarlier) {
-
+                    // We put him back into his old team
+                    this.oldPlayerTeam.addPlayerToTeam(player, true);
+                    return;
                 }
 
                 if(isPlayerFirstJoinAttempt) {
                     if(thereIsAnAdminLoggedIn) {
-                        game.addPlayerTriedToLogin(playerName);
                         informAdminsThatAPlayerTriedToJoin(playerName);
                     }
                     game.addPlayerTriedToLogin(playerName);
-                    player.kickPlayer("You are not allowed to join the game");
+                    player.kickPlayer(Lang.kick_game_already_in_progress.toString());
                 } else {
                     if(isPlayerAllowedToJoin) {
-
+                        game.cancelPreGame();
+                        informAdminThatAPlayerNeedASwitch(playerName);
+                    } else {
+                        game.addPlayerTriedToLogin(playerName);
+                        if(thereIsAnAdminLoggedIn) informAdminsThatAPlayerTriedToJoin(playerName);
+                        player.kickPlayer(Lang.kick_game_already_in_progress.toString());
                     }
                 }
 
             }
 
-            // todo: game is pregame
+            if(game.isGamePaused()) {
+                if(isPlayerFirstJoinAttempt) {
+                    informAdminsThatAPlayerTriedToJoin(playerName);
+                    game.addPlayerTriedToLogin(playerName);
+                    player.kickPlayer(Lang.kick_game_already_in_progress.toString());
+                } else {
+                    // Not the first player's login
+                    if(havePlayerDisconnectedEarlier) {
+                        if(oldPlayerTeam == null && player.isOp()) game.addReferee(player);
+                        else if(oldPlayerTeam == null) {
+                            player.kickPlayer("PlayerJoin-L-172 - There is no admin logged in and the system doesn't know what to do. Please contact the plugin author");
+                            mineralcontest.log.severe("PlayerJoin-L-173 - " + playerName + " tried to join but There is no admin logged in and the system doesn't know what to do. Please contact the plugin author");
+                        }
+                        else this.oldPlayerTeam.addPlayerToTeam(player, true);
+                    } else {
+
+                        if(isPlayerAllowedToJoin) {
+                            informAdminThatAPlayerNeedASwitch(playerName);
+                            game.pauseGame();
+                        } else {
+                            // not allowed to join
+                            informAdminsThatAPlayerTriedToJoin(playerName);
+                            player.kickPlayer(Lang.kick_game_already_in_progress.toString());
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // Every player login when game is not started
+            game.teleportToLobby(player);
+            PlayerUtils.clearPlayer(player);
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
+                if(game.areAllPlayerLoggedIn()) game.votemap.enableVote(false);
+            }, 20);
+
 
 
 
         }
     }
+
+
 
     private void informAdminsThatAPlayerTriedToJoin(String playerName) {
         mineralcontest.broadcastMessageToAdmins("Player " + playerName + " tried to join, you can allow him to join by typing /allow " + playerName);

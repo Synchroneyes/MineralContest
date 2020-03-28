@@ -73,11 +73,12 @@ public class Equipe {
         return false;
     }
 
-    public boolean addPlayerToTeam(Player p) {
-        if(!isTeamFull()) {
+    public boolean addPlayerToTeam(Player p, boolean switched) throws Exception {
+        if(!isTeamFull() || switched || mineralcontest.plugin.getGame().isReferee(p)) {
 
             Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(p);
             if(team != null) team.removePlayer(p);
+            if(mineralcontest.plugin.getGame().isReferee(p)) mineralcontest.plugin.getGame().removeReferee(p);
 
             this.joueurs.add(p);
 

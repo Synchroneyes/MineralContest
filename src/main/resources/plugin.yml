@@ -39,11 +39,26 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  allow:
+    description: Autorise la connexion d'un joueur
+    use: /allow <playername>
+    permission: admin
+    permission-message: you do not have the permission
+
+  leaveteam:
+    description: Quitter son équipe
+    use: /leaveteam
+    permission:
+    permission-message: you do not have the permission
+
+
+
   t:
     description: Permet d'envoyer un message à sa team
     use: /t <message>
     permission:
     permission-message: you do not have the permission
+
 
   team:
     description: Permet d'envoyer un message à sa team

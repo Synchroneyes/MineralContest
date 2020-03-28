@@ -75,6 +75,8 @@ public class CoffreAvecCooldown {
             this.openingPlayer = null;
             this.spawned = true;
 
+            mineralcontest.plugin.getGame().addAChest(position.getBlock());
+
 
 
         }catch (Exception e) {

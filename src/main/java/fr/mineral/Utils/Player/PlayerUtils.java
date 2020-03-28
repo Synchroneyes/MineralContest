@@ -1,6 +1,7 @@
 package fr.mineral.Utils.Player;
 
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Core.Referee.RefereeItem;
 import fr.mineral.Teams.Equipe;
@@ -12,6 +13,9 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -36,8 +40,33 @@ public class PlayerUtils {
 
         fireworkMeta.setPower(0);
         firework.setFireworkMeta(fireworkMeta);
+    }
 
 
+    public static void runScoreboardManager() {
+        Bukkit.getServer().getScheduler().runTaskTimer(mineralcontest.plugin, PlayerUtils::scoreboardManager, 0, 20);
+    }
+
+    private static void scoreboardManager() {
+
+        for(Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+            if(onlinePlayer.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+                Equipe playerTeam = mineralcontest.plugin.getGame().getPlayerTeam(onlinePlayer);
+                StringBuilder playerPrefix = new StringBuilder();
+                Game game = mineralcontest.plugin.getGame();
+
+                if(game.getArene().getDeathZone().isPlayerDead(onlinePlayer)) {
+                    playerPrefix.append(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "");
+                }else {
+                    if(game.isReferee(onlinePlayer)) playerPrefix.append(ChatColor.GOLD + "[☆] " + ChatColor.WHITE);
+                    if(playerTeam != null) playerPrefix.append(playerTeam.getCouleur() + "██ " + ChatColor.WHITE);
+                }
+
+
+                onlinePlayer.setPlayerListName(playerPrefix.toString() + onlinePlayer.getDisplayName());
+            }
+
+        }
     }
 
     public static boolean isPlayerInDeathZone(Player joueur) {
@@ -265,16 +294,14 @@ public class PlayerUtils {
             commands.append(adminPrefix).append(ChatColor.GOLD + "arbitre   " + ChatColor.WHITE + "# Permet de devenir arbitre\n");
             commands.append(adminPrefix).append(ChatColor.GOLD + "t <message>   " + ChatColor.WHITE + "# envoyer un message à son équipe\n");
             commands.append(adminPrefix).append(ChatColor.GOLD + "team <message>   " + ChatColor.WHITE + "# envoyer un message à sa équipe\n");
+            commands.append(adminPrefix).append(ChatColor.GOLD + "allow <playername>   " + ChatColor.WHITE + "# Autoriser la connexion d'un joueur\n");
         }
 
-        commands.append(ChatColor.GREEN + "[ALL]" + ChatColor.GOLD + "join  " + ChatColor.WHITE + "# permet de rejoindre une équipe\n");
+        commands.append(ChatColor.GREEN + "[ALL]" + ChatColor.GOLD + " join  " + ChatColor.WHITE + "# permet de rejoindre une équipe\n");
+        commands.append(ChatColor.GREEN + "[ALL]" + ChatColor.GOLD + " leaveteam  " + ChatColor.WHITE + "# Quitter son équipe\n");
         player.sendMessage(commands.toString());
     }
 
-    public static void teleportToLobby(Player p) {
-        Location lobbyLocation = new Location(mineralcontest.plugin.pluginWorld, 109, 170, -165);
-        p.teleport(lobbyLocation);
-    }
 
     public static void setMaxHealth(Player p) {
         p.setHealth(20);
