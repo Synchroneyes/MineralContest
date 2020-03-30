@@ -14,10 +14,7 @@ import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -49,11 +46,34 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     private Game partie;
     public World pluginWorld;
 
+    public Location defaultSpawn;
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.partie = new Game();
         this.gameSettings = GameSettings.getInstance();
+    }
+
+    // Called when the game start
+    public void setWorldBorder() throws Exception {
+        if(pluginWorld == null) return;
+        int playZoneRadius = (int) GameSettingsCvar.getValueFromCVARName("mp_set_playzone_radius");
+        WorldBorder world = pluginWorld.getWorldBorder();
+        world.setCenter(getGame().getArene().getCoffre().getPosition());
+        world.setSize(playZoneRadius);
+    }
+
+    public void setDefaultWorldBorder() {
+        World game_world = mineralcontest.plugin.pluginWorld;
+        if(game_world != null) {
+            game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
+            game_world.getWorldBorder().setSize(6);
+        }
+    }
+
+    public void setDefaultSpawn(Location defaultSpawn) {
+        this.defaultSpawn = defaultSpawn;
     }
 
     public Game getGame() {
@@ -75,6 +95,13 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
         pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
+        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+
+        if(pluginWorld != null)
+            for(Player online : pluginWorld.getPlayers())
+                online.teleport(defaultSpawn);
+
+        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
         PlayerUtils.runScoreboardManager();
 
     }
@@ -152,6 +179,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         getCommand("mp_set_language").setExecutor(new mp_set_language());
         getCommand("allow").setExecutor(new AllowCommand());
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
+        getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
+        getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());
+
+
 
     }
 

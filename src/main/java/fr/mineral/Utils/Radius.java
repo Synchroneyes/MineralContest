@@ -25,4 +25,25 @@ public class Radius {
         );
 
     }
+
+    public static boolean isBlockInRadiusWithDividedYAxis(Location source, Location blockToFind, int radius, int divider) {
+
+        return(
+                (
+                        (
+                                source.getX()-radius < blockToFind.getX() &&
+                                        source.getX()+radius > blockToFind.getX()
+                        ) &&
+                                (
+                                        source.getZ() - radius < blockToFind.getZ() &&
+                                                source.getZ() + radius > blockToFind.getZ()
+                                ) &&
+                                (
+                                        source.getY() - (int) (radius /divider) < blockToFind.getY() &&
+                                                source.getY() + (int) (radius /divider) > blockToFind.getY()
+                                )
+                )
+        );
+
+    }
 }

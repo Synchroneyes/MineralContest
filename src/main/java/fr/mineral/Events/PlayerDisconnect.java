@@ -45,11 +45,20 @@ public class PlayerDisconnect implements Listener {
             }
 
 
-            int number_of_player_online = mineralcontest.plugin.pluginWorld.getPlayers().size() - 1;
-            if(number_of_player_online == 0) {
-                mineralcontest.plugin.getGame().resetMap();
-                mineralcontest.plugin.getGame().terminerPartie();
-            }
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                int number_of_player_online = mineralcontest.plugin.pluginWorld.getPlayers().size();
+                if(number_of_player_online == 0) {
+                    mineralcontest.plugin.getGame().resetMap();
+                    if(mineralcontest.plugin.getGame().isGameStarted()) {
+                        try {
+                            mineralcontest.plugin.getGame().terminerPartie();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, 20);
+
         }
 
     }

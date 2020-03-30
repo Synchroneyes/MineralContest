@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 import java.util.LinkedHashMap;
@@ -36,10 +37,14 @@ public class House {
 
     public void clearHouse() {
 
+        if(spawnLocation != null)
+            for(Player teamMember : team.getJoueurs())
+                teamMember.teleport(getHouseLocation());
+
         this.doors.clear();
         this.blocks.clear();
         this.team.clear();
-        this.coffre.clear();
+        if(this.coffre != null) this.coffre.clear();
     }
 
     public Coffre getCoffre() { return this.coffre;}

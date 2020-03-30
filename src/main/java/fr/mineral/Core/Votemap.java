@@ -178,6 +178,8 @@ public class Votemap {
                 getWinnerBiome(true);
                 disableVote();
                 mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.set_yourself_as_ready_to_start_game.toString());
+
+                mineralcontest.plugin.setWorldBorder();
             }catch(Exception e) {
                 e.printStackTrace();
             }

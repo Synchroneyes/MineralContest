@@ -18,7 +18,7 @@ public class ReadyCommand implements CommandExecutor {
             Votemap votemap = game.votemap;
             Player joueur = (Player) commandSender;
 
-            if(votemap.isVoteEnded()) {
+            if(votemap.isVoteEnded() || game.isGamePaused()) {
                 if(!game.isPlayerReady(joueur)) {
                     try {
                         game.setPlayerReady(joueur);

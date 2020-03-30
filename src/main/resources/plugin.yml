@@ -136,7 +136,19 @@ commands:
 
   mp_team_max_players:
     description: Permet de choisir le nombre de personne par équipe
-    use: /mp_teal_max_players <valeur>
+    use: /mp_team_max_players <valeur>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_enable_friendly_fire:
+    description: Activer ou non le tir allié
+    use: /mp_enable_friendly_fire <0 or 1>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_set_playzone_radius:
+    description: Définir le rayon de la map
+    use: /mp_set_playzone_radius <value>
     permission: admin
     permission-message: you do not have the permission
 

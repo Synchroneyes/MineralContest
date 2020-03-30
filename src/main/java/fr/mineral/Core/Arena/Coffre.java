@@ -27,9 +27,12 @@ public class Coffre {
     }
 
     public void clear() {
-        Block b = this.position.getBlock();
-        ((Chest)b.getState()).getInventory().clear();
-        if(!b.getType().equals(Material.AIR)) b.breakNaturally();
+        if(this.position != null) {
+            Block b = this.position.getBlock();
+            if(b.getState() instanceof Chest)((Chest)b.getState()).getInventory().clear();
+            if(!b.getType().equals(Material.AIR)) b.breakNaturally();
+        }
+
 
     }
 

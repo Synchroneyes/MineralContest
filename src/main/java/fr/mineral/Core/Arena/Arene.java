@@ -5,8 +5,13 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -32,7 +37,8 @@ public class Arene {
     private int MAX_TIME_BETWEEN_CHEST = 15; // mins
     private int MIN_TIME_BETWEEN_CHEST = 13;
     private int TIME_BEFORE_CHEST = 0;
-    private int TELEPORT_TIME_LEFT = 15;
+    private double TELEPORT_TIME_LEFT = 15;
+    private double TELEPORT_TIME_LEFT_VAR = 15;
     private boolean CHEST_SPAWNED = false;
     private boolean CHEST_INITIALIZED = false;
     public boolean CHEST_USED = false;
@@ -40,7 +46,7 @@ public class Arene {
 
 
     public void clear() {
-        this.coffre.clear();
+        if(this.coffre != null) this.coffre.clear();
     }
 
     public void generateTimeBetweenChest() {
@@ -52,7 +58,7 @@ public class Arene {
         time += (int) ((Math.random() * ((59 - 1) + 1)) + 1);
 
         TIME_BEFORE_CHEST = time;
-        TELEPORT_TIME_LEFT = 15;
+        TELEPORT_TIME_LEFT = TELEPORT_TIME_LEFT_VAR;
         CHEST_INITIALIZED = true;
     }
 
@@ -107,7 +113,7 @@ public class Arene {
                         if(CHEST_USED) {
                             CHEST_SPAWNED = false;
                             disableTeleport();
-                            TELEPORT_TIME_LEFT = 15;
+                            TELEPORT_TIME_LEFT = TELEPORT_TIME_LEFT_VAR;
                             CHEST_USED = false;
                         }
 
@@ -117,7 +123,7 @@ public class Arene {
                             TELEPORT_TIME_LEFT--;
                             if(TELEPORT_TIME_LEFT <= 0) {
                                 disableTeleport();
-                                TELEPORT_TIME_LEFT = 15;
+                                TELEPORT_TIME_LEFT = TELEPORT_TIME_LEFT_VAR;
                             }
                         }
                     }catch (Exception e) {
@@ -136,13 +142,47 @@ public class Arene {
 
 
     public void enableTeleport() {
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
-            online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.arena_chest_spawned.toString()), Lang.translate(Lang.arena_teleport_now_enabled.toString()), 20, 20*3, 20);
+        String separator = ChatColor.GOLD + "----------------";
+        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+            online.sendMessage(separator);
+            online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_chest_spawned.toString());
+            online.sendMessage(separator);
+        }
+            //online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.arena_chest_spawned.toString()), Lang.translate(Lang.arena_teleport_now_enabled.toString()), 20, 20*3, 20);
+
         this.allowTeleport = true;
+        sendTeleportStatusBarToPlayers();
     }
+
+    private void sendTeleportStatusBarToPlayers() {
+        BossBar teleportStatusBar = Bukkit.createBossBar(Lang.arena_teleport_now_enabled.toString(), BarColor.BLUE, BarStyle.SOLID);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                double status = (TELEPORT_TIME_LEFT / TELEPORT_TIME_LEFT_VAR);
+                teleportStatusBar.setProgress(status);
+
+                for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
+                    teleportStatusBar.addPlayer(player);
+                }
+
+                if(TELEPORT_TIME_LEFT <= 1) {
+                    teleportStatusBar.removeAll();
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(mineralcontest.plugin, 0, 5);
+    }
+
+
     public void disableTeleport() {
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
-            online.sendTitle("", Lang.arena_teleport_now_disabled.toString(), 20, 20*3, 20);
+        String separator = ChatColor.GOLD + "----------------";
+        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+            online.sendMessage(separator);
+            online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_teleport_now_disabled.toString());
+            online.sendMessage(separator);
+        }
 
         this.allowTeleport = false;
     }

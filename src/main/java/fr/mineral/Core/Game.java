@@ -183,12 +183,16 @@ public class Game implements Listener {
                     if((int) GameSettingsCvar.mp_randomize_team.getValueInt() == 1) {
                         randomizeTeam(true);
                         demarrerPartie(false);
+                        return;
                     } else {
                         warnPlayerWithNoTeam();
                         startAllPlayerHaveTeamTimer();
+                        return;
                     }
 
                 }
+
+                if(isGamePaused()) resumeGame();
                 else demarrerPartie(false);
             }
         }
@@ -232,7 +236,6 @@ public class Game implements Listener {
         this.redHouse.clearHouse();
         this.blueHouse.clearHouse();
         this.yellowHouse.clearHouse();
-        resetMap();
         this.arene.clear();
         this.referees.clear();
         this.disconnectedPlayers.clear();
@@ -292,6 +295,9 @@ public class Game implements Listener {
 
             mineralcontest.broadcastMessage(Lang.map_has_been_restored.toString());
         }
+
+        mineralcontest.plugin.setDefaultWorldBorder();
+        clear();
     }
 
     public void cancelPreGame() {
@@ -430,7 +436,7 @@ public class Game implements Listener {
 
 
 
-                if(isPreGame()) {
+                if(isPreGame() && !isGamePaused()) {
 
                     // ON DEMARRE LA PARTIE !
                     if(PreGameTimeLeft <= 0) {
@@ -465,7 +471,6 @@ public class Game implements Listener {
                                     }
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
-
 
                                     // On TP le joueur dans sa maison
                                     try {
@@ -605,15 +610,24 @@ public class Game implements Listener {
 
     public void terminerPartie() throws Exception {
 
+
+
+        SendInformation.sendGameData(SendInformation.ended);
+        this.resetMap();
+        this.clear();
+        this.GamePaused = false;
+        this.GameStarted = false;
+
+        if(mineralcontest.plugin.pluginWorld.getPlayers().size() == 0) return;
         /* Teleport everyone to the hub */
+
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
             teleportToLobby(player);
             PlayerUtils.clearPlayer(player);
 
         }
 
-        this.GamePaused = false;
-        this.GameStarted = false;
+
 
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.game_over.toString());
 
@@ -630,24 +644,33 @@ public class Game implements Listener {
                     PlayerUtils.setFirework(online, gagnant.toColor());
         }
 
-        SendInformation.sendGameData(SendInformation.ended);
-        this.resetMap();
-        this.clear();
+
     }
 
     public void pauseGame() {
         // Only si game started
-        if(isGameStarted()) {
+        if(isGameStarted() || isPreGame()) {
             this.GamePaused = true;
+
+            this.playersReady.clear();
+
             // On averti les joueurs
             for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
                 online.sendMessage(mineralcontest.prefixPrive + Lang.hud_game_paused.toString());
+                online.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
                 if(online.isOp()) online.sendMessage(mineralcontest.prefixAdmin + Lang.hud_admin_resume_help.toString());
             }
         }
     }
 
     public void resumeGame() {
+
+        if(isPreGame() && isGamePaused()) {
+            this.PreGame = true;
+            this.GamePaused = false;
+            return;
+        }
+
         if(isGamePaused()) {
             Equipe team = null; //getEquipeNonPleine();
             if(team != null && !isGameForced()) {
@@ -657,10 +680,15 @@ public class Game implements Listener {
                 mineralcontest.plugin.getLogger().info("ON RESUME LA PARTIE");
                 this.PreGame = true;
                 this.PreGameTimeLeft = 5;
+                this.GamePaused = false;
 
 
             }
         }
+    }
+
+    public boolean isPreGameAndGameStarted() {
+        return (isPreGame() && (tempsPartie != DUREE_PARTIE * 60));
     }
 
     public boolean allPlayerHaveTeam() {
@@ -809,11 +837,16 @@ public class Game implements Listener {
         // On clear l'arene
         mineralcontest.plugin.getGame().getArene().clear();
 
+        removeAllDroppedItems();
+
         PreGame = true;
         GameStarted = false;
         this.tempsPartie = 60 * DUREE_PARTIE;
         mineralcontest.plugin.getGame().getArene().startArena();
         mineralcontest.plugin.getGame().getArene().startAutoMobKill();
+
+        // On set le world border
+        mineralcontest.plugin.setWorldBorder();
 
         // On démarre les portes
         mineralcontest.plugin.getGame().handleDoors();

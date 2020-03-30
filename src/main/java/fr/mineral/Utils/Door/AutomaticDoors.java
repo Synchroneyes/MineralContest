@@ -2,6 +2,7 @@ package fr.mineral.Utils.Door;
 
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -93,13 +94,8 @@ public class AutomaticDoors {
 
 
     public void forceCloseDoor() {
-        for(DisplayBlock db : porte) {
-            db.display();
-        }
-        this.estOuvert = false;
-
-        for(Player p : playerNearDoor)
-            playerNearDoor.remove(p);
+        playerNearDoor.clear();
+        closeDoor();
     }
 
     public void closeDoor() {

@@ -1,9 +1,12 @@
 package fr.mineral.Teams;
 
 import fr.mineral.Core.Arena.Coffre;
+import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Player.PlayerBaseItem;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -82,6 +85,13 @@ public class Equipe {
 
             this.joueurs.add(p);
 
+            p.setGameMode(GameMode.SURVIVAL);
+
+
+            if(PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.plugin.getGame().isGameInitialized) {
+                PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
+                p.teleport(mineralcontest.plugin.getGame().getPlayerHouse(p).getHouseLocation());
+            }
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 

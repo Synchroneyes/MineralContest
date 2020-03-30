@@ -138,7 +138,10 @@ public enum Lang {
     player_is_no_longer_ready("player_is_no_longer_ready", "%playerName% n'est plus prêt"),
     warn_player_you_dont_have_a_team("warn_player_you_dont_have_a_team","Attention, vous n'êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe> (equipes: jaune, rouge, bleu)"),
     set_yourself_as_ready_to_start_game("set_yourself_as_ready_to_start_game", "Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready "),
-    teamChat("teamChat", "[TEAM]");
+    teamChat("teamChat", "[TEAM]"),
+    cvar_play_zone_radius("cvar_play_zone_radius", "La taille de la zone de jeu est désormais de %playZoneRadius% block(s)"),
+    cvar_friendly_fire_enabled("cvar_friendly_fire_enabled", "Les dégats entre coéquipiers sont désormais actif"),
+    cvar_friendly_fire_disabled("cvar_friendly_fire_disabled", "Les dégats entre coéquipiers sont désormais désactivés");
 
 
 
@@ -338,6 +341,7 @@ public enum Lang {
         if(string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + mineralcontest.plugin.getGame().PreGameTimeLeft);
         if(string.contains("%winningBiome%")) string = string.replace("%winningBiome%", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
         if(string.contains("%teamNumber%")) string = string.replace("%teamNumber%", "" + GameSettingsCvar.mp_team_max_player.getValueInt());
+        if(string.contains("%playZoneRadius%")) string = string.replace("%playZoneRadius%", "" + GameSettingsCvar.mp_set_playzone_radius.getValueInt());
 
         return string;
     }

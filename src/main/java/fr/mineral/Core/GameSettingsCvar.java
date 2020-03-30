@@ -15,8 +15,13 @@ public enum GameSettingsCvar {
     SCORE_EMERALD("cvar", "int", "SCORE_EMERALD", "300"),
     mp_team_max_player("cvar", "int", "mp_team_max_player", "2"),
     mp_set_language("cvar", "string", "mp_set_language", "french"),
-    world_name("settings", "string", "world_name", "world");
+    world_name("settings", "string", "world_name", "world"),
+    mp_set_playzone_radius("cvar", "int", "mp_set_playzone_radius", "1000"),
+    mp_enable_friendly_fire("cvar", "int", "mp_enable_friendly_fire", "1");
 
+    /*
+    TODO APPLY SET PLAYZONE AND FRIENDLY FIRE
+     */
 
     private String type;
     private String name;

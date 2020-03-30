@@ -3,10 +3,12 @@ package fr.mineral.Utils.Player;
 import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.House;
 import fr.mineral.Core.Referee.RefereeItem;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Scoreboard.ScoreboardUtil;
+import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
@@ -24,6 +26,8 @@ import java.util.ListIterator;
 
 public class PlayerUtils {
 
+    public static int velocity_mult = 2;
+
     public static void setFirework(Player joueur, Color couleur) {
         Firework firework = (Firework) joueur.getWorld().spawn(joueur.getLocation(), Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
@@ -40,6 +44,17 @@ public class PlayerUtils {
 
         fireworkMeta.setPower(0);
         firework.setFireworkMeta(fireworkMeta);
+    }
+
+    public static void pushBackPlayer(Player p) {
+        Vector playerVelocity = p.getVelocity();
+        int multiplier = velocity_mult;
+        playerVelocity.setX((playerVelocity.getX()*multiplier) * (-1));
+        playerVelocity.setY(2);
+        playerVelocity.setZ((playerVelocity.getZ()*multiplier) * (-1));
+
+        p.setVelocity(playerVelocity);
+        p.sendMessage("PUSHING U BACK");
     }
 
 
@@ -74,6 +89,23 @@ public class PlayerUtils {
             if(infoJoueur.getJoueur().equals(joueur)) return true;
 
         return false;
+    }
+
+    public static boolean isPlayerInHisBase(Player p) {
+        Game game = mineralcontest.plugin.getGame();
+        House playerHouse = game.getPlayerHouse(p);
+        int house_radius = 7;
+        if(playerHouse == null) return false;
+        return (Radius.isBlockInRadius(playerHouse.getHouseLocation(), p.getLocation(), house_radius));
+    }
+
+    public static int getPlayerItemsCountInInventory(Player p) {
+        int item_count = 0;
+        for(ItemStack item : p.getInventory().getContents())
+            if(item != null && item.getType().equals(Material.AIR))
+                item_count++;
+
+        return item_count;
     }
 
     /*public static void givePlayerBaseItems(Player joueur) {

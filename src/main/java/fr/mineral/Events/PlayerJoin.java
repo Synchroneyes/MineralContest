@@ -142,6 +142,7 @@ public class PlayerJoin implements Listener {
                 if(havePlayerDisconnectedEarlier) {
                     // We put him back into his old team
                     this.oldPlayerTeam.addPlayerToTeam(player, true);
+                    game.resumeGame();
                     return;
                 }
 
