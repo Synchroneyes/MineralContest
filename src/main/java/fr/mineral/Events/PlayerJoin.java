@@ -38,6 +38,8 @@ public class PlayerJoin implements Listener {
     private Equipe oldPlayerTeam;
 
 
+
+
     private void initVariables(Player player) {
         mineralcontest plugin = mineralcontest.plugin;
         this.game = plugin.getGame();
