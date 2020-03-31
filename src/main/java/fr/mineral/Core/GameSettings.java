@@ -2,7 +2,6 @@ package fr.mineral.Core;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

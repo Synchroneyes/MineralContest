@@ -3,9 +3,6 @@ package fr.mineral.Utils.Metric;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
-import java.net.InetAddress;
 
 public class SendInformation {
 

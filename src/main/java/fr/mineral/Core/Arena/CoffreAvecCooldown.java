@@ -2,7 +2,6 @@ package fr.mineral.Core.Arena;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Range;
-import fr.mineral.Utils.XMaterial;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -10,7 +9,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Wool;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;

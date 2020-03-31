@@ -1,14 +1,11 @@
 package fr.mineral.Commands.CVAR;
 
 import fr.mineral.Core.GameSettingsCvar;
-import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.io.IOException;
 
 public class mp_enable_item_drop implements CommandExecutor {
     @Override

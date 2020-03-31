@@ -1,8 +1,8 @@
 package fr.mineral.Scoreboard;
 
-import java.util.Collection;
-
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 public abstract class Board
 {

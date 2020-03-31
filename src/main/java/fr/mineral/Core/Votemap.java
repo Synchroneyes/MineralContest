@@ -5,7 +5,6 @@ import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedList;

@@ -2,9 +2,7 @@ package fr.mineral.Commands;
 
 import fr.mineral.Core.Referee.Referee;
 import fr.mineral.Translation.Lang;
-import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
-import org.bukkit.WorldBorder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

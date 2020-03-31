@@ -1,6 +1,5 @@
 package fr.mineral.Core.Arena;
 
-import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;

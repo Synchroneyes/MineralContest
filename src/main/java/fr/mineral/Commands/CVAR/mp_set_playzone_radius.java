@@ -7,7 +7,6 @@ import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class mp_set_playzone_radius implements CommandExecutor {
     @Override

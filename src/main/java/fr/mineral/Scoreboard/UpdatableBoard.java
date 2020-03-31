@@ -1,10 +1,10 @@
 package fr.mineral.Scoreboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class UpdatableBoard extends Board
 {

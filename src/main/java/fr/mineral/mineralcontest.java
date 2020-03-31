@@ -6,31 +6,23 @@ import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettings;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Core.Referee.RefereeEvent;
-import fr.mineral.Translation.Lang;
 import fr.mineral.Events.*;
-
-import fr.mineral.Translation.Language;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
-import java.io.*;
-import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class mineralcontest extends JavaPlugin implements CommandExecutor, Listener {
+public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
     private GameSettings gameSettings;
@@ -97,9 +89,10 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
         pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
 
-        if(pluginWorld != null)
-            for(Player online : pluginWorld.getPlayers())
-                online.teleport(defaultSpawn);
+        if(!debug)
+            if(pluginWorld != null)
+                for(Player online : pluginWorld.getPlayers())
+                    online.teleport(defaultSpawn);
 
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
         PlayerUtils.runScoreboardManager();
@@ -109,7 +102,7 @@ public final class mineralcontest extends JavaPlugin implements CommandExecutor,
     @Override
     public void onDisable() {
 
-        if(pluginWorld != null) {
+        if(pluginWorld != null && !debug) {
             for(Player player : pluginWorld.getPlayers()) {
                 getGame().teleportToLobby(player);
                 PlayerUtils.clearPlayer(player);

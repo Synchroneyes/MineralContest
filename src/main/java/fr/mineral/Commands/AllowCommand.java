@@ -1,12 +1,10 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Core.Game;
-import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AllowCommand implements CommandExecutor {
     @Override

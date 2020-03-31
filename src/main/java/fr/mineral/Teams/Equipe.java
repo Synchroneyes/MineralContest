@@ -1,15 +1,13 @@
 package fr.mineral.Teams;
 
-import fr.mineral.Core.Arena.Coffre;
-import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
-import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedList;

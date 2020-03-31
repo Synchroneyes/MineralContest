@@ -1,6 +1,5 @@
 package fr.mineral.Commands.CVAR;
 
-import fr.mineral.Core.GameSettings;
 import fr.mineral.Core.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Translation.Language;
@@ -9,8 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.io.IOException;
 
 public class mp_set_language implements CommandExecutor {
     @Override

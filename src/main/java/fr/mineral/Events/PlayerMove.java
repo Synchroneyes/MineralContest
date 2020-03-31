@@ -2,11 +2,8 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Game;
 import fr.mineral.Core.House;
-import fr.mineral.Teams.Equipe;
-import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

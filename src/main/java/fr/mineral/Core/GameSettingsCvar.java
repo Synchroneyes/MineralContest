@@ -1,7 +1,5 @@
 package fr.mineral.Core;
 
-import org.bukkit.Bukkit;
-
 import java.io.IOException;
 
 public enum GameSettingsCvar {

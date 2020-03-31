@@ -1,7 +1,6 @@
 package fr.mineral.Utils;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 
 public class Radius {
 

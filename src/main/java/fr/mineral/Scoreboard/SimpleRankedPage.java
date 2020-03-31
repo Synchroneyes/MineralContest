@@ -1,8 +1,8 @@
 package fr.mineral.Scoreboard;
 
-import java.util.HashMap;
-
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 public class SimpleRankedPage implements BoardPage
 {

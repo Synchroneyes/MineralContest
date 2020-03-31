@@ -2,8 +2,6 @@ package fr.mineral.Events;
 
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.mineralcontest;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;

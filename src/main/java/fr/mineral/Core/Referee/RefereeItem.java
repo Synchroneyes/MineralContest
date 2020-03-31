@@ -2,7 +2,6 @@ package fr.mineral.Core.Referee;
 
 import fr.mineral.Translation.Lang;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 

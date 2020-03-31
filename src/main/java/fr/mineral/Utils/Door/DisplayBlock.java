@@ -1,12 +1,8 @@
 package fr.mineral.Utils.Door;
 
-import fr.mineral.mineralcontest;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
 
 public class DisplayBlock {
