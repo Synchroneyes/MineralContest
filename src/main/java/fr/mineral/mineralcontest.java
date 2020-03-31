@@ -5,6 +5,7 @@ import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Core.Game;
 import fr.mineral.Core.GameSettings;
 import fr.mineral.Core.GameSettingsCvar;
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Events.*;
 import fr.mineral.Translation.Lang;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin {
 
-    public static boolean debug = false;
+    public static boolean debug = true;
     private GameSettings gameSettings;
 
     public static String prefix;
@@ -39,6 +40,7 @@ public final class mineralcontest extends JavaPlugin {
     public World pluginWorld;
 
     public Location defaultSpawn;
+    public MapBuilder mapBuilderInstance;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
@@ -47,22 +49,6 @@ public final class mineralcontest extends JavaPlugin {
         this.gameSettings = GameSettings.getInstance();
     }
 
-    // Called when the game start
-    public void setWorldBorder() throws Exception {
-        if(pluginWorld == null) return;
-        int playZoneRadius = (int) GameSettingsCvar.getValueFromCVARName("mp_set_playzone_radius");
-        WorldBorder world = pluginWorld.getWorldBorder();
-        world.setCenter(getGame().getArene().getCoffre().getPosition());
-        world.setSize(playZoneRadius);
-    }
-
-    public void setDefaultWorldBorder() {
-        World game_world = mineralcontest.plugin.pluginWorld;
-        if(game_world != null) {
-            game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
-            game_world.getWorldBorder().setSize(6);
-        }
-    }
 
     public void setDefaultSpawn(Location defaultSpawn) {
         this.defaultSpawn = defaultSpawn;
@@ -74,6 +60,11 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
+        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+
+        this.mapBuilderInstance = MapBuilder.getInstance();
+
 
         Lang.copyLangFilesFromRessources();
         Lang.loadLang("french");
@@ -86,8 +77,8 @@ public final class mineralcontest extends JavaPlugin {
         MapFileHandler.copyMapFileToPluginRessourceFolder();
         PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
-        pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
-        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+
+
 
         if(!debug)
             if(pluginWorld != null)
@@ -97,10 +88,13 @@ public final class mineralcontest extends JavaPlugin {
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
         PlayerUtils.runScoreboardManager();
 
+
+
     }
 
     @Override
     public void onDisable() {
+        SendInformation.sendGameData(SendInformation.ended);
 
         if(pluginWorld != null && !debug) {
             for(Player player : pluginWorld.getPlayers()) {
@@ -110,23 +104,26 @@ public final class mineralcontest extends JavaPlugin {
         }
 
         getGame().resetMap();
-        SendInformation.sendGameData(SendInformation.ended);
         Bukkit.getScheduler().cancelTasks(this);
     }
 
     private void registerEvents() {
-        Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
+
+        if(mapBuilderInstance != null && !mapBuilderInstance.isBuilderModeEnabled) {
+            Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
+            Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
+            Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
+            Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
+        }
+
         Bukkit.getServer().getPluginManager().registerEvents(new BlockSpread(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
 
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
@@ -179,8 +176,32 @@ public final class mineralcontest extends JavaPlugin {
 
     }
 
+    // Called when the game start
+    public void setWorldBorder() throws Exception {
+        if(pluginWorld == null) return;
+        int playZoneRadius = (int) GameSettingsCvar.getValueFromCVARName("mp_set_playzone_radius");
+
+        WorldBorder world = pluginWorld.getWorldBorder();
+        world.setCenter(getGame().getArene().getCoffre().getPosition());
+        world.setSize(playZoneRadius);
+    }
+
+    public void setDefaultWorldBorder() {
+
+        if(mapBuilderInstance.isBuilderModeEnabled) return;
+
+        World game_world = mineralcontest.plugin.pluginWorld;
+        int size = 6;
+
+        if(game_world != null) {
+            game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
+            game_world.getWorldBorder().setSize(size);
+        }
+    }
+
 
     public static void checkIfMapIsCorrect() {
+        if(mineralcontest.debug) return;
         if (mineralcontest.plugin.pluginWorld == null) {
             ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
             log.severe("NULL");

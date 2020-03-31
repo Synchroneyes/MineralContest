@@ -139,6 +139,11 @@ public class PlayerUtils {
             return;
         }
 
+        if(mineralcontest.plugin.mapBuilderInstance != null && mineralcontest.plugin.mapBuilderInstance.isBuilderModeEnabled){
+            mineralcontest.plugin.mapBuilderInstance.sendPlayersHUD();
+            return;
+        }
+
         boolean gameStarted = mineralcontest.plugin.getGame().isGameStarted();
         boolean gamePaused = mineralcontest.plugin.getGame().isGamePaused();
         boolean voteMapEnabled = mineralcontest.plugin.getGame().votemap.voteEnabled;
