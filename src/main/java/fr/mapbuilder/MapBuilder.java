@@ -19,7 +19,7 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = false;
+    public boolean isBuilderModeEnabled = true;
     private CommandMap bukkitCommandMap;
 
     private MapBuilder() {

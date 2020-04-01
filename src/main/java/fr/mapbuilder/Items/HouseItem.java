@@ -1,4 +1,4 @@
 package fr.mapbuilder.Items;
 
-public class HouseSpawner {
+public class HouseItem {
 }

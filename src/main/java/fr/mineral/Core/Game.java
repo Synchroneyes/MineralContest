@@ -614,11 +614,6 @@ public class Game implements Listener {
 
 
         SendInformation.sendGameData(SendInformation.ended);
-        this.resetMap();
-        this.clear();
-        this.GamePaused = false;
-        this.GameStarted = false;
-
         if(mineralcontest.plugin.pluginWorld.getPlayers().size() == 0) return;
         /* Teleport everyone to the hub */
 
@@ -645,6 +640,11 @@ public class Game implements Listener {
                     PlayerUtils.setFirework(online, gagnant.toColor());
         }
 
+
+        this.resetMap();
+        this.clear();
+        this.GamePaused = false;
+        this.GameStarted = false;
 
     }
 
