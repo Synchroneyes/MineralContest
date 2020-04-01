@@ -5,7 +5,6 @@ import org.bukkit.Location;
 public class Radius {
 
     public static boolean isBlockInRadius(Location source, Location blockToFind, int radius) {
-
         return(
                 (
                         (

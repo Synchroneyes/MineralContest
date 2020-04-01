@@ -42,10 +42,12 @@ public class Arene {
     private boolean CHEST_INITIALIZED = false;
     public boolean CHEST_USED = false;
     public int arenaRadius = 60;
+    private BossBar teleportStatusBar;
 
 
     public void clear() {
         if(this.coffre != null) this.coffre.clear();
+        removePlayerTeleportBar();
     }
 
     public void generateTimeBetweenChest() {
@@ -119,9 +121,11 @@ public class Arene {
                     // Les joueurs disposent de 15 sec pour se Tp une fois le TP actif
 
                         if(getCoffre().isChestSpawned() && isTeleportAllowed()) {
+                            updateTeleportBar();
                             TELEPORT_TIME_LEFT--;
                             if(TELEPORT_TIME_LEFT <= 0) {
                                 disableTeleport();
+                                removePlayerTeleportBar();
                                 TELEPORT_TIME_LEFT = TELEPORT_TIME_LEFT_VAR;
                             }
                         }
@@ -150,30 +154,27 @@ public class Arene {
             //online.sendTitle(ChatColor.GREEN + Lang.translate(Lang.arena_chest_spawned.toString()), Lang.translate(Lang.arena_teleport_now_enabled.toString()), 20, 20*3, 20);
 
         this.allowTeleport = true;
-        sendTeleportStatusBarToPlayers();
+        createTeleportBar();
     }
 
-    private void sendTeleportStatusBarToPlayers() {
-        BossBar teleportStatusBar = Bukkit.createBossBar(Lang.arena_teleport_now_enabled.toString(), BarColor.BLUE, BarStyle.SOLID);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                double status = (TELEPORT_TIME_LEFT / TELEPORT_TIME_LEFT_VAR);
-                teleportStatusBar.setProgress(status);
-
-                for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
-                    teleportStatusBar.addPlayer(player);
-                }
-
-                if(TELEPORT_TIME_LEFT <= 1) {
-                    teleportStatusBar.removeAll();
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(mineralcontest.plugin, 0, 5);
+    private void createTeleportBar() {
+        if(teleportStatusBar == null) teleportStatusBar = Bukkit.createBossBar(Lang.arena_teleport_now_enabled.toString(), BarColor.BLUE, BarStyle.SOLID);
     }
 
+    public void removePlayerTeleportBar() {
+        if(teleportStatusBar != null) teleportStatusBar.removeAll();
+    }
+
+    public void updateTeleportBar() {
+        createTeleportBar();
+        double status = (TELEPORT_TIME_LEFT / TELEPORT_TIME_LEFT_VAR);
+        teleportStatusBar.setProgress(status);
+
+        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
+            teleportStatusBar.removePlayer(player);
+            teleportStatusBar.addPlayer(player);
+        }
+    }
 
     public void disableTeleport() {
         String separator = ChatColor.GOLD + "----------------";
@@ -185,6 +186,7 @@ public class Arene {
 
         this.allowTeleport = false;
     }
+
     public Location getTeleportSpawn() { return this.teleportSpawn; }
     public DeathZone getDeathZone() { return this.deathZone; }
 

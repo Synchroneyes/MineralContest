@@ -180,10 +180,15 @@ public final class mineralcontest extends JavaPlugin {
     public void setWorldBorder() throws Exception {
         if(pluginWorld == null) return;
         int playZoneRadius = (int) GameSettingsCvar.getValueFromCVARName("mp_set_playzone_radius");
+        int marge = 100; // Use to prevent server.properties spawn protection
 
         WorldBorder world = pluginWorld.getWorldBorder();
-        world.setCenter(getGame().getArene().getCoffre().getPosition());
-        world.setSize(playZoneRadius);
+
+        Location arenaCenterLocation = getGame().getArene().getCoffre().getPosition().clone();
+
+        arenaCenterLocation.setX(arenaCenterLocation.getX()-marge);
+        world.setCenter(arenaCenterLocation);
+        world.setSize(playZoneRadius + marge);
     }
 
     public void setDefaultWorldBorder() {

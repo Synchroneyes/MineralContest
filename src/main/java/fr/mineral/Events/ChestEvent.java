@@ -8,6 +8,7 @@ import fr.mineral.Core.House;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -25,6 +26,7 @@ public class ChestEvent implements Listener {
     // Lorsqu'on ferme un inventaire
     @EventHandler
     public void onChestClose(InventoryCloseEvent event) throws Exception {
+
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
             // Si la game est démarrée
@@ -111,7 +113,6 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
-
         World world = event.getPlayer().getWorld();
         Game game = mineralcontest.plugin.getGame();
         if(world.equals(mineralcontest.plugin.pluginWorld)) {
