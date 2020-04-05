@@ -1,4 +1,4 @@
-package fr.mineral.Core;
+package fr.mineral.Settings;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
@@ -24,6 +24,11 @@ public class GameSettings {
         this.configFile = new File(mineralcontest.plugin.getDataFolder(), configFileName);
         this.pluginInstance = mineralcontest.plugin;
         GameSettings.instance = this;
+    }
+
+    public YamlConfiguration getYamlConfiguration() throws Exception{
+        if(!configFile.exists()) throw new Exception("[GameSettings] Config file doesnt exists");
+        return YamlConfiguration.loadConfiguration(configFile);
     }
 
     public static GameSettings getInstance() {

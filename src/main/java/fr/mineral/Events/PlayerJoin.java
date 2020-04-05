@@ -1,12 +1,14 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Game;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -58,6 +60,14 @@ public class PlayerJoin implements Listener {
 
             // First, we check if the map is correct
             mineralcontest.checkIfMapIsCorrect();
+
+            // We need to apply the pvp system
+            if((int) GameSettingsCvar.getValueFromCVARName("mp_enable_old_pvp") == 1) {
+                player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
+            } else {
+                player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+
+            }
 
 
             // If the game is started

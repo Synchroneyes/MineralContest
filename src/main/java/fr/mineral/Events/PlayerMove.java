@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Game;
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;

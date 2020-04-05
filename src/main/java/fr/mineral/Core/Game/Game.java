@@ -1,6 +1,9 @@
-package fr.mineral.Core;
+package fr.mineral.Core.Game;
 
 import fr.mineral.Core.Arena.Arene;
+import fr.mineral.Core.House;
+import fr.mineral.Core.Votemap;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
@@ -23,10 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /*
     Classe représentant une partie MineralContest
@@ -89,6 +89,10 @@ public class Game implements Listener {
         this.PlayerThatTriedToLogIn = new HashMap<>();
 
         this.addedChests = new LinkedList<>();
+
+        DUREE_PARTIE = (int) GameSettingsCvar.getValueFromCVARName("game_time");
+        tempsPartie = DUREE_PARTIE * 60;
+        PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
     }
 
     public boolean isTheBlockAChest(Block b) {
@@ -138,12 +142,16 @@ public class Game implements Listener {
     }
 
     public boolean havePlayerTriedToLogin(String playerDisplayName) {
-        return this.PlayerThatTriedToLogIn.containsKey(playerDisplayName);
+        for(Map.Entry<String, Boolean> entry : PlayerThatTriedToLogIn.entrySet()){
+            if(entry.getKey().toLowerCase().equals(playerDisplayName.toLowerCase())) return true;
+        }
+        return false;
     }
 
     public boolean allowPlayerLogin(String playerDisplayName) {
         if(havePlayerTriedToLogin(playerDisplayName)) {
-            this.PlayerThatTriedToLogIn.replace(playerDisplayName, true);
+            for(Map.Entry<String, Boolean> entry : PlayerThatTriedToLogIn.entrySet())
+                if(entry.getKey().toLowerCase().equals(playerDisplayName.toLowerCase())) entry.setValue(true);
             return true;
         }
         return false;
@@ -304,7 +312,7 @@ public class Game implements Listener {
     public void cancelPreGame() {
         if(!isPreGame()) return;
         this.PreGame = false;
-        this.PreGameTimeLeft = 10;
+        this.PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
         mineralcontest.broadcastMessage("Pregame cancelled");
     }
 
@@ -732,7 +740,7 @@ public class Game implements Listener {
         if(forceGameStart){
             GameForced = true;
             tempsPartie = 60*60;
-            PreGameTimeLeft = 10;
+            PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
             votemap.selectedBiome = Integer.parseInt(votemap.getWinnerBiome());
             votemap.disableVote();
 

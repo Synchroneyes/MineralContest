@@ -1,6 +1,6 @@
 package fr.mineral.Utils.Metric;
 
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 

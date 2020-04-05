@@ -2,9 +2,9 @@ package fr.mineral;
 
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
-import fr.mineral.Core.Game;
-import fr.mineral.Core.GameSettings;
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Events.*;
@@ -45,8 +45,9 @@ public final class mineralcontest extends JavaPlugin {
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
-        this.partie = new Game();
         this.gameSettings = GameSettings.getInstance();
+        this.partie = new Game();
+
     }
 
 
@@ -89,7 +90,6 @@ public final class mineralcontest extends JavaPlugin {
         PlayerUtils.runScoreboardManager();
 
 
-
     }
 
     @Override
@@ -116,6 +116,8 @@ public final class mineralcontest extends JavaPlugin {
             Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         }
 
+
+        Bukkit.getServer().getPluginManager().registerEvents(new BucketEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockSpread(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
@@ -132,6 +134,7 @@ public final class mineralcontest extends JavaPlugin {
 
 
         Bukkit.getServer().getPluginManager().registerEvents(new RefereeEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerPick(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WorldLoaded(), this);
     }
@@ -167,6 +170,8 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("mp_start_vote").setExecutor(new mp_start_vote());
         getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
         getCommand("mp_set_language").setExecutor(new mp_set_language());
+        getCommand("mp_enable_old_pvp").setExecutor(new mp_enable_old_pvp());
+        getCommand("mp_enable_block_adding").setExecutor(new mp_enable_block_adding());
         getCommand("allow").setExecutor(new AllowCommand());
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
         getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());

@@ -1,6 +1,7 @@
 package fr.mineral.Core;
 
 import fr.mineral.Core.Referee.Referee;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Save.FileToGame;
@@ -70,7 +71,7 @@ public class Votemap {
 
     public void enableVote(boolean force) {
         if((!mineralcontest.plugin.getGame().isGameStarted() &&
-                (mineralcontest.plugin.pluginWorld.getPlayers().size() - mineralcontest.plugin.getGame().getRefereeCount()) == (int)GameSettingsCvar.mp_team_max_player.getValue() * 3 &&
+                (mineralcontest.plugin.pluginWorld.getPlayers().size() - mineralcontest.plugin.getGame().getRefereeCount()) == (int) GameSettingsCvar.mp_team_max_player.getValue() * 3 &&
                 !voteHasBeenEnabled) || force){
             this.voteEnabled = true;
 

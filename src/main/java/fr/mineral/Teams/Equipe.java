@@ -1,6 +1,6 @@
 package fr.mineral.Teams;
 
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;

@@ -1,13 +1,18 @@
 package fr.mapbuilder.Commands;
 
-import org.bukkit.ChatColor;
+import fr.mapbuilder.Blocks.BlocksDataColor;
+import fr.mapbuilder.Items.ColoredHouseItem;
+import fr.mineral.mineralcontest;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 
 public class SpawnHouse extends BukkitCommand{
 
     public static String pluginCommand = "spawnhouse";
     private String required_permission = "admin";
+    private static mineralcontest plugin = mineralcontest.plugin;
 
     public SpawnHouse() {
         super(pluginCommand);
@@ -28,8 +33,11 @@ public class SpawnHouse extends BukkitCommand{
             return true;
         }
 
+        for(BlocksDataColor color : BlocksDataColor.values()) {
+            ColoredHouseItem house = new ColoredHouseItem(color);
+            house.giveItemToPlayer((Player) commandSender);
+        }
 
-        commandSender.sendMessage("Building a new house right now ...");
         return false;
     }
 

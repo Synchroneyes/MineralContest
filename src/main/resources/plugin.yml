@@ -176,6 +176,18 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  mp_enable_old_pvp:
+    description: Activer ou non l'ancien système de pvp (pas de délais entre chaque attaque)
+    use: /mp_enable_old_pvp <0, 1>
+    permission: admin
+    permission-message: you do not have the permission
+
+  mp_enable_block_adding:
+    description: Activer ou non la pose de block
+    use: /mp_enable_block_adding <0, 1>
+    permission: admin
+    permission-message: you do not have the permission
+
   join:
     description: Permet de rejoindre une équipe
     use: /join <rouge | jaune | bleu>

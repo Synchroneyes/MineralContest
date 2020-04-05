@@ -1,6 +1,7 @@
 package fr.mineral.Core.Arena;
 
 import fr.mineral.Core.Arena.Zones.DeathZone;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
@@ -33,8 +34,8 @@ public class Arene {
     private CoffreAvecCooldown coffre;
     private boolean allowTeleport;
     private DeathZone deathZone;
-    private int MAX_TIME_BETWEEN_CHEST = 15; // mins
-    private int MIN_TIME_BETWEEN_CHEST = 13;
+    private int MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests"); // mins
+    private int MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");;
     private int TIME_BEFORE_CHEST = 0;
     private double TELEPORT_TIME_LEFT = 15;
     private double TELEPORT_TIME_LEFT_VAR = 15;
@@ -44,6 +45,27 @@ public class Arene {
     public int arenaRadius = 60;
     private BossBar teleportStatusBar;
 
+    public Arene() {
+        this.deathZone = new DeathZone();
+
+        MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests");
+        MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");
+
+        // If the min time is greater than the max time
+        if(MAX_TIME_BETWEEN_CHEST < MIN_TIME_BETWEEN_CHEST) {
+            int tmp = MIN_TIME_BETWEEN_CHEST;
+            MIN_TIME_BETWEEN_CHEST = MAX_TIME_BETWEEN_CHEST;
+            MAX_TIME_BETWEEN_CHEST = tmp;
+        }
+    }
+
+
+
+    public Location getTeleportSpawn() { return this.teleportSpawn; }
+    public DeathZone getDeathZone() { return this.deathZone; }
+
+
+
 
     public void clear() {
         if(this.coffre != null) this.coffre.clear();
@@ -51,6 +73,19 @@ public class Arene {
     }
 
     public void generateTimeBetweenChest() {
+
+        MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests");
+        MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");
+
+
+        // If the min time is greater than the max time
+        if(MAX_TIME_BETWEEN_CHEST < MIN_TIME_BETWEEN_CHEST) {
+            int tmp = MIN_TIME_BETWEEN_CHEST;
+            MIN_TIME_BETWEEN_CHEST = MAX_TIME_BETWEEN_CHEST;
+            MAX_TIME_BETWEEN_CHEST = tmp;
+        }
+
+
         // On va générer une valeur comprise entre MAX_TIME et MIN_TIME en minute
         // puis y ajouter des secondes
         int time = (int) ((Math.random() * ((MAX_TIME_BETWEEN_CHEST - MIN_TIME_BETWEEN_CHEST) + 1)) + MIN_TIME_BETWEEN_CHEST);
@@ -187,13 +222,6 @@ public class Arene {
         this.allowTeleport = false;
     }
 
-    public Location getTeleportSpawn() { return this.teleportSpawn; }
-    public DeathZone getDeathZone() { return this.deathZone; }
-
-
-    public Arene() {
-        this.deathZone = new DeathZone();
-    }
 
     public void setTeleportSpawn(Location z) {
         mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());

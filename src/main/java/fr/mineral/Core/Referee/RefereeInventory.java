@@ -1,7 +1,7 @@
 package fr.mineral.Core.Referee;
 
 
-import fr.mineral.Core.Game;
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;

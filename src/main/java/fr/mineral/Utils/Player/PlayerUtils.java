@@ -1,8 +1,8 @@
 package fr.mineral.Utils.Player;
 
 import fr.mineral.Core.Arena.Zones.DeathZone;
-import fr.mineral.Core.Game;
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Core.House;
 import fr.mineral.Core.Referee.RefereeItem;
 import fr.mineral.Scoreboard.ScoreboardUtil;

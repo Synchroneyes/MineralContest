@@ -1,16 +1,25 @@
 package fr.mineral.Core.Arena;
 
+import fr.mineral.Settings.GameSettings;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.graalvm.compiler.hotspot.GraalHotSpotVMConfig;
 
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class CoffreAvecCooldown {
@@ -18,6 +27,7 @@ public class CoffreAvecCooldown {
     public boolean opened = false;
     public boolean spawned = false;
     public boolean isCancelled = false;
+    // default values
     private int time = 5;
     private int timeLeft = time;
     public static CoffreAvecCooldown coffre;
@@ -28,6 +38,19 @@ public class CoffreAvecCooldown {
         this.position = loc;
         coffre = this;
         fillChestTimer();
+
+        Arene arena = mineralcontest.plugin.getGame().getArene();
+        try {
+            if(arena != null & arena.getCoffre() != null) {
+                if(arena.getCoffre().equals(this)) {
+                    time = (int) GameSettingsCvar.getValueFromCVARName("chest_opening_cooldown");
+                    timeLeft = time;
+                }
+            }
+        }catch (Exception e) {
+
+        }
+
     }
 
 
@@ -39,7 +62,7 @@ public class CoffreAvecCooldown {
         opened = false;
         spawned = false;
         isCancelled = false;
-        time = 5;
+        time = (int) GameSettingsCvar.getValueFromCVARName("chest_opening_cooldown");;
         timeLeft = time;
         openingPlayer = null;
     }
@@ -127,10 +150,10 @@ public class CoffreAvecCooldown {
                     inv.clear();
                     inv.setMaxStackSize(1);
                     // Fill inventory with coloured concrete
-                    for(int i = 0; i < 5; i++) {
+                    for(int i = 0; i < time; i++) {
                         ItemStack vert = new ItemStack(Material.GREEN_CONCRETE, 1);
                         ItemStack rouge = new ItemStack(Material.RED_CONCRETE, 1);
-                        if(i <= 5 - timeLeft) {
+                        if(i <= time - timeLeft) {
                             inv.setItem(i, vert);
                         } else {
                             inv.setItem(i, rouge);
@@ -144,7 +167,11 @@ public class CoffreAvecCooldown {
                         joueur.playNote(joueur.getLocation(), Instrument.PIANO, new Note(24));
                         inv.clear();
                         inv.setMaxStackSize(64);
-                        generateChestContent();
+                        try {
+                            generateChestContent();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         // Give chest items to user
                         for(ItemStack item : inv.getContents()) {
@@ -186,7 +213,7 @@ public class CoffreAvecCooldown {
         }
     }
 
-    private void generateChestContent() {
+    private void generateChestContent() throws Exception {
 
 
         Block block = position.getBlock();
@@ -194,15 +221,71 @@ public class CoffreAvecCooldown {
         Chest chest = (Chest)block.getState();
         Inventory inv = chest.getInventory();
 
-        Range[] probabilites = new Range[4];
-        probabilites[0] = new Range(Material.IRON_INGOT, 0, 75);
-        probabilites[1] = new Range(Material.GOLD_INGOT, 75, 90);
-        probabilites[2] = new Range(Material.DIAMOND, 90, 97);
-        probabilites[3] = new Range(Material.EMERALD, 97, 101);
+        LinkedList<Range> items = new LinkedList<>();
+        GameSettings gameSettings = GameSettings.getInstance();
+        YamlConfiguration config = gameSettings.getYamlConfiguration();
+        ConfigurationSection chest_items = config.getConfigurationSection("config.arena.chest_content");
+        String[] attributes = {"name", "probability"};
+        int currentMinRange = 0;
+        int tmpNextMinRange = currentMinRange;
+        mineralcontest.broadcastMessage("check: " + "first");
+
+        if(chest_items != null) {
+            for(String item_name : chest_items.getKeys(false)) {
+                ConfigurationSection item_config = chest_items.getConfigurationSection(item_name);
+                Range itemRange = new Range();
+                for(String attribute : attributes) {
+                    mineralcontest.broadcastMessage("check: " + attribute);
+                    if (!checkIfAttributeExists(item_config, attribute)) break;
+                    switch(attribute) {
+                        case "name":
+                            Material itemMaterial = null;
+                            try {
+                                itemMaterial = Material.valueOf(item_config.get(attribute).toString());
+                            }catch (Exception e) {
+                                Bukkit.getLogger().severe(mineralcontest.prefixErreur + "Attribute " + attribute + " is invalid.");
+                                continue;
+                            }
+                            itemRange.setMaterial(itemMaterial);
+                            break;
+                        case "probability":
+                            int min, max;
+                            min = currentMinRange;
+                            max = min + (int) item_config.get(attribute);
+                            itemRange.setMin(min);
+                            itemRange.setMax(max);
+                            tmpNextMinRange = max;
+                            break;
+
+                    }
+                }
+
+                if(!itemRange.isFilled()) {
+                    mineralcontest.broadcastMessage(item_name + " is missing some attributes.");
+                    continue;
+                }
+
+                items.add(itemRange);
+                currentMinRange = tmpNextMinRange;
+            }
+        }
+
+        // If there is no item in file, we add default one
+        if(items.size() == 0) {
+            items.add(new Range(Material.IRON_INGOT, 0, 75));
+            items.add(new Range(Material.GOLD_INGOT, 75, 90));
+            items.add(new Range(Material.DIAMOND, 90, 97));
+            items.add(new Range(Material.EMERALD, 97, 101));
+            currentMinRange = 101;
+        }
 
         int maxItem, minItem;
-        maxItem = 30;
-        minItem = 10;
+        maxItem = (int) GameSettingsCvar.getValueFromCVARName("max_item_in_chest");
+        minItem = (int) GameSettingsCvar.getValueFromCVARName("min_item_in_chest");
+
+        //maxItem = 30;
+        //minItem = 20;
+
         Random r = new Random();
         // Formule pour generer un nombre entre [X .... Y]
         // ((Y - X) + 1) + X
@@ -210,12 +293,22 @@ public class CoffreAvecCooldown {
 
         try {
             for(int i = 0; i < nbItem; i++) {
-                inv.addItem(new ItemStack(Range.getInsideRange(probabilites, r.nextInt(100)),1));
+                int randomRange = r.nextInt(currentMinRange);
+                ItemStack randomItem = Range.getRandomItemFromLinkedList(items, randomRange);
+                inv.addItem(randomItem);
             }
         }catch(Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean checkIfAttributeExists(ConfigurationSection configSection, String attributeName) {
+        if(configSection.get(attributeName) == null) {
+            Bukkit.getLogger().severe(mineralcontest.prefixErreur + configSection.getCurrentPath() + " doesnt have an \"" + attributeName + "\" attribute" );
+            return false;
+        }
+        return true;
     }
 
 }

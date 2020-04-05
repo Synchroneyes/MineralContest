@@ -1,43 +1,42 @@
 package fr.mineral.Commands.CVAR;
 
+import fr.mineral.Core.Game.BlockManager;
 import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class mp_enable_item_drop implements CommandExecutor {
+public class mp_enable_block_adding implements CommandExecutor {
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
         if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if(command.getName().equalsIgnoreCase("mp_enable_item_drop")) {
+            if(command.getName().equalsIgnoreCase("mp_enable_block_adding")) {
                 if(sender.isOp()) {
                     if(args.length == 1) {
                         int valeur = 1;
                         try {
-                            valeur = Integer.parseInt(args[0]);
-                            if(valeur > 2 || valeur < 0) {
-                                sender.sendMessage("Usage: /mp_enable_item_drop <0=NONE, 1=INGOTS, 2=ALL>");
-                                return false;
+                            valeur = Integer.parseInt(args[0]) % 2;
+                            GameSettingsCvar.mp_enable_block_adding.setValue(valeur);
+                            if(valeur == 1) mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_block_adding_enabled.toString());
+                            else {
+                                mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_block_adding_disabled.toString());
+                                BlockManager.getInstance().removeAllAddedBlocks();
                             }
 
-                            GameSettingsCvar.mp_enable_item_drop.setValue(valeur);
-
-                        /*mineralcontest.mp_enable_item_drop = valeur;
-                        mineralcontest.plugin.setConfigValue("config.cvar.mp_enable_item_drop", mineralcontest.mp_enable_item_drop);*/
-
-                            sender.sendMessage(mineralcontest.prefixPrive + "mp_enable_item_drop value is now " + valeur);
                             return false;
                         }catch (NumberFormatException nfe){
                             nfe.printStackTrace();
-                            sender.sendMessage("Usage: /mp_enable_item_drop <0=NONE, 1=INGOTS, 2=ALL>");
+                            sender.sendMessage("Usage: /mp_enable_block_adding <0=DISABLED, 1=ENABLED>");
                             return false;
                         }
 
                     } else {
-                        sender.sendMessage("Usage: /mp_enable_item_drop <0=NONE, 1=INGOTS, 2=ALL>");
+                        sender.sendMessage("Usage: /mp_enable_block_adding <0=DISABLED, 1=ENABLED>");
                         return false;
                     }
 

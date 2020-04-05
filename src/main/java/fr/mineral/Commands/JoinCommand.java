@@ -1,6 +1,6 @@
 package fr.mineral.Commands;
 
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;

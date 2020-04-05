@@ -1,7 +1,7 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.Game;
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;

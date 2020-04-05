@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

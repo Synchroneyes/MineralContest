@@ -2,13 +2,12 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Core.Arena.CoffreAvecCooldown;
-import fr.mineral.Core.Game;
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Core.House;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;

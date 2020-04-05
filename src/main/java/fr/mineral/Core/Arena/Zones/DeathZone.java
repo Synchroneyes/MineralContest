@@ -1,6 +1,7 @@
 package fr.mineral.Core.Arena.Zones;
 
 import fr.mineral.Core.House;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
@@ -27,11 +28,12 @@ public class DeathZone {
     LinkedList<CouplePlayer> joueurs;
 
     // Temps en seconde
-    private int timeInDeathzone = 10;
+    private int timeInDeathzone = 0;
     private Location spawnLocation;
 
     public DeathZone() {
         this.joueurs = new LinkedList<CouplePlayer>();
+        timeInDeathzone = (int) GameSettingsCvar.getValueFromCVARName("death_time");
     }
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
@@ -80,6 +82,7 @@ public class DeathZone {
     }
 
     public void add(Player joueur) throws Exception {
+        timeInDeathzone = (int) GameSettingsCvar.getValueFromCVARName("death_time");
 
         if(mineralcontest.plugin.getGame().isReferee(joueur) && mineralcontest.plugin.getGame().isGameStarted()) {
             joueur.setGameMode(GameMode.SURVIVAL);
@@ -101,8 +104,8 @@ public class DeathZone {
             e.printStackTrace();
         }
 
-        joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*15, 1));
-        joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*15, 1));
+        joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*(timeInDeathzone*3), 1));
+        joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*(timeInDeathzone*3), 1));
 
     }
 

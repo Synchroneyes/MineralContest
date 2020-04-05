@@ -1,6 +1,6 @@
 package fr.mineral.Translation;
 
-import fr.mineral.Core.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -141,7 +141,12 @@ public enum Lang {
     teamChat("teamChat", "[TEAM]"),
     cvar_play_zone_radius("cvar_play_zone_radius", "La taille de la zone de jeu est désormais de %playZoneRadius% block(s)"),
     cvar_friendly_fire_enabled("cvar_friendly_fire_enabled", "Les dégats entre coéquipiers sont désormais actif"),
-    cvar_friendly_fire_disabled("cvar_friendly_fire_disabled", "Les dégats entre coéquipiers sont désormais désactivés");
+    cvar_friendly_fire_disabled("cvar_friendly_fire_disabled", "Les dégats entre coéquipiers sont désormais désactivés"),
+    cvar_block_adding_enabled("cvar_block_adding_enabled", "La pose de bloc est maintenant activée"),
+    cvar_block_adding_disabled("cvar_block_adding_disabled", "La pose de block est désormais désactivé"),
+    cvar_old_pvp_enabled("cvar_old_pvp_enabled", "L'ancien système de PVP est désormais activé"),
+    cvar_old_pvp_disabled("cvar_old_pvp_disabled", "L'ancien système de PVP est désormais désactivé"),
+    block_not_allowed_to_be_placed("block_not_allowed_to_be_placed", "L'ajout de ce bloc est interdit");
 
 
 

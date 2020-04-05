@@ -6,9 +6,13 @@ import org.bukkit.block.Block;
 public class BlocksColorChanger {
 
     public static void changeBlockColor(Block givenBlock, BlocksDataColor wantedColor) {
+
+        if(givenBlock.getType().equals(Material.GRAY_CONCRETE)) return;
+
         String[] wantedType = {"concrete", "terracotta", "glass"};
         String blockType = givenBlock.getType().toString().replace("Material.", "");
         String[] exploded_block_type = blockType.split("_");
+
 
 
         for(int indexExplodedBlockType = 0; indexExplodedBlockType < exploded_block_type.length; ++indexExplodedBlockType)

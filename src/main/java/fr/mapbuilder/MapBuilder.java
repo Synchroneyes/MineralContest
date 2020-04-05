@@ -1,13 +1,13 @@
 package fr.mapbuilder;
 
 import fr.mapbuilder.Commands.SpawnHouse;
+import fr.mapbuilder.Events.BlockPlaced;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
@@ -55,7 +55,7 @@ public class MapBuilder {
 
     private void registerEvents() {
         printToConsole("Registering events");
-        //this.plugin.getServer().getPluginManager().registerEvents(plugin, null);
+        this.plugin.getServer().getPluginManager().registerEvents(new BlockPlaced(), plugin);
     }
 
     private void registerCommands() {
