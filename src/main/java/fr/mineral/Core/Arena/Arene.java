@@ -218,6 +218,7 @@ public class Arene {
             online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_teleport_now_disabled.toString());
             online.sendMessage(separator);
         }
+        removePlayerTeleportBar();
 
         this.allowTeleport = false;
     }

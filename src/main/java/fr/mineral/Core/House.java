@@ -35,9 +35,9 @@ public class House {
 
     public void clearHouse() {
 
-        if(spawnLocation != null)
+        /*if(spawnLocation != null)
             for(Player teamMember : team.getJoueurs())
-                teamMember.teleport(getHouseLocation());
+                teamMember.teleport(getHouseLocation());*/
 
         this.doors.clear();
         this.blocks.clear();

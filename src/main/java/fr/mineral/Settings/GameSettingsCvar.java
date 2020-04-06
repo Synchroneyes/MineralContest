@@ -18,7 +18,7 @@ public enum GameSettingsCvar {
     mp_enable_friendly_fire("cvar", "int", "mp_enable_friendly_fire", "1", true),
     mp_enable_old_pvp("cvar", "int", "mp_enable_old_pvp", "1", true),
     mp_enable_block_adding("cvar", "int", "mp_enable_block_adding", "1", true),
-    game_time("settings", "int", "game_time", "10", false),
+    game_time("settings", "int", "game_time", "60", false),
     pre_game_timer("settings", "int", "pre_game_timer", "1", false),
     chest_opening_cooldown("arena", "int", "chest_opening_cooldown", "7", true),
     max_time_between_chests("arena", "int", "max_time_between_chests", "15", true),
@@ -32,7 +32,7 @@ public enum GameSettingsCvar {
     private Object value;
     private String expectedValue;
     private boolean canBeReloadedInGame;
-    private static boolean areValuesFromFile = false;
+
 
     GameSettingsCvar(String type, String expectedValue, String name, String value, boolean canBeReloadedInGame) {
         this.type = type;
@@ -42,6 +42,8 @@ public enum GameSettingsCvar {
         this.canBeReloadedInGame = canBeReloadedInGame;
     }
 
+    public boolean canBeReloaded() { return canBeReloadedInGame;}
+
     public String getType() { return this.type;}
     public String getName() { return this.name;}
     public Object getValue() {
@@ -49,9 +51,6 @@ public enum GameSettingsCvar {
         return this.value;
     }
 
-    public static void loadValuesFromFile() {
-
-    }
 
     public String getExpectedValue() { return this.expectedValue;}
     public int getValueInt() {
@@ -78,6 +77,7 @@ public enum GameSettingsCvar {
     }
 
     public static Object getValueFromCVARName(String name) {
+        if(!GameSettings.getInstance().isConfigLoaded) GameSettings.getInstance().loadGameSettings(GameSettings.PLUGIN_START);
         for(GameSettingsCvar cvar : values())
             if(cvar.getName().equals(name))
                 return cvar.getValue();

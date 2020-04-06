@@ -72,7 +72,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
         this.getGame().init();
         this.gameSettings.createGameSettings();
-        this.gameSettings.loadGameSettings();
+        this.gameSettings.loadGameSettings(GameSettings.PLUGIN_START);
         registerCommands();
         registerEvents();
         MapFileHandler.copyMapFileToPluginRessourceFolder();

@@ -2,6 +2,7 @@ package fr.mineral.Settings;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -12,6 +13,9 @@ public class GameSettings {
 
     // CVAR
 
+    public static int PLUGIN_START = 1;
+    public static int CONFIG_RELOAD = 2;
+
     private String configFileName = "config.yml";
 
     private static GameSettings instance;
@@ -19,6 +23,7 @@ public class GameSettings {
     private File configFile;
     private FileConfiguration pluginConfiguration;
     private mineralcontest pluginInstance;
+    protected boolean isConfigLoaded = false;
 
     private GameSettings() {
         this.configFile = new File(mineralcontest.plugin.getDataFolder(), configFileName);
@@ -50,10 +55,12 @@ public class GameSettings {
     }
 
     public void addMissingCVARsToConfigFile() {
+
         for(GameSettingsCvar cvar : GameSettingsCvar.values()) {
             if (pluginConfiguration.get(buildConfigKeyValue(cvar)) == null)
                 pluginConfiguration.set(buildConfigKeyValue(cvar), cvar.getValue());
         }
+
         try {
             saveConfig();
         } catch (IOException e) {
@@ -61,23 +68,33 @@ public class GameSettings {
         }
     }
 
-    public void loadGameSettings() {
+    public void loadGameSettings(int value) {
+
+        getInstance();
+
+        if(value != CONFIG_RELOAD && value != PLUGIN_START) {
+            loadGameSettings(PLUGIN_START);
+            return;
+        }
+
         try {
             // for each cvar
             for(GameSettingsCvar cvar : GameSettingsCvar.values()) {
                 String configCvar = buildConfigKeyValue(cvar);
-                if(cvar.getExpectedValue().equals("int")) {
-                    int valueToSet = Integer.parseInt((String) getConfigValue(configCvar));
-                    cvar.setValue(valueToSet);
+                Bukkit.getLogger().severe("[MINERALC] " + configCvar + " => " + getConfigValue(configCvar));
+                if (value == CONFIG_RELOAD) {
+                    if(cvar.canBeReloaded())
+                        setCvarValue(cvar, configCvar);
+                    else Bukkit.getLogger().severe("CVAR " + cvar.getName() + " can't be reloaded in game");
+                } else {
+                    setCvarValue(cvar, configCvar);
                 }
 
-                if(cvar.getExpectedValue().equals("string")) {
-                    cvar.setValue(getConfigValue(configCvar));
-                }
             }
 
 
             Lang.loadLang((String) GameSettingsCvar.getValueFromCVARName("mp_set_language"));
+            isConfigLoaded = true;
 
         }catch(NumberFormatException nfe) {
             mineralcontest.plugin.getLogger().severe(mineralcontest.prefixErreur + " An error happened while parsing the config file. A number was expected but got something else");
@@ -89,6 +106,17 @@ public class GameSettings {
             e.printStackTrace();
             resetConfig();
 
+        }
+    }
+
+    private void setCvarValue(GameSettingsCvar cvar, String configCvar) {
+        if(cvar.getExpectedValue().equals("int")) {
+            int valueToSet = Integer.parseInt((String) getConfigValue(configCvar));
+            cvar.setValue(valueToSet);
+        }
+
+        if(cvar.getExpectedValue().equals("string")) {
+            cvar.setValue(getConfigValue(configCvar));
         }
     }
 
