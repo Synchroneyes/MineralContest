@@ -2,6 +2,7 @@ package fr.mineral.Commands;
 
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,7 +42,7 @@ public class AreneTeleportCommand implements CommandExecutor {
     }
 
     private void teleportToArena(Player p) {
-        p.teleport(mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
+        PlayerUtils.teleportPlayer(p, mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_teleporting.toString()));
     }
 }

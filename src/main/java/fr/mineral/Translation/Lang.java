@@ -220,8 +220,11 @@ public enum Lang {
 
 
 
-        } catch(IOException e) {
+        } catch(IOException ioe) {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
+            ioe.printStackTrace();
+        } catch (Exception e) {
+            plugin.getLogger().severe("ERREUR");
             e.printStackTrace();
         }
 

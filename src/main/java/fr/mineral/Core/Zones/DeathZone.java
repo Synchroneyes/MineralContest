@@ -5,6 +5,7 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerBaseItem;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -71,7 +72,7 @@ public class DeathZone {
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.deathzone_you_are_dead.toString() + ". " + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
-        joueur.teleport(this.spawnLocation);
+        PlayerUtils.teleportPlayer(joueur, this.spawnLocation);
     }
 
     private void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
@@ -89,7 +90,7 @@ public class DeathZone {
                 throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone");
             } else {
                 // ON le TP vers son spawn equipe
-                joueur.teleport(house.getHouseLocation());
+                PlayerUtils.teleportPlayer(joueur, house.getHouseLocation());
             }
 
             // On rend le stuff du joueur

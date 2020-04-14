@@ -1,5 +1,6 @@
 package fr.mineral.Core.Arena;
 
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -16,6 +17,7 @@ public class Coffre {
     private boolean actif = false;
 
     public void setPosition(Location p) {
+        p.setWorld(PlayerUtils.getPluginWorld());
         this.position = p;
     }
 

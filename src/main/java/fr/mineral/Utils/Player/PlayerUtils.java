@@ -43,6 +43,32 @@ public class PlayerUtils {
         firework.setFireworkMeta(fireworkMeta);
     }
 
+    public static void teleportPlayer(Player p, double x, double y, double z) {
+        World world = getPluginWorld();
+
+        Location loc = new Location(world, x,y,z);
+        p.teleport(loc);
+
+    }
+
+    public static void teleportPlayer(Player p, Location loc) {
+        World world = getPluginWorld();
+        Location new_loc = new Location(world, loc.getX(), loc.getY(), loc.getZ());
+        p.teleport(new_loc);
+
+    }
+
+    public static World getPluginWorld() {
+        String world_name = (String) GameSettingsCvar.getValueFromCVARName("world_name");
+        World world = Bukkit.getWorld(world_name);
+
+        if(world == null) {
+            Bukkit.getLogger().severe("[MineralC] GetPluginWorld ERROR - " + world_name + " is NULL");
+        }
+
+        return world;
+    }
+
     public static void pushBackPlayer(Player p) {
         Vector playerVelocity = p.getVelocity();
         int multiplier = velocity_mult;
@@ -339,6 +365,6 @@ public class PlayerUtils {
 
     public static void setMaxHealth(Player p) {
         p.setHealth(20);
-        p.setFoodLevel(20);
+        p.setFoodLevel(25);
     }
 }

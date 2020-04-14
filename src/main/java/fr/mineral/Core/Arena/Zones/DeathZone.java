@@ -6,6 +6,7 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerBaseItem;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -88,7 +89,7 @@ public class DeathZone {
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
             joueur.setHealth(20f);
-            joueur.teleport(mineralcontest.plugin.getGame().getArene().getCoffre().getPosition());
+            PlayerUtils.teleportPlayer(joueur, mineralcontest.plugin.getGame().getArene().getCoffre().getPosition());
             return;
         }
 
@@ -96,9 +97,9 @@ public class DeathZone {
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
-        //joueur.teleport(this.spawnLocation);
+        //PlayerUtils.teleportPlayer(this.spawnLocation);
         try {
-            joueur.teleport(mineralcontest.plugin.getGame().getPlayerHouse(joueur).getHouseLocation());
+            PlayerUtils.teleportPlayer(joueur, mineralcontest.plugin.getGame().getPlayerHouse(joueur).getHouseLocation());
 
         }catch(Exception e) {
             e.printStackTrace();
@@ -134,7 +135,7 @@ public class DeathZone {
                 throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone et n'a pas de team");
             } else {
                 // ON le TP vers son spawn equipe
-                joueur.teleport(teamHouse.getHouseLocation());
+                PlayerUtils.teleportPlayer(joueur, teamHouse.getHouseLocation());
                 joueur.removePotionEffect(PotionEffectType.INVISIBILITY);
                 joueur.removePotionEffect(PotionEffectType.BLINDNESS);
 

@@ -88,7 +88,7 @@ public class Equipe {
 
             if(PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.plugin.getGame().isGameInitialized) {
                 PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
-                p.teleport(mineralcontest.plugin.getGame().getPlayerHouse(p).getHouseLocation());
+                PlayerUtils.teleportPlayer(p, mineralcontest.plugin.getGame().getPlayerHouse(p).getHouseLocation());
             }
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));

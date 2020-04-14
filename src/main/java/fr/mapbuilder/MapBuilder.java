@@ -21,12 +21,14 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = true;
+    public boolean isBuilderModeEnabled = false;
     private CommandMap bukkitCommandMap;
 
     private MapBuilder() {
         instance = this;
         mineralcontest.debug = isBuilderModeEnabled;
+
+        if(!isBuilderModeEnabled) return;
 
         try {
             getPluginCommandMap();

@@ -3,6 +3,7 @@ package fr.mineral.Core.Game;
 import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Core.House;
 import fr.mineral.Core.Votemap;
+import fr.mineral.Events.PlayerMove;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
@@ -95,6 +96,9 @@ public class Game implements Listener {
         PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
     }
 
+
+    public int getDisconnectedPlayersCount() { return disconnectedPlayers.size();}
+
     public boolean isTheBlockAChest(Block b) {
         return (b.getState() instanceof Chest);
     }
@@ -127,7 +131,8 @@ public class Game implements Listener {
         playerVelocity.setY(0.05);
 
         player.setVelocity(playerVelocity);
-        player.teleport(spawnLocation);
+        PlayerUtils.teleportPlayer(player, spawnLocation);
+
 
     }
 
@@ -480,12 +485,13 @@ public class Game implements Listener {
                                     }
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
+                                    PlayerMove.handlePushs();
 
                                     // On TP le joueur dans sa maison
                                     try {
-                                        if(!isReferee(online)) online.teleport(getPlayerHouse(online).getHouseLocation());
+                                        if(!isReferee(online)) PlayerUtils.teleportPlayer(online, getPlayerHouse(online).getHouseLocation());
                                         else {
-                                            online.teleport(getArene().getCoffre().getPosition());
+                                            PlayerUtils.teleportPlayer(online, getArene().getCoffre().getPosition());
                                             online.setGameMode(GameMode.CREATIVE);
                                             PlayerUtils.equipReferee(online);
                                         }
@@ -931,7 +937,7 @@ public class Game implements Listener {
                     case "r":
                         this.redHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
+                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "jaune":
@@ -940,7 +946,7 @@ public class Game implements Listener {
                     case "y":
                         this.yellowHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
+                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "blue":
@@ -948,7 +954,7 @@ public class Game implements Listener {
                     case "b":
                         this.blueHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        joueur.teleport(getPlayerHouse(joueur).getHouseLocation());
+                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
                 }
             }

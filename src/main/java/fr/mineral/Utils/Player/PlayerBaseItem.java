@@ -80,7 +80,7 @@ public class PlayerBaseItem {
                             isAttributeSet[getAttributeIndex(itemAttribute, "item")] = true;
                             break;
                         case "quantity":
-                            item.setAmount((Integer) itemAttributeValue);
+                            item.setAmount((int) itemAttributeValue);
                             isAttributeSet[getAttributeIndex(itemAttribute, "item")] = true;
                             break;
                         case "when":

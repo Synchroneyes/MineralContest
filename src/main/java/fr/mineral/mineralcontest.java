@@ -47,6 +47,8 @@ public final class mineralcontest extends JavaPlugin {
         mineralcontest.plugin = this;
         this.gameSettings = GameSettings.getInstance();
         this.partie = new Game();
+        Lang.loadLang((String) GameSettingsCvar.getValueFromCVARName("mp_set_language"));
+
 
     }
 
@@ -61,14 +63,13 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        pluginWorld = Bukkit.getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));
+        pluginWorld = PlayerUtils.getPluginWorld();
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
 
         this.mapBuilderInstance = MapBuilder.getInstance();
 
 
         Lang.copyLangFilesFromRessources();
-        Lang.loadLang("french");
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
         this.getGame().init();
         this.gameSettings.createGameSettings();
@@ -84,7 +85,7 @@ public final class mineralcontest extends JavaPlugin {
         if(!debug)
             if(pluginWorld != null)
                 for(Player online : pluginWorld.getPlayers())
-                    online.teleport(defaultSpawn);
+                    PlayerUtils.teleportPlayer(online, defaultSpawn);
 
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
         PlayerUtils.runScoreboardManager();
@@ -178,7 +179,6 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());
 
 
-
     }
 
     // Called when the game start
@@ -201,7 +201,7 @@ public final class mineralcontest extends JavaPlugin {
         if(mapBuilderInstance.isBuilderModeEnabled) return;
 
         World game_world = mineralcontest.plugin.pluginWorld;
-        int size = 6;
+        int size = 30000000;
 
         if(game_world != null) {
             game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
@@ -211,6 +211,9 @@ public final class mineralcontest extends JavaPlugin {
 
 
     public static void checkIfMapIsCorrect() {
+        if(mineralcontest.plugin.pluginWorld == null) {
+            mineralcontest.plugin.pluginWorld = PlayerUtils.getPluginWorld();
+        }
         if(mineralcontest.debug) return;
         if (mineralcontest.plugin.pluginWorld == null) {
             ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();

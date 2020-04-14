@@ -4,6 +4,7 @@ import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -111,6 +112,7 @@ public class House {
 
     public void spawnCoffreEquipe() throws Exception {
         Location loc = coffre.getPosition();
+        loc.setWorld(PlayerUtils.getPluginWorld());
         coffre.clear();
         Block block = loc.getBlock();
         loc.getBlock().setType(Material.CHEST);

@@ -228,14 +228,12 @@ public class CoffreAvecCooldown {
         String[] attributes = {"name", "probability"};
         int currentMinRange = 0;
         int tmpNextMinRange = currentMinRange;
-        mineralcontest.broadcastMessage("check: " + "first");
 
         if(chest_items != null) {
             for(String item_name : chest_items.getKeys(false)) {
                 ConfigurationSection item_config = chest_items.getConfigurationSection(item_name);
                 Range itemRange = new Range();
                 for(String attribute : attributes) {
-                    mineralcontest.broadcastMessage("check: " + attribute);
                     if (!checkIfAttributeExists(item_config, attribute)) break;
                     switch(attribute) {
                         case "name":

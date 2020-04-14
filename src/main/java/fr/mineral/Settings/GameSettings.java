@@ -72,7 +72,11 @@ public class GameSettings {
 
         getInstance();
 
+        if(isConfigLoaded) return;
+
+
         if(value != CONFIG_RELOAD && value != PLUGIN_START) {
+            Bukkit.getLogger().severe("RELOADING");
             loadGameSettings(PLUGIN_START);
             return;
         }
@@ -81,7 +85,7 @@ public class GameSettings {
             // for each cvar
             for(GameSettingsCvar cvar : GameSettingsCvar.values()) {
                 String configCvar = buildConfigKeyValue(cvar);
-                Bukkit.getLogger().severe("[MINERALC] " + configCvar + " => " + getConfigValue(configCvar));
+                Bukkit.getLogger().info("[MINERALC] " + configCvar + " => " + getConfigValue(configCvar));
                 if (value == CONFIG_RELOAD) {
                     if(cvar.canBeReloaded())
                         setCvarValue(cvar, configCvar);
@@ -92,9 +96,11 @@ public class GameSettings {
 
             }
 
-
-            Lang.loadLang((String) GameSettingsCvar.getValueFromCVARName("mp_set_language"));
             isConfigLoaded = true;
+            Bukkit.getLogger().info("[MINERALC] Configuration loaded: " + isConfigLoaded);
+
+
+
 
         }catch(NumberFormatException nfe) {
             mineralcontest.plugin.getLogger().severe(mineralcontest.prefixErreur + " An error happened while parsing the config file. A number was expected but got something else");

@@ -104,7 +104,8 @@ public class PlayerJoin implements Listener {
                     } else {
                         // His old team isnt null, we add him back
                         oldPlayerTeam.addPlayerToTeam(player, true);
-                        game.resumeGame();
+                        game.removePlayerFromDisconnected(player);
+                        if(game.getDisconnectedPlayersCount() == 0) game.resumeGame();
                         return;
                     }
 
@@ -146,7 +147,8 @@ public class PlayerJoin implements Listener {
                 if(havePlayerDisconnectedEarlier) {
                     // We put him back into his old team
                     this.oldPlayerTeam.addPlayerToTeam(player, true);
-                    game.resumeGame();
+                    game.removePlayerFromDisconnected(player);
+                    if(game.getDisconnectedPlayersCount() == 0) game.resumeGame();
                     return;
                 }
 

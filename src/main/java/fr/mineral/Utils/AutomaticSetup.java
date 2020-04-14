@@ -1,5 +1,6 @@
 package fr.mineral.Utils;
 
+import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -66,7 +67,7 @@ public class AutomaticSetup {
     public static void teleportToJaune(Player joueur) {
         if(getPositionSpawnArene() != null) {
 
-            joueur.teleport(spawnJaune);
+            PlayerUtils.teleportPlayer(joueur, spawnJaune);
             joueur.sendMessage("Vous avez été téléporter chez les jaunes");
         } else {
             joueur.sendMessage("Position arene non définit");
@@ -75,7 +76,7 @@ public class AutomaticSetup {
 
     public static void teleportToBleu(Player joueur) {
         if(getPositionSpawnArene() != null) {
-            joueur.teleport(spawnBleu);
+            PlayerUtils.teleportPlayer(joueur, spawnBleu);
             joueur.sendMessage("Vous avez été téléporter chez les bleu");
         } else {
             joueur.sendMessage("Position arene non définit");
@@ -84,7 +85,7 @@ public class AutomaticSetup {
 
     public static void teleportToRouge(Player joueur) {
         if(getPositionSpawnArene() != null) {
-            joueur.teleport(spawnRouge);
+            PlayerUtils.teleportPlayer(joueur, spawnRouge);
             joueur.sendMessage("Vous avez été téléporter chez les rouge");
         } else {
             joueur.sendMessage("Position arene non définit");
