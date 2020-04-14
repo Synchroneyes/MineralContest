@@ -7,6 +7,7 @@ import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -203,6 +204,8 @@ public class PlayerJoin implements Listener {
             // Every player login when game is not started
             if(!mineralcontest.debug) game.teleportToLobby(player);
             PlayerUtils.clearPlayer(player);
+            player.sendMessage(ChatColor.GREEN + "[] Server running Mineral Contest v" + mineralcontest.plugin.getDescription().getVersion());
+
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
                 mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin {
 
-    public static boolean debug = true;
+    public static boolean debug = false;
     private GameSettings gameSettings;
 
     public static String prefix;
