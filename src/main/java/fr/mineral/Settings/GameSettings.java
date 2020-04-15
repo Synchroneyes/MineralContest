@@ -27,6 +27,8 @@ public class GameSettings {
 
     private GameSettings() {
         this.configFile = new File(mineralcontest.plugin.getDataFolder(), configFileName);
+
+        if(!this.configFile.exists()) createGameSettings();
         this.pluginInstance = mineralcontest.plugin;
         GameSettings.instance = this;
     }
@@ -81,6 +83,8 @@ public class GameSettings {
             return;
         }
 
+
+        Bukkit.getLogger().info("[MINERALC] Loading game settings");
         try {
             // for each cvar
             for(GameSettingsCvar cvar : GameSettingsCvar.values()) {

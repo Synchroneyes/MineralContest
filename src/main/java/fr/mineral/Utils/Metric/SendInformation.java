@@ -15,7 +15,6 @@ public class SendInformation {
         // On utilise des threads pour ne pas avoir à se soucier du temps de réponse
 
         boolean useThread = state.equals(start);
-
         if(useThread) {
             Thread thread = new Thread(() -> {
                 send(state);

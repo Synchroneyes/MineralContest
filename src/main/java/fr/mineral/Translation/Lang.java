@@ -188,7 +188,7 @@ public enum Lang {
         mineralcontest plugin = mineralcontest.plugin;
         File langFile;
 
-        Bukkit.getLogger().info("Loading " + lang + " language");
+        Bukkit.getLogger().info("[MINERALC] Loading " + lang + " language");
 
         langFile = new File(plugin.getDataFolder() + File.separator + Lang.langDataFolderName, lang + ".yml");
         if(!langFile.exists()) {
@@ -206,7 +206,7 @@ public enum Lang {
 
         try {
             conf.save(langFile);
-            Bukkit.getLogger().info("Loaded " + lang + " language");
+            Bukkit.getLogger().info("[MINERALC] Loaded " + lang + " language");
             mineralcontest.prefix = Lang.title.toString() + ChatColor.WHITE;
             mineralcontest.prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE + " ";
             mineralcontest.prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE+ " ";

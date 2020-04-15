@@ -28,7 +28,7 @@ public final class mineralcontest extends JavaPlugin {
     public static boolean debug = false;
     private GameSettings gameSettings;
 
-    public static String prefix;
+    public static String prefix = "[MineralContest]";
     public static String prefixErreur;
     public static String prefixGlobal;
     public static String prefixPrive;

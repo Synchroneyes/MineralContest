@@ -22,10 +22,8 @@ public class StartGameCommand implements CommandExecutor {
                         mineralcontest.plugin.getGame().demarrerPartie(true);
                     else mineralcontest.plugin.getGame().demarrerPartie(false);
 
-
                 } catch (Exception e) {
                     sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                    e.printStackTrace();
                 }
             }
             return false;
