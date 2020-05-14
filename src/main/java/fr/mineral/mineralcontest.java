@@ -177,6 +177,7 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
         getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
         getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());
+        getCommand("spawnchest").setExecutor(new SpawnChestCommand());
 
 
     }

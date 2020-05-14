@@ -58,9 +58,12 @@ public class GameSettings {
 
     public void addMissingCVARsToConfigFile() {
 
+
         for(GameSettingsCvar cvar : GameSettingsCvar.values()) {
-            if (pluginConfiguration.get(buildConfigKeyValue(cvar)) == null)
+            if (pluginConfiguration.get(buildConfigKeyValue(cvar)) == null) {
+                Bukkit.getLogger().info(cvar.getName() + " WAS MISSING, ADDING THE CVAR WITH VALUE => " + cvar.getValue());
                 pluginConfiguration.set(buildConfigKeyValue(cvar), cvar.getValue());
+            }
         }
 
         try {
@@ -76,13 +79,11 @@ public class GameSettings {
 
         if(isConfigLoaded) return;
 
-
         if(value != CONFIG_RELOAD && value != PLUGIN_START) {
             Bukkit.getLogger().severe("RELOADING");
             loadGameSettings(PLUGIN_START);
             return;
         }
-
 
         Bukkit.getLogger().info("[MINERALC] Loading game settings");
         try {
@@ -90,6 +91,12 @@ public class GameSettings {
             for(GameSettingsCvar cvar : GameSettingsCvar.values()) {
                 String configCvar = buildConfigKeyValue(cvar);
                 Bukkit.getLogger().info("[MINERALC] " + configCvar + " => " + getConfigValue(configCvar));
+
+                if(getConfigValue(configCvar) == null) {
+                    addMissingCVARsToConfigFile();
+                    continue;
+                }
+
                 if (value == CONFIG_RELOAD) {
                     if(cvar.canBeReloaded())
                         setCvarValue(cvar, configCvar);
@@ -120,6 +127,14 @@ public class GameSettings {
     }
 
     private void setCvarValue(GameSettingsCvar cvar, String configCvar) {
+
+        if(configCvar == null) {
+            Bukkit.getLogger().info(cvar.getName() + "=> configCvar IS NULL");
+            addMissingCVARsToConfigFile();
+            return;
+        }
+
+
         if(cvar.getExpectedValue().equals("int")) {
             int valueToSet = Integer.parseInt((String) getConfigValue(configCvar));
             cvar.setValue(valueToSet);

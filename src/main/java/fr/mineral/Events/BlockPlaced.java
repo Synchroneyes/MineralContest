@@ -7,6 +7,7 @@ import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ public class BlockPlaced implements Listener {
 
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
 
             if(!mineralcontest.plugin.getGame().isGameStarted()) {
                 event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
@@ -42,7 +44,6 @@ public class BlockPlaced implements Listener {
                                 event.setCancelled(true);
                                 event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.block_not_allowed_to_be_placed.toString());
                             }
-
                             blockManager.addBlock(event.getBlock());
                         } else {
                             // We block the block adding
@@ -59,8 +60,10 @@ public class BlockPlaced implements Listener {
             } else if (!Setup.premierLancement) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
+
                 return;
             }
+
 
             mineralcontest.plugin.getGame().addAChest(event.getBlock());
             // Save the block

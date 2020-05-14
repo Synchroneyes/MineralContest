@@ -184,6 +184,7 @@ public class CoffreAvecCooldown {
                         position.getBlock().breakNaturally();
                         joueur.closeInventory();
                         close();
+                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.arena_chest_opened.toString());
                         mineralcontest.plugin.getGame().getArene().disableTeleport();
                         this.cancel();
 

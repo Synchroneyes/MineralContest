@@ -1,5 +1,6 @@
 package fr.mineral.Core.Game;
 
+import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,6 +29,8 @@ public class BlockManager {
     public void addBlock(Block b) {
         // If block was added, we dont add it
         if(wasBlockAdded(b)) return;
+
+        if(b.getType().equals(CHEST)) mineralcontest.plugin.getGame().addAChest(b);
 
         this.placedBlocks.add(b);
     }

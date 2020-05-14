@@ -1,5 +1,7 @@
 package fr.mineral.Settings;
 
+import org.bukkit.Bukkit;
+
 import java.io.IOException;
 
 public enum GameSettingsCvar {
@@ -23,6 +25,7 @@ public enum GameSettingsCvar {
     chest_opening_cooldown("arena", "int", "chest_opening_cooldown", "7", true),
     max_time_between_chests("arena", "int", "max_time_between_chests", "15", true),
     min_time_between_chests("arena", "int", "min_time_between_chests", "10", true),
+    max_teleport_time("arena", "int", "max_teleport_time", "15", false),
     max_item_in_chest("arena", "int", "max_item_in_chest", "20", true),
     min_item_in_chest("arena", "int", "min_item_in_chest", "10", true),
     death_time("settings", "int", "death_time", "10", false);
@@ -79,8 +82,9 @@ public enum GameSettingsCvar {
     public static Object getValueFromCVARName(String name) {
         if(!GameSettings.getInstance().isConfigLoaded) GameSettings.getInstance().loadGameSettings(GameSettings.PLUGIN_START);
         for(GameSettingsCvar cvar : values())
-            if(cvar.getName().equals(name))
+            if(cvar.getName().equals(name)) {
                 return cvar.getValue();
+            }
         return null;
     }
 

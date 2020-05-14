@@ -37,7 +37,7 @@ public class PlayerMove implements Listener {
                         }
                 }
             }
-        }.runTaskTimer(mineralcontest.plugin, 0, 20);
+        }.runTaskTimer(mineralcontest.plugin, 0, 5);
 
     }
 

@@ -37,8 +37,8 @@ public class Arene {
     private int MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests"); // mins
     private int MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");;
     private int TIME_BEFORE_CHEST = 0;
-    private double TELEPORT_TIME_LEFT = 15;
-    private double TELEPORT_TIME_LEFT_VAR = 15;
+    private double TELEPORT_TIME_LEFT = (int) GameSettingsCvar.getValueFromCVARName("max_teleport_time");
+    private double TELEPORT_TIME_LEFT_VAR = (int) GameSettingsCvar.getValueFromCVARName("max_teleport_time");
     private boolean CHEST_SPAWNED = false;
     private boolean CHEST_INITIALIZED = false;
     public boolean CHEST_USED = false;
@@ -213,10 +213,14 @@ public class Arene {
 
     public void disableTeleport() {
         String separator = ChatColor.GOLD + "----------------";
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
-            online.sendMessage(separator);
-            online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_teleport_now_disabled.toString());
-            online.sendMessage(separator);
+
+        if(allowTeleport) {
+            for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+                online.sendMessage(separator);
+                online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_teleport_now_disabled.toString());
+                online.sendMessage(separator);
+            }
+
         }
         removePlayerTeleportBar();
 

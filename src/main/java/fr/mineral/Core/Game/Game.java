@@ -104,13 +104,14 @@ public class Game implements Listener {
     }
 
     public void addAChest(Block block) {
-        if(isTheBlockAChest(block))
+        if(isTheBlockAChest(block)) {
             if(!this.addedChests.contains(block)) this.addedChests.add(block);
+        }
     }
 
     public boolean isThisBlockAGameChest(Block b) {
         if(!isTheBlockAChest(b)) return false;
-        return this.addedChests.contains(b);
+        return addedChests.contains(b);
     }
 
     public void remove(Block block) {

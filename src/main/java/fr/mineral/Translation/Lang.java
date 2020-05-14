@@ -146,8 +146,9 @@ public enum Lang {
     cvar_block_adding_disabled("cvar_block_adding_disabled", "La pose de block est désormais désactivé"),
     cvar_old_pvp_enabled("cvar_old_pvp_enabled", "L'ancien système de PVP est désormais activé"),
     cvar_old_pvp_disabled("cvar_old_pvp_disabled", "L'ancien système de PVP est désormais désactivé"),
-    block_not_allowed_to_be_placed("block_not_allowed_to_be_placed", "L'ajout de ce bloc est interdit");
-
+    block_not_allowed_to_be_placed("block_not_allowed_to_be_placed", "L'ajout de ce bloc est interdit"),
+    arena_chest_opened("arena_chest_opened", "Le coffre d'arène a été ouvert !"),
+    error_command_only_when_game_is_started("error_command_only_when_game_is_started", "Cette commande ne peut être utilisé que lorsqu'une partie est en cours.");
 
 
 

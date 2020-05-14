@@ -62,22 +62,8 @@ public class PlayerUtils {
         String world_name = (String) GameSettingsCvar.getValueFromCVARName("world_name");
         World world = Bukkit.getWorld(world_name);
 
-        if(world == null) {
-            Bukkit.getLogger().severe("[MineralC] GetPluginWorld ERROR - " + world_name + " is NULL");
-        }
 
         return world;
-    }
-
-    public static void pushBackPlayer(Player p) {
-        Vector playerVelocity = p.getVelocity();
-        int multiplier = velocity_mult;
-        playerVelocity.setX((playerVelocity.getX()*multiplier) * (-1));
-        playerVelocity.setY(2);
-        playerVelocity.setZ((playerVelocity.getZ()*multiplier) * (-1));
-
-        p.setVelocity(playerVelocity);
-        p.sendMessage("PUSHING U BACK");
     }
 
 
@@ -297,6 +283,10 @@ public class PlayerUtils {
             item_a_drop.add(Material.GOLD_INGOT);
             item_a_drop.add(Material.DIAMOND);
             item_a_drop.add(Material.EMERALD);
+            item_a_drop.add(Material.IRON_ORE);
+            item_a_drop.add(Material.GOLD_ORE);
+            item_a_drop.add(Material.DIAMOND_ORE);
+            item_a_drop.add(Material.EMERALD_ORE);
 
             int mp_enable_item_drop = (int) GameSettingsCvar.mp_enable_item_drop.getValue();
 
