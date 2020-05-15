@@ -1,5 +1,6 @@
 package fr.mineral.Utils.Player;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettingsCvar;
@@ -15,8 +16,10 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -161,10 +164,50 @@ public class PlayerUtils {
         boolean voteMapEnabled = mineralcontest.plugin.getGame().votemap.voteEnabled;
         boolean isPreGame = mineralcontest.plugin.getGame().isPreGame();
 
+        ArrayList<String> elementsADisplay = new ArrayList<>();
         // Si la game n'a pas démarré
         for(Player online : onlinePlayers) {
 
+
             if(online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+                /*
+                        2 cas, le joueur à un groupe, il n'en a pas
+                 */
+                Groupe playerGroup = mineralcontest.getPlayerGroupe(online);
+                elementsADisplay.add("=========");
+                if (playerGroup == null) {
+                    // Le joueur ne possède pas de groupe !
+                    elementsADisplay.add(ChatColor.RED + "Vous n'avez pas de groupe!");
+                    elementsADisplay.add("Vous pouvez en créer un avec /creergroupe <nom>");
+                    elementsADisplay.add("Ou en rejoindre un avec /joingroupe <nom>");
+                    elementsADisplay.add("========= ");
+                } else {
+                    // Le joueur possède un groupe !
+                    elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
+                    elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "/" + playerGroup.getPlayerCountRequired());
+                    elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + "En attente");
+                    elementsADisplay.add("========= ");
+                    elementsADisplay.add("Admins: ");
+                    for (Player admin : playerGroup.getAdmins()) {
+                        elementsADisplay.add(admin.getDisplayName());
+                    }
+                }
+
+                String[] elements = new String[elementsADisplay.size() + 1];
+                int index = 1;
+                for (String element : elementsADisplay) {
+                    elements[index] = element;
+                    index++;
+                }
+
+                elements[0] = Lang.title.toString();
+
+                ScoreboardUtil.unrankedSidebarDisplay(online, elements);
+
+                elementsADisplay.clear();
+            }
+
+            /*if(online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
                 // Si on vote
                 if(voteMapEnabled) {
                     ScoreboardUtil.unrankedSidebarDisplay(online, Lang.vote_title.toString(), " " ,
@@ -211,7 +254,7 @@ public class PlayerUtils {
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 

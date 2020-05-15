@@ -1,5 +1,6 @@
 package fr.mineral.Core.Game;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Core.House;
 import fr.mineral.Core.Votemap;
@@ -69,6 +70,9 @@ public class Game implements Listener {
 
     public Votemap votemap;
 
+    // Group of the game
+    public Groupe groupe;
+
     // Save the blocks
     public LinkedList<BlockSaver> affectedBlocks;
 
@@ -96,6 +100,9 @@ public class Game implements Listener {
         PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
     }
 
+    public void setGroupe(Groupe g) {
+        this.groupe = g;
+    }
 
     public int getDisconnectedPlayersCount() { return disconnectedPlayers.size();}
 

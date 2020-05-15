@@ -1,5 +1,7 @@
 package fr.mineral;
 
+import fr.groups.Core.Groupe;
+import fr.groups.GroupeExtension;
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Core.Game.Game;
@@ -21,6 +23,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin {
@@ -42,6 +45,10 @@ public final class mineralcontest extends JavaPlugin {
     public Location defaultSpawn;
     public MapBuilder mapBuilderInstance;
 
+
+    public GroupeExtension groupeExtension;
+    public LinkedList<Groupe> groupes;
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
@@ -49,9 +56,34 @@ public final class mineralcontest extends JavaPlugin {
         this.partie = new Game();
         Lang.loadLang((String) GameSettingsCvar.getValueFromCVARName("mp_set_language"));
 
-
+        this.groupeExtension = GroupeExtension.getInstance();
+        this.groupes = new LinkedList<>();
     }
 
+
+    public static void supprimerGroupe(Groupe g) {
+        plugin.groupes.remove(g);
+    }
+
+    public static Groupe getPlayerGroupe(Player p) {
+        mineralcontest instance = plugin;
+        for (Groupe groupe : instance.groupes) {
+            if (groupe.containsPlayer(p)) return groupe;
+        }
+        return null;
+    }
+
+    public void creerNouveauGroupe(Groupe nouveauGroupe) {
+        Bukkit.getLogger().info("Creating new groupe ...");
+        for (Groupe groupe : groupes) {
+            if (groupe.getNom().equals(nouveauGroupe.getNom())) {
+                groupe.sendToadmin(prefixErreur + Lang.error_group_with_this_name_already_exists.toString());
+                return;
+            }
+        }
+        this.groupes.add(nouveauGroupe);
+        nouveauGroupe.sendToEveryone(prefixPrive + Lang.success_group_successfully_created.toString());
+    }
 
     public void setDefaultSpawn(Location defaultSpawn) {
         this.defaultSpawn = defaultSpawn;

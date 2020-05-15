@@ -1,5 +1,8 @@
 package fr.mineral.Translation;
 
+import fr.groups.Commands.JoinGroupe;
+import fr.groups.Core.Groupe;
+import fr.mineral.Commands.JoinCommand;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
@@ -148,8 +151,34 @@ public enum Lang {
     cvar_old_pvp_disabled("cvar_old_pvp_disabled", "L'ancien système de PVP est désormais désactivé"),
     block_not_allowed_to_be_placed("block_not_allowed_to_be_placed", "L'ajout de ce bloc est interdit"),
     arena_chest_opened("arena_chest_opened", "Le coffre d'arène a été ouvert !"),
-    error_command_only_when_game_is_started("error_command_only_when_game_is_started", "Cette commande ne peut être utilisé que lorsqu'une partie est en cours.");
-
+    error_command_only_when_game_is_started("error_command_only_when_game_is_started", "Cette commande ne peut être utilisé que lorsqu'une partie est en cours."),
+    error_command_can_only_be_used_in_game("error_command_can_only_be_used_in_game", "Cette commande ne peut être utilisé qu'en jeu."),
+    error_you_already_have_a_group("error_you_already_have_a_group", "Vous avez déjà un groupe."),
+    error_group_with_this_name_already_exists("error_group_with_this_name_already_exists", "Un groupe avec ce nom existe déjà"),
+    success_group_successfully_created("success_group_successfully_created", "Le groupe a été crée avec succès"),
+    error_command_can_only_be_used_hub_world("error_command_can_only_be_used_hub_world", "Cette commande ne peut être utilisé que dans le HUB."),
+    error_you_must_be_in_a_group("error_you_must_be_in_a_group", "Vous devez être dans un groupe."),
+    error_you_must_be_group_admin("error_you_must_be_group_admin", "Vous devez être administrateur du groupe"),
+    error_no_player_with_this_name("error_no_player_with_this_name", "Il n'y a pas de joueurs avec ce nom"),
+    error_you_cant_join_this_group("error_you_cant_join_this_group", "Vous ne pouvez pas rejoindre ce groupe."),
+    error_group_doesnt_exists("error_group_doesnt_exists", "Ce groupe n'existe pas"),
+    successfully_joined_a_group("successfully_joined_a_group", "Vous avez rejoin le groupe %groupName% avec succès !"),
+    you_got_invited_to_a_group("you_got_invited_to_a_group", "Vous avez été invité à rejoindre le groupe %groupName%. Vous pouvez le rejoindre avec la commande /joingroupe %groupName%"),
+    error_player_already_have_a_group("error_player_already_jave_a_group", "Le joueur %playerName% a déjà un groupe."),
+    error_player_already_in_this_group("error_player_already_in_this_group", "Le joueur %playerName% est déjà dans votre groupe."),
+    player_successfully_invited_to_group("player_successfully_invited_to_group", "Le joueur %playerName% a été invité dans le groupe."),
+    error_you_cant_kick_yourself_from_group("error_you_cant_kick_yourself_from_group", "Vous ne pouvez pas vous exclure vous même d'un groupe"),
+    you_were_kicked_from_a_group("you_were_kicked_from_a_group", "Vous avez été exclu du groupe %groupName%"),
+    player_got_kicked_from_group("player_got_kicked_from_group", "Le joueur %playerName% a été exclu du groupe."),
+    error_you_cant_kick_this_player_from_the_group("error_you_cant_kick_this_player_from_the_group", "Vous ne pouvez pas exclure ce joueur du groupe"),
+    group_got_deleted("group_got_deleted", "Le groupe a été dissous"),
+    you_left_the_group("you_left_the_group", "Vous avez quitté le groupe %groupName%"),
+    error_you_must_be_group_owner("error_you_must_be_group_owner", "Vous devez être le créateur du groupe"),
+    error_player_not_in_our_group("error_player_not_in_our_group", "Le joueur n'est pas dans le groupe."),
+    player_is_now_group_admin("player_is_now_group_admin", "Le joueur %playerName% est désormais admin du groupe"),
+    error_player_is_not_admin("error_player_is_not_admin", "Le joueur %playerName% n'est pas admin du groupe"),
+    player_is_no_longer_a_group_admin("player_is_no_longer_a_group_admin", "Le joueur %playerName% n'est plus un admin"),
+    error_you_cant_remove_this_admin("error_you_cant_remove_this_admin", "Vous ne pouvez pas retirer cet admin");
 
 
     private String path;
@@ -301,6 +330,12 @@ public enum Lang {
         if(string.contains("%teamName%")) string = string.replace("%teamName%", team.getNomEquipe());
         string = translate(string);
         return  string;
+    }
+
+    public static String translate(String string, Groupe groupe) {
+        if (string.contains("%groupName%")) string = string.replace("%groupName%", groupe.getNom());
+        string = translate(string);
+        return string;
     }
 
     public static String translate(String string, Player player) {
