@@ -4,6 +4,9 @@ import fr.groups.Core.Groupe;
 import fr.groups.GroupeExtension;
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.CVAR.*;
+import fr.mineral.Commands.Developper.SaveWorldCommand;
+import fr.mineral.Commands.Developper.SetupCommand;
+import fr.mineral.Commands.Developper.ValiderCommand;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvar;
@@ -177,7 +180,7 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("start").setExecutor(new StartGameCommand());
         getCommand("pause").setExecutor(new PauseGameCommand());
         getCommand("stopGame").setExecutor(new StopGameCommand());
-        getCommand("vote").setExecutor(new VoteCommand());
+        if (!groupeExtension.enabled) getCommand("vote").setExecutor(new VoteCommand());
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
         getCommand("join").setExecutor(new JoinCommand());
@@ -210,6 +213,11 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
         getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());
         getCommand("spawnchest").setExecutor(new SpawnChestCommand());
+
+
+        getCommand("setup").setExecutor(new SetupCommand());
+        getCommand("saveworld").setExecutor(new SaveWorldCommand());
+        getCommand("valider").setExecutor(new ValiderCommand());
 
 
     }

@@ -1,6 +1,9 @@
-package fr.groups.Commands;
+package fr.groups.Commands.Vote;
 
+import fr.groups.Commands.CommandTemplate;
 import fr.groups.Core.Groupe;
+import fr.groups.Core.MapVote;
+import fr.groups.Utils.Etats;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
@@ -42,7 +45,9 @@ public class StartVote extends CommandTemplate {
                 return false;
             }
 
-            playerGroup.sendToEveryone("Starting vote!");
+            playerGroup.setEtat(Etats.VOTE_EN_COURS);
+            playerGroup.initVoteMap();
+
 
             if (!joueur.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
                 commandSender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_hub_world.toString());

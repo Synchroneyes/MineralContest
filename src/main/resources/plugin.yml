@@ -212,6 +212,23 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+  setup:
+    description: Spawn le coffre d'arène
+    use: /setup
+    permission: admin
+    permission-message: you do not have the permission
+
+  saveworld:
+    description: Spawn le coffre d'arène
+    use: /saveworld
+    permission: admin
+    permission-message: you do not have the permission
+
+  valider:
+    description: Spawn le coffre d'arène
+    use: /valider
+    permission: admin
+    permission-message: you do not have the permission
 
   permissions:
     admin:

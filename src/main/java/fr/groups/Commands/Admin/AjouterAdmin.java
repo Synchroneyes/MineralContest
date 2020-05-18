@@ -1,5 +1,6 @@
-package fr.groups.Commands;
+package fr.groups.Commands.Admin;
 
+import fr.groups.Commands.CommandTemplate;
 import fr.groups.Core.Groupe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;

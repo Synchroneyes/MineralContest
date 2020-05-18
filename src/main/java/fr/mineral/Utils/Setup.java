@@ -1,27 +1,41 @@
 package fr.mineral.Utils;
 
+import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import java.util.LinkedList;
 
 public class Setup {
 
     // Utile pour savoir si il faut relancer un setup ou non
     public static boolean premierLancement = true;
     public static int etape = 0;
+    public static int maxDoorsCount = 9;
     public static Setup instance;
     public static Location emplacementTemporaire;
     public static Player Joueur;
     public static boolean addDoors = false;
     public Setup() {
         Setup.instance = this;
+        porteBleu = new LinkedList<>();
+        porteRouge = new LinkedList<>();
+        porteJaune = new LinkedList<>();
     }
+
+    public static LinkedList<Block> porteBleu;
+    public static LinkedList<Block> porteJaune;
+    public static LinkedList<Block> porteRouge;
 
     public static void displayInfos(Player joueur) {
 
         switch(etape) {
             case 0:
+                mineralcontest.debug = true;
                 Joueur = joueur;
                 joueur.sendMessage("======================");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Bienvenue dans la mise en place du plugin.");
@@ -76,21 +90,57 @@ public class Setup {
 
             case 9:
                 mineralcontest.plugin.getGame().getArene().setTeleportSpawn(getEmplacementTemporaire());
-                joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez vous rendre où sera la Deathzone et cliquer où les gens doivent apparaitre.");
+                joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez vous rendre où les joueurs apparaitront lorsque la map sera chargée et cliquer où les gens doivent apparaitre.");
                 break;
 
             case 10:
                 mineralcontest.plugin.getGame().getArene().getDeathZone().setSpawnLocation(getEmplacementTemporaire());
-                joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est terminé !");
+                joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est  presque terminé !");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez cliquer sur les blocs de la porte bleu");
-                premierLancement = false;
                 addDoors = true;
                 break;
 
+            case 11:
+                joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est  presque terminé !");
+                joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez cliquer sur les blocs de la porte rouge");
+                addDoors = true;
+                break;
 
+            case 12:
+                joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est  presque terminé !");
+                joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez cliquer sur les blocs de la porte jaune");
+                addDoors = true;
+                break;
 
+            case 13:
+                joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est terminé ! Vous pouvez faire /saveworld");
+                mineralcontest.debug = false;
+                addDoors = true;
+                break;
         }
 
+    }
+
+
+    public static void addBlockToPorte(String team, Block b) {
+        AutomaticDoors porte = null;
+        if (team.equalsIgnoreCase("bleu")) {
+            porte = mineralcontest.plugin.getGame().getBlueHouse().getPorte();
+        }
+
+        if (team.equalsIgnoreCase("rouge")) {
+            porte = mineralcontest.plugin.getGame().getRedHouse().getPorte();
+        }
+
+        if (team.equalsIgnoreCase("jaune")) {
+            porte = mineralcontest.plugin.getGame().getYellowHouse().getPorte();
+        }
+
+        if (porte == null) return;
+
+        if (!porte.addToDoor(b)) {
+            Joueur.sendMessage(mineralcontest.prefixPrive + "Les portes de l'équipe " + team + " sont bien enregistrées. Faites /valider pour valider votre choix.");
+        }
     }
 
     public static void terminer() {
@@ -108,6 +158,12 @@ public class Setup {
     }
 
     public static void validerChoix() {
+
+        if (emplacementTemporaire == null) {
+            Joueur.sendMessage("Commande indisponible pour le moment, veuillez sélectionner un block");
+            return;
+        }
+
         etape++;
         Joueur.sendMessage(mineralcontest.prefixPrive + "Votre choix a été validé");
         emplacementTemporaire.setY(emplacementTemporaire.getY()+1);

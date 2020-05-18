@@ -1,8 +1,6 @@
 package fr.mineral.Translation;
 
-import fr.groups.Commands.JoinGroupe;
 import fr.groups.Core.Groupe;
-import fr.mineral.Commands.JoinCommand;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;

@@ -1,6 +1,8 @@
 package fr.mineral.Utils.Player;
 
 import fr.groups.Core.Groupe;
+import fr.groups.GroupeExtension;
+import fr.groups.Utils.Etats;
 import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettingsCvar;
@@ -169,43 +171,108 @@ public class PlayerUtils {
         for(Player online : onlinePlayers) {
 
 
-            if(online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+            if (GroupeExtension.enabled) {
+                if (online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
                 /*
                         2 cas, le joueur à un groupe, il n'en a pas
                  */
-                Groupe playerGroup = mineralcontest.getPlayerGroupe(online);
-                elementsADisplay.add("=========");
-                if (playerGroup == null) {
-                    // Le joueur ne possède pas de groupe !
-                    elementsADisplay.add(ChatColor.RED + "Vous n'avez pas de groupe!");
-                    elementsADisplay.add("Vous pouvez en créer un avec /creergroupe <nom>");
-                    elementsADisplay.add("Ou en rejoindre un avec /joingroupe <nom>");
-                    elementsADisplay.add("========= ");
-                } else {
-                    // Le joueur possède un groupe !
-                    elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
-                    elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "/" + playerGroup.getPlayerCountRequired());
-                    elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + "En attente");
-                    elementsADisplay.add("========= ");
-                    elementsADisplay.add("Admins: ");
-                    for (Player admin : playerGroup.getAdmins()) {
-                        elementsADisplay.add(admin.getDisplayName());
+                    Groupe playerGroup = mineralcontest.getPlayerGroupe(online);
+                    elementsADisplay.add("=========");
+                    if (playerGroup == null) {
+                        // Le joueur ne possède pas de groupe !
+                        elementsADisplay.add(ChatColor.RED + "Vous n'avez pas de groupe!");
+                        elementsADisplay.add("Vous pouvez en créer un avec /creergroupe <nom>");
+                        elementsADisplay.add("Ou en rejoindre un avec /joingroupe <nom>");
+                        elementsADisplay.add("========= ");
+                    } else {
+                        // Le joueur possède un groupe !
+                        elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
+                        elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "/" + playerGroup.getPlayerCountRequired());
+                        elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + playerGroup.getEtatPartie().getNom());
+                        elementsADisplay.add("========= ");
+                        elementsADisplay.add("Admins: ");
+                        for (Player admin : playerGroup.getAdmins()) {
+                            elementsADisplay.add(admin.getDisplayName());
+                        }
+
+                        if (playerGroup.getEtatPartie().equals(Etats.VOTE_EN_COURS)) {
+                            elementsADisplay.clear();
+                            ArrayList<String> maps = playerGroup.getMapVote().getMaps();
+                            int index = 0;
+                            for (String map : maps) {
+                                elementsADisplay.add(index + " - " + map);
+                                index++;
+                            }
+                        }
+                    }
+
+                    String[] elements = new String[elementsADisplay.size() + 1];
+                    int index = 1;
+                    for (String element : elementsADisplay) {
+                        elements[index] = element;
+                        index++;
+                    }
+
+                    elements[0] = Lang.title.toString();
+
+                    ScoreboardUtil.unrankedSidebarDisplay(online, elements);
+
+                    elementsADisplay.clear();
+                }
+            } else {
+                // Groupe Extention non chargé
+                if (online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+                    // Si on vote
+                    if (voteMapEnabled) {
+                        ScoreboardUtil.unrankedSidebarDisplay(online, Lang.vote_title.toString(), " ",
+                                "0 - " + Lang.vote_snow.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteNeige + " " + Lang.vote_count.toString(),
+                                "1 - " + Lang.vote_desert.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteDesert + " " + Lang.vote_count.toString(),
+                                "2 - " + Lang.vote_forest.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteForet + " " + Lang.vote_count.toString(),
+                                "3 - " + Lang.vote_plain.toString() + " (" + mineralcontest.plugin.getGame().votemap.votePlaine + " " + Lang.vote_count.toString(),
+                                "4 - " + Lang.vote_mountain.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteMontagne + " " + Lang.vote_count.toString(),
+                                "5 - " + Lang.vote_swamp.toString() + " (" + mineralcontest.plugin.getGame().votemap.voteMarecage + " " + Lang.vote_count.toString());
+
+                    } else {
+                        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(online);
+
+                        if (!gameStarted || isPreGame) {
+                            if (team == null)
+                                ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_awaiting_players.toString(), Lang.hud_you_are_not_in_team.toString());
+                            else
+                                ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_awaiting_players.toString(), Lang.translate(Lang.hud_team_name_no_score.toString(), team, online));
+                        } else {
+                            // Si la game est en pause
+                            if (gamePaused) {
+                                // Pas de team
+                                if (team == null) {
+                                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_paused.toString(), "", Lang.hud_you_are_not_in_team.toString());
+                                } else {
+
+                                    if (mineralcontest.plugin.getGame().isReferee(online)) {
+                                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_time_left.toString(), "", "Referee", "", "Red team: " + mineralcontest.plugin.getGame().getRedHouse().getTeam().getScore() + " point(s)",
+                                                "", "Blue team: " + mineralcontest.plugin.getGame().getBlueHouse().getTeam().getScore() + " point(s)",
+                                                "", "Yellow team: " + mineralcontest.plugin.getGame().getYellowHouse().getTeam().getScore() + " point(s)");
+                                    } else {
+                                        // Le joueur a une équipe
+                                        ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_paused.toString(), "", Lang.translate(Lang.hud_team_name_score.toString(), team));
+                                    }
+                                }
+
+                            } else {
+                                // Game pas en pause
+                                if (mineralcontest.plugin.getGame().isReferee(online)) {
+                                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_time_left.toString(), "", "Referee", "", "Red team: " + mineralcontest.plugin.getGame().getRedHouse().getTeam().getScore() + " point(s)",
+                                            "", "Blue team: " + mineralcontest.plugin.getGame().getBlueHouse().getTeam().getScore() + " point(s)",
+                                            "", "Yellow team: " + mineralcontest.plugin.getGame().getYellowHouse().getTeam().getScore() + " point(s)");
+                                } else {
+                                    ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_time_left.toString(), "", Lang.translate(Lang.hud_team_name_score.toString(), team));
+                                }
+                            }
+                        }
                     }
                 }
-
-                String[] elements = new String[elementsADisplay.size() + 1];
-                int index = 1;
-                for (String element : elementsADisplay) {
-                    elements[index] = element;
-                    index++;
-                }
-
-                elements[0] = Lang.title.toString();
-
-                ScoreboardUtil.unrankedSidebarDisplay(online, elements);
-
-                elementsADisplay.clear();
             }
+
 
             /*if(online.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
                 // Si on vote

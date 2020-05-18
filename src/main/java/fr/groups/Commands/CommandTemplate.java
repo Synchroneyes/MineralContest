@@ -1,6 +1,7 @@
 package fr.groups.Commands;
 
 import fr.groups.Core.Groupe;
+import fr.groups.Utils.Etats;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int GROUP_CREATOR = 3;
     protected final int PLAYER_COMMAND = 4;
     protected final int CONSOLE_COMMAND = 5;
+    protected final int GROUP_VOTE_STARTED = 6;
 
     public abstract String getCommand();
 
@@ -67,6 +69,10 @@ public abstract class CommandTemplate extends BukkitCommand {
                 playerGroupe = mineralcontest.getPlayerGroupe((Player) p);
             }
 
+            if (condition == CONSOLE_COMMAND) {
+                if (p instanceof Player) throw new Exception(Lang.error_command_can_only_be_used_in_game.toString());
+            }
+
             if (condition == GROUP_REQUIRED)
                 if (playerGroupe == null) throw new Exception(Lang.error_you_must_be_in_a_group.toString());
 
@@ -83,9 +89,15 @@ public abstract class CommandTemplate extends BukkitCommand {
                 if (!playerGroupe.isGroupeCreateur((Player) p))
                     throw new Exception(Lang.error_you_must_be_group_owner.toString());
             }
+
+            if (condition == GROUP_VOTE_STARTED) {
+                if (playerGroupe == null) throw new Exception(Lang.error_you_must_be_in_a_group.toString());
+                if (!playerGroupe.getEtatPartie().equals(Etats.VOTE_EN_COURS))
+                    throw new Exception(Lang.vote_not_enabled.toString());
+            }
         }
 
-        if (arguments.size() != receivedArgs.length) throw new Exception(mineralcontest.prefixErreur + getUsage());
+        if (arguments.size() != receivedArgs.length) throw new Exception(getUsage());
     }
 
 

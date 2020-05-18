@@ -6,6 +6,7 @@
  */
 package fr.groups.Core;
 
+import fr.groups.Utils.Etats;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Teams.Equipe;
@@ -24,9 +25,12 @@ public class Groupe {
     private LinkedList<Player> joueursInvites;
     private World gameWorld;
     private GameSettings settings;
+    private MapVote mapVote;
 
     private Game partie;
     private String nom;
+
+    private Etats etat;
 
 
     public Groupe() {
@@ -36,6 +40,25 @@ public class Groupe {
         this.joueursInvites = new LinkedList<>();
         this.partie = new Game();
         partie.setGroupe(this);
+        this.etat = Etats.EN_ATTENTE;
+    }
+
+
+    public MapVote getMapVote() {
+        return this.mapVote;
+    }
+
+    public void initVoteMap() {
+        if (this.mapVote != null) return;
+        this.mapVote = new MapVote();
+    }
+
+    public Etats getEtatPartie() {
+        return this.etat;
+    }
+
+    public void setEtat(Etats etat) {
+        this.etat = etat;
     }
 
     public boolean isPlayerInvited(Player p) {
@@ -47,6 +70,7 @@ public class Groupe {
         this.admins.remove(joueur);
 
     }
+
 
     public void inviterJoueur(Player p) {
         if (joueursInvites.contains(p)) {

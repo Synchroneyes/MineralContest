@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
@@ -23,6 +24,34 @@ public class PlayerInteract implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
+            if (Setup.premierLancement) {
+                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                    if (!event.getClickedBlock().getType().equals(Material.AIR)) {
+                        Setup.setEmplacementTemporaire(event.getClickedBlock().getLocation());
+                    }
+                }
+
+                if (Setup.addDoors) {
+                    if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                        if (event.getClickedBlock().getType().equals(Material.AIR)) return;
+                        // Ajout porte
+                        if (Setup.getEtape() == 10) {
+                            Setup.addBlockToPorte("bleu", event.getClickedBlock());
+                        }
+
+                        if (Setup.getEtape() == 11) {
+                            Setup.addBlockToPorte("rouge", event.getClickedBlock());
+                        }
+
+                        if (Setup.getEtape() == 12) {
+                            Setup.addBlockToPorte("jaune", event.getClickedBlock());
+                        }
+                    }
+                }
+                return;
+            }
+
             Player joueur = (Player) event.getPlayer();
 
             if(event.getClickedBlock() != null) {
@@ -38,6 +67,8 @@ public class PlayerInteract implements Listener {
             }
 
         }
+
+
     }
 
     @EventHandler

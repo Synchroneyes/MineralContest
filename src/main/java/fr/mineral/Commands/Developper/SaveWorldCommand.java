@@ -11,17 +11,17 @@ public class SaveWorldCommand implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(command.getName().equals("saveWorld")) {
-            if(args.length == 1) {
+        if (command.getName().equals("saveworld")) {
+            if (args.length == 0) {
                 try {
-                    GameToFile g = new GameToFile(args[0]);
+                    GameToFile g = new GameToFile("nouveau_biome");
                     g.saveToFile();
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }else{
-                sender.sendMessage("usage: /saveworld <worldname>");
+                sender.sendMessage("usage: /saveworld");
                 return true;
             }
         }

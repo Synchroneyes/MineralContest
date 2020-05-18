@@ -6,6 +6,7 @@ import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Radius;
+import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
 import org.bukkit.World;
 import org.bukkit.block.Chest;
@@ -21,6 +22,13 @@ public class BlockDestroyed implements Listener {
         Game game = mineralcontest.plugin.getGame();
 
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
+
+            if (Setup.premierLancement) {
+                event.setCancelled(true);
+                return;
+            }
+
             if(mineralcontest.plugin.getGame().isGamePaused()) {
                 event.setCancelled(true);
                 return;
