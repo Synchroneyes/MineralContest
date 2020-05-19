@@ -20,6 +20,9 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int PLAYER_COMMAND = 4;
     protected final int CONSOLE_COMMAND = 5;
     protected final int GROUP_VOTE_STARTED = 6;
+    protected final int REQUIRE_GROUP_UNLOCKED = 7;
+    protected final int REQUIRE_GROUP_LOCKED = 8;
+
 
     public abstract String getCommand();
 
@@ -95,6 +98,17 @@ public abstract class CommandTemplate extends BukkitCommand {
                 if (!playerGroupe.getEtatPartie().equals(Etats.VOTE_EN_COURS))
                     throw new Exception(Lang.vote_not_enabled.toString());
             }
+
+            if (condition == REQUIRE_GROUP_LOCKED) {
+                if (playerGroupe == null) throw new Exception(Lang.error_you_must_be_in_a_group.toString());
+                if (!playerGroupe.isGroupLocked()) throw new Exception(Lang.error_group_is_not_locked.toString());
+            }
+
+            if (condition == REQUIRE_GROUP_UNLOCKED) {
+                if (playerGroupe == null) throw new Exception(Lang.error_you_must_be_in_a_group.toString());
+                if (playerGroupe.isGroupLocked()) throw new Exception(Lang.error_group_is_locked.toString());
+            }
+
         }
 
         if (arguments.size() != receivedArgs.length) throw new Exception(getUsage());

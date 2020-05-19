@@ -200,7 +200,7 @@ public class PlayerUtils {
                             ArrayList<String> maps = playerGroup.getMapVote().getMaps();
                             int index = 0;
                             for (String map : maps) {
-                                elementsADisplay.add(index + " - " + map);
+                                elementsADisplay.add(index + " - " + map + " " + playerGroup.getMapVote().getMapVoteCount(map) + " " + Lang.vote_count.toString());
                                 index++;
                             }
                         }

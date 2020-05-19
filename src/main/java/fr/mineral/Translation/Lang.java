@@ -25,6 +25,7 @@ public enum Lang {
     global("global", "[Global]"),
     _private("private", "[Privé]"),
     admin("admin", " [Admin]"),
+    group("group", "[Groupe]"),
     error_when_resume("error_when_resume", "Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine"),
     game_already_started("game_already_started", "La partie a déjà commencé !"),
     all_team_not_full("all_team_not_full", "Au moins une équipe n'est pas complète. Il faut %teamNumber% joueurs par équipe."),
@@ -176,7 +177,11 @@ public enum Lang {
     player_is_now_group_admin("player_is_now_group_admin", "Le joueur %playerName% est désormais admin du groupe"),
     error_player_is_not_admin("error_player_is_not_admin", "Le joueur %playerName% n'est pas admin du groupe"),
     player_is_no_longer_a_group_admin("player_is_no_longer_a_group_admin", "Le joueur %playerName% n'est plus un admin"),
-    error_you_cant_remove_this_admin("error_you_cant_remove_this_admin", "Vous ne pouvez pas retirer cet admin");
+    error_you_cant_remove_this_admin("error_you_cant_remove_this_admin", "Vous ne pouvez pas retirer cet admin"),
+    error_group_is_not_locked("error_group_is_not_locked", "Le groupe n'est pas verouillé"),
+    error_group_is_locked("error_group_is_locked", "Le groupe est verouillé"),
+    group_is_now_locked("group_is_now_locked", "Le groupe est maintenant verouillé"),
+    group_is_now_unlocked("group_is_now_unlocked", "Le groupe est maintenant déverouillé");
 
 
     private String path;
@@ -241,6 +246,7 @@ public enum Lang {
             mineralcontest.prefixPrive = Lang.title.toString() + ChatColor.YELLOW + Lang._private.toString() + ChatColor.WHITE+ " ";
             mineralcontest.prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE+ " ";
             mineralcontest.prefixTeamChat = Lang.title.toString() + ChatColor.BLUE + Lang.teamChat.toString() + ChatColor.WHITE+ " ";
+            mineralcontest.prefixGroupe = Lang.title.toString() + ChatColor.GOLD + Lang.group.toString() + ChatColor.WHITE + " ";
 
             plugin.getGame().getRedHouse().getTeam().setNomEquipe(Lang.red_team.toString());
             plugin.getGame().getYellowHouse().getTeam().setNomEquipe(Lang.yellow_team.toString());

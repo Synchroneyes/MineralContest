@@ -18,6 +18,7 @@ public class JoinGroupe extends CommandTemplate {
 
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(NO_GROUP);
+
     }
 
     @Override
@@ -42,6 +43,10 @@ public class JoinGroupe extends CommandTemplate {
                 for (Groupe groupe : mineralcontest.plugin.groupes)
                     if (groupe.getNom().equalsIgnoreCase(args[0])) {
                         if (groupe.isPlayerInvited(joueur)) {
+                            if (groupe.isGroupLocked()) {
+                                joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_group_is_locked.toString());
+                                return false;
+                            }
                             groupe.addJoueur(joueur);
                         } else {
                             joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_you_cant_join_this_group.toString());

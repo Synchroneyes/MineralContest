@@ -40,6 +40,7 @@ public final class mineralcontest extends JavaPlugin {
     public static String prefixPrive;
     public static String prefixAdmin;
     public static String prefixTeamChat;
+    public static String prefixGroupe;
     public static Logger log = Bukkit.getLogger();
     public static mineralcontest plugin;
     private Game partie;
@@ -84,8 +85,20 @@ public final class mineralcontest extends JavaPlugin {
                 return;
             }
         }
+
+        while (!isGroupeIdentifiantUnique(nouveauGroupe)) {
+            nouveauGroupe.genererIdentifiant();
+        }
+
+
         this.groupes.add(nouveauGroupe);
         nouveauGroupe.sendToEveryone(prefixPrive + Lang.success_group_successfully_created.toString());
+    }
+
+    private boolean isGroupeIdentifiantUnique(Groupe groupe) {
+        for (Groupe g : groupes)
+            if (g.getIdentifiant().equalsIgnoreCase(groupe.getIdentifiant())) return false;
+        return true;
     }
 
     public void setDefaultSpawn(Location defaultSpawn) {

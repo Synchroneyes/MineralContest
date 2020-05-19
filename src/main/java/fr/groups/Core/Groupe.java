@@ -12,13 +12,18 @@ import fr.mineral.Settings.GameSettings;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Groupe {
+    private int tailleIdentifiant = 10;
+    private String identifiant;
     private LinkedList<Equipe> equipes;
     private LinkedList<Player> admins;
     private LinkedList<Player> joueurs;
@@ -29,8 +34,11 @@ public class Groupe {
 
     private Game partie;
     private String nom;
+    private WorldLoader worldLoader;
 
     private Etats etat;
+
+    private boolean groupLocked = false;
 
 
     public Groupe() {
@@ -41,8 +49,73 @@ public class Groupe {
         this.partie = new Game();
         partie.setGroupe(this);
         this.etat = Etats.EN_ATTENTE;
+        this.worldLoader = new WorldLoader();
+        genererIdentifiant();
     }
 
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public void genererIdentifiant() {
+        String[] alphabet = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        StringBuilder id_generer = new StringBuilder();
+        Random random = new Random();
+        int numero_aleatoire = 0;
+        for (int i = 0; i < tailleIdentifiant; ++i) {
+            numero_aleatoire = random.nextInt(alphabet.length);
+            id_generer.append(alphabet[numero_aleatoire]);
+        }
+
+        this.identifiant = id_generer.toString();
+
+    }
+
+    /**
+     * @param nomMonde - Nom du monde à charger
+     * @return true si chargement réussi, false sinon
+     */
+    public boolean chargerMonde(String nomMonde) {
+        this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
+        if (gameWorld == null) {
+            sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde.");
+            return false;
+        }
+
+        Location worldSpawnLocation = gameWorld.getSpawnLocation();
+        for (Player joueur : joueurs)
+            joueur.teleport(worldSpawnLocation);
+
+        return true;
+    }
+
+    /**
+     * Décharge un monde
+     *
+     * @return
+     */
+    public boolean dechargerMonde() {
+        if (gameWorld == null) return false;
+
+        for (Player joueur : joueurs) {
+            joueur.teleport(mineralcontest.plugin.defaultSpawn);
+        }
+
+
+        mineralcontest.plugin.getServer().unloadWorld(gameWorld, false);
+
+        worldLoader.supprimerMonde(gameWorld);
+        return true;
+    }
+
+    public boolean isGroupLocked() {
+        return groupLocked;
+    }
+
+    public void setGroupLocked(boolean groupLocked) {
+        sendToadmin(mineralcontest.prefixPrive + ((groupLocked) ? Lang.group_is_now_locked.toString() : Lang.group_is_now_unlocked.toString()));
+        this.groupLocked = groupLocked;
+    }
 
     public MapVote getMapVote() {
         return this.mapVote;
@@ -51,6 +124,7 @@ public class Groupe {
     public void initVoteMap() {
         if (this.mapVote != null) return;
         this.mapVote = new MapVote();
+
     }
 
     public Etats getEtatPartie() {

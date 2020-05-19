@@ -25,20 +25,27 @@ public class Vote extends CommandTemplate {
 
     @Override
     public boolean execute(CommandSender commandSender, String s, String[] args) {
+
+
         try {
             canPlayerUseCommand(commandSender, args);
         } catch (Exception e) {
+
+            Groupe groupTMP = mineralcontest.getPlayerGroupe((Player) commandSender);
+            groupTMP.dechargerMonde();
+
             commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
             return false;
         }
 
         Player joueur = (Player) commandSender;
+        Groupe playerGroupe = null;
         int mapVoter = -1;
         try {
             mapVoter = Integer.parseInt(args[0]);
 
             if (mapVoter < 0) throw new NumberFormatException();
-            Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+            playerGroupe = mineralcontest.getPlayerGroupe(joueur);
             if (mapVoter >= playerGroupe.getMapVote().getMaps().size()) throw new NumberFormatException();
 
         } catch (NumberFormatException nfe) {
@@ -47,6 +54,7 @@ public class Vote extends CommandTemplate {
         }
 
         // On a plus qu'a enregistrer le vote
+        playerGroupe.getMapVote().enregistrerVoteJoueur(mapVoter, joueur);
 
         return false;
     }

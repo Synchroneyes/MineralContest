@@ -1,8 +1,5 @@
 /**
- * TODO:
- * - votemap
- * - démarrage partie
- * - enregistrer vote
+ * TODO: - Charger les differents spawns de la map
  */
 package fr.groups;
 
@@ -21,11 +18,11 @@ public class GroupeExtension {
 
     private static GroupeExtension instance;
     private CommandMap bukkitCommandMap;
-    public static boolean enabled = false;
+    public static boolean enabled = true;
 
     private GroupeExtension() {
         if (!enabled) return;
-        this.instance = this;
+        instance = this;
         Bukkit.getLogger().info("Loading GroupeExtension ...");
         try {
             getPluginCommandMap();

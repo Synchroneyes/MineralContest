@@ -47,6 +47,7 @@ public class StartVote extends CommandTemplate {
 
             playerGroup.setEtat(Etats.VOTE_EN_COURS);
             playerGroup.initVoteMap();
+            playerGroup.setGroupLocked(true);
 
 
             if (!joueur.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
