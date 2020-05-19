@@ -111,6 +111,7 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         pluginWorld = PlayerUtils.getPluginWorld();
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
 
@@ -128,14 +129,11 @@ public final class mineralcontest extends JavaPlugin {
         PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
 
-
-
         if(!debug)
             if(pluginWorld != null)
                 for(Player online : pluginWorld.getPlayers())
                     PlayerUtils.teleportPlayer(online, defaultSpawn);
 
-        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
         PlayerUtils.runScoreboardManager();
 
 

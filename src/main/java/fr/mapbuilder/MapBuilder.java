@@ -1,5 +1,7 @@
 package fr.mapbuilder;
 
+import fr.mapbuilder.Commands.SaveArena;
+import fr.mapbuilder.Commands.SpawnArena;
 import fr.mapbuilder.Commands.SpawnHouse;
 import fr.mapbuilder.Commands.mcbuild;
 import fr.mapbuilder.Events.BlockPlaced;
@@ -10,7 +12,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
 
@@ -21,7 +22,7 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = false;
+    public boolean isBuilderModeEnabled = true;
     private CommandMap bukkitCommandMap;
 
     private MapBuilder() {
@@ -67,7 +68,10 @@ public class MapBuilder {
         printToConsole("Registering commands");
 
         this.bukkitCommandMap.register(SpawnHouse.pluginCommand, new SpawnHouse());
+        this.bukkitCommandMap.register(SpawnArena.pluginCommand, new SpawnArena());
+
         this.bukkitCommandMap.register(fr.mapbuilder.Commands.mcbuild.pluginCommand, new mcbuild());
+        this.bukkitCommandMap.register("", new SaveArena());
 
     }
 

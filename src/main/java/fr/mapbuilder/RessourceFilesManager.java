@@ -5,7 +5,7 @@ import fr.mineral.mineralcontest;
 import java.io.File;
 
 public class RessourceFilesManager {
-    private static String[] files_names = {"houses/e.yml", "houses/n.yml", "houses/w.yml", "houses/s.yml"};
+    private static String[] files_names = {"houses/e.yml", "houses/n.yml", "houses/w.yml", "houses/s.yml", "arene.yml"};
     public static String datafolder_name = "custom-maps-models";
 
     public static void copyFilesToPluginFolder() {

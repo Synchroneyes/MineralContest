@@ -1,7 +1,9 @@
 package fr.mapbuilder.Events;
 
 import fr.mapbuilder.Blocks.BlocksDataColor;
+import fr.mapbuilder.Items.AreneItem;
 import fr.mapbuilder.Items.ColoredHouseItem;
+import fr.mapbuilder.Spawner.Arene;
 import fr.mapbuilder.Spawner.House;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,6 +26,13 @@ public class BlockPlaced implements Listener {
             House.spawn(spawnItemLocation, BlocksDataColor.fromItemName(itemName), player);
             event.setCancelled(true);
         }
+
+        if (itemName.equalsIgnoreCase(AreneItem.itemPrefix)) {
+            Arene.spawn(event.getBlock().getLocation(), player);
+            event.setCancelled(true);
+        }
+
+
 
 
         /*if(itemName.equalsIgnoreCase(BlueHouseItem.itemName)) {

@@ -1,5 +1,5 @@
 /**
- * TODO: - Charger les differents spawns de la map
+ * TODO: - Charger les differents spawns de la map depuis le dossier du monde ;)
  */
 package fr.groups;
 
@@ -8,17 +8,20 @@ import fr.groups.Commands.Admin.RetirerAdmin;
 import fr.groups.Commands.Groupe.*;
 import fr.groups.Commands.Vote.StartVote;
 import fr.groups.Commands.Vote.Vote;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.SimplePluginManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class GroupeExtension {
 
     private static GroupeExtension instance;
     private CommandMap bukkitCommandMap;
-    public static boolean enabled = true;
+    public static boolean enabled = false;
 
     private GroupeExtension() {
         if (!enabled) return;
@@ -31,6 +34,25 @@ public class GroupeExtension {
         }
 
         registerCommands();
+        supprimerMapsExistantes();
+    }
+
+    /**
+     * Supprime toute les maps crées auparavant
+     */
+    private void supprimerMapsExistantes() {
+        File dossierServer = new File(System.getProperty("user.dir"));
+        File[] fichiers = dossierServer.listFiles((dir, name) -> name.toLowerCase().startsWith("mc_"));
+
+        for (File fichier : fichiers) {
+            try {
+                Bukkit.getServer().unloadWorld(fichier.getName(), false);
+                FileUtils.deleteDirectory(fichier);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
     }
 
     public static GroupeExtension getInstance() {
