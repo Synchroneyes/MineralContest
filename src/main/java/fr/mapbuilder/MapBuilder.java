@@ -6,6 +6,7 @@ import fr.mapbuilder.Commands.SpawnHouse;
 import fr.mapbuilder.Commands.mcbuild;
 import fr.mapbuilder.Events.BlockPlaced;
 import fr.mineral.Scoreboard.ScoreboardUtil;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -22,7 +23,7 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = true;
+    public boolean isBuilderModeEnabled = false;
     private CommandMap bukkitCommandMap;
 
     private MapBuilder() {
@@ -35,6 +36,7 @@ public class MapBuilder {
             getPluginCommandMap();
         }catch (Exception e) {
             e.printStackTrace();
+            Error.Report(e);
         }
 
 
@@ -43,6 +45,7 @@ public class MapBuilder {
         registerCommands();
         if(isBuilderModeEnabled) enableMapBuilding();
 
+        RessourceFilesManager.copyFilesToPluginFolder();
         RessourceFilesManager.copyFilesToPluginFolder();
     }
 

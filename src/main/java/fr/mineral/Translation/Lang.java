@@ -3,6 +3,7 @@ package fr.mineral.Translation;
 import fr.groups.Core.Groupe;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -257,9 +258,11 @@ public enum Lang {
         } catch(IOException ioe) {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
             ioe.printStackTrace();
+            Error.Report(ioe);
         } catch (Exception e) {
             plugin.getLogger().severe("ERREUR");
             e.printStackTrace();
+            Error.Report(e);
         }
 
 
@@ -297,6 +300,7 @@ public enum Lang {
         }catch(Exception e) {
             Bukkit.getLogger().severe("GET ERROR");
             e.printStackTrace();
+            Error.Report(e);
         }
 
         return result;

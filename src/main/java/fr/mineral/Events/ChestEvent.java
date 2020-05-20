@@ -6,6 +6,7 @@ import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Core.House;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -81,6 +82,7 @@ public class ChestEvent implements Listener {
                             playerHouse.getTeam().setScore(score);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Error.Report(e);
                         }
                     }
 

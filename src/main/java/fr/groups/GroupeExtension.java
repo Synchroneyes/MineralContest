@@ -8,6 +8,7 @@ import fr.groups.Commands.Admin.RetirerAdmin;
 import fr.groups.Commands.Groupe.*;
 import fr.groups.Commands.Vote.StartVote;
 import fr.groups.Commands.Vote.Vote;
+import fr.mineral.Utils.ErrorReporting.Error;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -31,6 +32,7 @@ public class GroupeExtension {
             getPluginCommandMap();
         } catch (Exception e) {
             e.printStackTrace();
+            Error.Report(e);
         }
 
         registerCommands();
@@ -50,6 +52,7 @@ public class GroupeExtension {
                 FileUtils.deleteDirectory(fichier);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
+                Error.Report(ioe);
             }
         }
 

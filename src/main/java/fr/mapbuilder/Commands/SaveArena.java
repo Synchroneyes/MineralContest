@@ -3,6 +3,7 @@ package fr.mapbuilder.Commands;
 import fr.groups.Commands.CommandTemplate;
 import fr.mapbuilder.Blocks.SaveableBlock;
 import fr.mineral.Utils.BlockSaver;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -166,6 +167,7 @@ public class SaveArena extends CommandTemplate {
             customConfig.save(fichierArene);
         } catch (IOException e) {
             e.printStackTrace();
+            Error.Report(e);
         }
 
 

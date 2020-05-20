@@ -5,6 +5,7 @@ import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
@@ -56,6 +57,7 @@ public class BlockDestroyed implements Listener {
                     }
                 }catch(Exception e) {
                     e.printStackTrace();
+                    Error.Report(e);
                     return;
                 }
 

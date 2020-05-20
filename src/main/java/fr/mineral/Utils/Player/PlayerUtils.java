@@ -11,6 +11,7 @@ import fr.mineral.Core.Referee.RefereeItem;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
@@ -105,7 +106,7 @@ public class PlayerUtils {
         return false;
     }
 
-    public static boolean isPlayerInHisBase(Player p) {
+    public static boolean isPlayerInHisBase(Player p) throws Exception {
         Game game = mineralcontest.plugin.getGame();
         House playerHouse = game.getPlayerHouse(p);
         int house_radius = 7;
@@ -354,6 +355,7 @@ public class PlayerUtils {
                     mineralcontest.plugin.getGame().getArene().getDeathZone().add(joueur);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Error.Report(e);
                 }
             }
         }, 20);
@@ -427,6 +429,7 @@ public class PlayerUtils {
 
         }catch (Exception e) {
             e.printStackTrace();
+            Error.Report(e);
         }
     }
 

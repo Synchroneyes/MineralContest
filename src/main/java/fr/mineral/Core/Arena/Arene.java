@@ -4,6 +4,7 @@ import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -110,6 +111,7 @@ public class Arene {
                                 entite.remove();
                         }catch(Exception e) {
                             e.printStackTrace();
+                            Error.Report(e);
                         }
                     }
                 }
@@ -166,6 +168,7 @@ public class Arene {
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
+                        Error.Report(e);
                     }
 
                 }

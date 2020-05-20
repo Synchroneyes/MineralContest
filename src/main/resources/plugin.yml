@@ -230,6 +230,7 @@ commands:
     permission: admin
     permission-message: you do not have the permission
 
+
   permissions:
     admin:
       description: allow all plugin command

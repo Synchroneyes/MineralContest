@@ -124,9 +124,9 @@ public class House {
         this.spawnLocation = houseLocation;
     }
 
-    public Location getHouseLocation() {
+    public Location getHouseLocation() throws Exception {
         if(this.spawnLocation == null)
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), team));
+            throw new Exception(Lang.translate(Lang.team_house_location_not_added.toString(), team));
         return spawnLocation;
     }
 

@@ -1,5 +1,6 @@
 package fr.mineral.Utils;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -58,6 +59,7 @@ public class AutomaticSetup {
             }
         }catch(Exception e) {
             mineralcontest.plugin.getServer().getLogger().info(e.getCause().toString());
+            Error.Report(e);
         }
 
     }

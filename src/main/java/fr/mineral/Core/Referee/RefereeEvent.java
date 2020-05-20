@@ -2,6 +2,7 @@ package fr.mineral.Core.Referee;
 
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,6 +63,7 @@ public class RefereeEvent implements Listener {
                                 game.demarrerPartie(true);
                             }catch (Exception e) {
                                 e.printStackTrace();
+                                Error.Report(e);
                             }
                         }else if(game.isGameStarted() && game.isGamePaused()) {
                             game.resumeGame();
@@ -85,6 +87,7 @@ public class RefereeEvent implements Listener {
                                 game.terminerPartie();
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                Error.Report(e);
                             }
                         }
                         else sendActionUnavailable(joueur);
@@ -109,6 +112,7 @@ public class RefereeEvent implements Listener {
                                 game.getArene().getCoffre().spawn();
                             }catch (Exception e) {
                                 e.printStackTrace();
+                                Error.Report(e);
                             }
                         }
                         else sendActionUnavailable(joueur);

@@ -3,6 +3,7 @@ package fr.mineral.Events;
 import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -55,6 +56,7 @@ public class PlayerDisconnect implements Listener {
                             mineralcontest.plugin.getGame().terminerPartie();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Error.Report(e);
                         }
                     }
                 }

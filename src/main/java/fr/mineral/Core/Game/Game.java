@@ -10,6 +10,7 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
@@ -232,6 +233,7 @@ public class Game implements Listener {
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Error.Report(e);
                     }
                 } else {
                     warnPlayerWithNoTeam();
@@ -490,6 +492,7 @@ public class Game implements Listener {
                                     } catch (Exception e) {
                                         mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console");
                                         e.printStackTrace();
+                                        Error.Report(e);
                                     }
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
@@ -507,6 +510,7 @@ public class Game implements Listener {
 
                                     }catch (Exception e) {
                                         e.printStackTrace();
+                                        Error.Report(e);
                                     }
 
                                 } else {
@@ -559,6 +563,7 @@ public class Game implements Listener {
 
                         }catch (Exception e) {
                             e.printStackTrace();
+                            Error.Report(e);
                         }
                         // Si le temps n'est pas à zéro, on continue
                         if(tempsPartie > 0) tempsPartie--;
@@ -945,7 +950,8 @@ public class Game implements Listener {
                     case "r":
                         this.redHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
+                        if (getPlayerHouse(joueur).getHouseLocation() != null)
+                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "jaune":
@@ -954,7 +960,8 @@ public class Game implements Listener {
                     case "y":
                         this.yellowHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
+                        if (getPlayerHouse(joueur).getHouseLocation() != null)
+                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
 
                     case "blue":
@@ -962,7 +969,8 @@ public class Game implements Listener {
                     case "b":
                         this.blueHouse.getTeam().addPlayerToTeam(joueur, true);
                         if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
+                        if (getPlayerHouse(joueur).getHouseLocation() != null)
+                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
                         break;
                 }
             }

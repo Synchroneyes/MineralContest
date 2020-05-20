@@ -1,5 +1,6 @@
 package fr.mineral.Utils.Door;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,6 +21,7 @@ public class DisplayBlock {
             this.data = baseBlock.getState().getData();
         }catch (Exception e){
             e.printStackTrace();
+            Error.Report(e);
         }
 
 
@@ -40,6 +42,7 @@ public class DisplayBlock {
             position.getBlock().getState().update();
         }catch(Exception e){
             e.printStackTrace();
+            Error.Report(e);
         }
 
     }

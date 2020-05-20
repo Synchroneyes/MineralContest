@@ -1,5 +1,6 @@
 package fr.mineral.Utils.Player;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -132,7 +133,10 @@ public class PlayerBaseItem {
                                 int indexType = getArmorTypeIndex((String) attributeValue);
                                 armorToSave.setType(indexType);
                                 isAttributeSet[getAttributeIndex(itemAttribute, "armor")] = true;
-                            }catch (Exception e){ e.printStackTrace(); }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Error.Report(e);
+                            }
                             break;
 
                         case "auto_equip":
@@ -142,6 +146,7 @@ public class PlayerBaseItem {
                                 isAttributeSet[getAttributeIndex(itemAttribute, "armor")] = true;
                             }catch (Exception e) {
                                 e.printStackTrace();
+                                Error.Report(e);
                             }
                             break;
 

@@ -1,6 +1,7 @@
 package fr.mineral.Commands;
 
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +25,8 @@ public class StartGameCommand implements CommandExecutor {
 
                 } catch (Exception e) {
                     sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                    e.printStackTrace();
+                    Error.Report(e);
                 }
             }
             return false;

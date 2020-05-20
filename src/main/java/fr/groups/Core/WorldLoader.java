@@ -1,6 +1,7 @@
 package fr.groups.Core;
 
 import fr.groups.Utils.FileManager.FileCopy;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -52,6 +53,7 @@ public class WorldLoader {
             FileCopy.copyDirectoryContent(dossierMondeACopier, repertoireServer);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            Error.Report(ioe);
         }
 
         WorldCreator wc = new WorldCreator(nomMap + "_" + identifiant);
@@ -67,6 +69,7 @@ public class WorldLoader {
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            Error.Report(ioe);
         }
 
     }

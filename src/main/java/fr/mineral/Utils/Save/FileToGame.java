@@ -1,5 +1,6 @@
 package fr.mineral.Utils.Save;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -39,6 +40,7 @@ public class FileToGame {
                     mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
                     mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
                     e.printStackTrace();
+                    Error.Report(e);
                 }
 
             }
@@ -48,6 +50,7 @@ public class FileToGame {
             mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Error while loading world");
             mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "This error usually happens when you reload the plugin. please dont, " + ChatColor.RED + "restart server instead");
             e.printStackTrace();
+            Error.Report(e);
         }
 
 

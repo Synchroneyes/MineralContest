@@ -44,7 +44,7 @@ public class SendInformation {
                 String result = request.getQueryResult();
                 Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
 

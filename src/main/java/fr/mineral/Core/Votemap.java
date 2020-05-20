@@ -3,6 +3,7 @@ package fr.mineral.Core;
 import fr.mineral.Core.Referee.Referee;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
@@ -182,6 +183,8 @@ public class Votemap {
                 mineralcontest.plugin.setWorldBorder();
             }catch(Exception e) {
                 e.printStackTrace();
+                Error.Report(e);
+                Error.Report(e);
             }
 
         }

@@ -1,5 +1,6 @@
 package fr.mineral.Settings;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
@@ -72,6 +73,7 @@ public enum GameSettingsCvar {
             gameSettings.saveConfig();
         } catch (IOException e) {
             e.printStackTrace();
+            Error.Report(e);
         }
     }
 

@@ -1,6 +1,7 @@
 package fr.mineral.Settings;
 
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -70,6 +71,7 @@ public class GameSettings {
             saveConfig();
         } catch (IOException e) {
             e.printStackTrace();
+            Error.Report(e);
         }
     }
 
@@ -117,11 +119,13 @@ public class GameSettings {
             mineralcontest.plugin.getLogger().severe(mineralcontest.prefixErreur + " An error happened while parsing the config file. A number was expected but got something else");
             nfe.printStackTrace();
             resetConfig();
+            Error.Report(nfe);
 
         }catch (Exception e) {
             mineralcontest.plugin.getLogger().severe(mineralcontest.prefixErreur + " An error happened while parsing the config file");
             e.printStackTrace();
             resetConfig();
+            Error.Report(e);
 
         }
     }

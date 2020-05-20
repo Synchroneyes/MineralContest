@@ -4,6 +4,7 @@ import fr.mineral.Core.House;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -103,6 +104,7 @@ public class DeathZone {
 
         }catch(Exception e) {
             e.printStackTrace();
+            Error.Report(e);
         }
 
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*(timeInDeathzone*3), 1));
@@ -149,6 +151,7 @@ public class DeathZone {
             }catch (Exception e) {
                 mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
                 e.printStackTrace();
+                Error.Report(e);
             }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2*20, 1);
 

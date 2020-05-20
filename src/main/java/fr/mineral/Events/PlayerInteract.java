@@ -25,7 +25,7 @@ public class PlayerInteract implements Listener {
         World worldEvent = event.getPlayer().getWorld();
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
 
-            if (Setup.premierLancement) {
+            if (Setup.instance != null && Setup.premierLancement) {
                 if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                     if (!event.getClickedBlock().getType().equals(Material.AIR)) {
                         Setup.setEmplacementTemporaire(event.getClickedBlock().getLocation());

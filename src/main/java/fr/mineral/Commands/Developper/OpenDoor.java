@@ -1,5 +1,6 @@
 package fr.mineral.Commands.Developper;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.Utils.Save.GameToFile;
 import fr.mineral.mineralcontest;
@@ -22,6 +23,7 @@ public class OpenDoor implements CommandExecutor {
                 }catch(Exception e) {
                     mineralcontest.plugin.getServer().getLogger().info("ERREUR");
                     e.printStackTrace();
+                    Error.Report(e);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

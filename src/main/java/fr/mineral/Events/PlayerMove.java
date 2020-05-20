@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -52,13 +53,19 @@ public class PlayerMove implements Listener {
                 House[] houses = {game.getRedHouse(), game.getBlueHouse(), game.getYellowHouse()};
                 if(playerTeam != null && !game.isReferee(event.getPlayer())) {
                     for(House house : houses) {
-                        if(playerTeam != house)
-                            if(Radius.isBlockInRadiusWithDividedYAxis(house.getHouseLocation(), event.getPlayer().getLocation(), houseRadius, 2)) {
-                                Location[] locations = {event.getFrom(), event.getTo()};
-                                int multiplier = 1;
-                                pushPlayerBack(event.getPlayer(), locations, multiplier);
-                                return;
+                        if (playerTeam != house) {
+                            try {
+                                if (Radius.isBlockInRadiusWithDividedYAxis(house.getHouseLocation(), event.getPlayer().getLocation(), houseRadius, 2)) {
+                                    Location[] locations = {event.getFrom(), event.getTo()};
+                                    int multiplier = 1;
+                                    pushPlayerBack(event.getPlayer(), locations, multiplier);
+                                    return;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Error.Report(e);
                             }
+                        }
                     }
                 }
             }

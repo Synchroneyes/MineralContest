@@ -3,6 +3,7 @@ package fr.mineral.Core.Arena;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
@@ -171,6 +172,7 @@ public class CoffreAvecCooldown {
                             generateChestContent();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Error.Report(e);
                         }
 
                         // Give chest items to user
@@ -298,6 +300,8 @@ public class CoffreAvecCooldown {
             }
         }catch(Exception e) {
             e.printStackTrace();
+            Error.Report(e);
+
         }
 
     }
