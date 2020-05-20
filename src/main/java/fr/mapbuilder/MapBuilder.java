@@ -1,10 +1,9 @@
 package fr.mapbuilder;
 
-import fr.mapbuilder.Commands.SaveArena;
-import fr.mapbuilder.Commands.SpawnArena;
-import fr.mapbuilder.Commands.SpawnHouse;
-import fr.mapbuilder.Commands.mcbuild;
+import fr.mapbuilder.Commands.*;
+import fr.mapbuilder.Core.Monde;
 import fr.mapbuilder.Events.BlockPlaced;
+import fr.mapbuilder.Events.PlayerInteract;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
@@ -23,12 +22,15 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = false;
+    public boolean isBuilderModeEnabled = true;
     private CommandMap bukkitCommandMap;
+
+    public static Monde monde;
 
     private MapBuilder() {
         instance = this;
         mineralcontest.debug = isBuilderModeEnabled;
+        monde = new Monde();
 
         if(!isBuilderModeEnabled) return;
 
@@ -65,6 +67,7 @@ public class MapBuilder {
     private void registerEvents() {
         printToConsole("Registering events");
         this.plugin.getServer().getPluginManager().registerEvents(new BlockPlaced(), plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(new PlayerInteract(), plugin);
     }
 
     private void registerCommands() {
@@ -73,8 +76,10 @@ public class MapBuilder {
         this.bukkitCommandMap.register(SpawnHouse.pluginCommand, new SpawnHouse());
         this.bukkitCommandMap.register(SpawnArena.pluginCommand, new SpawnArena());
 
-        this.bukkitCommandMap.register(fr.mapbuilder.Commands.mcbuild.pluginCommand, new mcbuild());
         this.bukkitCommandMap.register("", new SaveArena());
+        this.bukkitCommandMap.register("", new mcteam());
+        this.bukkitCommandMap.register("", new mcarena());
+        this.bukkitCommandMap.register("", new mcbuild());
 
     }
 

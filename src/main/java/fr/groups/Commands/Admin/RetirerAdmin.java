@@ -12,7 +12,7 @@ public class RetirerAdmin extends CommandTemplate {
 
     public RetirerAdmin() {
         super();
-        this.arguments.add("Nom du joueur");
+        addArgument("Nom du joueur", true);
         constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);

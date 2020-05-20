@@ -5,11 +5,14 @@ import fr.groups.Utils.Etats;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public abstract class CommandTemplate extends BukkitCommand {
 
@@ -24,13 +27,14 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int REQUIRE_GROUP_LOCKED = 8;
 
 
+
     public abstract String getCommand();
 
     public abstract String getDescription();
 
     public abstract String getPermissionRequise();
 
-    protected LinkedList<String> arguments;
+    protected HashMap<String, Boolean> arguments;
     protected LinkedList<Integer> accessCommande;
 
 
@@ -46,7 +50,7 @@ public abstract class CommandTemplate extends BukkitCommand {
         this.setPermissionMessage(getErrorMessage());
         this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
         this.accessCommande = new LinkedList<>();
-        this.arguments = new LinkedList<>();
+        this.arguments = new HashMap<>();
     }
 
     protected CommandTemplate(String name) {
@@ -56,9 +60,13 @@ public abstract class CommandTemplate extends BukkitCommand {
         this.setPermission(this.getPermissionRequise());
         this.setPermissionMessage(getErrorMessage());
         this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
-        this.arguments = new LinkedList<>();
+        this.arguments = new HashMap<>();
         this.accessCommande = new LinkedList<>();
 
+    }
+
+    public void addArgument(String arg, boolean argIsRequired) {
+        arguments.put(arg, argIsRequired);
     }
 
 
@@ -111,15 +119,22 @@ public abstract class CommandTemplate extends BukkitCommand {
 
         }
 
-        if (arguments.size() != receivedArgs.length) throw new Exception(getUsage());
+        if (arguments.size() != receivedArgs.length) {
+            int requiredArgSize = 0;
+            for (Map.Entry<String, Boolean> argument : arguments.entrySet())
+                if (argument.getValue()) requiredArgSize++;
+
+            if (receivedArgs.length != requiredArgSize) throw new Exception(getUsage());
+        }
     }
 
 
     public String getArgumentsString() {
         StringBuilder sb = new StringBuilder();
-        if (arguments == null) this.arguments = new LinkedList<>();
-        for (String arg : arguments)
-            sb.append("<" + arg + "> ");
+        if (arguments == null) this.arguments = new HashMap<>();
+        for (Map.Entry<String, Boolean> argument : arguments.entrySet())
+            if (argument.getValue()) sb.append("<" + ChatColor.RED + argument.getKey() + "> ");
+            else sb.append("<" + ChatColor.YELLOW + argument.getKey() + "> ");
         return sb.toString();
     }
 

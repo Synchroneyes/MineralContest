@@ -13,7 +13,7 @@ public class KickPlayerFromGroup extends CommandTemplate {
 
     public KickPlayerFromGroup() {
         super();
-        this.arguments.add("Nom du joueur");
+        addArgument("Nom du joueur", true);
         constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);

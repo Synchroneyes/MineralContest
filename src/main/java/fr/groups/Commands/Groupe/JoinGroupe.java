@@ -13,7 +13,7 @@ public class JoinGroupe extends CommandTemplate {
 
 
     public JoinGroupe() {
-        this.arguments.add("Nom du groupe");
+        addArgument("Nom du groupe", true);
         constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);

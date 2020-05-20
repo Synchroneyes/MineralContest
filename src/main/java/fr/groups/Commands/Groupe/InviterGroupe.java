@@ -12,7 +12,7 @@ public class InviterGroupe extends CommandTemplate {
 
     public InviterGroupe() {
         super();
-        this.arguments.add("nom du joueur");
+        addArgument("nom du joueur", true);
         constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);

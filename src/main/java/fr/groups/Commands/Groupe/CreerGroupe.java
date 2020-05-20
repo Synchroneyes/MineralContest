@@ -13,7 +13,7 @@ public class CreerGroupe extends CommandTemplate {
 
     public CreerGroupe() {
         super();
-        this.arguments.add("nom");
+        addArgument("nom", true);
         constructArguments();
 
     }

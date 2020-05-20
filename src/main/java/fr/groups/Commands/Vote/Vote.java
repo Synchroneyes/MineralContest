@@ -10,7 +10,7 @@ public class Vote extends CommandTemplate {
 
     public Vote() {
         super();
-        this.arguments.add("ID du biome");
+        addArgument("ID du biome", true);
         constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);

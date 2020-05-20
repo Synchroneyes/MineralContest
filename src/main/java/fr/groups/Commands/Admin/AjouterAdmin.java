@@ -13,7 +13,7 @@ public class AjouterAdmin extends CommandTemplate {
     public AjouterAdmin() {
         super();
 
-        this.arguments.add("Nom du joueur");
+        addArgument("Nom du joueur", true);
 
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(GROUP_REQUIRED);
