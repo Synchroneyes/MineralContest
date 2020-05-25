@@ -12,6 +12,8 @@ import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
@@ -426,6 +428,7 @@ public class PlayerUtils {
         // On l'ajoute à la deathzone
         try {
             mineralcontest.plugin.getGame().getArene().getDeathZone().add(player);
+            GameLogger.addLog(new Log("PlayerUtils_Dead", "Player " + player.getDisplayName() + " died", "death"));
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -463,6 +466,8 @@ public class PlayerUtils {
         commands.append(ChatColor.GREEN + "[ALL]" + ChatColor.GOLD + " join  " + ChatColor.WHITE + "# permet de rejoindre une équipe\n");
         commands.append(ChatColor.GREEN + "[ALL]" + ChatColor.GOLD + " leaveteam  " + ChatColor.WHITE + "# Quitter son équipe\n");
         player.sendMessage(commands.toString());
+        GameLogger.addLog(new Log("CommandsSentToPlayer", "Player " + player.getDisplayName() + " received all command", "PlayerInteract"));
+
     }
 
 

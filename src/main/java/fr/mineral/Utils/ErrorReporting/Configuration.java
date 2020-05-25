@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -64,8 +65,14 @@ public class Configuration {
         for (Player player : game.getBlueHouse().getTeam().getJoueurs()) {
             teamInfos.put("team_blue", player.getDisplayName());
         }
+
+        JSONArray players = new JSONArray();
+        for (Player p : mineralcontest.plugin.pluginWorld.getPlayers())
+            players.put(p.getDisplayName());
+
         json.put("game_info", gameInfo);
         json.put("team_info", teamInfos);
+        json.put("online_players", players);
 
         return json;
     }

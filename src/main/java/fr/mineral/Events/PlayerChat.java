@@ -3,6 +3,8 @@ package fr.mineral.Events;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -44,6 +46,9 @@ public class PlayerChat implements Listener {
             if(team != null) {
                 event.setFormat(team.getCouleur() + "%s:" + ChatColor.RESET + " %s" );
             }
+
+
+            GameLogger.addLog(new Log("player_chat", event.getFormat(), "player_chat"));
 
         }
 

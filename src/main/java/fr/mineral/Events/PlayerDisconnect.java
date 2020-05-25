@@ -4,6 +4,8 @@ import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -63,6 +65,8 @@ public class PlayerDisconnect implements Listener {
             }, 20);
 
                 event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
+            GameLogger.addLog(new Log("PlayerDisconnect", "Player " + joueur.getDisplayName() + " disconnected", "player_disconnect"));
+
 
         }
 

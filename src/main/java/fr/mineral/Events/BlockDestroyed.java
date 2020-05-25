@@ -9,6 +9,7 @@ import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
@@ -25,12 +26,13 @@ public class BlockDestroyed implements Listener {
         if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
 
 
-            if (Setup.premierLancement) {
+            if (Setup.instance != null && Setup.premierLancement) {
                 event.setCancelled(true);
                 return;
             }
 
             if(mineralcontest.plugin.getGame().isGamePaused()) {
+                Bukkit.getLogger().severe("GAME IS PAUSED, BLOCK CANT BE DESTROYED");
                 event.setCancelled(true);
                 return;
             }

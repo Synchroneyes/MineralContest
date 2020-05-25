@@ -26,6 +26,10 @@ public class BlockManager {
         placedBlocks = new Stack<>();
     }
 
+    public Stack<Block> getPlacedBlocks() {
+        return placedBlocks;
+    }
+
     public void addBlock(Block b) {
         // If block was added, we dont add it
         if(wasBlockAdded(b)) return;

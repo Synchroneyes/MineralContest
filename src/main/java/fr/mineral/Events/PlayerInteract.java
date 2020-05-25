@@ -2,6 +2,8 @@ package fr.mineral.Events;
 
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Setup;
@@ -58,6 +60,7 @@ public class PlayerInteract implements Listener {
                 Block listCommandBlock = worldEvent.getBlockAt(new Location(worldEvent, 111, 169, -168));
                 if(listCommandBlock.getLocation().equals(event.getClickedBlock().getLocation()) && listCommandBlock.getType().equals(Material.LIME_STAINED_GLASS)) {
                     PlayerUtils.sendPluginCommandsToPlayer(joueur);
+
                 }
             }
 

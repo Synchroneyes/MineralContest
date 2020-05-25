@@ -31,7 +31,6 @@ public class mcteam extends CommandTemplate {
         if (porteEquipe == null) porteEquipe = new HashMap<>();
         if (attributionEquipeJoueur == null) attributionEquipeJoueur = new HashMap<>();
 
-
         this.actionsPossible = new LinkedList<>();
         actionsPossible.add("creer");
         actionsPossible.add("supprimer");
@@ -287,9 +286,7 @@ public class mcteam extends CommandTemplate {
         } catch (IllegalArgumentException i) {
             StringBuilder couleursDispo = new StringBuilder();
 
-            for (BlocksDataColor couleur : BlocksDataColor.values())
-                couleursDispo.append(couleur.color + ", ");
-            String couleurDispoText = couleursDispo.toString();
+            String couleurDispoText = "BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE";
             commandSender.sendMessage(mineralcontest.prefixErreur + "Couleur dispo: " + couleurDispoText);
             return false;
         }

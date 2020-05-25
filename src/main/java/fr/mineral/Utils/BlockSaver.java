@@ -36,8 +36,6 @@ public class BlockSaver {
         this.blockByte = b.getState().getData().getData();
         this.blockData = b.getBlockData();
 
-        Bukkit.getLogger().info(blockData.getAsString());
-
 
     }
 

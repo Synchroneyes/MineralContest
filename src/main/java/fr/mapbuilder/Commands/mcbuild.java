@@ -1,8 +1,12 @@
 package fr.mapbuilder.Commands;
 
 import fr.groups.Commands.CommandTemplate;
+import fr.mapbuilder.Blocks.BlocksDataColor;
 import fr.mapbuilder.Core.Monde;
+import fr.mapbuilder.Items.AreneItem;
+import fr.mapbuilder.Items.ColoredHouseItem;
 import fr.mapbuilder.MapBuilder;
+import fr.mapbuilder.Spawner.Arene;
 import fr.mineral.Core.House;
 import fr.mineral.Utils.Door.DisplayBlock;
 import fr.mineral.mineralcontest;
@@ -27,7 +31,7 @@ public class mcbuild extends CommandTemplate {
 
         this.actionsPossible = new LinkedList<>();
         actionsPossible.add("save");
-        actionsPossible.add("build");
+        actionsPossible.add("menu");
 
 
         addArgument("action", true);
@@ -66,6 +70,20 @@ public class mcbuild extends CommandTemplate {
                 return false;
             }
         }
+
+        if (args[0].equalsIgnoreCase("menu")) {
+            for (BlocksDataColor color : BlocksDataColor.values()) {
+                ColoredHouseItem house = new ColoredHouseItem(color);
+                house.giveItemToPlayer((Player) commandSender);
+            }
+            commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu les blocs de création de maison. Vous n'avez plus qu'a les poser");
+            AreneItem item = new AreneItem();
+            item.giveItemToPlayer((Player) commandSender);
+            commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu le bloc de création d'arène Vous n'avez plus qu'a le poser");
+            return false;
+        }
+
+
 
         return false;
     }

@@ -37,6 +37,9 @@ public class Error {
         );
 
 
+        Bukkit.getLogger().severe("[MINERAL CONTEST] Envoie d'une erreur au serveur en cours ... L'erreur est la suivante:");
+        exception.printStackTrace();
+
         try {
             Send(report);
         } catch (IOException ioe) {
@@ -48,7 +51,7 @@ public class Error {
     private static void Send(JSONObject json) throws IOException {
         String url_post = "http://mineral.synchroneyes.fr/api/error/send";
         //String url_post = "http://localhost:8000/api/error/send";
-/*
+        /*
         HttpPost post = new HttpPost(url);
 
         // add request parameter, form parameters

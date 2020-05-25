@@ -9,9 +9,13 @@ import fr.groups.Commands.Groupe.*;
 import fr.groups.Commands.Vote.StartVote;
 import fr.groups.Commands.Vote.Vote;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Player.PlayerUtils;
+import fr.mineral.mineralcontest;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
 
 import java.io.File;
@@ -22,7 +26,7 @@ public class GroupeExtension {
 
     private static GroupeExtension instance;
     private CommandMap bukkitCommandMap;
-    public static boolean enabled = false;
+    public static boolean enabled = true;
 
     private GroupeExtension() {
         if (!enabled) return;
@@ -55,6 +59,25 @@ public class GroupeExtension {
                 Error.Report(ioe);
             }
         }
+
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().contains("mc_")) {
+                world.setAutoSave(false);
+                for (Player p : world.getPlayers()) {
+                    if (mineralcontest.plugin.defaultSpawn == null) {
+                        p.setHealth(0);
+                    } else {
+                        p.teleport(mineralcontest.plugin.defaultSpawn);
+                    }
+                }
+
+                Bukkit.unloadWorld(world, false);
+                Bukkit.getLogger().info("Successfully unloaded world " + world.getName());
+
+            }
+        }
+
+
 
     }
 

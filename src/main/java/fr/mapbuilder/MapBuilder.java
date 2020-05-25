@@ -22,7 +22,7 @@ public class MapBuilder {
 
     private mineralcontest plugin = mineralcontest.plugin;
     private static MapBuilder instance;
-    public boolean isBuilderModeEnabled = true;
+    public boolean isBuilderModeEnabled = false;
     private CommandMap bukkitCommandMap;
 
     public static Monde monde;

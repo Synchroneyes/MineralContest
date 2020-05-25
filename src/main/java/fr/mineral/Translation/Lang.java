@@ -4,6 +4,8 @@ import fr.groups.Core.Groupe;
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -214,6 +216,8 @@ public enum Lang {
             if(!langFile.exists()) {
                 plugin.saveResource(langDataFolderName + File.separator + LangFileName, false);
                 Bukkit.getLogger().info("Created " + LangFileName + " file");
+                GameLogger.addLog(new Log("copyLangFileFromRessources", LangFileName + " created", "plugin_startup"));
+
             }
         }
     }
@@ -227,6 +231,8 @@ public enum Lang {
         langFile = new File(plugin.getDataFolder() + File.separator + Lang.langDataFolderName, lang + ".yml");
         if(!langFile.exists()) {
             Bukkit.getLogger().severe(lang + ".yml lang file doesnt exists or could not be loaded.");
+            GameLogger.addLog(new Log("loadLang", lang + " doesnt exists", "plugin_error"));
+
             return;
         }
 
@@ -238,9 +244,11 @@ public enum Lang {
         }
         Lang.setFile(conf);
 
+
         try {
             conf.save(langFile);
             Bukkit.getLogger().info("[MINERALC] Loaded " + lang + " language");
+            GameLogger.addLog(new Log("loadLang", lang + " loaded", "plugin_lang_loaded"));
             mineralcontest.prefix = Lang.title.toString() + ChatColor.WHITE;
             mineralcontest.prefixErreur = Lang.title.toString() +  ChatColor.RED + Lang.error.toString() + ChatColor.WHITE + " ";
             mineralcontest.prefixGlobal = Lang.title.toString() + ChatColor.GREEN + Lang.global.toString() + ChatColor.WHITE+ " ";
@@ -259,6 +267,8 @@ public enum Lang {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
             ioe.printStackTrace();
             Error.Report(ioe);
+            GameLogger.addLog(new Log("error", "failed to save lang.yml", "plugin_error"));
+
         } catch (Exception e) {
             plugin.getLogger().severe("ERREUR");
             e.printStackTrace();

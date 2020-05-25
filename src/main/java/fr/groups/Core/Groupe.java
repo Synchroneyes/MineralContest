@@ -11,6 +11,7 @@ import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,7 +50,7 @@ public class Groupe {
         this.partie = new Game();
         partie.setGroupe(this);
         this.etat = Etats.EN_ATTENTE;
-        this.worldLoader = new WorldLoader();
+        this.worldLoader = new WorldLoader(this);
         genererIdentifiant();
     }
 
@@ -76,7 +77,15 @@ public class Groupe {
      * @return true si chargement réussi, false sinon
      */
     public boolean chargerMonde(String nomMonde) {
-        this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
+
+        try {
+            this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
+        } catch (Exception e) {
+            sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde. Erreur: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+
         if (gameWorld == null) {
             sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde.");
             return false;

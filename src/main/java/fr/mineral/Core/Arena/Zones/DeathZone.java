@@ -134,7 +134,12 @@ public class DeathZone {
             House teamHouse = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
             if(team == null) {
                 // On le téléporte vers l'arene
-                throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone et n'a pas de team");
+                // On le téléporte vers l'arene
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a été TP au centre de l'arène car il n'a pas d'équipe et vient de réapparaitre suite à une mort");
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a également été mis spectateur. Vous devez changer son gamemode");
+                mineralcontest.plugin.getGame().teleportToLobby(joueur);
+                joueur.setGameMode(GameMode.SPECTATOR);
+
             } else {
                 // ON le TP vers son spawn equipe
                 PlayerUtils.teleportPlayer(joueur, teamHouse.getHouseLocation());

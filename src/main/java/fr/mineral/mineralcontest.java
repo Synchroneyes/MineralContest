@@ -14,6 +14,8 @@ import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Events.*;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -135,7 +137,7 @@ public final class mineralcontest extends JavaPlugin {
                     PlayerUtils.teleportPlayer(online, defaultSpawn);
 
         PlayerUtils.runScoreboardManager();
-
+        GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
 
     }
 
@@ -152,6 +154,8 @@ public final class mineralcontest extends JavaPlugin {
 
         getGame().resetMap();
         Bukkit.getScheduler().cancelTasks(this);
+        GameLogger.addLog(new Log("server_event", "OnDisable", "plugin_shutdown"));
+
     }
 
     private void registerEvents() {
@@ -231,6 +235,7 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("valider").setExecutor(new ValiderCommand());
 
 
+
     }
 
     // Called when the game start
@@ -274,6 +279,7 @@ public final class mineralcontest extends JavaPlugin {
             log.severe(mineralcontest.prefixErreur + Lang.github_link.toString());
             log.severe(mineralcontest.prefixErreur + Lang.plugin_shutdown.toString());
             Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
+
         }
     }
 
@@ -281,12 +287,14 @@ public final class mineralcontest extends JavaPlugin {
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
             player.sendMessage(message);
         Bukkit.getLogger().info(message);
+        GameLogger.addLog(new Log("broadcast", message, "server"));
     }
 
     public static void broadcastMessageToAdmins(String message) {
         for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
             if(player.isOp()) player.sendMessage(message);
         Bukkit.getLogger().info(message);
+        GameLogger.addLog(new Log("broadcast_admin", message, "server"));
     }
 
 }

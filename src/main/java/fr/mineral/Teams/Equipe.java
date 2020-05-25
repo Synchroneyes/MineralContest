@@ -2,6 +2,8 @@ package fr.mineral.Teams;
 
 import fr.mineral.Settings.GameSettingsCvar;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
@@ -62,6 +64,8 @@ public class Equipe {
     public int getScore() { return this.score - this.penalty; }
     public void setScore(int score) {
         this.score = score;
+        GameLogger.addLog(new Log("TeamChestScoreUpdated", "The team " + getNomEquipe() + " score got updated to " + score + "", "ChestEvent"));
+
         for(Player online : joueurs)
             online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
     }

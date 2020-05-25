@@ -11,6 +11,8 @@ import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
@@ -46,6 +48,8 @@ public class Game implements Listener {
     private House redHouse;
     private House yellowHouse;
     private House blueHouse;
+
+    public LinkedList<House> equipes;
 
     private LinkedList<Player> playersReady;
 
@@ -94,6 +98,8 @@ public class Game implements Listener {
         this.playersReady = new LinkedList<>();
         this.PlayerThatTriedToLogIn = new HashMap<>();
 
+        this.equipes = new LinkedList<>();
+
         this.addedChests = new LinkedList<>();
 
         DUREE_PARTIE = (int) GameSettingsCvar.getValueFromCVARName("game_time");
@@ -113,7 +119,10 @@ public class Game implements Listener {
 
     public void addAChest(Block block) {
         if(isTheBlockAChest(block)) {
-            if(!this.addedChests.contains(block)) this.addedChests.add(block);
+            if (!this.addedChests.contains(block)) {
+                this.addedChests.add(block);
+                GameLogger.addLog(new Log("ChestSaverAdd", "A chest got " + "added", "block_event"));
+            }
         }
     }
 
@@ -264,11 +273,24 @@ public class Game implements Listener {
         this.referees.clear();
         this.disconnectedPlayers.clear();
         this.playersReady.clear();
+
+        BlockManager instance = BlockManager.getInstance();
+        for (Block block : instance.getPlacedBlocks())
+            block.setType(Material.AIR);
+
+        if (mineralcontest.plugin.pluginWorld != null && !mineralcontest.debug) {
+            for (Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
+                mineralcontest.plugin.getGame().teleportToLobby(player);
+                PlayerUtils.clearPlayer(player);
+            }
+        }
     }
 
     public void addBlock(Block b, BlockSaver.Type type) {
         //Bukkit.getLogger().info("A new block has been saved");
         this.affectedBlocks.add(new BlockSaver(b, type));
+        GameLogger.addLog(new Log("BlockSaverAdd", "A block got " + type + " (Type: " + b.getType().toString() + " - Loc: " + b.getLocation().toVector().toString() + ")", "block_event"));
+
     }
 
     public void addReferee(Player player) {
