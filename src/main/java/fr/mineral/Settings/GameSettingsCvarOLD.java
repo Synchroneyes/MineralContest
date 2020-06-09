@@ -5,9 +5,9 @@ import org.bukkit.Bukkit;
 
 import java.io.IOException;
 
-public enum GameSettingsCvar {
+public enum GameSettingsCvarOLD {
 
-    mp_enable_metrics("cvar", "int", "mp_enable_metrics", "1", true),
+    /*mp_enable_metrics("cvar", "int", "mp_enable_metrics", "1", true),
     mp_randomize_team("cvar", "int", "mp_randomize_team", "1", true),
     mp_enable_item_drop("cvar", "int", "mp_enable_item_drop", "2", true),
     SCORE_IRON("cvar", "int", "SCORE_IRON", "10", true),
@@ -73,7 +73,7 @@ public enum GameSettingsCvar {
             gameSettings.saveConfig();
         } catch (IOException e) {
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
     }
 
@@ -81,21 +81,21 @@ public enum GameSettingsCvar {
         return (String) this.value;
     }
 
-    public static Object getValueFromCVARName(String name) {
+    /*public static Object getValueFromCVARName(String name) {
         if(!GameSettings.getInstance().isConfigLoaded) GameSettings.getInstance().loadGameSettings(GameSettings.PLUGIN_START);
         for(GameSettingsCvar cvar : values())
             if(cvar.getName().equals(name)) {
                 return cvar.getValue();
             }
         return null;
-    }
+    }*/
 
-    public static void setValueFromCVARName(String name, String value) throws IOException {
+    /*public static void setValueFromCVARName(String name, String value) throws IOException {
         for(GameSettingsCvar cvar : values())
             if(cvar.getName().equals(name)){
                 cvar.setValue(value);
                 return;
             }
 
-    }
+    }*/
 }

@@ -135,7 +135,7 @@ public class PlayerBaseItem {
                                 isAttributeSet[getAttributeIndex(itemAttribute, "armor")] = true;
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Error.Report(e);
+                                Error.Report(e, null);
                             }
                             break;
 
@@ -146,7 +146,7 @@ public class PlayerBaseItem {
                                 isAttributeSet[getAttributeIndex(itemAttribute, "armor")] = true;
                             }catch (Exception e) {
                                 e.printStackTrace();
-                                Error.Report(e);
+                                Error.Report(e, null);
                             }
                             break;
 
@@ -180,7 +180,7 @@ public class PlayerBaseItem {
 
     public static void givePlayerItems(Player player, String when) throws Exception {
 
-        if(plugin.getGame().isGameStarted()) {
+        if (mineralcontest.getPlayerGame(player).isGameStarted()) {
             if(itemsToGive == null) setPlayerBaseItems();
 
             for(Map.Entry<ItemStack, String> item : itemsToGive.entrySet()) {

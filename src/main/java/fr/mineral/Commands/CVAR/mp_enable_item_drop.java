@@ -1,6 +1,8 @@
 package fr.mineral.Commands.CVAR;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,8 +12,20 @@ import org.bukkit.entity.Player;
 public class mp_enable_item_drop implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
             if(command.getName().equalsIgnoreCase("mp_enable_item_drop")) {
                 if(sender.isOp()) {
                     if(args.length == 1) {
@@ -23,7 +37,7 @@ public class mp_enable_item_drop implements CommandExecutor {
                                 return false;
                             }
 
-                            GameSettingsCvar.mp_enable_item_drop.setValue(valeur);
+                            GameSettingsCvarOLD.mp_enable_item_drop.setValue(valeur);
 
                         /*mineralcontest.mp_enable_item_drop = valeur;
                         mineralcontest.plugin.setConfigValue("config.cvar.mp_enable_item_drop", mineralcontest.mp_enable_item_drop);*/

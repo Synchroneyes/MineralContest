@@ -1,5 +1,6 @@
 package fr.mapbuilder.Core;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
@@ -16,10 +17,12 @@ public class Monde {
     private Arene arene;
     private Location spawnDepart;
     private String nom;
+    private Groupe groupe;
 
     public Monde() {
+        this.groupe = new Groupe();
         equipes = new LinkedList<>();
-        arene = new Arene();
+        arene = new Arene(groupe);
     }
 
     public Arene getArene() {
@@ -32,6 +35,14 @@ public class Monde {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public Location getSpawnDepart() {
+        return spawnDepart;
+    }
+
+    public void setSpawnDepart(Location spawnDepart) {
+        this.spawnDepart = spawnDepart;
     }
 
     public LinkedList<String> getNomsEquipe() {
@@ -50,7 +61,7 @@ public class Monde {
             Bukkit.broadcastMessage(mineralcontest.prefixGlobal + "L'équipe " + nom + " existe déjà");
             return;
         }
-        this.equipes.add(new House(nom, couleur));
+        this.equipes.add(new House(nom, couleur, groupe));
         Bukkit.broadcastMessage(mineralcontest.prefixGlobal + "L'équipe " + couleur + nom + ChatColor.WHITE + " a été crée avec succès");
     }
 

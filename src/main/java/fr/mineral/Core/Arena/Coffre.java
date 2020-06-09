@@ -1,8 +1,10 @@
 package fr.mineral.Core.Arena;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,9 +17,14 @@ import java.util.Random;
 public class Coffre {
     private Location position;
     private boolean actif = false;
+    private Groupe groupe;
+
+    public Coffre(Groupe g) {
+        this.groupe = g;
+    }
 
     public void setPosition(Location p) {
-        p.setWorld(PlayerUtils.getPluginWorld());
+        Bukkit.getLogger().severe("setPositionCoffre worldname => " + p.getWorld().getName());
         this.position = p;
     }
 
@@ -65,7 +72,7 @@ public class Coffre {
 
 
         }catch (Exception e) {
-            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), groupe);
 
         }
     }

@@ -6,7 +6,8 @@ public enum Etats {
     VOTE_TERMINE("Vote terminé"),
     PREGAME("Démarrage de la partie"),
     GAME_EN_COURS("Partie en cours"),
-    GAME_TERMINE("Partie terminée");
+    GAME_TERMINE("Partie terminée"),
+    ATTENTE_DEBUT_PARTIE("En attente du démarrage");
 
     private String nom;
 

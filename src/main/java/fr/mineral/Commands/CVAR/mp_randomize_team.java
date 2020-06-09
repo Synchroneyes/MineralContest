@@ -1,6 +1,8 @@
 package fr.mineral.Commands.CVAR;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,9 +13,20 @@ public class mp_randomize_team implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGameStarted()){
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
+            if (partie.isGameStarted()) {
                 sender.sendMessage(mineralcontest.prefixErreur + "La partie est déjà en cours, la modification de valeur n'est pas permis.");
                 return true;
             }
@@ -29,16 +42,16 @@ public class mp_randomize_team implements CommandExecutor {
                         e.printStackTrace();
                     }*/
 
-                        GameSettingsCvar.mp_randomize_team.setValue(args[0]);
+                        GameSettingsCvarOLD.mp_randomize_team.setValue(args[0]);
 
                         switch(Integer.parseInt(args[0])) {
                             case 1:
-                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Les équipes seront désormais aléatoire.");
+                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Les équipes seront désormais aléatoire.", partie.groupe);
                                 break;
 
                             case 0:
-                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Les équipes seront désormais de manière manuelle.");
-                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Veuillez utiliser /join <rouge | bleu | jaune>");
+                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Les équipes seront désormais de manière manuelle.", partie.groupe);
+                                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Veuillez utiliser /join <rouge | bleu | jaune>", partie.groupe);
                                 break;
                         }
 
@@ -48,7 +61,7 @@ public class mp_randomize_team implements CommandExecutor {
                         return true;
                     }
                 } else if(args.length == 0) {
-                    sender.sendMessage("[mp_randomize_team] Valeur actuelle: " + GameSettingsCvar.mp_randomize_team.getValue());
+                    sender.sendMessage("[mp_randomize_team] Valeur actuelle: " + GameSettingsCvarOLD.mp_randomize_team.getValue());
                     return true;
                 }else {
                     sender.sendMessage("Usage: /mp_randomize_team [1 | 0]");

@@ -23,7 +23,9 @@ public class RefereeInventory {
 
     private void fillInventory() {
 
-        Game game = mineralcontest.plugin.getGame();
+        // TODO
+
+        /*Game game = mineralcontest.getPlayerGame(joueur);
         inventory.clear();
         /*
                         GREEN_CONCRETE : START / RESUME
@@ -34,7 +36,7 @@ public class RefereeInventory {
                         BROWN CONCRETE: START VOTE
 
                      */
-        ItemStack StartOrResume = new ItemStack(Material.GREEN_CONCRETE, 1);
+        /*ItemStack StartOrResume = new ItemStack(Material.GREEN_CONCRETE, 1);
         ItemStack Pause = new ItemStack(Material.YELLOW_CONCRETE, 1);
         //ItemStack Stop = new ItemStack(Material.RED_CONCRETE, 1);
         ItemStack LeaderBoard = new ItemStack(Material.BLUE_CONCRETE, 1);
@@ -57,7 +59,7 @@ public class RefereeInventory {
         meta.setDisplayName("Stop game");
         Stop.setItemMeta(meta);*/
 
-        meta = LeaderBoard.getItemMeta();
+        /*meta = LeaderBoard.getItemMeta();
         meta.setDisplayName(Lang.referee_item_leaderboard.toString());
         LeaderBoard.setItemMeta(meta);
 
@@ -74,14 +76,14 @@ public class RefereeInventory {
         meta.setDisplayName(Lang.referee_item_force_biome.toString());
         ForceVote.setItemMeta(meta);
 
-        if(mineralcontest.plugin.getGame().isGameStarted()) {
+        if(mineralcontest.getPlayerGame(joueur).isGameStarted()) {
             inventory.addItem(StartOrResume, Pause,
                     //Stop,
                     ArenaChest,
                     LeaderBoard);
         } else {
             inventory.addItem(StartOrResume, StartVote, ForceVote);
-        }
+        }*/
 
     }
 

@@ -14,7 +14,7 @@ public class SetCooldownChestCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(command.getName().equals("cooldownchest")) {
+        /*if(command.getName().equals("cooldownchest")) {
             try {
                 CoffreAvecCooldown c = new CoffreAvecCooldown(((Player)sender).getLocation());
                 c.spawn();
@@ -22,7 +22,7 @@ public class SetCooldownChestCommand implements CommandExecutor {
                 e.printStackTrace();
             }
 
-        }
+        }*/
         return false;
     }
 }

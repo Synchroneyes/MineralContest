@@ -12,18 +12,18 @@ public class VoteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().votemap.voteEnabled) {
+        /*Player player = (Player) sender;
+        if(mineralcontest.isInAMineralContestWorld(player)) {
+            if(mineralcontest.getPlayerGame(player).votemap.voteEnabled) {
                 if(args.length == 1) {
                     try {
 
-                        if(mineralcontest.plugin.getGame().isReferee(player) && Referee.refereeForcingVote != null && Referee.refereeForcingVote.equals(player)) {
-                            mineralcontest.plugin.getGame().votemap.setSelectedBiome(Integer.parseInt(args[0]));
+                        if(mineralcontest.getPlayerGame(player).isReferee(player) && Referee.refereeForcingVote != null && Referee.refereeForcingVote.equals(player)) {
+                            mineralcontest.getPlayerGame(player).votemap.setSelectedBiome(Integer.parseInt(args[0]));
                             return false;
                         }
 
-                        mineralcontest.plugin.getGame().votemap.addPlayerVote(player, Integer.parseInt(args[0]), false);
+                        mineralcontest.getPlayerGame(player).votemap.addPlayerVote(player, Integer.parseInt(args[0]), false);
                     }catch(NumberFormatException nfe) {
                         player.sendMessage("Usage: /vote <biome> | " + Lang.vote_explain.toString());
                     }
@@ -39,6 +39,8 @@ public class VoteCommand implements CommandExecutor {
         }
 
 
+        return false;
+    }*/
         return false;
     }
 }

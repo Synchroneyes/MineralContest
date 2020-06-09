@@ -9,13 +9,15 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 public class PlayerWorldChange implements Listener {
     @EventHandler
     public void onPlayerchangeWorld(PlayerChangedWorldEvent event) {
-        if(event.getFrom().equals(mineralcontest.plugin.pluginWorld)) {
+
+
+        if (mineralcontest.isAMineralContestWorld(event.getFrom())) {
             ScoreboardUtil.unrankedSidebarDisplay(event.getPlayer(), "");
         }
 
         // miltivers support kick
 
-        /*if(event.getPlayer().getWorld().equals(mineralcontest.plugin.pluginWorld) && mineralcontest.plugin.getGame().isGameStarted()) {
+        /*if(event.getPlayer().getWorld().equals(mineralcontest.plugin.pluginWorld) && mineralcontest.getPlayerGame(joueur).isGameStarted()) {
             World oldWorld = event.getPlayer().getWorld();
             event.getPlayer().teleport(new Location(event.getFrom(), 0, 70, 0));
         }*/

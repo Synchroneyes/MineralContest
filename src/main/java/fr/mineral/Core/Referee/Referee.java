@@ -26,10 +26,10 @@ public class Referee {
         Referee.refereeForcingVote = refereeForcingVote;
     }
 
-    public static void broadcastToReferees(String message) {
-        for(Player referee: mineralcontest.plugin.getGame().getReferees())
+    /*public static void broadcastToReferees(String message) {
+        for(Player referee: mineralcontest.getPlayerGame(joueur).getReferees())
             referee.sendMessage(message);
-    }
+    }*/
 
     // Display leaderboard to all referees
     public static void displayLeaderboard() {
@@ -37,9 +37,11 @@ public class Referee {
         LinkedList<Equipe> equipes = new LinkedList<>();
         Stack<Equipe> leaderboard = new Stack<>();
 
-        equipes.add(mineralcontest.plugin.getGame().getBlueHouse().getTeam());
-        equipes.add(mineralcontest.plugin.getGame().getRedHouse().getTeam());
-        equipes.add(mineralcontest.plugin.getGame().getYellowHouse().getTeam());
+        /*equipes.add(mineralcontest.getPlayerGame(joueur).getBlueHouse().getTeam());
+        equipes.add(mineralcontest.getPlayerGame(joueur).getRedHouse().getTeam());
+        equipes.add(mineralcontest.getPlayerGame(joueur).getYellowHouse().getTeam());*/
+
+        // TODO
 
         int minScore = Integer.MIN_VALUE;
         Equipe highestTeam = null;
@@ -67,22 +69,23 @@ public class Referee {
         stringBuilder.append(ChatColor.WHITE + "===========\n");
 
 
-        broadcastToReferees(stringBuilder.toString());
+        //broadcastToReferees(stringBuilder.toString());
         return;
     }
 
     public static void displayTeamScore() {
         LinkedList<Equipe> equipes = new LinkedList<>();
         StringBuilder stringBuilder = new StringBuilder();
-        equipes.add(mineralcontest.plugin.getGame().getBlueHouse().getTeam());
-        equipes.add(mineralcontest.plugin.getGame().getRedHouse().getTeam());
-        equipes.add(mineralcontest.plugin.getGame().getYellowHouse().getTeam());
+        /*equipes.add(mineralcontest.getPlayerGame(joueur).getBlueHouse().getTeam());
+        equipes.add(mineralcontest.getPlayerGame(joueur).getRedHouse().getTeam());
+        equipes.add(mineralcontest.getPlayerGame(joueur).getYellowHouse().getTeam());*/
+        // TODO
 
         for(Equipe equipe : equipes) {
             stringBuilder.append(equipe.getCouleur() + equipe.getNomEquipe() + ": " + equipe.getScore() + " points\n" + ChatColor.WHITE);
         }
 
-        broadcastToReferees(stringBuilder.toString());
+        //broadcastToReferees(stringBuilder.toString());
 
         return;
     }

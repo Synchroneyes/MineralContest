@@ -1,5 +1,7 @@
 package fr.mineral.Commands.CVAR;
 
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.House;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
@@ -11,61 +13,37 @@ public class mp_reset_team_penality implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
             if (sender.isOp() && command.getName().equals("mp_reset_team_penality")) {
                 if (args.length == 1) {
                     String usage = "Usage: /mp_reset_team_penality <" + Lang.red_team.toString() + " | " + Lang.yellow_team.toString() + " | " + Lang.blue_team.toString() + ">";
 
-                    if (args.length == 1) {
-                        switch (args[0].toLowerCase()) {
-                            case "j":
-                            case "jaune":
-                            case "y":
-                            case "yellow":
-                                try {
-                                    mineralcontest.plugin.getGame().getYellowHouse().getTeam().resetPenalty();
-
-                                } catch (Exception e) {
-                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                                }
-                                break;
-
-                            case "b":
-                            case "bleu":
-                            case "bleue":
-                            case "blue":
-                                try {
-                                    mineralcontest.plugin.getGame().getBlueHouse().getTeam().resetPenalty();
-
-                                } catch (Exception e) {
-                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                                }
-                                break;
-
-                            case "r":
-                            case "rouge":
-                            case "red":
-                                try {
-                                    mineralcontest.plugin.getGame().getRedHouse().getTeam().resetPenalty();
-
-                                } catch (Exception e) {
-                                    sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                                }
-                                break;
-
-                            default:
-                                sender.sendMessage(usage);
-                                return true;
-                        }
-                    } else {
-                        sender.sendMessage(usage);
+                    House maison = partie.getHouseFromName(args[0]);
+                    if (maison == null) {
+                        player.sendMessage(mineralcontest.prefixErreur + Lang.cvar_error_invalid_team_name.toString());
+                        return false;
                     }
-                }
-                return false;
-            }
-        }
 
-        return true;
+                    maison.getTeam().resetPenalty();
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        return false;
     }
 }

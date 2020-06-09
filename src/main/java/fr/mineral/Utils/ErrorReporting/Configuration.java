@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.io.File;
 
 public class Configuration {
-    public static JSONObject export() {
+    public static JSONObject export(Game partie) {
         File configFile = new File(mineralcontest.plugin.getDataFolder() + File.separator + "config.yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
         JSONObject cvar = new JSONObject();
@@ -41,22 +41,26 @@ public class Configuration {
         arena.put("chest_content", _chest_content);
         final JSONObject json = new JSONObject();
         json.put("config", new JSONObject().put("cvar", cvar).put("settings", settings).put("arena", arena));
-        final Game game = mineralcontest.plugin.getGame();
+
+        final Game game = partie;
         final JSONObject gameInfo = new JSONObject();
-        gameInfo.put("plugin_version", mineralcontest.plugin.getDescription().getVersion());
-        gameInfo.put("server_version", Bukkit.getVersion());
-        gameInfo.put("game_started", game.isGameStarted());
-        gameInfo.put("game_paused", game.isGamePaused());
-        gameInfo.put("game_pregame", game.isPreGame());
-        gameInfo.put("game_pregame_started", game.isPreGameAndGameStarted());
-        gameInfo.put("game_initialized", game.isGameInitialized);
-        gameInfo.put("game_timeleft", game.getTempsRestant());
-        gameInfo.put("game_killcount", game.killCounter);
-        gameInfo.put("game_biome", game.votemap.getWinnerBiome(false));
+        if (partie != null) {
+            gameInfo.put("plugin_version", mineralcontest.plugin.getDescription().getVersion());
+
+            gameInfo.put("server_version", Bukkit.getVersion());
+            gameInfo.put("game_started", game.isGameStarted());
+            gameInfo.put("game_paused", game.isGamePaused());
+            gameInfo.put("game_pregame", game.isPreGame());
+            gameInfo.put("game_pregame_started", game.isPreGameAndGameStarted());
+            gameInfo.put("game_initialized", game.isGameInitialized);
+            gameInfo.put("game_timeleft", game.getTempsRestant());
+            gameInfo.put("game_killcount", game.killCounter);
+        }
+
 
 
         final JSONObject teamInfos = new JSONObject();
-        for (Player player : game.getRedHouse().getTeam().getJoueurs()) {
+        /*for (Player player : game.getRedHouse().getTeam().getJoueurs()) {
             teamInfos.put("team_red", player.getDisplayName());
         }
         for (Player player : game.getYellowHouse().getTeam().getJoueurs()) {
@@ -64,7 +68,7 @@ public class Configuration {
         }
         for (Player player : game.getBlueHouse().getTeam().getJoueurs()) {
             teamInfos.put("team_blue", player.getDisplayName());
-        }
+        }*/
 
         JSONArray players = new JSONArray();
         for (Player p : mineralcontest.plugin.pluginWorld.getPlayers())

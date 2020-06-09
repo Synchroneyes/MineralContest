@@ -1,6 +1,8 @@
 package fr.mineral.Commands.CVAR;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.groups.Core.Groupe;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
@@ -12,12 +14,25 @@ public class mp_gold_score implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGameStarted()){
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
+            if (partie.isGameStarted()) {
                 sender.sendMessage(mineralcontest.prefixErreur + "La partie est déjà en cours, la modification de valeur n'est pas permis.");
                 return true;
             }
+
+            Groupe playerGroup = partie.groupe;
 
             // début mp_score_gold
             if(command.getName().equalsIgnoreCase("mp_gold_score")) {
@@ -27,8 +42,8 @@ public class mp_gold_score implements CommandExecutor {
                     mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.cvar_gold_score.toString() + Integer.parseInt(args[0]));
                     mineralcontest.plugin.setConfigValue("config.cvar.mp_gold_score", mineralcontest.SCORE_GOLD);*/
 
-                        GameSettingsCvar.SCORE_GOLD.setValue(args[0]);
-                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.cvar_gold_score.toString() + Integer.parseInt(args[0]));
+                        GameSettingsCvarOLD.SCORE_GOLD.setValue(args[0]);
+                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.cvar_gold_score.toString() + Integer.parseInt(args[0]), playerGroup);
 
 
                         return false;
@@ -37,7 +52,7 @@ public class mp_gold_score implements CommandExecutor {
                         return true;
                     }
                 } else if(args.length == 0) {
-                    sender.sendMessage("[mp_gold_score] Value: " + (int) GameSettingsCvar.SCORE_GOLD.getValue());
+                    sender.sendMessage("[mp_gold_score] Value: " + (int) GameSettingsCvarOLD.SCORE_GOLD.getValue());
                     return true;
                 }else {
                     sender.sendMessage("Usage: /mp_gold_score <valeur | default: 50>");

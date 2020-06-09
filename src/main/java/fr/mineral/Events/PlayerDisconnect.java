@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
@@ -19,52 +20,55 @@ public class PlayerDisconnect implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = event.getPlayer();
-            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
-            House house = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
+            Game partie = mineralcontest.getWorldGame(worldEvent);
 
-            if(mineralcontest.plugin.getGame().isPlayerReady(joueur)) mineralcontest.plugin.getGame().removePlayerReady(joueur);
+            if (partie == null) return;
+
+            Equipe team = partie.getPlayerTeam(joueur);
+            House house = partie.getPlayerHouse(joueur);
+
+
+            if (partie.isPlayerReady(joueur)) partie.removePlayerReady(joueur);
 
             if(joueur.isOp())
-                if(mineralcontest.plugin.getGame().isReferee(joueur)) mineralcontest.plugin.getGame().removeReferee(joueur);
+                if (partie.isReferee(joueur)) partie.removeReferee(joueur);
 
 
             if(team != null)
                 team.removePlayer(joueur);
 
-            if((mineralcontest.plugin.getGame().isGameStarted()  || mineralcontest.plugin.getGame().isPreGame()) && team != null) {
-                mineralcontest.plugin.getGame().pauseGame();
-                mineralcontest.plugin.getGame().addDisconnectedPlayer(joueur.getDisplayName(), team);
+            if ((partie.isGameStarted() || partie.isPreGame()) && team != null) {
+                partie.pauseGame();
+                partie.addDisconnectedPlayer(joueur.getDisplayName(), team);
                 house.getPorte().forceCloseDoor();
             }
 
-            if(mineralcontest.plugin.getGame().votemap.voteEnabled) mineralcontest.plugin.getGame().votemap.removePlayerVote(joueur);
 
-            if(!mineralcontest.plugin.getGame().isGameStarted()) {
+            if (!partie.isGameStarted()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
-                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), partie.groupe);
                 }, 20);
             }
 
 
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-                int number_of_player_online = mineralcontest.plugin.pluginWorld.getPlayers().size();
+                int number_of_player_online = partie.groupe.getPlayers().size();
                 if(number_of_player_online == 0) {
-                    mineralcontest.plugin.getGame().resetMap();
-                    if(mineralcontest.plugin.getGame().isGameStarted()) {
+                    partie.resetMap();
+                    if (partie.isGameStarted()) {
                         try {
-                            mineralcontest.plugin.getGame().terminerPartie();
+                            partie.terminerPartie();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Error.Report(e);
+                            Error.Report(e, partie);
                         }
                     }
                 }
             }, 20);
 
-                event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
+            event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
             GameLogger.addLog(new Log("PlayerDisconnect", "Player " + joueur.getDisplayName() + " disconnected", "player_disconnect"));
 
 

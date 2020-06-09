@@ -26,16 +26,16 @@ public class PlayerMove implements Listener {
 
 
     public static synchronized void handlePushs() {
-        Game game = mineralcontest.plugin.getGame();
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                if(game.isGameStarted()) {
-                    for(Player online : PlayerUtils.getPluginWorld().getPlayers())
-                        if(!game.isReferee(online)) {
+
+                for (Player online : PlayerUtils.getPluginWorld().getPlayers()) {
+                    Game game = mineralcontest.getPlayerGame(online);
+                    if (game != null && game.isGameStarted() && !game.isReferee(online)) {
                             reducePlayerTimer(online);
-                        }
+                    }
                 }
             }
         }.runTaskTimer(mineralcontest.plugin, 0, 5);
@@ -46,13 +46,12 @@ public class PlayerMove implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         World worldEvent = event.getPlayer().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            Game game = mineralcontest.plugin.getGame();
-            if(game.isGameStarted() && game.isGameInitialized) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            Game game = mineralcontest.getPlayerGame(event.getPlayer());
+            if (game != null && game.isGameStarted() && game.isGameInitialized) {
                 House playerTeam = game.getPlayerHouse(event.getPlayer());
-                House[] houses = {game.getRedHouse(), game.getBlueHouse(), game.getYellowHouse()};
                 if(playerTeam != null && !game.isReferee(event.getPlayer())) {
-                    for(House house : houses) {
+                    for (House house : game.getHouses()) {
                         if (playerTeam != house) {
                             try {
                                 if (Radius.isBlockInRadiusWithDividedYAxis(house.getHouseLocation(), event.getPlayer().getLocation(), houseRadius, 2)) {
@@ -63,7 +62,7 @@ public class PlayerMove implements Listener {
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Error.Report(e);
+                                Error.Report(e, mineralcontest.getPlayerGame(event.getPlayer()));
                             }
                         }
                     }
@@ -71,7 +70,7 @@ public class PlayerMove implements Listener {
             }
 
 
-            if(mineralcontest.plugin.getGame().isGamePaused() || mineralcontest.plugin.getGame().isPreGameAndGameStarted()) {
+            if (mineralcontest.getPlayerGame(event.getPlayer()) != null && (mineralcontest.getPlayerGame(event.getPlayer()).isGamePaused() || mineralcontest.getPlayerGame(event.getPlayer()).isPreGameAndGameStarted())) {
                 Location to = event.getFrom();
                 to.setPitch(event.getTo().getPitch());
                 to.setYaw(event.getTo().getYaw());

@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
@@ -12,15 +13,26 @@ public class StopGameCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player) && !mineralcontest.plugin.pluginWorld.equals(player.getWorld())) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
             if(command.getName().equalsIgnoreCase("stopGame")) {
                 if(sender.isOp()) {
                     // On est jamais trop prudent ...
-                    if(mineralcontest.plugin.getGame().isGameStarted()) {
-                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()));
+                    if (partie.isGameStarted()) {
+                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()), partie.groupe);
                         try {
-                            mineralcontest.plugin.getGame().terminerPartie();
+                            partie.terminerPartie();
                         }catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -30,6 +42,7 @@ public class StopGameCommand implements CommandExecutor {
                 }
             }
         }
+
 
         return false;
     }

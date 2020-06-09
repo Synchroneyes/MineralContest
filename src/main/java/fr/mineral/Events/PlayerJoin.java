@@ -1,7 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Game.Game;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -36,7 +36,9 @@ public class PlayerJoin implements Listener {
 
     private void initVariables(Player player) {
         mineralcontest plugin = mineralcontest.plugin;
-        this.game = plugin.getGame();
+        this.game = mineralcontest.getPlayerGame(player);
+
+        if (game == null) return;
         this.thereIsAnAdminLoggedIn = game.isThereAnAdminLoggedIn();
         this.player = player;
         this.playerName = player.getDisplayName();
@@ -54,16 +56,17 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
-        if (worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
 
             initVariables(event.getPlayer());
+            if (game == null) return;
 
 
             // First, we check if the map is correct
             mineralcontest.checkIfMapIsCorrect();
 
             // We need to apply the pvp system
-            if((int) GameSettingsCvar.getValueFromCVARName("mp_enable_old_pvp") == 1) {
+            if ((int) GameSettingsCvarOLD.getValueFromCVARName("mp_enable_old_pvp") == 1) {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
             } else {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
@@ -208,8 +211,8 @@ public class PlayerJoin implements Listener {
 
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
-                if(game.areAllPlayerLoggedIn()) game.votemap.enableVote(false);
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), game.groupe);
+                if (game.areAllPlayerLoggedIn()) game.enableVote();
             }, 20);
 
 

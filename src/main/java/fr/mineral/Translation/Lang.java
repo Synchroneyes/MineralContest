@@ -1,7 +1,8 @@
 package fr.mineral.Translation;
 
 import fr.groups.Core.Groupe;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Log.GameLogger;
@@ -49,8 +50,10 @@ public enum Lang {
     vote_already_voted("vote_already_voted", "Vous avez déjà voté !"),
     vote_not_enabled("vote_not_enabled", "Les votes ne sont pas actif"),
     vote_selected_biome_doesnt_exist("vote_selected_biome_doesnt_exist", "Le biome demandé n'existe pas"),
+    vote_already_started("vote_already_started", "Le vote est déjà démarré"),
     cant_break_block_here("cant_break_block_here", "Vous ne pouvez pas casser de bloc ici"),
-    cant_interact_block_pre_game("cant_interact_block_pre_game", "Mauvaise map chargée, merci de changer le nom de la map dans le fichier config.yml, ou de télécharger la bonne map. Disponible sur le github"),
+    cant_interact_block_pre_game("cant_interact_block_pre_game", "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie"),
+    cant_interact_block_hub("cant_interact_block_hub", "Vous ne pouvez pas intéragir avec des blocs ici"),
     bad_map_loaded("bad_map_loaded", "Mauvaise map chargée, merci de télécharger la bonne map. Disponible sur le github"),
     github_link("github_link", "http://github.com/jaunefra/mineralcontest"),
     plugin_shutdown("plugin_shutdown", "Désactivation du plugin ..."),
@@ -141,7 +144,7 @@ public enum Lang {
     not_ready_tag("not_ready_tag", "[NON PRET]"),
     player_is_now_ready("player_is_now_ready", "%playerName% est désormais prêt"),
     player_is_no_longer_ready("player_is_no_longer_ready", "%playerName% n'est plus prêt"),
-    warn_player_you_dont_have_a_team("warn_player_you_dont_have_a_team","Attention, vous n'êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe> (equipes: jaune, rouge, bleu)"),
+    warn_player_you_dont_have_a_team("warn_player_you_dont_have_a_team", "Attention, vous n'êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe>"),
     set_yourself_as_ready_to_start_game("set_yourself_as_ready_to_start_game", "Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready "),
     teamChat("teamChat", "[TEAM]"),
     cvar_play_zone_radius("cvar_play_zone_radius", "La taille de la zone de jeu est désormais de %playZoneRadius% block(s)"),
@@ -184,7 +187,15 @@ public enum Lang {
     error_group_is_not_locked("error_group_is_not_locked", "Le groupe n'est pas verouillé"),
     error_group_is_locked("error_group_is_locked", "Le groupe est verouillé"),
     group_is_now_locked("group_is_now_locked", "Le groupe est maintenant verouillé"),
-    group_is_now_unlocked("group_is_now_unlocked", "Le groupe est maintenant déverouillé");
+    group_is_now_unlocked("group_is_now_unlocked", "Le groupe est maintenant déverouillé"),
+    error_switch_fail_team_doesnt_exists("error_switch_fail_team_doesnt_exists", "Le switch n'a pas fonctionné, l'équipe donnée n'existe pas."),
+    team_available_list_text("team_available_list_text", "Liste des équipes disponible: "),
+    hud_game_state("hud_game_state", "Etat: %playerGroupState%"),
+    hud_referee_text("hud_referee_text", "Rôle: Arbitre"),
+    hud_map_name("hud_map_name", "Map actuelle: %mapName%"),
+    cvar_error_invalid_team_name("cvar_error_invalid_team_name", "Cette équipe n'existe pas"),
+    error_vote_available_only_when_no_game("error_vote_available_only_when_no_game", "Le démarrage du vote est disponible seulement avant le début d'une partie"),
+    group_finished_their_game_winner_display("group_finished_their_game_winner_display", "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !");
 
 
     private String path;
@@ -257,22 +268,16 @@ public enum Lang {
             mineralcontest.prefixTeamChat = Lang.title.toString() + ChatColor.BLUE + Lang.teamChat.toString() + ChatColor.WHITE+ " ";
             mineralcontest.prefixGroupe = Lang.title.toString() + ChatColor.GOLD + Lang.group.toString() + ChatColor.WHITE + " ";
 
-            plugin.getGame().getRedHouse().getTeam().setNomEquipe(Lang.red_team.toString());
-            plugin.getGame().getYellowHouse().getTeam().setNomEquipe(Lang.yellow_team.toString());
-            plugin.getGame().getBlueHouse().getTeam().setNomEquipe(Lang.blue_team.toString());
-
-
-
         } catch(IOException ioe) {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
             ioe.printStackTrace();
-            Error.Report(ioe);
+            Error.Report(ioe, null);
             GameLogger.addLog(new Log("error", "failed to save lang.yml", "plugin_error"));
 
         } catch (Exception e) {
             plugin.getLogger().severe("ERREUR");
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
 
@@ -310,7 +315,7 @@ public enum Lang {
         }catch(Exception e) {
             Bukkit.getLogger().severe("GET ERROR");
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
         return result;
@@ -352,13 +357,16 @@ public enum Lang {
 
     public static String translate(String string, Groupe groupe) {
         if (string.contains("%groupName%")) string = string.replace("%groupName%", groupe.getNom());
+        if (string.contains("%playerGroupState%"))
+            string = string.replace("%playerGroupState%", groupe.getEtatPartie().getNom());
+        if (string.contains("%mapName%")) string = string.replace("%mapName%", groupe.getMapName());
         string = translate(string);
         return string;
     }
 
     public static String translate(String string, Player player) {
-        if(string.contains("%deathTime%")) string = string.replace("%deathTime%", "" + mineralcontest.plugin.getGame().getArene().getDeathZone().getPlayerDeathTime(player));
-        if(string.contains("%votedBiome%")) string = string.replace("%votedBiome%", mineralcontest.plugin.getGame().votemap.getPlayerVote(player));
+        if (string.contains("%deathTime%"))
+            string = string.replace("%deathTime%", "" + mineralcontest.getPlayerGame(player).getArene().getDeathZone().getPlayerDeathTime(player));
         if(string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
         if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
 
@@ -375,8 +383,8 @@ public enum Lang {
     }
 
     public static String translate(String string) {
-        if(string.contains("%onlinePlayers%")) string = string.replace("%onlinePlayers%", "" + (mineralcontest.plugin.pluginWorld.getPlayers().size() - mineralcontest.plugin.getGame().getRefereeCount()));
-        if(string.contains("%requiredPlayers%")) string = string.replace("%requiredPlayers%", "" + (3* GameSettingsCvar.mp_team_max_player.getValueInt()));
+        if (string.contains("%requiredPlayers%"))
+            string = string.replace("%requiredPlayers%", "" + (3 * GameSettingsCvarOLD.mp_team_max_player.getValueInt()));
         if(string.contains("%black%")) string = string.replace("%black%", "" + ChatColor.BLACK);
         if(string.contains("%dark_blue%")) string = string.replace("%dark_blue%", "" + ChatColor.DARK_BLUE);
         if(string.contains("%dark_green%")) string = string.replace("%dark_green%", "" + ChatColor.DARK_GREEN);
@@ -398,14 +406,25 @@ public enum Lang {
         if(string.contains("%strikethrough%")) string = string.replace("%strikethrough%", "" + ChatColor.STRIKETHROUGH);
         if(string.contains("%underline%")) string = string.replace("%underline%", "" + ChatColor.UNDERLINE);
         if(string.contains("%italic%")) string = string.replace("%italic%", "" + ChatColor.ITALIC);
-
-        if(string.contains("%timeLeft%")) string = string.replace("%timeLeft%", mineralcontest.plugin.getGame().getTempsRestant());
-        if(string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + mineralcontest.plugin.getGame().PreGameTimeLeft);
-        if(string.contains("%winningBiome%")) string = string.replace("%winningBiome%", mineralcontest.plugin.getGame().votemap.getWinnerBiome(false));
-        if(string.contains("%teamNumber%")) string = string.replace("%teamNumber%", "" + GameSettingsCvar.mp_team_max_player.getValueInt());
-        if(string.contains("%playZoneRadius%")) string = string.replace("%playZoneRadius%", "" + GameSettingsCvar.mp_set_playzone_radius.getValueInt());
+        if (string.contains("%teamNumber%"))
+            string = string.replace("%teamNumber%", "" + GameSettingsCvarOLD.mp_team_max_player.getValueInt());
+        if (string.contains("%playZoneRadius%"))
+            string = string.replace("%playZoneRadius%", "" + GameSettingsCvarOLD.mp_set_playzone_radius.getValueInt());
 
         return string;
+    }
+
+    public static String translate(String string, Game partie) {
+        if (string.contains("%timeLeft%")) string = string.replace("%timeLeft%", partie.getTempsRestant());
+        if (string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + partie.PreGameTimeLeft);
+
+        //     "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !");
+        if (string.contains("%groupName%")) string = string.replace("%groupName%", "" + partie.groupe.getNom());
+        if (string.contains("%coloredWinningTeamName%"))
+            string = string.replace("%coloredWinningTeamName%", "" + partie.getWinningTeam().getCouleur() + partie.getWinningTeam().getNomEquipe());
+
+        return string;
+
     }
 
 }

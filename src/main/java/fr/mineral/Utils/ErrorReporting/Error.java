@@ -1,5 +1,6 @@
 package fr.mineral.Utils.ErrorReporting;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.mineralcontest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -22,10 +23,10 @@ import java.net.URLEncoder;
 import java.util.*;
 
 public class Error {
-    public static void Report(java.lang.Exception exception) {
+    public static void Report(java.lang.Exception exception, Game partie) {
+        JSONObject gameInfo = new JSONObject();
+        if (partie != null) gameInfo = Configuration.export(partie);
 
-
-        JSONObject gameInfo = Configuration.export();
         JSONObject _exception = Exception.toJson(exception);
 
         JSONObject report = new JSONObject();

@@ -21,7 +21,7 @@ public class DisplayBlock {
             this.data = baseBlock.getState().getData();
         }catch (Exception e){
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
 
@@ -42,7 +42,7 @@ public class DisplayBlock {
             position.getBlock().getState().update();
         }catch(Exception e){
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
     }

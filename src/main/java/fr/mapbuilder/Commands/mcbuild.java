@@ -11,6 +11,7 @@ import fr.mineral.Core.House;
 import fr.mineral.Utils.Door.DisplayBlock;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -25,6 +26,8 @@ import java.util.List;
 public class mcbuild extends CommandTemplate {
 
     private LinkedList<String> actionsPossible;
+    public static Monde monde = MapBuilder.monde;
+
 
 
     public mcbuild() {
@@ -32,6 +35,7 @@ public class mcbuild extends CommandTemplate {
         this.actionsPossible = new LinkedList<>();
         actionsPossible.add("save");
         actionsPossible.add("menu");
+        actionsPossible.add("setSpawn");
 
 
         addArgument("action", true);
@@ -83,6 +87,12 @@ public class mcbuild extends CommandTemplate {
             return false;
         }
 
+        if (args[0].equalsIgnoreCase("setSpawn")) {
+            monde.setSpawnDepart(joueur.getLocation());
+            joueur.sendMessage(mineralcontest.prefixPrive + "Le spawn de départ pour ce monde a bien été enregistré !");
+            return false;
+        }
+
 
 
         return false;
@@ -96,6 +106,18 @@ public class mcbuild extends CommandTemplate {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierMonde);
 
         yamlConfiguration.set("map_name", nom);
+
+        Location spawnLocation = monde.getSpawnDepart();
+
+        if (spawnLocation == null) {
+            yamlConfiguration.set("default_spawn", "null");
+        } else {
+            yamlConfiguration.set("default_spawn.x", spawnLocation.getBlockX());
+            yamlConfiguration.set("default_spawn.y", spawnLocation.getBlockY());
+            yamlConfiguration.set("default_spawn.z", spawnLocation.getBlockZ());
+
+        }
+
         try {
             yamlConfiguration.set("arena.chest.x", monde.getArene().getCoffre().getPosition().getX());
             yamlConfiguration.set("arena.chest.y", monde.getArene().getCoffre().getPosition().getY());

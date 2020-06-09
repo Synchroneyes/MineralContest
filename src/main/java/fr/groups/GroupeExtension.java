@@ -36,7 +36,7 @@ public class GroupeExtension {
             getPluginCommandMap();
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
         registerCommands();
@@ -56,7 +56,7 @@ public class GroupeExtension {
                 FileUtils.deleteDirectory(fichier);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-                Error.Report(ioe);
+                Error.Report(ioe, null);
             }
         }
 

@@ -98,13 +98,11 @@ public class Arene {
             Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
 
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("arena.special_block." + index + ".material").toString());
-            Bukkit.getLogger().info(index + " - " + blockMaterial.toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("arena.special_block." + index + ".blockByte").toString());
 
             BlockData blockData = mineralcontest.plugin.getServer().createBlockData(yamlConfiguration.get("arena.special_block." + index + ".blockdata").toString());
 
             if ((blockData instanceof Door || blockMaterial.toString().equalsIgnoreCase("DOOR"))) {
-                Bukkit.getLogger().info("PORTE !!!!t");
                 locTMP.getBlock().setBlockData(blockData, false);
 
                 Door door = (Door) blockData;
@@ -132,8 +130,6 @@ public class Arene {
             locTMP.getBlock().getLocation().setZ(locTMP.getZ());
             locTMP.getBlock().getState().getData().setData(blockByte);
         }
-
-        Bukkit.getLogger().info("SPAWNED!");
     }
 
 

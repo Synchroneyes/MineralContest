@@ -1,14 +1,15 @@
 package fr.mineral.Core.Game;
 
 import fr.groups.Core.Groupe;
+import fr.groups.Utils.Etats;
 import fr.mineral.Core.Arena.Arene;
 import fr.mineral.Core.House;
-import fr.mineral.Core.Votemap;
 import fr.mineral.Events.PlayerMove;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
+import fr.mineral.Utils.ChatColorString;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Log.GameLogger;
@@ -19,7 +20,6 @@ import fr.mineral.Utils.Player.CouplePlayerTeam;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
-import fr.mineral.Utils.Save.FileToGame;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -40,16 +40,11 @@ public class Game implements Listener {
     /*
         Une game possède:
             - Une arene
-            - Trois équipes
             - Un temps de jeu
             -
      */
     private Arene arene;
-    private House redHouse;
-    private House yellowHouse;
-    private House blueHouse;
 
-    public LinkedList<House> equipes;
 
     private LinkedList<Player> playersReady;
 
@@ -73,23 +68,34 @@ public class Game implements Listener {
     private HashMap<String, Boolean> PlayerThatTriedToLogIn;
     private LinkedList<Block> addedChests;
 
-    public Votemap votemap;
 
     // Group of the game
     public Groupe groupe;
+
+    private LinkedList<House> equipes;
+
+
+    public Equipe getWinningTeam() {
+        int maxScore = Integer.MIN_VALUE;
+        Equipe winner = null;
+        for (House maison : equipes) {
+            if (maison.getTeam().getScore() > maxScore) {
+                winner = maison.getTeam();
+                maxScore = winner.getScore();
+            }
+        }
+
+        return winner;
+    }
 
     // Save the blocks
     public LinkedList<BlockSaver> affectedBlocks;
 
     private LinkedList<Player> referees;
 
-    public Game() {
-        this.redHouse = new House("Rouge", ChatColor.RED);
-        this.blueHouse = new House("Bleu", ChatColor.BLUE);
-        this.yellowHouse = new House("Jaune", ChatColor.YELLOW);
+    public Game(Groupe g) {
 
-        this.arene = new Arene();
-        this.votemap = new Votemap();
+        this.arene = new Arene(g);
 
         //votemap.enableVote();
         this.disconnectedPlayers = new LinkedList<CouplePlayerTeam>();
@@ -101,10 +107,25 @@ public class Game implements Listener {
         this.equipes = new LinkedList<>();
 
         this.addedChests = new LinkedList<>();
+        this.groupe = g;
 
-        DUREE_PARTIE = (int) GameSettingsCvar.getValueFromCVARName("game_time");
-        tempsPartie = DUREE_PARTIE * 60;
-        PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
+        try {
+            DUREE_PARTIE = (int) groupe.getParametresPartie().getCVARValeur("game_time");
+            tempsPartie = DUREE_PARTIE * 60;
+            PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
+        } catch (Exception e) {
+            Error.Report(e, this);
+        }
+
+    }
+
+    public void enableVote() {
+        this.groupe.initVoteMap();
+    }
+
+
+    public LinkedList<House> getHouses() {
+        return equipes;
     }
 
     public void setGroupe(Groupe g) {
@@ -126,8 +147,33 @@ public class Game implements Listener {
         }
     }
 
+    /**
+     * Retourne une maison à partir d'un nom, ou d'une couleur
+     *
+     * @param name
+     * @return
+     */
+    public House getHouseFromName(String name) {
+        for (House maison : equipes)
+            if (maison.getTeam().getNomEquipe().equalsIgnoreCase(name) ||
+                    ChatColorString.toString(maison.getTeam().getCouleur()).equalsIgnoreCase(name))
+                return maison;
+        return null;
+    }
+
+
+    public void addEquipe(House t) {
+        if (!this.equipes.contains(t)) this.equipes.add(t);
+    }
+
+    public void removeEquipe(House h) {
+        if (this.equipes.contains(h)) this.equipes.add(h);
+    }
+
+
     public boolean isThisBlockAGameChest(Block b) {
         if(!isTheBlockAChest(b)) return false;
+
         return addedChests.contains(b);
     }
 
@@ -136,8 +182,14 @@ public class Game implements Listener {
     }
 
     public boolean areAllPlayerLoggedIn() {
-        int number_of_team = 3;
-        return ((mineralcontest.plugin.pluginWorld.getPlayers().size() - getRefereeCount()) >= ((int) GameSettingsCvar.getValueFromCVARName("mp_team_max_player") * number_of_team));
+
+        try {
+            return ((groupe.getPlayers().size() - getRefereeCount()) >= ((int) groupe.getParametresPartie().getCVARValeur("mp_team_max_player")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, this);
+        }
+        return false;
     }
 
     public void teleportToLobby(Player player) {
@@ -155,7 +207,7 @@ public class Game implements Listener {
     }
 
     public boolean isThereAnAdminLoggedIn() {
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+        for (Player player : groupe.getPlayers())
             if(player.isOp()) return true;
         return false;
     }
@@ -190,7 +242,7 @@ public class Game implements Listener {
     }
 
     public boolean areAllPlayersReady() {
-        return (playersReady.size() == mineralcontest.plugin.pluginWorld.getPlayers().size());
+        return (playersReady.size() == groupe.getPlayers().size());
     }
 
     public boolean isPlayerReady(Player p) {
@@ -200,7 +252,7 @@ public class Game implements Listener {
     public void removePlayerReady(Player p) {
         if(isPlayerReady(p)) {
             playersReady.remove(p);
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_no_longer_ready.toString(), p));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_no_longer_ready.toString(), p), groupe);
 
         }
     }
@@ -208,11 +260,11 @@ public class Game implements Listener {
     public void setPlayerReady(Player p) throws Exception {
         if(!isPlayerReady(p)) {
             playersReady.add(p);
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p), groupe);
             if(areAllPlayersReady()) {
                 if(!allPlayerHaveTeam()) {
 
-                    if((int) GameSettingsCvar.mp_randomize_team.getValueInt() == 1) {
+                    if ((int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team") == 1) {
                         randomizeTeam(true);
                         demarrerPartie(false);
                         return;
@@ -232,6 +284,7 @@ public class Game implements Listener {
 
 
     private void startAllPlayerHaveTeamTimer() {
+        Game instance = this;
         new BukkitRunnable(){
 
             @Override
@@ -242,7 +295,7 @@ public class Game implements Listener {
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Error.Report(e);
+                        Error.Report(e, instance);
                     }
                 } else {
                     warnPlayerWithNoTeam();
@@ -260,15 +313,9 @@ public class Game implements Listener {
 
 
     public Arene getArene() { return this.arene; }
-    public House getRedHouse() { return this.redHouse; }
-    public House getYellowHouse() { return this.yellowHouse; }
-    public House getBlueHouse() { return this.blueHouse; }
 
     public void clear() {
         isGameInitialized = false;
-        this.redHouse.clearHouse();
-        this.blueHouse.clearHouse();
-        this.yellowHouse.clearHouse();
         this.arene.clear();
         this.referees.clear();
         this.disconnectedPlayers.clear();
@@ -279,11 +326,13 @@ public class Game implements Listener {
             block.setType(Material.AIR);
 
         if (mineralcontest.plugin.pluginWorld != null && !mineralcontest.debug) {
-            for (Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
-                mineralcontest.plugin.getGame().teleportToLobby(player);
+            for (Player player : groupe.getPlayers()) {
+                teleportToLobby(player);
                 PlayerUtils.clearPlayer(player);
             }
         }
+
+        this.equipes.clear();
     }
 
     public void addBlock(Block b, BlockSaver.Type type) {
@@ -301,8 +350,7 @@ public class Game implements Listener {
 
             if(!isGameStarted()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
-                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), groupe);
                 }, 20);
             }
         }
@@ -316,8 +364,7 @@ public class Game implements Listener {
             PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
             if(!isGameStarted()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
-                    if(mineralcontest.plugin.getGame().areAllPlayerLoggedIn()) mineralcontest.plugin.getGame().votemap.enableVote(false);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), groupe);
                 }, 20);
             }
         }
@@ -339,7 +386,7 @@ public class Game implements Listener {
             }
             removeAllDroppedItems();
 
-            mineralcontest.broadcastMessage(Lang.map_has_been_restored.toString());
+            mineralcontest.broadcastMessage(Lang.map_has_been_restored.toString(), groupe);
         }
 
         mineralcontest.plugin.setDefaultWorldBorder();
@@ -349,8 +396,13 @@ public class Game implements Listener {
     public void cancelPreGame() {
         if(!isPreGame()) return;
         this.PreGame = false;
-        this.PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
-        mineralcontest.broadcastMessage("Pregame cancelled");
+        try {
+            this.PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, this);
+        }
+        mineralcontest.broadcastMessage("Pregame cancelled", groupe);
     }
 
 
@@ -358,7 +410,14 @@ public class Game implements Listener {
     Credit: https://bukkit.org/threads/remove-dropped-items-on-ground.100750/
      */
     private void removeAllDroppedItems() {
-        World world = Bukkit.getServer().getWorld((String) GameSettingsCvar.getValueFromCVARName("world_name"));//get the world
+        World world = null;//get the world
+        try {
+            world = Bukkit.getServer().getWorld((String) groupe.getParametresPartie().getCVARValeur("world_name"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, this);
+        }
+
         List<Entity> entList = world.getEntities();//get all entities in the world
 
         for(Entity current : entList) {//loop through the list
@@ -417,21 +476,25 @@ public class Game implements Listener {
 
                 if(isGameStarted() && !isPreGame() && !isGamePaused()) {
 
-                    LinkedList<Player> blueTeam = new LinkedList<>(); //LinkedList<Player>) blueHouse.getTeam().getJoueurs().clone();
-                    LinkedList<Player> redTeam = new LinkedList<>();//(LinkedList<Player>) redHouse.getTeam().getJoueurs().clone();
-                    LinkedList<Player> yellowTeam = new LinkedList<>();//(LinkedList<Player>) yellowHouse.getTeam().getJoueurs().clone();
 
-                    for(Player p : redHouse.getTeam().getJoueurs()) if (!redTeam.contains(p))  redTeam.add(p);
-                    for(Player p : blueHouse.getTeam().getJoueurs()) if (!blueTeam.contains(p))  blueTeam.add(p);
-                    for(Player p : yellowHouse.getTeam().getJoueurs()) if (!yellowTeam.contains(p))  yellowTeam.add(p);
+                    for (House maisons : equipes) {
+                        Equipe team = maisons.getTeam();
 
-                    for(Player p : mineralcontest.plugin.getGame().referees) {
-                        if (!redTeam.contains(p))  redTeam.add(p);
-                        if (!blueTeam.contains(p))  blueTeam.add(p);
-                        if (!yellowTeam.contains(p))  yellowTeam.add(p);
                     }
 
-                    for(Player online : redTeam) {
+                    for (Player online : groupe.getPlayers()) {
+                        for (House maison : equipes) {
+                            Equipe equipe = maison.getTeam();
+                            if (isReferee(online) || equipe.isPlayerInTeam(online)) {
+                                if (Radius.isBlockInRadius(maison.getPorte().getMiddleBlockLocation(), online.getLocation(), rayonPorte))
+                                    maison.getPorte().playerIsNearDoor(online);
+                                else
+                                    maison.getPorte().playerIsNotNearDoor(online);
+                            }
+                        }
+                    }
+
+                    /*for(Player online : redTeam) {
                         Location blockCentralPorte = redHouse.getPorte().getMiddleBlockLocation();
                         if(Radius.isBlockInRadius(blockCentralPorte, online.getLocation(), rayonPorte)) {
                             // Si le joueur est proche de la porte
@@ -459,7 +522,7 @@ public class Game implements Listener {
                         } else {
                             blueHouse.getPorte().playerIsNotNearDoor(online);
                         }
-                    }
+                    }*/
                 }
 
 
@@ -475,26 +538,29 @@ public class Game implements Listener {
 
     public void init() {
 
+        Game instance = this;
         new BukkitRunnable() {
             public void run() {
 
-                PlayerUtils.drawPlayersHUD();
-
-
-
                 if(isPreGame() && !isGamePaused()) {
+                    Bukkit.getLogger().info("L481");
 
                     // ON DEMARRE LA PARTIE !
                     if(PreGameTimeLeft <= 0) {
                         PreGame = false;
 
+                        Bukkit.getLogger().info("DEMARRAGE PARTIE");
+
                         if(tempsPartie == DUREE_PARTIE * 60) {
                             // METRIC
                             // On envoie les informations de la partie
-                            SendInformation.sendGameData(SendInformation.start);
+                            SendInformation.sendGameData(SendInformation.start, instance);
                         }
 
-                        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+                        Bukkit.getLogger().info("GameData SENT");
+
+
+                        for (Player online : groupe.getMonde().getPlayers()) {
 
                             if(isGamePaused()) {
                                 // La partie était en cours, elle reprend
@@ -512,27 +578,29 @@ public class Game implements Listener {
                                     try {
                                         PlayerBaseItem.givePlayerItems(online, PlayerBaseItem.onFirstSpawnName);
                                     } catch (Exception e) {
-                                        mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console");
+                                        mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console", groupe);
                                         e.printStackTrace();
-                                        Error.Report(e);
+                                        Error.Report(e, instance);
                                     }
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
                                     PlayerMove.handlePushs();
 
                                     // On TP le joueur dans sa maison
+                                    online.sendMessage("teleportation maison");
                                     try {
-                                        if(!isReferee(online)) PlayerUtils.teleportPlayer(online, getPlayerHouse(online).getHouseLocation());
+                                        if (!isReferee(online))
+                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getPlayerHouse(online).getHouseLocation());
                                         else {
-                                            PlayerUtils.teleportPlayer(online, getArene().getCoffre().getPosition());
+                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getArene().getCoffre().getPosition());
                                             online.setGameMode(GameMode.CREATIVE);
                                             PlayerUtils.equipReferee(online);
                                         }
-                                        MobKiller.killMobNearArena(80);
+                                        MobKiller.killMobNearArena(80, instance);
 
                                     }catch (Exception e) {
                                         e.printStackTrace();
-                                        Error.Report(e);
+                                        Error.Report(e, instance);
                                     }
 
                                 } else {
@@ -544,12 +612,12 @@ public class Game implements Listener {
                         }
 
                     } else {
-                        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+                        for (Player online : groupe.getMonde().getPlayers()) {
                             online.sendTitle(Lang.translate(Lang.hud_game_starting.toString()), "", 0, 20*2, 0);
                             if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
                         }
                     }
-                    for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
+                    for (Player online : groupe.getMonde().getPlayers())
                         if(PreGameTimeLeft > 0) online.playNote(online.getLocation(), Instrument.PIANO, new Note(1));
                         else online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
 
@@ -563,7 +631,7 @@ public class Game implements Listener {
                 if(isGameStarted() && !isPreGame()) {
                     if(isGamePaused()) {
                         // La game est en pause
-                        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
+                        for (Player online : groupe.getMonde().getPlayers())
                             if(!online.isOp()) online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_player_resume_soon.toString(), 0, 20*10, 0);
                             else online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_admin_resume_help.toString(), 0, 20*10, 0);
                     } else {
@@ -576,7 +644,7 @@ public class Game implements Listener {
                         try {
 
                             if(tempsPartie == 0) {
-                                    terminerPartie();
+                                terminerPartie();
                             }
 
                             // On gère la deathzone
@@ -585,7 +653,7 @@ public class Game implements Listener {
 
                         }catch (Exception e) {
                             e.printStackTrace();
-                            Error.Report(e);
+                            Error.Report(e, instance);
                         }
                         // Si le temps n'est pas à zéro, on continue
                         if(tempsPartie > 0) tempsPartie--;
@@ -594,87 +662,103 @@ public class Game implements Listener {
                 }
 
 
-
-
-
             }
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
     }
 
+    /**
+     * Récupèe une équipe non pleine
+     * @return
+     */
     public Equipe getEquipeNonPleine() {
-        int mp_team_max_player = (int)GameSettingsCvar.mp_randomize_team.getValue();
-        if(yellowHouse.getTeam().getJoueurs().size() < mp_team_max_player)
-            return yellowHouse.getTeam();
+        int mp_team_max_player = 0;
 
-        if(redHouse.getTeam().getJoueurs().size() < mp_team_max_player)
-            return redHouse.getTeam();
-
-        if(blueHouse.getTeam().getJoueurs().size() < mp_team_max_player)
-            return blueHouse.getTeam();
-
-        return null;
-    }
-
-    private void afficherScores() {
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), yellowHouse.getTeam()));
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), redHouse.getTeam()));
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), blueHouse.getTeam()));
-    }
-
-    private Equipe afficherGagnant() {
-        Equipe[] equipes = new Equipe[3];
-        equipes[0] = blueHouse.getTeam();
-        equipes[1] = redHouse.getTeam();
-        equipes[2] = yellowHouse.getTeam();
-
-        int[] resultats = new int[3];
-        int max = 0;
-        int index = 0;
-        for(int i = 0; i < 3; i++) {
-            resultats[i] = equipes[i].getScore();
-            if (resultats[i] >= max) {
-                max = resultats[i];
-                index = i;
-            }
+        try {
+            mp_team_max_player = (int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, this);
         }
 
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_winning.toString(), equipes[index]));
-        return equipes[index];
-    }
-
-    public Equipe getPlayerTeam(Player j) {
-        if(redHouse.getTeam().isPlayerInTeam(j)) return redHouse.getTeam();
-        if(blueHouse.getTeam().isPlayerInTeam(j)) return blueHouse.getTeam();
-        if(yellowHouse.getTeam().isPlayerInTeam(j)) return yellowHouse.getTeam();
+        for (House maison : equipes)
+            if (maison.getTeam().getJoueurs().size() < mp_team_max_player)
+                return maison.getTeam();
 
         return null;
     }
 
+    /**
+     * Affiche dans le chat le score de toutes les équipes
+     */
+    private void afficherScores() {
+        for (House house : equipes)
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), house.getTeam()), groupe);
+    }
+
+
+    /**
+     * Affiche dans le chat le gagnat de la partie
+     * @return Equipe gagnante
+     */
+    private Equipe afficherGagnant() {
+        // Initialisation des équipes
+        LinkedList<Equipe> _equipes = new LinkedList<>();
+        for (House house : equipes)
+            _equipes.add(house.getTeam());
+
+        Equipe gagnante = null;
+        int scoreMax = Integer.MIN_VALUE;
+        for (Equipe equipe : _equipes)
+            if (equipe.getScore() > scoreMax) {
+                gagnante = equipe;
+                scoreMax = equipe.getScore();
+            }
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_winning.toString(), gagnante), groupe);
+        return gagnante;
+
+    }
+
+
+    /**
+     * Retourne l'équipe d'un joueur
+     * @param j - Le joueur en question
+     * @return Equipe si il en possède une, null sinon
+     */
+    public Equipe getPlayerTeam(Player j) {
+        for (House house : equipes)
+            if (house.getTeam().getJoueurs().contains(j)) return house.getTeam();
+
+        return null;
+    }
+
+    /**
+     * Retourne la maison d'un joueur
+     * @param j - Le joueur en question
+     * @return House si il possède une maison, null sinon
+     */
     public House getPlayerHouse(Player j) {
-        if(redHouse.getTeam().isPlayerInTeam(j)) return redHouse;
-        if(blueHouse.getTeam().isPlayerInTeam(j)) return blueHouse;
-        if(yellowHouse.getTeam().isPlayerInTeam(j)) return yellowHouse;
+        for (House house : equipes)
+            if (house.getTeam().getJoueurs().contains(j)) return house;
+
         return null;
     }
 
     public void terminerPartie() throws Exception {
 
 
-
-        SendInformation.sendGameData(SendInformation.ended);
-        if(mineralcontest.plugin.pluginWorld.getPlayers().size() == 0) return;
+        SendInformation.sendGameData(SendInformation.ended, this);
+        if (groupe.getPlayers().size() == 0) return;
         /* Teleport everyone to the hub */
 
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
+        for (Player player : groupe.getPlayers()) {
             teleportToLobby(player);
             PlayerUtils.clearPlayer(player);
 
         }
 
 
-
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.game_over.toString());
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.game_over.toString(), groupe);
 
         // ON affiche le score des équipes
         this.afficherScores();
@@ -683,10 +767,14 @@ public class Game implements Listener {
         Equipe gagnant = this.afficherGagnant();
 
 
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+        for (Player online : groupe.getPlayers()) {
             if(!isReferee(online))
                 if(getPlayerTeam(online).equals(gagnant))
                     PlayerUtils.setFirework(online, gagnant.toColor());
+        }
+
+        if (mineralcontest.communityVersion) {
+            Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.group_finished_their_game_winner_display.toString(), this));
         }
 
 
@@ -694,9 +782,18 @@ public class Game implements Listener {
         this.clear();
         this.GamePaused = false;
         this.GameStarted = false;
+        this.GameEnded = true;
+
+        this.groupe.setEtat(Etats.EN_ATTENTE);
+        this.groupe.setGroupLocked(false);
+        this.groupe.enableVote();
 
     }
 
+
+    /**
+     * Mets la partie en pause
+     */
     public void pauseGame() {
         // Only si game started
         if(isGameStarted() || isPreGame()) {
@@ -705,7 +802,7 @@ public class Game implements Listener {
             this.playersReady.clear();
 
             // On averti les joueurs
-            for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+            for (Player online : groupe.getPlayers()) {
                 online.sendMessage(mineralcontest.prefixPrive + Lang.hud_game_paused.toString());
                 online.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
                 if(online.isOp()) online.sendMessage(mineralcontest.prefixAdmin + Lang.hud_admin_resume_help.toString());
@@ -713,6 +810,9 @@ public class Game implements Listener {
         }
     }
 
+    /**
+     * Reprendre la partie
+     */
     public void resumeGame() {
 
         if(isPreGame() && isGamePaused()) {
@@ -724,7 +824,7 @@ public class Game implements Listener {
         if(isGamePaused()) {
             Equipe team = null; //getEquipeNonPleine();
             if(team != null && !isGameForced()) {
-                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Impossible de reprendre la partie, il manque des joueurs dans l'équipe " + team.getCouleur() + team.getNomEquipe());
+                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "Impossible de reprendre la partie, il manque des joueurs dans l'équipe " + team.getCouleur() + team.getNomEquipe(), groupe);
             } else {
                 // On refait un "pregame"
                 mineralcontest.plugin.getLogger().info("ON RESUME LA PARTIE");
@@ -737,14 +837,22 @@ public class Game implements Listener {
         }
     }
 
+    /**
+     * Retourne si la partie va reprendre et que la partie était en cours
+     * @return true|false
+     */
     public boolean isPreGameAndGameStarted() {
         return (isPreGame() && (tempsPartie != DUREE_PARTIE * 60));
     }
 
+    /**
+     * Retourne vrai si tous les joueurs ont une équipe, faux sinon
+     * @return
+     */
     public boolean allPlayerHaveTeam() {
         LinkedList<Player> playersOnline = new LinkedList<>();
         int playerWithTeamCount = 0;
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+        for (Player player : groupe.getMonde().getPlayers())
             if(!isReferee(player)){
                 playersOnline.add(player);
                 if(getPlayerTeam(player) != null) {
@@ -752,49 +860,41 @@ public class Game implements Listener {
                 }
             }
 
-       return (playerWithTeamCount == playersOnline.size());
+        return (playerWithTeamCount == playersOnline.size());
     }
 
+    /**
+     * Envoie un message d'avertissements aux joueurs sans équipes
+     */
     private void warnPlayerWithNoTeam() {
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
+        for (Player player : groupe.getMonde().getPlayers())
             if(!isReferee(player)){
                 if(getPlayerTeam(player) == null)
                     player.sendMessage(mineralcontest.prefixPrive + Lang.warn_player_you_dont_have_a_team.toString());
             }
     }
 
+    /**
+     * Démarre la partie
+     * @param forceGameStart - Boolean (force le démarrage de la partie)
+     * @return boolean, true si tout se passe bien, faux sinon
+     * @throws Exception
+     */
     public boolean demarrerPartie(boolean forceGameStart) throws Exception {
 
+        Bukkit.getLogger().info("STARTING, FORCE: " + forceGameStart);
 
         if(isGameStarted()) {
             throw new Exception(Lang.get("game_already_started"));
         }
 
-        if(!votemap.isVoteEnded() && !forceGameStart) {
-            throw new Exception(Lang.vote_required_to_start_game.toString());
-        }
-
-        if(votemap.voteEnabled && !forceGameStart) {
-            throw new Exception(Lang.vote_is_in_progress_cant_start_game.toString());
-        }
 
         if(forceGameStart){
             GameForced = true;
-            tempsPartie = 60*60;
-            PreGameTimeLeft = (int) GameSettingsCvar.getValueFromCVARName("pre_game_timer");
-            votemap.selectedBiome = Integer.parseInt(votemap.getWinnerBiome());
-            votemap.disableVote();
+            tempsPartie = 60 * 60;
+            PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
 
             if(!allPlayerHaveTeam()) randomizeTeam(forceGameStart);
-        }
-
-        // Si on force le démarrage, et que le vote n'a pas été fait
-        if(forceGameStart && !mineralcontest.plugin.getGame().isGameInitialized) {
-            int random;
-            if(votemap.selectedBiome == -1)  random = new Random().nextInt(6);
-            else random = votemap.selectedBiome;
-            new FileToGame().readFile("" + random);
-            mineralcontest.log.info("Randomly loaded world #" + random);
         }
 
 
@@ -807,65 +907,46 @@ public class Game implements Listener {
         // Toutes les equipes soient pleine
 
         // SPAWN MAISON
-        if(this.blueHouse.getHouseLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] Spawn maison bleu: " + ChatColor.RED + "X");
-            return false;
-        }
+        for (House house : equipes) {
+            if (house.getHouseLocation() == null) {
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "[Verification] spawn maison equipe " + house.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X", groupe);
+                return false;
+            }
 
-        if(this.redHouse.getHouseLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison rouge: " + ChatColor.RED + "X");
-            return false;
+            if (house.getCoffreEquipeLocation() == null) {
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "[Verification] spawn coffre maison equipe " + house.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X", groupe);
+                return false;
+            }
         }
-        if(this.yellowHouse.getHouseLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison jaune: " + ChatColor.RED + "X");
-            return false;
-        }
+        if (mineralcontest.debug)
+            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
 
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn maison: " + ChatColor.GREEN + "OK");
-
-        // SPAWN COFFRE MAISON
-        if(this.yellowHouse.getCoffreEquipeLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.yellowHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
-            return false;
-        }
-
-        if(this.redHouse.getCoffreEquipeLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.redHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
-            return false;
-        }
-
-        if(this.blueHouse.getCoffreEquipeLocation() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[Verification] spawn coffre maison equipe " + this.blueHouse.getTeam().getNomEquipe() + ": " + ChatColor.RED + "X");
-            return false;
-        }
-        if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
 
         // SPAWN COFFRE ARENE
         if(this.arene.getCoffre().getPosition() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn coffre arene: " + ChatColor.RED + "X");
+            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn coffre arene: " + ChatColor.RED + "X", groupe);
             return false;
         }
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
-
 
 
         // SPAWN ARENE
         if(this.arene.getTeleportSpawn() == null) {
-            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn arene: " + ChatColor.RED + "X");
+            mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn arene: " + ChatColor.RED + "X", groupe);
             return false;
         }
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn arene: " + ChatColor.GREEN + "OK");
 
 
-        if((int) GameSettingsCvar.mp_randomize_team.getValue() == 1 && (!forceGameStart && !allPlayerHaveTeam())) randomizeTeam(forceGameStart);
+        if ((int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team") == 1 && (!forceGameStart && !allPlayerHaveTeam()))
+            randomizeTeam(forceGameStart);
 
 
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "GAME_SUCCESSFULLY_STARTED");
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
 
 
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers())
-        {
+        for (Player online : groupe.getPlayers()) {
 
             if(!isReferee(online)) {
                 PlayerUtils.setMaxHealth(online);
@@ -880,123 +961,90 @@ public class Game implements Listener {
 
 
         // On spawn les coffres
-        mineralcontest.plugin.getGame().getYellowHouse().spawnCoffreEquipe();
-        mineralcontest.plugin.getGame().getRedHouse().spawnCoffreEquipe();
-        mineralcontest.plugin.getGame().getBlueHouse().spawnCoffreEquipe();
+        for (House house : equipes) {
+            house.spawnCoffreEquipe();
+        }
 
         // On clear l'arene
-        mineralcontest.plugin.getGame().getArene().clear();
+        getArene().clear();
 
         removeAllDroppedItems();
 
         PreGame = true;
         GameStarted = false;
         this.tempsPartie = 60 * DUREE_PARTIE;
-        mineralcontest.plugin.getGame().getArene().startArena();
-        mineralcontest.plugin.getGame().getArene().startAutoMobKill();
+        getArene().startArena();
+        getArene().startAutoMobKill();
 
         // On set le world border
         mineralcontest.plugin.setWorldBorder();
 
         // On démarre les portes
-        mineralcontest.plugin.getGame().handleDoors();
+        handleDoors();
         removeAllDroppedItems();
+
+        Bukkit.getLogger().info("pregame: " + isPreGame());
 
         return true;
 
     }
 
-    // Créer les equipes aléatoirement
+
+    /**
+     * Permet d'attribuer à chaque joueur une équipe
+     * @param force
+     * @throws Exception
+     */
     public void randomizeTeam(boolean force) throws Exception {
-        String[] equipes = {"red", "blue", "yellow"};
-        LinkedList<String> equipesTMP = new LinkedList<>();
-        int indexEquipe = 0;
-        int randomTeamIndex = 0;
-        Random randomObject = new Random();
-        LinkedList<Player> playersOnline = new LinkedList<>();
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
-            if(!isReferee(player) && getPlayerTeam(player) == null) playersOnline.add(player);
 
-        while(!playersOnline.isEmpty()){
-            if(indexEquipe >= equipes.length) {
-                indexEquipe = 0;
-            }
+        Bukkit.getLogger().info("RANDOMIZING !");
+        LinkedList<House> equipesDispo = new LinkedList<>();
+        LinkedList<Player> joueursEnAttente = new LinkedList<>(groupe.getMonde().getPlayers());
 
-            if(equipesTMP.size() == equipes.length) {
-             while(!equipesTMP.isEmpty() && !playersOnline.isEmpty()){
-                Player playerRandomized = playersOnline.pop();
-                randomTeamIndex = randomObject.nextInt(equipesTMP.size());
-                switch(equipesTMP.get(randomTeamIndex)) {
-                    case "red":
-                        this.redHouse.getTeam().addPlayerToTeam(playerRandomized, false);
-                        break;
-                    case "blue":
-                        this.blueHouse.getTeam().addPlayerToTeam(playerRandomized, false);
-                        break;
-                    case "yellow":
-                        this.yellowHouse.getTeam().addPlayerToTeam(playerRandomized, false);
-                        break;
-                    default:
-                        mineralcontest.broadcastMessage("erreur");
-                        break;
-                }
-
-                equipesTMP.remove(randomTeamIndex);
-                playersOnline.remove(playerRandomized);
-             }
-            }
-
-            equipesTMP.add(equipes[indexEquipe]);
-            indexEquipe++;
+        for (int index = 0; index < joueursEnAttente.size(); ++index) {
+            equipesDispo.add(equipes.get(index % equipes.size()));
         }
+
+        Random randomisateur = new Random();
+        int numeroJoueurRandom = -1;
+        int numeroEquipeRandom = -1;
+
+        while (!equipesDispo.isEmpty()) {
+            numeroJoueurRandom = randomisateur.nextInt(joueursEnAttente.size());
+            numeroEquipeRandom = randomisateur.nextInt(equipesDispo.size());
+
+            Player joueuraAttribuer = joueursEnAttente.get(numeroJoueurRandom);
+            House equipeAAttribuer = equipesDispo.get(numeroEquipeRandom);
+            equipeAAttribuer.getTeam().addPlayerToTeam(joueuraAttribuer, false);
+
+            equipesDispo.remove(numeroEquipeRandom);
+            joueursEnAttente.remove(numeroJoueurRandom);
+        }
+
 
     }
 
 
     public void switchPlayer(Player joueur, String teamName) throws Exception {
         Equipe team = getPlayerTeam(joueur);
-
-        if(team != null)
-            team.removePlayer(joueur);
-        String[] equipes = {"rouge", "red", "bleu", "blue", "yellow", "jaune", "r", "b", "j", "y"};
-        // On fait un foreach pour parcourir le tableau d'équipe
-        for(String equipe : equipes) {
-            // Le nom de l'équipe passé en commentaire existe
-            if (teamName.toLowerCase().equalsIgnoreCase(equipe)) {
-                switch (equipe) {
-                    // On va vérifier si l'équipe est pleine ou non
-                    // Si elle l'est, on retourne FALSE
-                    // Sinon, on l'ajoute et on le supprime de son équipe initiale
-                    case "red":
-                    case "rouge":
-                    case "r":
-                        this.redHouse.getTeam().addPlayerToTeam(joueur, true);
-                        if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        if (getPlayerHouse(joueur).getHouseLocation() != null)
-                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
-                        break;
-
-                    case "jaune":
-                    case "yellow":
-                    case "j":
-                    case "y":
-                        this.yellowHouse.getTeam().addPlayerToTeam(joueur, true);
-                        if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        if (getPlayerHouse(joueur).getHouseLocation() != null)
-                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
-                        break;
-
-                    case "blue":
-                    case "bleu":
-                    case "b":
-                        this.blueHouse.getTeam().addPlayerToTeam(joueur, true);
-                        if(mineralcontest.plugin.getGame().isGamePaused()) mineralcontest.plugin.getGame().resumeGame();
-                        if (getPlayerHouse(joueur).getHouseLocation() != null)
-                            PlayerUtils.teleportPlayer(joueur, getPlayerHouse(joueur).getHouseLocation());
-                        break;
-                }
+        StringBuilder nomEquipes = new StringBuilder();
+        for (House house : equipes) {
+            if (ChatColorString.toString(house.getTeam().getCouleur()).equalsIgnoreCase(teamName)) {
+                if (team != null) team.removePlayer(joueur);
+                house.getTeam().addPlayerToTeam(joueur, true);
+                return;
             }
+
+            nomEquipes.append(ChatColorString.toString(house.getTeam().getCouleur()) + ",");
         }
+
+        groupe.sendToadmin(mineralcontest.prefixErreur + Lang.error_switch_fail_team_doesnt_exists.toString());
+        groupe.sendToadmin(mineralcontest.prefixAdmin + Lang.team_available_list_text.toString());
+
+        String nomEquipesdispo = nomEquipes.toString();
+        nomEquipesdispo = nomEquipesdispo.substring(0, nomEquipesdispo.length() - 2);
+        groupe.sendToadmin(mineralcontest.prefixAdmin + nomEquipesdispo);
+
 
     }
 

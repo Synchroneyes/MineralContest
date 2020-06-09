@@ -30,6 +30,8 @@ public class JoinGroupe extends CommandTemplate {
     public boolean execute(CommandSender commandSender, String command, String[] args) {
         if (commandSender instanceof Player) {
             if (command.equalsIgnoreCase(getCommand())) {
+
+                Bukkit.getLogger().info(((Player) commandSender).getDisplayName() + " => " + java.util.Arrays.toString(args));
                 Player joueur = (Player) commandSender;
                 Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
 

@@ -1,7 +1,7 @@
 package fr.mineral.Core.Arena;
 
-import fr.mineral.Settings.GameSettings;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsOLD;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Range;
@@ -9,17 +9,13 @@ import fr.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.graalvm.compiler.hotspot.GraalHotSpotVMConfig;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -33,23 +29,26 @@ public class CoffreAvecCooldown {
     private int timeLeft = time;
     public static CoffreAvecCooldown coffre;
     public Player openingPlayer;
+    private Arene arene;
 
     private BukkitRunnable chestTimer;
-    public CoffreAvecCooldown(Location loc) {
+
+    public CoffreAvecCooldown(Location loc, Arene arene) {
+        this.arene = arene;
         this.position = loc;
         coffre = this;
         fillChestTimer();
 
-        Arene arena = mineralcontest.plugin.getGame().getArene();
         try {
-            if(arena != null & arena.getCoffre() != null) {
-                if(arena.getCoffre().equals(this)) {
-                    time = (int) GameSettingsCvar.getValueFromCVARName("chest_opening_cooldown");
+            if (arene != null & arene.getCoffre() != null) {
+                if (arene.getCoffre().equals(this)) {
+                    time = (int) arene.groupe.getParametresPartie().getCVARValeur("chest_opening_cooldown");
                     timeLeft = time;
                 }
             }
         }catch (Exception e) {
-
+            Error.Report(e, arene.groupe.getGame());
+            e.printStackTrace();
         }
 
     }
@@ -63,7 +62,14 @@ public class CoffreAvecCooldown {
         opened = false;
         spawned = false;
         isCancelled = false;
-        time = (int) GameSettingsCvar.getValueFromCVARName("chest_opening_cooldown");;
+
+        try {
+            time = (int) arene.groupe.getParametresPartie().getCVARValeur("chest_opening_cooldown");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, arene.groupe.getGame());
+        }
+
         timeLeft = time;
         openingPlayer = null;
     }
@@ -81,8 +87,8 @@ public class CoffreAvecCooldown {
 
     public void spawn() {
         try {
-            mineralcontest.plugin.getGame().getArene().enableTeleport();
-            mineralcontest.plugin.getGame().getArene().generateTimeBetweenChest();
+            arene.enableTeleport();
+            arene.generateTimeBetweenChest();
 
             position = this.getPosition();
             Block block = position.getBlock();
@@ -97,12 +103,12 @@ public class CoffreAvecCooldown {
             this.openingPlayer = null;
             this.spawned = true;
 
-            mineralcontest.plugin.getGame().addAChest(position.getBlock());
+            arene.groupe.getGame().addAChest(position.getBlock());
 
 
 
         }catch (Exception e) {
-            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+            mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), arene.groupe);
 
         }
 
@@ -172,7 +178,7 @@ public class CoffreAvecCooldown {
                             generateChestContent();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Error.Report(e);
+                            Error.Report(e, arene.groupe.getGame());
                         }
 
                         // Give chest items to user
@@ -186,8 +192,8 @@ public class CoffreAvecCooldown {
                         position.getBlock().breakNaturally();
                         joueur.closeInventory();
                         close();
-                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.arena_chest_opened.toString());
-                        mineralcontest.plugin.getGame().getArene().disableTeleport();
+                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.arena_chest_opened.toString(), arene.groupe);
+                        mineralcontest.getPlayerGame(joueur).getArene().disableTeleport();
                         this.cancel();
 
                     }
@@ -225,7 +231,7 @@ public class CoffreAvecCooldown {
         Inventory inv = chest.getInventory();
 
         LinkedList<Range> items = new LinkedList<>();
-        GameSettings gameSettings = GameSettings.getInstance();
+        GameSettingsOLD gameSettings = GameSettingsOLD.getInstance();
         YamlConfiguration config = gameSettings.getYamlConfiguration();
         ConfigurationSection chest_items = config.getConfigurationSection("config.arena.chest_content");
         String[] attributes = {"name", "probability"};
@@ -262,7 +268,7 @@ public class CoffreAvecCooldown {
                 }
 
                 if(!itemRange.isFilled()) {
-                    mineralcontest.broadcastMessage(item_name + " is missing some attributes.");
+                    mineralcontest.broadcastMessage(item_name + " is missing some attributes.", arene.groupe);
                     continue;
                 }
 
@@ -281,8 +287,8 @@ public class CoffreAvecCooldown {
         }
 
         int maxItem, minItem;
-        maxItem = (int) GameSettingsCvar.getValueFromCVARName("max_item_in_chest");
-        minItem = (int) GameSettingsCvar.getValueFromCVARName("min_item_in_chest");
+        maxItem = (int) arene.groupe.getParametresPartie().getCVARValeur("max_item_in_chest");
+        minItem = (int) arene.groupe.getParametresPartie().getCVARValeur("min_item_in_chest");
 
         //maxItem = 30;
         //minItem = 20;
@@ -300,7 +306,7 @@ public class CoffreAvecCooldown {
             }
         }catch(Exception e) {
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, arene.groupe.getGame());
 
         }
 

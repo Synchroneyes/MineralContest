@@ -45,9 +45,7 @@ public class SaveArena extends CommandTemplate {
         SaveArena instance = new SaveArena();
         if (args.length == 1) {
             instance.revert();
-            joueur.sendMessage("Revert !");
         } else {
-            joueur.sendMessage("Save ! with ladder");
 
             instance.save(joueur);
             instance.writeToFile();
@@ -167,7 +165,7 @@ public class SaveArena extends CommandTemplate {
             customConfig.save(fichierArene);
         } catch (IOException e) {
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
 

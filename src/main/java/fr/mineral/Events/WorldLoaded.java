@@ -1,6 +1,6 @@
 package fr.mineral.Events;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -12,7 +12,7 @@ public class WorldLoaded implements Listener {
 
     @EventHandler
     public void onWorldLoaded(WorldLoadEvent event) {
-        String world_name = (String) GameSettingsCvar.getValueFromCVARName("world_name");
+        String world_name = (String) GameSettingsCvarOLD.getValueFromCVARName("world_name");
         if(event.getWorld().getName().equalsIgnoreCase(world_name)) {
             mineralcontest.plugin.pluginWorld = PlayerUtils.getPluginWorld();
             mineralcontest.plugin.defaultSpawn = event.getWorld().getSpawnLocation();

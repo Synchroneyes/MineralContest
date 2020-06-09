@@ -17,7 +17,7 @@ public class SetupCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
         if (player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if (mineralcontest.plugin.getGame().isGameStarted() || mineralcontest.plugin.getGame().isGameInitialized)
+            if (mineralcontest.getPlayerGame(player).isGameStarted() || mineralcontest.getPlayerGame(player).isGameInitialized)
                 return false;
             if (command.getName().equalsIgnoreCase("setup")) {
                 if (sender.isOp()) {

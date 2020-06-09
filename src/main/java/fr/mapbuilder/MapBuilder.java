@@ -30,15 +30,16 @@ public class MapBuilder {
     private MapBuilder() {
         instance = this;
         mineralcontest.debug = isBuilderModeEnabled;
-        monde = new Monde();
 
         if(!isBuilderModeEnabled) return;
+
+        monde = new Monde();
 
         try {
             getPluginCommandMap();
         }catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e);
+            Error.Report(e, null);
         }
 
 

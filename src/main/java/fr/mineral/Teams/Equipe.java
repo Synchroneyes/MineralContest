@@ -1,7 +1,10 @@
 package fr.mineral.Teams;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.groups.Core.Groupe;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Log.GameLogger;
 import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Player.PlayerBaseItem;
@@ -21,11 +24,14 @@ public class Equipe {
     private int score = 0;
     private int penalty = 0;
 
+    private Groupe groupe;
 
-    public Equipe(String nom, ChatColor c) {
+
+    public Equipe(String nom, ChatColor c, Groupe g) {
         this.joueurs = new LinkedList<Player>();
         this.nomEquipe = nom;
         this.couleur = c;
+        this.groupe = g;
     }
 
     public void clear() {
@@ -50,11 +56,11 @@ public class Equipe {
 
     public void addPenalty(int penalty){
         this.penalty += penalty;
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this), groupe);
     }
 
     public void resetPenalty() {
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this), groupe);
 
         this.penalty = 0;
     }
@@ -73,31 +79,42 @@ public class Equipe {
 
     // Retourne true si la team est pleine, false si non
     public boolean isTeamFull() {
-        if(this.joueurs.size() >= (int) GameSettingsCvar.mp_team_max_player.getValue())
-            return true;
+        try {
+            if (this.joueurs.size() >= (int) groupe.getParametresPartie().getCVARValeur("mp_team_max_player"))
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, groupe.getGame());
+        }
         return false;
     }
 
     public boolean addPlayerToTeam(Player p, boolean switched) throws Exception {
-        if(!isTeamFull() || switched || mineralcontest.plugin.getGame().isReferee(p)) {
+        if (!isTeamFull() || switched || mineralcontest.getPlayerGame(p).isReferee(p)) {
 
-            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(p);
-            if(team != null) team.removePlayer(p);
-            if(mineralcontest.plugin.getGame().isReferee(p)) mineralcontest.plugin.getGame().removeReferee(p);
+            Game partie = mineralcontest.getPlayerGame(p);
+
+            if (partie != null) {
+                Equipe team = mineralcontest.getPlayerGame(p).getPlayerTeam(p);
+                if (team != null) team.removePlayer(p);
+                if (mineralcontest.getPlayerGame(p).isReferee(p)) mineralcontest.getPlayerGame(p).removeReferee(p);
+            }
+
+
 
             this.joueurs.add(p);
 
             p.setGameMode(GameMode.SURVIVAL);
 
 
-            if(PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.plugin.getGame().isGameInitialized) {
+            if (PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.getPlayerGame(p).isGameInitialized) {
                 PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
-                PlayerUtils.teleportPlayer(p, mineralcontest.plugin.getGame().getPlayerHouse(p).getHouseLocation());
+                PlayerUtils.teleportPlayer(p, mineralcontest.getPlayerGroupe(p).getMonde(), mineralcontest.getPlayerGame(p).getPlayerHouse(p).getHouseLocation());
             }
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p), groupe);
             return true;
         }
 

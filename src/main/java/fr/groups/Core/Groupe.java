@@ -8,12 +8,11 @@ package fr.groups.Core;
 
 import fr.groups.Utils.Etats;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.House;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
-import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,7 +29,6 @@ public class Groupe {
     private LinkedList<Player> joueurs;
     private LinkedList<Player> joueursInvites;
     private World gameWorld;
-    private GameSettings settings;
     private MapVote mapVote;
 
     private Game partie;
@@ -40,6 +38,9 @@ public class Groupe {
     private Etats etat;
 
     private boolean groupLocked = false;
+    private String mapName = "";
+
+    private GameSettings parametresPartie;
 
 
     public Groupe() {
@@ -47,15 +48,60 @@ public class Groupe {
         this.admins = new LinkedList<>();
         this.joueurs = new LinkedList<>();
         this.joueursInvites = new LinkedList<>();
-        this.partie = new Game();
+
+        parametresPartie = new GameSettings(true);
+
+        this.partie = new Game(this);
+
+
+        this.partie.init();
         partie.setGroupe(this);
         this.etat = Etats.EN_ATTENTE;
         this.worldLoader = new WorldLoader(this);
         genererIdentifiant();
     }
 
+
+    public GameSettings getParametresPartie() {
+        return parametresPartie;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
+    }
+
+    public LinkedList<Player> getPlayers() {
+        return joueurs;
+    }
+
+    public boolean isPlayerIngroupe(Player p) {
+        return (this.joueurs.contains(p));
+    }
+
     public String getIdentifiant() {
         return identifiant;
+    }
+
+    public World getMonde() {
+        return gameWorld;
+    }
+
+    public House getPlayerHouse(Player p) {
+        for (House maison : getGame().getHouses())
+            if (maison.getTeam().isPlayerInTeam(p)) return maison;
+        return null;
+
+    }
+
+    public Equipe getPlayerTeam(Player p) {
+        for (House maison : getGame().getHouses())
+            if (maison.getTeam().isPlayerInTeam(p)) return maison.getTeam();
+        return null;
+
     }
 
     public void genererIdentifiant() {
@@ -80,6 +126,7 @@ public class Groupe {
 
         try {
             this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
+            this.gameWorld.setAutoSave(false);
         } catch (Exception e) {
             sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde. Erreur: " + e.getMessage());
             e.printStackTrace();
@@ -95,6 +142,9 @@ public class Groupe {
         for (Player joueur : joueurs)
             joueur.teleport(worldSpawnLocation);
 
+        setMapName(nomMonde);
+
+        this.mapVote.clearVotes();
         return true;
     }
 
@@ -133,7 +183,10 @@ public class Groupe {
     public void initVoteMap() {
         if (this.mapVote != null) return;
         this.mapVote = new MapVote();
+    }
 
+    public void enableVote() {
+        if (this.mapVote != null) mapVote.voteEnabled = true;
     }
 
     public Etats getEtatPartie() {
@@ -248,6 +301,7 @@ public class Groupe {
         this.joueursInvites.remove(p);
         this.joueurs.add(p);
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.successfully_joined_a_group.toString(), this));
+        sendToadmin(mineralcontest.prefixAdmin + p.getDisplayName() + " a rejoin le groupe");
     }
 
     public void addAdmin(Player p) {

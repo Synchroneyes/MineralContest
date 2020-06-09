@@ -23,17 +23,17 @@ public class OpenDoor implements CommandExecutor {
                 }catch(Exception e) {
                     mineralcontest.plugin.getServer().getLogger().info("ERREUR");
                     e.printStackTrace();
-                    Error.Report(e);
+                    Error.Report(e, null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //mineralcontest.plugin.getGame().getPortes().openDoor();
+            //mineralcontest.getPlayerGame(joueur).getPortes().openDoor();
         }
 
-        if(command.getName().equals("fermer")) {
-            mineralcontest.plugin.getGame().getPortes().closeDoor();
-        }
+        /*if(command.getName().equals("fermer")) {
+            mineralcontest.getPlayerGame(joueur).getPortes().closeDoor();
+        }*/
         return false;
     }
 }

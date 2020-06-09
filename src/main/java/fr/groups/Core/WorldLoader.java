@@ -1,5 +1,6 @@
 package fr.groups.Core;
 
+import fr.groups.Utils.Etats;
 import fr.groups.Utils.FileManager.FileCopy;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
@@ -76,6 +77,7 @@ public class WorldLoader {
 
 
             World createdWorld = Bukkit.getServer().createWorld(wc);
+            Bukkit.broadcastMessage("createdWorld= " + createdWorld.getName());
 
             lireFichierMonde(nomMondeDossier, createdWorld);
 
@@ -84,7 +86,7 @@ public class WorldLoader {
             return createdWorld;
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            Error.Report(ioe);
+            Error.Report(ioe, null);
         }
 
 
@@ -100,13 +102,14 @@ public class WorldLoader {
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            Error.Report(ioe);
+            Error.Report(ioe, null);
         }
 
     }
 
     private void lireFichierMonde(String nomDossier, World monde) throws Exception {
         String nomFichierConfig = "mc_world_settings.yml";
+
 
         File fichierConfigMonde = new File(nomDossier + File.separator + nomFichierConfig);
 
@@ -146,14 +149,14 @@ public class WorldLoader {
             String teamColorString = houses.get(nomEquipe + ".color").toString().replace("§", "");
             ChatColor couleur = ChatColor.getByChar(teamColorString);
 
-            House nouvelleEquipe = new House(nomEquipe, couleur);
-
+            House nouvelleEquipe = new House(nomEquipe, couleur, this.groupe);
 
             Location chestLoc = new Location(monde,
                     Double.parseDouble(houses.get(nomEquipe + ".coffre.x").toString()),
                     Double.parseDouble(houses.get(nomEquipe + ".coffre.y").toString()),
                     Double.parseDouble(houses.get(nomEquipe + ".coffre.z").toString())
             );
+
 
             Location spawnLoc = new Location(monde,
                     Double.parseDouble(houses.get(nomEquipe + ".spawn.x").toString()),
@@ -172,11 +175,14 @@ public class WorldLoader {
                 nouvelleEquipe.getPorte().addToDoor(locPorte.getBlock());
             }
 
-
             nouvelleEquipe.setCoffreEquipe(chestLoc);
             nouvelleEquipe.setHouseLocation(spawnLoc);
             groupe.sendToadmin(mineralcontest.prefixPrive + "L'équipe " + couleur + nomEquipe + ChatColor.WHITE + " a bien été crée");
+            groupe.getGame().addEquipe(nouvelleEquipe);
         }
+
+        groupe.getGame().isGameInitialized = true;
+        groupe.setEtat(Etats.ATTENTE_DEBUT_PARTIE);
 
     }
 

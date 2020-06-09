@@ -1,6 +1,8 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Teams.Equipe;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,9 +13,21 @@ public class TeamChat implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
+
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) commandSender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            Equipe playerTeam = mineralcontest.plugin.getGame().getPlayerTeam(player);
+        if (mineralcontest.isInAMineralContestWorld(player) && !mineralcontest.plugin.pluginWorld.equals(player.getWorld())) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                player.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
+            Equipe playerTeam = partie.getPlayerTeam(player);
 
             if((command.getName().equalsIgnoreCase("t") || command.getName().equalsIgnoreCase("team")) && playerTeam != null) {
                 StringBuilder message = new StringBuilder();
@@ -23,6 +37,7 @@ public class TeamChat implements CommandExecutor {
                 playerTeam.sendMessage(message.toString(), player);
             }
         }
+
 
         return false;
     }

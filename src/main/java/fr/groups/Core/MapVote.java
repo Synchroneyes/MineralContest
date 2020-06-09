@@ -15,8 +15,8 @@ public class MapVote {
     private static String folder_name = mineralcontest.plugin.getDataFolder() + File.separator + "worlds" + File.separator;
     private ArrayList<String> maps;
     //              (nom_map, joueur)
-    private HashMap<String, Player> votes;
-    private boolean voteEnabled = false;
+    private HashMap<Player, String> votes;
+    protected boolean voteEnabled = false;
 
     public MapVote() {
         this.maps = new ArrayList<>();
@@ -25,11 +25,17 @@ public class MapVote {
         voteEnabled = true;
     }
 
+    public void clearVotes() {
+        this.votes.clear();
+    }
+
     /**
      * Charge les noms de maps depuis le dossier plugins/mineralcontest/worlds
      */
     private void chargerNomMaps() {
         File dossierMaps = new File(folder_name);
+
+        if (!dossierMaps.exists()) dossierMaps.mkdir();
 
         File[] maps = dossierMaps.listFiles();
 
@@ -51,8 +57,8 @@ public class MapVote {
      * @return true si le joueur a voté, false sinon
      */
     public boolean havePlayerVoted(Player joueur) {
-        for (Map.Entry<String, Player> couple : votes.entrySet()) {
-            if (couple.getValue().equals(joueur)) return true;
+        for (Map.Entry<Player, String> couple : votes.entrySet()) {
+            if (couple.getKey().equals(joueur)) return true;
         }
         return false;
     }
@@ -72,11 +78,14 @@ public class MapVote {
         String nom_map = getNomMapFromID(idMap);
 
 
-        this.votes.put(nom_map, joueur);
+        this.votes.put(joueur, nom_map);
         joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour la map " + nom_map);
-
+        Bukkit.broadcastMessage("UN JOUEUR A VOTE");
         // On veut vérifier si on a tout les votes
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+        Bukkit.broadcastMessage("ON A RECUP LE GROUPE");
+
+        Bukkit.broadcastMessage(votes.size() + " == " + playerGroupe.getPlayerCount());
         if (votes.size() == playerGroupe.getPlayerCount()) {
             // On arrête le vote
             setVoteEnabled(false);
@@ -112,8 +121,8 @@ public class MapVote {
      */
     public int getMapVoteCount(String nomMap) {
         int nbVote = 0;
-        for (Map.Entry<String, Player> couple : votes.entrySet()) {
-            if (couple.getKey().equalsIgnoreCase(nomMap)) nbVote++;
+        for (Map.Entry<Player, String> couple : votes.entrySet()) {
+            if (couple.getValue().equalsIgnoreCase(nomMap)) nbVote++;
         }
 
         return nbVote;

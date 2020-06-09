@@ -1,9 +1,11 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.mineralcontest;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -14,9 +16,12 @@ public class EntityInteract implements Listener {
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
         World worldEvent = event.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGamePaused())
-                event.setCancelled(true);
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            Game partie = mineralcontest.getWorldGame(worldEvent);
+            if (event.getEntity() instanceof Player) {
+                if (partie != null && partie.isGamePaused())
+                    event.setCancelled(true);
+            }
         }
 
 
@@ -25,8 +30,10 @@ public class EntityInteract implements Listener {
     @EventHandler
     public void onEntityAttack(EntityDamageByEntityEvent event) {
         World worldEvent = event.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGamePaused())
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            Game partie = mineralcontest.getWorldGame(worldEvent);
+            if (event.getEntity() instanceof Player)
+                if (partie != null && partie.isGamePaused())
                 if(event.getDamager() instanceof Monster || event.getDamager() instanceof Arrow)
                     event.setCancelled(true);
         }

@@ -2,6 +2,7 @@ package fr.mineral.Utils.Log;
 
 import com.sk89q.worldedit.event.platform.CommandEvent;
 import fr.mineral.Core.Game.Game;
+import org.bukkit.Bukkit;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
@@ -24,9 +25,10 @@ public class GameLogger {
 
 
     public static void addLog(Log log) {
-        /*if(instance == null) instance = new GameLogger();
+        if (instance == null) instance = new GameLogger();
         log.setId(logs.size()+1);
-        logs.add(log);*/
+        logs.add(log);
+        Bukkit.getLogger().severe(log.toJson());
     }
 
     public static String toJson() {

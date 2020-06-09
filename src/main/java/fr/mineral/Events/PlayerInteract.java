@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Log.GameLogger;
@@ -25,46 +26,12 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         World worldEvent = event.getPlayer().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-
-            if (Setup.instance != null && Setup.premierLancement) {
-                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                    if (!event.getClickedBlock().getType().equals(Material.AIR)) {
-                        Setup.setEmplacementTemporaire(event.getClickedBlock().getLocation());
-                    }
-                }
-
-                if (Setup.addDoors) {
-                    if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                        if (event.getClickedBlock().getType().equals(Material.AIR)) return;
-                        // Ajout porte
-                        if (Setup.getEtape() == 10) {
-                            Setup.addBlockToPorte("bleu", event.getClickedBlock());
-                        }
-
-                        if (Setup.getEtape() == 11) {
-                            Setup.addBlockToPorte("rouge", event.getClickedBlock());
-                        }
-
-                        if (Setup.getEtape() == 12) {
-                            Setup.addBlockToPorte("jaune", event.getClickedBlock());
-                        }
-                    }
-                }
-                return;
-            }
-
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = (Player) event.getPlayer();
+            Game partie = mineralcontest.getWorldGame(worldEvent);
 
-            if(event.getClickedBlock() != null) {
-                Block listCommandBlock = worldEvent.getBlockAt(new Location(worldEvent, 111, 169, -168));
-                if(listCommandBlock.getLocation().equals(event.getClickedBlock().getLocation()) && listCommandBlock.getType().equals(Material.LIME_STAINED_GLASS)) {
-                    PlayerUtils.sendPluginCommandsToPlayer(joueur);
 
-                }
-            }
-
-            if(!mineralcontest.plugin.getGame().isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
+            if (partie != null && !partie.isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
             }
@@ -78,8 +45,7 @@ public class PlayerInteract implements Listener {
     public void blockVillagerTrades(PlayerInteractAtEntityEvent entityEvent) {
 
         World current_world = entityEvent.getPlayer().getWorld();
-
-        if(current_world.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(current_world)) {
             Player p = entityEvent.getPlayer();
 
             if(entityEvent.getRightClicked() instanceof Villager ||

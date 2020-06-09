@@ -1,6 +1,7 @@
 package fr.mineral.Commands.CVAR;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.attribute.Attribute;
@@ -13,22 +14,33 @@ public class mp_enable_old_pvp implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
             if(command.getName().equalsIgnoreCase("mp_enable_old_pvp")) {
                 if(sender.isOp()) {
                     if(args.length == 1) {
                         int valeur = 1;
                         try {
                             valeur = Integer.parseInt(args[0]) % 2;
-                            GameSettingsCvar.mp_enable_old_pvp.setValue(valeur);
+                            GameSettingsCvarOLD.mp_enable_old_pvp.setValue(valeur);
                             if(valeur == 1) {
-                                mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_old_pvp_enabled.toString());
+                                mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_old_pvp_enabled.toString(), partie.groupe);
                                 for(Player onlinePlayers : player.getWorld().getPlayers())
                                     onlinePlayers.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
                             }
                             else {
-                                mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_old_pvp_disabled.toString());
+                                mineralcontest.broadcastMessage(mineralcontest.prefixPrive + Lang.cvar_old_pvp_disabled.toString(), partie.groupe);
                                 for(Player onlinePlayers : player.getWorld().getPlayers())
                                     onlinePlayers.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
                             }

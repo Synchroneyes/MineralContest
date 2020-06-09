@@ -8,8 +8,8 @@ import fr.mineral.Commands.Developper.SaveWorldCommand;
 import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Commands.Developper.ValiderCommand;
 import fr.mineral.Core.Game.Game;
-import fr.mineral.Settings.GameSettings;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsOLD;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Events.*;
@@ -20,6 +20,7 @@ import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
+import jdk.internal.jline.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,6 +28,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
 import java.util.logging.Logger;
@@ -34,7 +36,17 @@ import java.util.logging.Logger;
 public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
-    private GameSettings gameSettings;
+
+    /**
+     * Community version is a version ran by server that wants to have multiple games running at the same time.
+     * If set to true, then players will have to create a groupe, invite players, start the vote.
+     * If set to false, one group will automatically be created, OP players will be set as admin, and every players joining the server
+     * will automatically be added to the group.
+     */
+    public static boolean communityVersion = true;
+
+
+    private GameSettingsOLD gameSettings;
 
     public static String prefix = "[MineralContest]";
     public static String prefixErreur;
@@ -58,9 +70,9 @@ public final class mineralcontest extends JavaPlugin {
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
-        this.gameSettings = GameSettings.getInstance();
-        this.partie = new Game();
-        Lang.loadLang((String) GameSettingsCvar.getValueFromCVARName("mp_set_language"));
+        this.gameSettings = GameSettingsOLD.getInstance();
+        //this.partie = new Game();
+        Lang.loadLang((String) GameSettingsCvarOLD.getValueFromCVARName("mp_set_language"));
 
         this.groupeExtension = GroupeExtension.getInstance();
         this.groupes = new LinkedList<>();
@@ -107,9 +119,6 @@ public final class mineralcontest extends JavaPlugin {
         this.defaultSpawn = defaultSpawn;
     }
 
-    public Game getGame() {
-        return this.partie;
-    }
 
     @Override
     public void onEnable() {
@@ -122,9 +131,8 @@ public final class mineralcontest extends JavaPlugin {
 
         Lang.copyLangFilesFromRessources();
         Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
-        this.getGame().init();
         this.gameSettings.createGameSettings();
-        this.gameSettings.loadGameSettings(GameSettings.PLUGIN_START);
+        this.gameSettings.loadGameSettings(GameSettingsOLD.PLUGIN_START);
         registerCommands();
         registerEvents();
         MapFileHandler.copyMapFileToPluginRessourceFolder();
@@ -139,20 +147,32 @@ public final class mineralcontest extends JavaPlugin {
         PlayerUtils.runScoreboardManager();
         GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
 
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerUtils.drawPlayersHUD();
+            }
+        }.runTaskTimer(this, 0, 20);
     }
 
     @Override
     public void onDisable() {
-        SendInformation.sendGameData(SendInformation.ended);
 
-        if(pluginWorld != null && !debug) {
-            for(Player player : pluginWorld.getPlayers()) {
-                getGame().teleportToLobby(player);
-                PlayerUtils.clearPlayer(player);
+        for (Groupe groupe : groupes) {
+            Game game = groupe.getGame();
+            SendInformation.sendGameData(SendInformation.ended, game);
+            // todo GETGAME
+            if (pluginWorld != null && !debug) {
+                for (Player player : pluginWorld.getPlayers()) {
+                    game.teleportToLobby(player);
+                    PlayerUtils.clearPlayer(player);
+                }
             }
         }
 
-        getGame().resetMap();
+
+        //getGame().resetMap();
         Bukkit.getScheduler().cancelTasks(this);
         GameLogger.addLog(new Log("server_event", "OnDisable", "plugin_shutdown"));
 
@@ -169,7 +189,6 @@ public final class mineralcontest extends JavaPlugin {
 
 
         Bukkit.getServer().getPluginManager().registerEvents(new BucketEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new BlockSpread(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
@@ -234,23 +253,22 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("saveworld").setExecutor(new SaveWorldCommand());
         getCommand("valider").setExecutor(new ValiderCommand());
 
-
-
     }
 
     // Called when the game start
     public void setWorldBorder() throws Exception {
         if(pluginWorld == null) return;
-        int playZoneRadius = (int) GameSettingsCvar.getValueFromCVARName("mp_set_playzone_radius");
+        int playZoneRadius = (int) GameSettingsCvarOLD.getValueFromCVARName("mp_set_playzone_radius");
         int marge = 100; // Use to prevent server.properties spawn protection
 
         WorldBorder world = pluginWorld.getWorldBorder();
 
-        Location arenaCenterLocation = getGame().getArene().getCoffre().getPosition().clone();
+        // TODO getGame
+        //Location arenaCenterLocation = getGame().getArene().getCoffre().getPosition().clone();
 
-        arenaCenterLocation.setX(arenaCenterLocation.getX()-marge);
-        world.setCenter(arenaCenterLocation);
-        world.setSize(playZoneRadius + marge);
+        //arenaCenterLocation.setX(arenaCenterLocation.getX()-marge);
+        //world.setCenter(arenaCenterLocation);
+        //world.setSize(playZoneRadius + marge);
     }
 
     public void setDefaultWorldBorder() {
@@ -283,11 +301,11 @@ public final class mineralcontest extends JavaPlugin {
         }
     }
 
-    public static void broadcastMessage(String message) {
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers())
-            player.sendMessage(message);
+    public static void broadcastMessage(String message, Groupe groupe) {
+
+        groupe.sendToEveryone(message);
         Bukkit.getLogger().info(message);
-        GameLogger.addLog(new Log("broadcast", message, "server"));
+        GameLogger.addLog(new Log("broadcast-group", message, "server"));
     }
 
     public static void broadcastMessageToAdmins(String message) {
@@ -296,5 +314,38 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getLogger().info(message);
         GameLogger.addLog(new Log("broadcast_admin", message, "server"));
     }
+
+
+    public static boolean isInAMineralContestWorld(Player p) {
+        for (Groupe groupe : plugin.groupes)
+            if (groupe.getMonde() != null && p.getWorld().equals(groupe.getMonde())) return true;
+
+        return p.getWorld().equals(mineralcontest.plugin.pluginWorld);
+    }
+
+    public static boolean isAMineralContestWorld(World w) {
+        for (Groupe groupe : plugin.groupes)
+            if (groupe.getMonde() == null) return false;
+            else if (w.equals(groupe.getMonde())) return true;
+        return w.equals(plugin.pluginWorld);
+    }
+
+    @Nullable
+    public static Game getPlayerGame(Player p) {
+        Groupe g = getPlayerGroupe(p);
+        if (g != null) return g.getGame();
+        return null;
+    }
+
+    @Nullable
+    public static Game getWorldGame(World world) {
+        for (Groupe groupe : plugin.groupes)
+            if (groupe.getMonde() == null) return null;
+            else if (groupe.getMonde().equals(world))
+                return groupe.getGame();
+        return null;
+    }
+
+
 
 }
