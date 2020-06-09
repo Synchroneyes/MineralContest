@@ -49,13 +49,17 @@ public class Arene {
 
     public Groupe groupe;
 
+    public ChickenWaves chickenWaves;
+
     public Arene(Groupe g) {
-        this.deathZone = new DeathZone(g.getGame());
+        this.groupe = g;
+        this.deathZone = new DeathZone(g);
+        this.chickenWaves = new ChickenWaves(this);
 
         try {
-            MAX_TIME_BETWEEN_CHEST = (int) g.getParametresPartie().getCVARValeur("max_time_between_chests");
-            MIN_TIME_BETWEEN_CHEST = (int) g.getParametresPartie().getCVARValeur("min_time_between_chests");
-            TELEPORT_TIME_LEFT = (double) g.getParametresPartie().getCVARValeur("max_teleport_time");
+            MAX_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("max_time_between_chests").getValeurNumerique();
+            MIN_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("min_time_between_chests").getValeurNumerique();
+            TELEPORT_TIME_LEFT = g.getParametresPartie().getCVAR("max_teleport_time").getValeurNumerique();
             TELEPORT_TIME_LEFT_VAR = TELEPORT_TIME_LEFT;
 
         } catch (Exception e) {
@@ -70,7 +74,6 @@ public class Arene {
             MAX_TIME_BETWEEN_CHEST = tmp;
         }
 
-        this.groupe = g;
     }
 
 
@@ -89,8 +92,8 @@ public class Arene {
     public void generateTimeBetweenChest() {
 
         try {
-            MAX_TIME_BETWEEN_CHEST = (int) groupe.getParametresPartie().getCVARValeur("max_time_between_chests");
-            MIN_TIME_BETWEEN_CHEST = (int) groupe.getParametresPartie().getCVARValeur("min_time_between_chests");
+            MAX_TIME_BETWEEN_CHEST = groupe.getParametresPartie().getCVAR("max_time_between_chests").getValeurNumerique();
+            MIN_TIME_BETWEEN_CHEST = groupe.getParametresPartie().getCVAR("min_time_between_chests").getValeurNumerique();
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, groupe.getGame());
@@ -120,12 +123,13 @@ public class Arene {
 
     // Supprime les mobs autour de l'arène
     public void startAutoMobKill() {
+        Arene instance = this;
         new BukkitRunnable() {
             public void run() {
-                for(Entity entite : mineralcontest.plugin.getServer().getWorld("world").getEntities()) {
+                for (Entity entite : groupe.getMonde().getEntities()) {
                     if(entite instanceof Monster) {
                         try {
-                            if (Radius.isBlockInRadius(groupe.getGame().getArene().getCoffre().getPosition(), entite.getLocation(), 100))
+                            if (Radius.isBlockInRadius(coffre.getPosition(), entite.getLocation(), 100))
                                 entite.remove();
                         }catch(Exception e) {
                             e.printStackTrace();
@@ -144,7 +148,6 @@ public class Arene {
 
         generateTimeBetweenChest();
         // Coffre initialisé
-        Bukkit.getLogger().info("startArena");
         new BukkitRunnable() {
             public void run() {
 
@@ -257,8 +260,11 @@ public class Arene {
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
         this.coffre = new CoffreAvecCooldown(position, this);
-        this.coffre.setPosition(position);
         mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -80,7 +80,7 @@ public class Equipe {
     // Retourne true si la team est pleine, false si non
     public boolean isTeamFull() {
         try {
-            if (this.joueurs.size() >= (int) groupe.getParametresPartie().getCVARValeur("mp_team_max_player"))
+            if (this.joueurs.size() >= groupe.getParametresPartie().getCVAR("mp_team_max_player").getValeurNumerique())
                 return true;
         } catch (Exception e) {
             e.printStackTrace();

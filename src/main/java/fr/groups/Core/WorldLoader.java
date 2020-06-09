@@ -68,7 +68,9 @@ public class WorldLoader {
             FileCopy.copyDirectoryContent(dossierMondeACopier, repertoireServer);
             File uidDat = new File(dossierMondeACopier, "uid.dat");
             File level_dat_new = new File(dossierMondeACopier, "level.dat_new");
-            if (!level_dat_new.exists()) level_dat_new.createNewFile();
+            if (!level_dat_new.exists()) {
+                level_dat_new.createNewFile();
+            }
 
             uidDat.delete();
 
@@ -77,7 +79,6 @@ public class WorldLoader {
 
 
             World createdWorld = Bukkit.getServer().createWorld(wc);
-            Bukkit.broadcastMessage("createdWorld= " + createdWorld.getName());
 
             lireFichierMonde(nomMondeDossier, createdWorld);
 
@@ -97,7 +98,6 @@ public class WorldLoader {
     public void supprimerMonde(World world) {
         String nomMonde = world.getName();
         try {
-            Bukkit.getLogger().severe("Suppression: " + System.getProperty("user.dir") + File.separator + nomMonde);
             FileUtils.deleteDirectory(new File(System.getProperty("user.dir") + File.separator + nomMonde));
 
         } catch (IOException ioe) {
@@ -141,6 +141,7 @@ public class WorldLoader {
                 Double.parseDouble(arena_teleport.get("z").toString()));
 
         Game partie = groupe.getGame();
+
         partie.getArene().setCoffre(chestLocation);
         partie.getArene().setTeleportSpawn(teleportLocation);
 

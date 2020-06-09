@@ -80,12 +80,8 @@ public class MapVote {
 
         this.votes.put(joueur, nom_map);
         joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour la map " + nom_map);
-        Bukkit.broadcastMessage("UN JOUEUR A VOTE");
         // On veut vérifier si on a tout les votes
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
-        Bukkit.broadcastMessage("ON A RECUP LE GROUPE");
-
-        Bukkit.broadcastMessage(votes.size() + " == " + playerGroupe.getPlayerCount());
         if (votes.size() == playerGroupe.getPlayerCount()) {
             // On arrête le vote
             setVoteEnabled(false);
@@ -93,6 +89,7 @@ public class MapVote {
             String mapAcharger = getMapGagnante();
             // On demande à charger la map
             playerGroupe.sendToEveryone(mineralcontest.prefixGroupe + "La map gagnante est " + mapAcharger);
+            playerGroupe.sendToEveryone(mineralcontest.prefixGroupe + "Chargement de la map en cours ...");
             playerGroupe.chargerMonde(mapAcharger);
 
         }

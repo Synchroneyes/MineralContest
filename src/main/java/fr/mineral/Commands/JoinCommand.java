@@ -2,6 +2,7 @@ package fr.mineral.Commands;
 
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
@@ -32,54 +33,61 @@ public class JoinCommand implements CommandExecutor {
                 return false;
             }
 
+            GameSettings settings = partie.groupe.getParametresPartie();
+
             if(command.getName().equalsIgnoreCase("join")) {
-                if ((int) GameSettingsCvarOLD.mp_randomize_team.getValue() == 0) {
-                    if (partie.isReferee((Player) sender)) {
-                        sender.sendMessage("You cant join a team, you are a referee");
-                        return false;
-                    }
+                try {
+                    if (settings.getCVAR("mp_randomize_team").getValeurNumerique() == 0) {
+                        if (partie.isReferee((Player) sender)) {
+                            sender.sendMessage("You cant join a team, you are a referee");
+                            return false;
+                        }
 
-                    if(args.length == 1) {
-                        House selectedHouse = partie.getHouseFromName(args[0]);
-                        if (selectedHouse == null) {
-                            StringBuilder availableTeam = new StringBuilder();
+                        if (args.length == 1) {
+                            House selectedHouse = partie.getHouseFromName(args[0]);
+                            if (selectedHouse == null) {
+                                StringBuilder availableTeam = new StringBuilder();
 
-                            for (House maison : partie.getHouses()) {
-                                availableTeam.append(ChatColorString.toString(maison.getTeam().getCouleur()) + ", ");
+                                for (House maison : partie.getHouses()) {
+                                    availableTeam.append(ChatColorString.toString(maison.getTeam().getCouleur()) + ", ");
+                                }
+
+                                String chaineEquipes = availableTeam.toString();
+                                chaineEquipes = chaineEquipes.substring(0, chaineEquipes.length() - 2);
+
+                                player.sendMessage(mineralcontest.prefixErreur + Lang.cvar_error_invalid_team_name.toString());
+                                player.sendMessage(Lang.team_available_list_text.toString());
+                                player.sendMessage(chaineEquipes);
+
+                                return false;
                             }
 
-                            String chaineEquipes = availableTeam.toString();
-                            chaineEquipes = chaineEquipes.substring(0, chaineEquipes.length() - 2);
+                            if (selectedHouse.getTeam().getJoueurs().size() >= settings.getCVAR("mp_team_max_player").getValeurNumerique()) {
+                                player.sendMessage(mineralcontest.prefixErreur + Lang.team_is_full.toString());
+                                return false;
+                            }
 
-                            player.sendMessage(mineralcontest.prefixErreur + Lang.cvar_error_invalid_team_name.toString());
-                            player.sendMessage(Lang.team_available_list_text.toString());
-                            player.sendMessage(chaineEquipes);
+                            Equipe defaultPlayerTeam = partie.getPlayerTeam(player);
+                            if (defaultPlayerTeam != null) defaultPlayerTeam.removePlayer(player);
+
+                            try {
+                                selectedHouse.getTeam().addPlayerToTeam(player, false);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Error.Report(e, partie);
+                                return false;
+                            }
+
 
                             return false;
                         }
-
-                        if (selectedHouse.getTeam().getJoueurs().size() >= (int) GameSettingsCvarOLD.mp_team_max_player.getValue()) {
-                            player.sendMessage(mineralcontest.prefixErreur + Lang.team_is_full.toString());
-                            return false;
-                        }
-
-                        Equipe defaultPlayerTeam = partie.getPlayerTeam(player);
-                        if (defaultPlayerTeam != null) defaultPlayerTeam.removePlayer(player);
-
-                        try {
-                            selectedHouse.getTeam().addPlayerToTeam(player, false);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Error.Report(e, partie);
-                            return false;
-                        }
-
-
-                        return false;
+                    } else {
+                        sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.admin_team_will_be_randomized.toString()));
+                        return true;
                     }
-                } else {
-                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.admin_team_will_be_randomized.toString() ));
-                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Error.Report(e, partie);
                 }
             }
         }

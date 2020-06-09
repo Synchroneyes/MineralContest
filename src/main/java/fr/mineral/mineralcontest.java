@@ -3,11 +3,11 @@ package fr.mineral;
 import fr.groups.Core.Groupe;
 import fr.groups.GroupeExtension;
 import fr.mineral.Commands.*;
-import fr.mineral.Commands.CVAR.*;
 import fr.mineral.Commands.Developper.SaveWorldCommand;
 import fr.mineral.Commands.Developper.SetupCommand;
 import fr.mineral.Commands.Developper.ValiderCommand;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsOLD;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mapbuilder.MapBuilder;
@@ -25,11 +25,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
@@ -44,9 +49,6 @@ public final class mineralcontest extends JavaPlugin {
      * will automatically be added to the group.
      */
     public static boolean communityVersion = true;
-
-
-    private GameSettingsOLD gameSettings;
 
     public static String prefix = "[MineralContest]";
     public static String prefixErreur;
@@ -70,14 +72,18 @@ public final class mineralcontest extends JavaPlugin {
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
-        this.gameSettings = GameSettingsOLD.getInstance();
         //this.partie = new Game();
-        Lang.loadLang((String) GameSettingsCvarOLD.getValueFromCVARName("mp_set_language"));
+        Lang.loadLang(getPluginConfigValue("mp_set_language"));
 
         this.groupeExtension = GroupeExtension.getInstance();
         this.groupes = new LinkedList<>();
     }
 
+    public static String getPluginConfigValue(String configName) {
+        // TODO
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(new File(mineralcontest.plugin.getDataFolder(), "plugin_config.yml"));
+        return (String) configuration.get(configName);
+    }
 
     public static void supprimerGroupe(Groupe g) {
         plugin.groupes.remove(g);
@@ -130,9 +136,6 @@ public final class mineralcontest extends JavaPlugin {
 
 
         Lang.copyLangFilesFromRessources();
-        Bukkit.getServer().dispatchCommand(getServer().getConsoleSender(), "gamerule sendCommandFeedback false");
-        this.gameSettings.createGameSettings();
-        this.gameSettings.loadGameSettings(GameSettingsOLD.PLUGIN_START);
         registerCommands();
         registerEvents();
         MapFileHandler.copyMapFileToPluginRessourceFolder();
@@ -207,6 +210,9 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerPick(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WorldLoaded(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
+
+
     }
 
     private void registerCommands() {
@@ -228,7 +234,20 @@ public final class mineralcontest extends JavaPlugin {
 
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
-        getCommand("mp_randomize_team").setExecutor(new mp_randomize_team());
+
+        Field cmdMapField = null;
+        try {
+            cmdMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+            cmdMapField.setAccessible(true);
+            CommandMap bukkitCommandMap = (CommandMap) cmdMapField.get(Bukkit.getPluginManager());
+
+            bukkitCommandMap.register("", new MCCvarCommand());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        /*getCommand("mp_randomize_team").setExecutor(new mp_randomize_team());
         getCommand("mp_iron_score").setExecutor(new mp_iron_score());
         getCommand("mp_gold_score").setExecutor(new mp_gold_score());
         getCommand("mp_diamond_score").setExecutor(new mp_diamond_score());
@@ -242,23 +261,23 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("mp_set_language").setExecutor(new mp_set_language());
         getCommand("mp_enable_old_pvp").setExecutor(new mp_enable_old_pvp());
         getCommand("mp_enable_block_adding").setExecutor(new mp_enable_block_adding());
+
+        getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
+        getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());*/
+        getCommand("spawnchest").setExecutor(new SpawnChestCommand());
         getCommand("allow").setExecutor(new AllowCommand());
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
-        getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
-        getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());
-        getCommand("spawnchest").setExecutor(new SpawnChestCommand());
 
-
-        getCommand("setup").setExecutor(new SetupCommand());
+        /*getCommand("setup").setExecutor(new SetupCommand());
         getCommand("saveworld").setExecutor(new SaveWorldCommand());
-        getCommand("valider").setExecutor(new ValiderCommand());
+        getCommand("valider").setExecutor(new ValiderCommand());*/
 
     }
 
     // Called when the game start
     public void setWorldBorder() throws Exception {
         if(pluginWorld == null) return;
-        int playZoneRadius = (int) GameSettingsCvarOLD.getValueFromCVARName("mp_set_playzone_radius");
+        int playZoneRadius = GameSettings.getValeurParDefaut("mp_set_playzone_radius").getValeurNumerique();
         int marge = 100; // Use to prevent server.properties spawn protection
 
         WorldBorder world = pluginWorld.getWorldBorder();

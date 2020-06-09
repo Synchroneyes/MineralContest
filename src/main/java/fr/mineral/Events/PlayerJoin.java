@@ -1,6 +1,7 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
@@ -65,8 +66,9 @@ public class PlayerJoin implements Listener {
             // First, we check if the map is correct
             mineralcontest.checkIfMapIsCorrect();
 
+            GameSettings settings = game.groupe.getParametresPartie();
             // We need to apply the pvp system
-            if ((int) GameSettingsCvarOLD.getValueFromCVARName("mp_enable_old_pvp") == 1) {
+            if (settings.getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1) {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
             } else {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);

@@ -29,6 +29,7 @@ public class StartGameCommand implements CommandExecutor {
 
             if (partie.isGameStarted()) {
                 sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_already_started.toString()));
+                partie.getArene().chickenWaves.apparitionPoulets();
             } else {
 
                 try {

@@ -5,6 +5,7 @@ import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Phantom;
@@ -24,7 +25,7 @@ public class EntitySpawn implements Listener {
 
             // TODO
             Game partie = mineralcontest.getWorldGame(worldEvent);
-            if(e.getEntity() instanceof Monster || e.getEntity() instanceof Mob) {
+            if (e.getEntity() instanceof Monster || e.getEntity() instanceof Mob && !(e.getEntity() instanceof Chicken)) {
                 if (partie != null && partie.isGameStarted()) {
                     if (Radius.isBlockInRadius(partie.getArene().getCoffre().getPosition(), e.getEntity().getLocation(), 60)) {
                         e.setCancelled(true);

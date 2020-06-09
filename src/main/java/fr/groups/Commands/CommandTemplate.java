@@ -67,6 +67,7 @@ public abstract class CommandTemplate extends BukkitCommand {
 
     public void addArgument(String arg, boolean argIsRequired) {
         arguments.put(arg, argIsRequired);
+        constructArguments();
     }
 
 

@@ -1,7 +1,9 @@
 package fr.mineral.Utils.Metric;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 
@@ -28,27 +30,34 @@ public class SendInformation {
     }
 
     private static void send(String state, Game partie) {
-        if ((int) GameSettingsCvarOLD.mp_enable_metrics.getValue() == 1) {
+        GameSettings settings = partie.groupe.getParametresPartie();
 
-            try {
-                // On crée un nouvel objet request
-                URLRequest request = new URLRequest("POST");
-                request.setUrl(ApiServerURL);
+        try {
+            if (settings.getCVAR("mp_enable_metrics").getValeurNumerique() == 1) {
 
-                // On lui passe les parametres
-                request.addParameters("serverPort", Bukkit.getServer().getPort());
-                request.addParameters("numberOfPlayers", partie.groupe.getPlayers().size());
-                request.addParameters("biomePlayed", "0");
-                request.addParameters("state", state);
-                request.addParameters("killCounter", partie.killCounter);
+                try {
+                    // On crée un nouvel objet request
+                    URLRequest request = new URLRequest("POST");
+                    request.setUrl(ApiServerURL);
 
-                String result = request.getQueryResult();
-                Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
-            } catch (Exception e) {
-                //e.printStackTrace();
+                    // On lui passe les parametres
+                    request.addParameters("serverPort", Bukkit.getServer().getPort());
+                    request.addParameters("numberOfPlayers", partie.groupe.getPlayers().size());
+                    request.addParameters("biomePlayed", "0");
+                    request.addParameters("state", state);
+                    request.addParameters("killCounter", partie.killCounter);
+
+                    String result = request.getQueryResult();
+                    Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+
+
             }
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, partie);
         }
     }
 

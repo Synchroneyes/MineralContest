@@ -69,19 +69,19 @@ public class ChestEvent implements Listener {
 
                                 if (item != null) {
                                     if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
-                                        score += (int) GameSettingsCvarOLD.SCORE_IRON.getValue() * item.getAmount();
+                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
                                     }
 
                                     if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
-                                        score += (int) GameSettingsCvarOLD.SCORE_GOLD.getValue() * item.getAmount();
+                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
                                     }
 
                                     if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
-                                        score += (int) GameSettingsCvarOLD.SCORE_DIAMOND.getValue() * item.getAmount();
+                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
                                     }
 
                                     if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
-                                        score += (int) GameSettingsCvarOLD.SCORE_EMERALD.getValue() * item.getAmount();
+                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
                                     }
                                 }
                             }

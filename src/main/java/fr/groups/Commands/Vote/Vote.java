@@ -30,10 +30,6 @@ public class Vote extends CommandTemplate {
         try {
             canPlayerUseCommand(commandSender, args);
         } catch (Exception e) {
-
-            Groupe groupTMP = mineralcontest.getPlayerGroupe((Player) commandSender);
-            groupTMP.dechargerMonde();
-
             commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
             return false;
         }

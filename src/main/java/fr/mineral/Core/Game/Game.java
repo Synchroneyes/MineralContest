@@ -95,7 +95,7 @@ public class Game implements Listener {
 
     public Game(Groupe g) {
 
-        this.arene = new Arene(g);
+        this.groupe = g;
 
         //votemap.enableVote();
         this.disconnectedPlayers = new LinkedList<CouplePlayerTeam>();
@@ -107,18 +107,22 @@ public class Game implements Listener {
         this.equipes = new LinkedList<>();
 
         this.addedChests = new LinkedList<>();
-        this.groupe = g;
+        this.arene = new Arene(groupe);
 
+
+        initGameSettings();
+    }
+
+    private void initGameSettings() {
         try {
-            DUREE_PARTIE = (int) groupe.getParametresPartie().getCVARValeur("game_time");
+            DUREE_PARTIE = groupe.getParametresPartie().getCVAR("game_time").getValeurNumerique();
             tempsPartie = DUREE_PARTIE * 60;
-            PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
+            PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
         } catch (Exception e) {
             Error.Report(e, this);
         }
 
     }
-
     public void enableVote() {
         this.groupe.initVoteMap();
     }
@@ -184,7 +188,7 @@ public class Game implements Listener {
     public boolean areAllPlayerLoggedIn() {
 
         try {
-            return ((groupe.getPlayers().size() - getRefereeCount()) >= ((int) groupe.getParametresPartie().getCVARValeur("mp_team_max_player")));
+            return ((groupe.getPlayers().size() - getRefereeCount()) >= (groupe.getParametresPartie().getCVAR("mp_team_max_player").getValeurNumerique()));
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, this);
@@ -264,12 +268,12 @@ public class Game implements Listener {
             if(areAllPlayersReady()) {
                 if(!allPlayerHaveTeam()) {
 
-                    if ((int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team") == 1) {
+                    if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
                         randomizeTeam(true);
                         demarrerPartie(false);
                         return;
                     } else {
-                        warnPlayerWithNoTeam();
+                        //warnPlayerWithNoTeam();
                         startAllPlayerHaveTeamTimer();
                         return;
                     }
@@ -397,7 +401,7 @@ public class Game implements Listener {
         if(!isPreGame()) return;
         this.PreGame = false;
         try {
-            this.PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
+            this.PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, this);
@@ -412,7 +416,7 @@ public class Game implements Listener {
     private void removeAllDroppedItems() {
         World world = null;//get the world
         try {
-            world = Bukkit.getServer().getWorld((String) groupe.getParametresPartie().getCVARValeur("world_name"));
+            world = Bukkit.getServer().getWorld(mineralcontest.getPluginConfigValue("world_name"));
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, this);
@@ -543,21 +547,17 @@ public class Game implements Listener {
             public void run() {
 
                 if(isPreGame() && !isGamePaused()) {
-                    Bukkit.getLogger().info("L481");
 
                     // ON DEMARRE LA PARTIE !
                     if(PreGameTimeLeft <= 0) {
                         PreGame = false;
 
-                        Bukkit.getLogger().info("DEMARRAGE PARTIE");
 
                         if(tempsPartie == DUREE_PARTIE * 60) {
                             // METRIC
                             // On envoie les informations de la partie
                             SendInformation.sendGameData(SendInformation.start, instance);
                         }
-
-                        Bukkit.getLogger().info("GameData SENT");
 
 
                         for (Player online : groupe.getMonde().getPlayers()) {
@@ -587,7 +587,6 @@ public class Game implements Listener {
                                     PlayerMove.handlePushs();
 
                                     // On TP le joueur dans sa maison
-                                    online.sendMessage("teleportation maison");
                                     try {
                                         if (!isReferee(online))
                                             PlayerUtils.teleportPlayer(online, groupe.getMonde(), getPlayerHouse(online).getHouseLocation());
@@ -613,7 +612,7 @@ public class Game implements Listener {
 
                     } else {
                         for (Player online : groupe.getMonde().getPlayers()) {
-                            online.sendTitle(Lang.translate(Lang.hud_game_starting.toString()), "", 0, 20*2, 0);
+                            online.sendTitle(Lang.translate(Lang.hud_game_starting.toString(), instance), "", 0, 20 * 2, 0);
                             if(tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
                         }
                     }
@@ -658,6 +657,15 @@ public class Game implements Listener {
                         // Si le temps n'est pas à zéro, on continue
                         if(tempsPartie > 0) tempsPartie--;
 
+                        try {
+                            if (tempsPartie <= groupe.getParametresPartie().getCVAR("chicken_spawn_time").getValeurNumerique() * 60) {
+                                if (!arene.chickenWaves.isStarted()) arene.chickenWaves.start();
+                            }
+                        } catch (Exception e) {
+                            Error.Report(e, instance);
+                            e.printStackTrace();
+                        }
+
                     }
                 }
 
@@ -675,7 +683,7 @@ public class Game implements Listener {
         int mp_team_max_player = 0;
 
         try {
-            mp_team_max_player = (int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team");
+            mp_team_max_player = groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique();
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, this);
@@ -869,8 +877,11 @@ public class Game implements Listener {
     private void warnPlayerWithNoTeam() {
         for (Player player : groupe.getMonde().getPlayers())
             if(!isReferee(player)){
-                if(getPlayerTeam(player) == null)
+                if (getPlayerTeam(player) == null) {
+                    player.sendMessage(ChatColor.RED + "---------------");
                     player.sendMessage(mineralcontest.prefixPrive + Lang.warn_player_you_dont_have_a_team.toString());
+                    player.sendMessage(ChatColor.RED + "---------------");
+                }
             }
     }
 
@@ -882,8 +893,6 @@ public class Game implements Listener {
      */
     public boolean demarrerPartie(boolean forceGameStart) throws Exception {
 
-        Bukkit.getLogger().info("STARTING, FORCE: " + forceGameStart);
-
         if(isGameStarted()) {
             throw new Exception(Lang.get("game_already_started"));
         }
@@ -892,7 +901,7 @@ public class Game implements Listener {
         if(forceGameStart){
             GameForced = true;
             tempsPartie = 60 * 60;
-            PreGameTimeLeft = (int) groupe.getParametresPartie().getCVARValeur("pre_game_timer");
+            PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
 
             if(!allPlayerHaveTeam()) randomizeTeam(forceGameStart);
         }
@@ -938,12 +947,21 @@ public class Game implements Listener {
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn arene: " + ChatColor.GREEN + "OK");
 
 
-        if ((int) groupe.getParametresPartie().getCVARValeur("mp_randomize_team") == 1 && (!forceGameStart && !allPlayerHaveTeam()))
+        if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1 && (!forceGameStart && !allPlayerHaveTeam()))
             randomizeTeam(forceGameStart);
 
 
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "GAME_SUCCESSFULLY_STARTED");
         if(mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
+
+
+        if (!forceGameStart && !allPlayerHaveTeam()) {
+            groupe.sendToadmin(mineralcontest.prefixAdmin + "Il y a des joueurs sans team, la partie ne peut pas démarrer");
+            return false;
+        }
+
+
+
 
 
         for (Player online : groupe.getPlayers()) {
@@ -952,8 +970,6 @@ public class Game implements Listener {
                 PlayerUtils.setMaxHealth(online);
                 online.setGameMode(GameMode.SURVIVAL);
                 online.getInventory().clear();
-                //PlayerUtils.givePlayerBaseItems(online);
-                //PlayerBaseItem.givePlayerItems(online, PlayerBaseItem.onFirstSpawnName);
             }
 
 
@@ -969,6 +985,7 @@ public class Game implements Listener {
         getArene().clear();
 
         removeAllDroppedItems();
+        initGameSettings();
 
         PreGame = true;
         GameStarted = false;
@@ -982,8 +999,6 @@ public class Game implements Listener {
         // On démarre les portes
         handleDoors();
         removeAllDroppedItems();
-
-        Bukkit.getLogger().info("pregame: " + isPreGame());
 
         return true;
 

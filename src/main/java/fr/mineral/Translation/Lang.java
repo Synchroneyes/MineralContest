@@ -2,6 +2,7 @@ package fr.mineral.Translation;
 
 import fr.groups.Core.Groupe;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Utils.ErrorReporting.Error;
@@ -24,7 +25,6 @@ public enum Lang {
     cvar_iron_score("cvar_iron_score", "Le score du fer est maintenant de "),
     cvar_emerald_score("cvar_emerald_score", "Le score de l'émeraude est maintenant de "),
     cvar_gold_score("cvar_gold_score", "Le score de l'or est maintenant de "),
-    cvar_team_max_player("cvar_team_max_player", "Le nombre de joueur requis par equipe est maintenant de %teamNumber%"),
     error("error", "[Erreur]"),
     global("global", "[Global]"),
     _private("private", "[Privé]"),
@@ -32,7 +32,6 @@ public enum Lang {
     group("group", "[Groupe]"),
     error_when_resume("error_when_resume", "Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine"),
     game_already_started("game_already_started", "La partie a déjà commencé !"),
-    all_team_not_full("all_team_not_full", "Au moins une équipe n'est pas complète. Il faut %teamNumber% joueurs par équipe."),
     not_enought_player_connected("not_enought_player_connected", "Il n'y a pas assez de joueurs connecté"),
     must_be_in_team("must_be_in_team","Vous devez être dans une équipe"),
     arena_not_defined("arena_not_defined", "L'arène n'est pas défini"),
@@ -88,7 +87,7 @@ public enum Lang {
     hud_game_resumed("hud_game_resumed", "Go go go !"),
     hud_game_paused("hud_game_paused", "La partie est en pause"),
     hud_game_waiting_start("hud_game_waiting_start", "En attente du démarrage de la partie"),
-    hud_game_starting("hud_game_starting", "La partie va démarrer dans %preGameTime% secondes"),
+    hud_game_starting("hud_game_starting", "Démarrage dans %preGameTime% secondes"),
     hud_player_paused("hud_player_paused", "PAUSE !"),
     hud_player_resume_soon("hud_player_resume_soon", "La partie reprendra bientôt"),
     hud_admin_resume_help("hud_admin_resume_help", "Pour reprendre la partie, faites /resume"),
@@ -147,7 +146,6 @@ public enum Lang {
     warn_player_you_dont_have_a_team("warn_player_you_dont_have_a_team", "Attention, vous n'êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe>"),
     set_yourself_as_ready_to_start_game("set_yourself_as_ready_to_start_game", "Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready "),
     teamChat("teamChat", "[TEAM]"),
-    cvar_play_zone_radius("cvar_play_zone_radius", "La taille de la zone de jeu est désormais de %playZoneRadius% block(s)"),
     cvar_friendly_fire_enabled("cvar_friendly_fire_enabled", "Les dégats entre coéquipiers sont désormais actif"),
     cvar_friendly_fire_disabled("cvar_friendly_fire_disabled", "Les dégats entre coéquipiers sont désormais désactivés"),
     cvar_block_adding_enabled("cvar_block_adding_enabled", "La pose de bloc est maintenant activée"),
@@ -195,7 +193,8 @@ public enum Lang {
     hud_map_name("hud_map_name", "Map actuelle: %mapName%"),
     cvar_error_invalid_team_name("cvar_error_invalid_team_name", "Cette équipe n'existe pas"),
     error_vote_available_only_when_no_game("error_vote_available_only_when_no_game", "Le démarrage du vote est disponible seulement avant le début d'une partie"),
-    group_finished_their_game_winner_display("group_finished_their_game_winner_display", "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !");
+    group_finished_their_game_winner_display("group_finished_their_game_winner_display", "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !"),
+    custom_chicken_name("custom_chicken_name", "POULET DE RESSOURCE");
 
 
     private String path;
@@ -383,8 +382,6 @@ public enum Lang {
     }
 
     public static String translate(String string) {
-        if (string.contains("%requiredPlayers%"))
-            string = string.replace("%requiredPlayers%", "" + (3 * GameSettingsCvarOLD.mp_team_max_player.getValueInt()));
         if(string.contains("%black%")) string = string.replace("%black%", "" + ChatColor.BLACK);
         if(string.contains("%dark_blue%")) string = string.replace("%dark_blue%", "" + ChatColor.DARK_BLUE);
         if(string.contains("%dark_green%")) string = string.replace("%dark_green%", "" + ChatColor.DARK_GREEN);
@@ -406,10 +403,6 @@ public enum Lang {
         if(string.contains("%strikethrough%")) string = string.replace("%strikethrough%", "" + ChatColor.STRIKETHROUGH);
         if(string.contains("%underline%")) string = string.replace("%underline%", "" + ChatColor.UNDERLINE);
         if(string.contains("%italic%")) string = string.replace("%italic%", "" + ChatColor.ITALIC);
-        if (string.contains("%teamNumber%"))
-            string = string.replace("%teamNumber%", "" + GameSettingsCvarOLD.mp_team_max_player.getValueInt());
-        if (string.contains("%playZoneRadius%"))
-            string = string.replace("%playZoneRadius%", "" + GameSettingsCvarOLD.mp_set_playzone_radius.getValueInt());
 
         return string;
     }
@@ -422,6 +415,13 @@ public enum Lang {
         if (string.contains("%groupName%")) string = string.replace("%groupName%", "" + partie.groupe.getNom());
         if (string.contains("%coloredWinningTeamName%"))
             string = string.replace("%coloredWinningTeamName%", "" + partie.getWinningTeam().getCouleur() + partie.getWinningTeam().getNomEquipe());
+
+        try {
+            if (string.contains("%requiredPlayers%"))
+                string = string.replace("%requiredPlayers%", "" + (3 * partie.groupe.getParametresPartie().getCVAR("mp_max_player_team").getValeurNumerique()));
+        } catch (Exception e) {
+            Error.Report(e, partie);
+        }
 
         return string;
 

@@ -1,13 +1,16 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,11 +68,15 @@ public class EntityDamage implements Listener {
                     }
                 }
 
+                GameSettings settings = partie.groupe.getParametresPartie();
+
+
                 // Do the check
                 if (attaquant != null) {
                     Equipe attaquantTeam = partie.getPlayerTeam(attaquant);
                     Equipe victimeTeam = partie.getPlayerTeam(victime);
-                    int enable_friendly_fire = (int) GameSettingsCvarOLD.getValueFromCVARName("mp_enable_friendly_fire");
+
+                    int enable_friendly_fire = settings.getCVAR("mp_enable_friendly_fire").getValeurNumerique();
                     if (attaquantTeam.equals(victimeTeam) && enable_friendly_fire == 0) {
                         event.setCancelled(true);
                         return;
@@ -109,7 +116,10 @@ public class EntityDamage implements Listener {
                 }
 
             } else {
-                event.setCancelled(true);
+
+                if (!(event.getEntity() instanceof Chicken)) {
+                    event.setCancelled(true);
+                }
             }
             return;
         }

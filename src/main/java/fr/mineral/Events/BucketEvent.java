@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Game.BlockManager;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Radius;
@@ -28,8 +29,10 @@ public class BucketEvent implements Listener {
                 return;
             }
 
+            GameSettings settings = partie.groupe.getParametresPartie();
+
             if (Radius.isBlockInRadius(partie.getArene().getCoffre().getPosition(), event.getPlayer().getLocation(), partie.getArene().arenaRadius)) {
-                if ((int) GameSettingsCvarOLD.getValueFromCVARName("mp_enable_block_adding") == 1) {
+                if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                     BlockManager blockManager = BlockManager.getInstance();
                     if (blockManager.isBlockAllowedToBeAdded(event.getBucket())) {
                         blockManager.addBlock(event.getBlock());

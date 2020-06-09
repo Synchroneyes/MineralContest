@@ -5,6 +5,7 @@ import fr.groups.GroupeExtension;
 import fr.groups.Utils.Etats;
 import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Core.House;
 import fr.mineral.Core.Referee.RefereeItem;
@@ -17,11 +18,13 @@ import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,8 +74,11 @@ public class PlayerUtils {
     }
 
     public static World getPluginWorld() {
-        String world_name = (String) GameSettingsCvarOLD.getValueFromCVARName("world_name");
+
+        String world_name = mineralcontest.getPluginConfigValue("world_name");
         World world = Bukkit.getWorld(world_name);
+
+        mineralcontest.plugin.pluginWorld = world;
 
 
         return world;
@@ -201,7 +207,7 @@ public class PlayerUtils {
                         if (playerGroup.getEtatPartie().equals(Etats.EN_ATTENTE)) {
                             // Le joueur possède un groupe !
                             elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
-                            elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "/" + playerGroup.getPlayerCountRequired());
+                            elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "");
                             elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + playerGroup.getEtatPartie().getNom());
                             elementsADisplay.add("========= ");
                             elementsADisplay.add("Admins: ");
@@ -254,9 +260,9 @@ public class PlayerUtils {
 
                     if (!gameStarted || isPreGame) {
                         if (team == null)
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_awaiting_players.toString(), Lang.hud_you_are_not_in_team.toString());
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.translate(Lang.hud_awaiting_players.toString(), playergame), Lang.hud_you_are_not_in_team.toString());
                         else
-                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.hud_awaiting_players.toString(), Lang.translate(Lang.hud_team_name_no_score.toString(), team, online));
+                            ScoreboardUtil.unrankedSidebarDisplay(online, "   " + Lang.title.toString() + "   ", " ", Lang.hud_game_waiting_start.toString(), "", Lang.translate(Lang.hud_awaiting_players.toString(), playergame), Lang.translate(Lang.hud_team_name_no_score.toString(), team, online));
                     } else {
                         // Si la game est en pause
                         if (gamePaused) {
@@ -392,6 +398,7 @@ public class PlayerUtils {
         }
 
 
+
         String[] elements = new String[elementsADisplay.size() + 1];
         int index = 1;
         for (String element : elementsADisplay) {
@@ -501,7 +508,15 @@ public class PlayerUtils {
             item_a_drop.add(Material.DIAMOND_ORE);
             item_a_drop.add(Material.EMERALD_ORE);
 
-            int mp_enable_item_drop = (int) GameSettingsCvarOLD.mp_enable_item_drop.getValue();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
+            GameSettings settings = playerGroup.getParametresPartie();
+            int mp_enable_item_drop = 0;
+            try {
+                mp_enable_item_drop = settings.getCVAR("mp_enable_item_drop").getValeurNumerique();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Error.Report(e, playerGroup.getGame());
+            }
 
             // DROP ONLY INGOTS
             if(mp_enable_item_drop == 1) {
@@ -521,7 +536,7 @@ public class PlayerUtils {
         // Drop items
         for(ItemStack item : inventaire) {
             if(!item.getType().equals(Material.AIR))
-                Bukkit.getWorld((String) GameSettingsCvarOLD.getValueFromCVARName("world_name")).dropItemNaturally(player.getLocation(), item);
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
         }
 
         // On l'ajoute à la deathzone

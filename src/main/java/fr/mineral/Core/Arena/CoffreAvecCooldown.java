@@ -1,5 +1,6 @@
 package fr.mineral.Core.Arena;
 
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsOLD;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
@@ -42,7 +43,7 @@ public class CoffreAvecCooldown {
         try {
             if (arene != null & arene.getCoffre() != null) {
                 if (arene.getCoffre().equals(this)) {
-                    time = (int) arene.groupe.getParametresPartie().getCVARValeur("chest_opening_cooldown");
+                    time = arene.groupe.getParametresPartie().getCVAR("chest_opening_cooldown").getValeurNumerique();
                     timeLeft = time;
                 }
             }
@@ -64,7 +65,7 @@ public class CoffreAvecCooldown {
         isCancelled = false;
 
         try {
-            time = (int) arene.groupe.getParametresPartie().getCVARValeur("chest_opening_cooldown");
+            time = arene.groupe.getParametresPartie().getCVAR("chest_opening_cooldown").getValeurNumerique();
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, arene.groupe.getGame());
@@ -75,9 +76,6 @@ public class CoffreAvecCooldown {
     }
 
 
-    public void setPosition(Location p) {
-        this.position = p;
-    }
 
     public Location getPosition() throws Exception {
         if(this.position == null)
@@ -231,9 +229,12 @@ public class CoffreAvecCooldown {
         Inventory inv = chest.getInventory();
 
         LinkedList<Range> items = new LinkedList<>();
-        GameSettingsOLD gameSettings = GameSettingsOLD.getInstance();
-        YamlConfiguration config = gameSettings.getYamlConfiguration();
-        ConfigurationSection chest_items = config.getConfigurationSection("config.arena.chest_content");
+
+        GameSettings settings = arene.groupe.getParametresPartie();
+
+        YamlConfiguration config = settings.getYamlConfiguration();
+        ConfigurationSection chest_items = config.getConfigurationSection("chest_content");
+
         String[] attributes = {"name", "probability"};
         int currentMinRange = 0;
         int tmpNextMinRange = currentMinRange;
@@ -287,8 +288,8 @@ public class CoffreAvecCooldown {
         }
 
         int maxItem, minItem;
-        maxItem = (int) arene.groupe.getParametresPartie().getCVARValeur("max_item_in_chest");
-        minItem = (int) arene.groupe.getParametresPartie().getCVARValeur("min_item_in_chest");
+        maxItem = arene.groupe.getParametresPartie().getCVAR("max_item_in_chest").getValeurNumerique();
+        minItem = arene.groupe.getParametresPartie().getCVAR("min_item_in_chest").getValeurNumerique();
 
         //maxItem = 30;
         //minItem = 20;

@@ -2,6 +2,7 @@ package fr.mineral.Events;
 
 import fr.mineral.Core.Game.BlockManager;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.BlockSaver;
@@ -40,8 +41,9 @@ public class BlockPlaced implements Listener {
                 try {
                     if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), game.getArene().arenaRadius)) {
 
+                        GameSettings settings = game.groupe.getParametresPartie();
                         // We are in the radius of the arena
-                        if ((int) GameSettingsCvarOLD.getValueFromCVARName("mp_enable_block_adding") == 1) {
+                        if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                             BlockManager blockManager = BlockManager.getInstance();
 
                             if (!blockManager.isBlockAllowedToBeAdded(event.getBlock())) {

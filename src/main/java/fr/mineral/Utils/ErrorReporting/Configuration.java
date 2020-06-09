@@ -1,6 +1,7 @@
 package fr.mineral.Utils.ErrorReporting;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Settings.GameCVAR;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
@@ -19,13 +20,10 @@ public class Configuration {
         JSONObject settings = new JSONObject();
         JSONObject arena = new JSONObject();
         JSONObject _chest_content = new JSONObject();
-        for (String cvar_name : configuration.getConfigurationSection("config.cvar").getKeys(false)) {
-            cvar.put(cvar_name, configuration.get("config.cvar." + cvar_name));
-        }
-        for (String cvar_name : configuration.getConfigurationSection("config.settings").getKeys(false)) {
-            settings.put(cvar_name, configuration.get("config.settings." + cvar_name));
-        }
-        for (String cvar_name : configuration.getConfigurationSection("config.arena").getKeys(false)) {
+
+
+
+        /*for (String cvar_name : configuration.getConfigurationSection("config.arena").getKeys(false)) {
             if (configuration.get("config.arena." + cvar_name) instanceof MemorySection) {
                 final MemorySection section = (MemorySection) configuration.get("config.arena." + cvar_name);
                 arena.put(cvar_name, new JSONObject());
@@ -37,10 +35,17 @@ public class Configuration {
             } else {
                 arena.put(cvar_name, configuration.get("config.arena." + cvar_name));
             }
+        }*/
+
+
+        for (GameCVAR parametre : partie.groupe.getParametresPartie().getParametres()) {
+            settings.put(parametre.getType() + "." + parametre.getCommand(), parametre.getValeur());
         }
+
+
         arena.put("chest_content", _chest_content);
         final JSONObject json = new JSONObject();
-        json.put("config", new JSONObject().put("cvar", cvar).put("settings", settings).put("arena", arena));
+        json.put("config", new JSONObject().put("settings", settings));
 
         final Game game = partie;
         final JSONObject gameInfo = new JSONObject();

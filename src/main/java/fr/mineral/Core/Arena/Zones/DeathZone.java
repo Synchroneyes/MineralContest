@@ -1,5 +1,6 @@
 package fr.mineral.Core.Arena.Zones;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
 import fr.mineral.Settings.GameSettingsCvarOLD;
@@ -10,6 +11,7 @@ import fr.mineral.Utils.Player.CouplePlayer;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -33,16 +35,17 @@ public class DeathZone {
     // Temps en seconde
     private int timeInDeathzone = 0;
     private Location spawnLocation;
-    private Game partie;
+    private Groupe groupe;
 
-    public DeathZone(Game game) {
+    public DeathZone(Groupe g) {
         this.joueurs = new LinkedList<CouplePlayer>();
+        this.groupe = g;
         try {
-            timeInDeathzone = (int) game.groupe.getParametresPartie().getCVARValeur("death_time");
+
+            timeInDeathzone = g.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         } catch (Exception e) {
-            Error.Report(e, game);
+            Error.Report(e, g.getGame());
         }
-        this.partie = game;
     }
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
@@ -91,7 +94,7 @@ public class DeathZone {
     }
 
     public void add(Player joueur) throws Exception {
-        timeInDeathzone = (int) partie.groupe.getParametresPartie().getCVARValeur("death_time");
+        timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         Game partie = mineralcontest.getPlayerGame(joueur);
 
         if (partie.isReferee(joueur) && partie.isGameStarted()) {

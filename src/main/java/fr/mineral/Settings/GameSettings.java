@@ -20,6 +20,7 @@ public class GameSettings {
     private LinkedList<GameCVAR> parametres;
 
     private static LinkedList<GameCVAR> parametresParDefaut;
+    private File fichierConfiguration;
 
     // Les paramètres du fichier de configuration à ne pas tenir compte
     private static LinkedList<GameCVAR> parametresExclu;
@@ -30,8 +31,20 @@ public class GameSettings {
             parametresExclu.add(new GameCVAR("chest_content", "", "", "arena", false, false));
         }
 
-        if (loadDefaultSettings) parametres = getParametresParDefaut();
-        else parametres = new LinkedList<>();
+        parametres = new LinkedList<>();
+        if (loadDefaultSettings) {
+            for (GameCVAR parametre : getParametresParDefaut())
+                parametres.add(new GameCVAR(parametre.getCommand(), parametre.getValeur(), parametre.getDescription(), parametre.getType(), parametre.canBeReloaded(), parametre.isNumber()));
+        }
+
+        fichierConfiguration = new File(mineralcontest.plugin.getDataFolder() + File.separator + "game_settings.yml");
+        if (!fichierConfiguration.exists()) saveToFile("game_settings", true);
+
+    }
+
+
+    public YamlConfiguration getYamlConfiguration() {
+        return YamlConfiguration.loadConfiguration(fichierConfiguration);
     }
 
     /**
@@ -56,14 +69,12 @@ public class GameSettings {
      * @param cvar
      * @return null, int, string
      */
-    public Object getCVARValeur(String cvar) throws Exception {
+    public GameCVAR getCVAR(String cvar) throws Exception {
         for (GameCVAR parametre : parametres) {
             // Si la commande passée en argument est égale au paramtre actuel
             if (parametre.getCommand().equalsIgnoreCase(cvar)) {
-                if (parametre.isNumber()) return parametre.getValeurNumerique();
+                return parametre;
             }
-
-            return parametre.getValeur();
         }
 
         throw new Exception("Paramètre inconnu: " + cvar);
@@ -107,12 +118,16 @@ public class GameSettings {
 
     /**
      * Permet de sauvegarder la configuration actuelle vers un fichier
+     * @param saveDefaultPluginSetting - True si on sauvegarde le fichier par défaut du plugin, false si un fichier custom
      */
-    public void saveToFile(String nomDeFichier) {
+    public void saveToFile(String nomDeFichier, boolean saveDefaultPluginSetting) {
 
         GameLogger.addLog(new Log("game_cvar", "About to save current configuration into a file named " + nomDeFichier + ".yml", "GameSettings: saveToFile"));
 
-        File dossierConfiguration = new File(mineralcontest.plugin.getDataFolder() + File.separator + "saved-configs");
+        File dossierConfiguration = null;
+        if (saveDefaultPluginSetting) dossierConfiguration = mineralcontest.plugin.getDataFolder();
+        else dossierConfiguration = new File(mineralcontest.plugin.getDataFolder() + File.separator + "saved-configs");
+
         // Si le dossier n'existe pas, on le crée
         if (!dossierConfiguration.exists()) dossierConfiguration.mkdir();
 
@@ -179,6 +194,7 @@ public class GameSettings {
     public static LinkedList<GameCVAR> getParametresParDefaut() {
         if (parametresParDefaut == null) parametresParDefaut = new LinkedList<>();
         if (parametresParDefaut.isEmpty()) {
+            GameLogger.addLog(new Log("game_cvar", "Adding default game cvars ...", "GameSettings: getParametresParDefaut"));
             parametresParDefaut.add(new GameCVAR("mp_enable_metrics", "1", "Permet d'activer ou non l'envoie de stats", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_randomize_team", "0", "Permet d'activer ou non les équipes aléatoires", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_item_drop", "2", "Permet d'activer ou non le drop d'item à la mort. 0 pour aucun, 1 pour les minerais uniquement, 2 pour tout", "cvar", true, true));
@@ -187,8 +203,6 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("SCORE_DIAMOND", "150", "Permet de définir le score pour un diamant", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("SCORE_EMERALD", "300", "Permet de définir le score pour un émeraude", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_team_max_player", "2", "Permet de définir le nombre maximum de joueur par équipe", "cvar", true, true));
-            parametresParDefaut.add(new GameCVAR("mp_set_language", "french", "Permet de définir le langage par défaut", "cvar", true, false));
-            parametresParDefaut.add(new GameCVAR("world_name", "1", "Permet de définir le monde dans le quel le plugin doit être activé", "settings", true, false));
             parametresParDefaut.add(new GameCVAR("mp_set_playzone_radius", "1000", "Permet de définir le rayon de la zone jouable en nombre de bloc", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_friendly_fire", "1", "Permet d'activer ou non les dégats entre alliés", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_old_pvp", "1", "Permet d'activer ou non l'ancien système de pvp", "cvar", true, true));
@@ -202,10 +216,31 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("max_item_in_chest", "20", "Permet de définir le nombre maximum d'objet dans un coffre d'équipe", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("min_item_in_chest", "10", "Permet de définir le nombre minimum d'objet dans un coffre d'équipe", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("death_time", "10", "Permet de définir le temps de réapparition", "cvar", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_time", "60", "Permet de définir le temps restant necessaire avant de faire apparaitre les poulets dans l'arène", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_interval", "30", "Permet de définir le temps en seconde necessaire avant de pouvoir faire apparaitre une vague de poulet", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_min_count", "2", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_max_count", "5", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_min_item_count", "1", "Permet de définir le nombre minimum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_max_item_count", "3", "Permet de définir le nombre maximum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
+
+            GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
+
         }
 
         return parametresParDefaut;
 
+    }
+
+    /**
+     * Retourne une valeur par défaut
+     *
+     * @param commande
+     * @return null ou Object
+     */
+    public static GameCVAR getValeurParDefaut(String commande) {
+        for (GameCVAR cvar : getParametresParDefaut())
+            if (cvar.getCommand().equalsIgnoreCase(commande)) return cvar;
+        return null;
     }
 
 
