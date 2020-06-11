@@ -3,8 +3,10 @@ package fr.mapbuilder.Spawner;
 import fr.mapbuilder.Blocks.BlocksColorChanger;
 import fr.mapbuilder.Blocks.BlocksDataColor;
 import fr.mapbuilder.Blocks.SaveableBlock;
+import fr.mapbuilder.MapBuilder;
 import fr.mapbuilder.RessourceFilesManager;
 import fr.mapbuilder.Util;
+import fr.mineral.Utils.BlockSaver;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,10 +21,10 @@ import java.util.Stack;
 public class House {
 
     private static mineralcontest plugin = mineralcontest.plugin;
-    private static Stack<SaveableBlock> blocksModified = new Stack<>();
+    private static Stack<BlockSaver> blocksModified = new Stack<>();
 
-    public static void addModifiedBlock(Block b) {
-        SaveableBlock blockToAdd = new SaveableBlock(b);
+    public static void addModifiedBlock(Block b, BlockSaver.Type type) {
+        BlockSaver blockToAdd = new BlockSaver(b, type);
         if(!blocksModified.contains(blockToAdd)) blocksModified.add(blockToAdd);
     }
 
@@ -73,6 +75,8 @@ public class House {
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("house.blocks." + i + ".block.type").toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("house.blocks." + i + ".block.data").toString());
 
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
+
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
             locTMP.getBlock().getLocation().setY(locTMP.getY());
@@ -99,6 +103,8 @@ public class House {
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("house.door.blocks." + i + ".block.type").toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("house.door.blocks." + i + ".block.data").toString());
 
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
+
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
             locTMP.getBlock().getLocation().setY(locTMP.getY());
@@ -107,6 +113,10 @@ public class House {
             BlocksColorChanger.changeBlockColor(locTMP.getBlock(), color);
 
         }
+
+        MapBuilder.modifications.push((Stack<BlockSaver>) blocksModified.clone());
+        blocksModified.clear();
+
     }
 
 

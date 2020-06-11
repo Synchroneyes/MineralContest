@@ -24,7 +24,13 @@ public class PlayerDisconnect implements Listener {
             Player joueur = event.getPlayer();
             Game partie = mineralcontest.getWorldGame(worldEvent);
 
-            if (partie == null) return;
+            GameLogger.addLog(new Log("PlayerDisconnect", "Player " + joueur.getDisplayName() + " disconnected", "player_disconnect"));
+
+            if (partie == null && mineralcontest.communityVersion) return;
+            if (!mineralcontest.communityVersion && partie == null) {
+                mineralcontest.plugin.getNonCommunityGroup().retirerJoueur(joueur);
+                return;
+            }
 
             Equipe team = partie.getPlayerTeam(joueur);
             House house = partie.getPlayerHouse(joueur);
@@ -69,7 +75,6 @@ public class PlayerDisconnect implements Listener {
             }, 20);
 
             event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
-            GameLogger.addLog(new Log("PlayerDisconnect", "Player " + joueur.getDisplayName() + " disconnected", "player_disconnect"));
 
 
         }

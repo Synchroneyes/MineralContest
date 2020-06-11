@@ -39,9 +39,9 @@ public class BlockPlaced implements Listener {
             Bukkit.getLogger().severe("BLOCK PLACED, started:" + game.isGameStarted() + ", paused: " + game.isGamePaused());
             if (game.isGameStarted() && !game.isGamePaused()) {
                 try {
-                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), game.getArene().arenaRadius)) {
 
-                        GameSettings settings = game.groupe.getParametresPartie();
+                    GameSettings settings = game.groupe.getParametresPartie();
+                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), settings.getCVAR("protected_zone_area_radius").getValeurNumerique())) {
                         // We are in the radius of the arena
                         if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                             BlockManager blockManager = BlockManager.getInstance();

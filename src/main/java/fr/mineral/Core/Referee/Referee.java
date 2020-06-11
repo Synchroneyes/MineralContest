@@ -4,21 +4,16 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedList;
 import java.util.Stack;
 
 public class Referee {
 
-    /*
-    ITEMS:
-        Liste des scores (avec ou sans points)
-        Demarrer
-        Pause
-        Stop
-
-     */
 
     public static Player refereeForcingVote;
 
@@ -26,10 +21,7 @@ public class Referee {
         Referee.refereeForcingVote = refereeForcingVote;
     }
 
-    /*public static void broadcastToReferees(String message) {
-        for(Player referee: mineralcontest.getPlayerGame(joueur).getReferees())
-            referee.sendMessage(message);
-    }*/
+
 
     // Display leaderboard to all referees
     public static void displayLeaderboard() {
@@ -37,9 +29,6 @@ public class Referee {
         LinkedList<Equipe> equipes = new LinkedList<>();
         Stack<Equipe> leaderboard = new Stack<>();
 
-        /*equipes.add(mineralcontest.getPlayerGame(joueur).getBlueHouse().getTeam());
-        equipes.add(mineralcontest.getPlayerGame(joueur).getRedHouse().getTeam());
-        equipes.add(mineralcontest.getPlayerGame(joueur).getYellowHouse().getTeam());*/
 
         // TODO
 
@@ -88,5 +77,17 @@ public class Referee {
         //broadcastToReferees(stringBuilder.toString());
 
         return;
+    }
+
+    /**
+     * Récupère le livre d'arbitrage
+     */
+    public static ItemStack getRefereeItem() {
+        ItemStack item = new ItemStack(Material.BOOK, 1);
+
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(Lang.referee_item_name.toString());
+        item.setItemMeta(itemMeta);
+        return item;
     }
 }

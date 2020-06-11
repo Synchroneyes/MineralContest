@@ -48,7 +48,7 @@ public class SafeZoneEvent implements Listener {
                         event.setCancelled(true);
 
                     if(attaquant != null) {
-                        if (Radius.isBlockInRadius(partie.getArene().getTeleportSpawn(), attaquant.getLocation(), 5)) {
+                        if (Radius.isBlockInRadius(partie.getArene().getTeleportSpawn(), attaquant.getLocation(), partie.groupe.getParametresPartie().getCVAR("arena_safezone_radius").getValeurNumerique())) {
                             event.setCancelled(true);
                         }
                     }

@@ -126,17 +126,24 @@ public class Arene {
         Arene instance = this;
         new BukkitRunnable() {
             public void run() {
-                for (Entity entite : groupe.getMonde().getEntities()) {
-                    if(entite instanceof Monster) {
-                        try {
-                            if (Radius.isBlockInRadius(coffre.getPosition(), entite.getLocation(), 100))
-                                entite.remove();
-                        }catch(Exception e) {
-                            e.printStackTrace();
-                            Error.Report(e, groupe.getGame());
+                try {
+                    if (groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1) {
+                        for (Entity entite : groupe.getMonde().getEntities()) {
+                            if (entite instanceof Monster) {
+                                try {
+                                    if (Radius.isBlockInRadius(coffre.getPosition(), entite.getLocation(), 100))
+                                        entite.remove();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Error.Report(e, groupe.getGame());
+                                }
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    Error.Report(e, groupe.getGame());
                 }
+
             }
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);

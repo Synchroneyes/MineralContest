@@ -222,6 +222,9 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_count", "5", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_min_item_count", "1", "Permet de définir le nombre minimum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_item_count", "3", "Permet de définir le nombre maximum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("protected_zone_area_radius", "300", "Permet de définir le rayon en bloc de la zone protégé, où les blocs ne peuvent pas être cassé", "settings", false, true));
+            parametresParDefaut.add(new GameCVAR("enable_monster_in_protected_zone", "1", "Permet d'activer ou non l'apparition de monstre dans la zone protégée", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("arena_safezone_radius", "5", "Permet de modifier le rayon de safezone de la zone de téléportation de l'arène", "arena", true, true));
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

@@ -1,8 +1,7 @@
 package fr.mineral.Core.Arena;
 
+import fr.mineral.Core.Arena.ArenaChestContent.ArenaChestContentGenerator;
 import fr.mineral.Settings.GameSettings;
-import fr.mineral.Settings.GameSettingsOLD;
-import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Range;
@@ -17,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -32,6 +32,8 @@ public class CoffreAvecCooldown {
     public Player openingPlayer;
     private Arene arene;
 
+    private ArenaChestContentGenerator arenaChestContent;
+
     private BukkitRunnable chestTimer;
 
     public CoffreAvecCooldown(Location loc, Arene arene) {
@@ -39,6 +41,7 @@ public class CoffreAvecCooldown {
         this.position = loc;
         coffre = this;
         fillChestTimer();
+        this.arenaChestContent = new ArenaChestContentGenerator(arene.groupe);
 
         try {
             if (arene != null & arene.getCoffre() != null) {
@@ -52,6 +55,14 @@ public class CoffreAvecCooldown {
             e.printStackTrace();
         }
 
+    }
+
+    public void initializeChestContent(File fichier) {
+        try {
+            this.arenaChestContent.initialize(fichier);
+        } catch (Exception e) {
+            Error.Report(e, arene.groupe.getGame());
+        }
     }
 
 
@@ -95,6 +106,8 @@ public class CoffreAvecCooldown {
 
             Inventory inv = chest.getInventory();
             inv.clear();
+
+
             this.timeLeft = time;
             this.isCancelled = false;
             this.opened = false;
@@ -143,6 +156,7 @@ public class CoffreAvecCooldown {
                 }
                 Chest chest = (Chest)block.getState();
                 Inventory inv = chest.getInventory();
+                inv.clear();
 
                 if(!opened || openingPlayer == null) {
                     this.cancel();
@@ -228,7 +242,10 @@ public class CoffreAvecCooldown {
         Chest chest = (Chest)block.getState();
         Inventory inv = chest.getInventory();
 
-        LinkedList<Range> items = new LinkedList<>();
+        inv.clear();
+        inv.setContents(arenaChestContent.generateInventory().getContents());
+
+        /*LinkedList<Range> items = new LinkedList<>();
 
         GameSettings settings = arene.groupe.getParametresPartie();
 
@@ -309,7 +326,7 @@ public class CoffreAvecCooldown {
             e.printStackTrace();
             Error.Report(e, arene.groupe.getGame());
 
-        }
+        }*/
 
     }
 

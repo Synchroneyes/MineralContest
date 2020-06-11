@@ -5,6 +5,7 @@ import fr.mapbuilder.Core.Monde;
 import fr.mapbuilder.Events.BlockPlaced;
 import fr.mapbuilder.Events.PlayerInteract;
 import fr.mineral.Scoreboard.ScoreboardUtil;
+import fr.mineral.Utils.BlockSaver;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.SimplePluginManager;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class MapBuilder {
 
@@ -25,11 +27,15 @@ public class MapBuilder {
     public boolean isBuilderModeEnabled = false;
     private CommandMap bukkitCommandMap;
 
+    public static Stack<Stack<BlockSaver>> modifications;
+
     public static Monde monde;
 
     private MapBuilder() {
         instance = this;
         mineralcontest.debug = isBuilderModeEnabled;
+        modifications = new Stack<>();
+
 
         if(!isBuilderModeEnabled) return;
 
@@ -48,7 +54,6 @@ public class MapBuilder {
         registerCommands();
         if(isBuilderModeEnabled) enableMapBuilding();
 
-        RessourceFilesManager.copyFilesToPluginFolder();
         RessourceFilesManager.copyFilesToPluginFolder();
     }
 
@@ -81,6 +86,7 @@ public class MapBuilder {
         this.bukkitCommandMap.register("", new mcteam());
         this.bukkitCommandMap.register("", new mcarena());
         this.bukkitCommandMap.register("", new mcbuild());
+        this.bukkitCommandMap.register("", new mcrevert());
 
     }
 

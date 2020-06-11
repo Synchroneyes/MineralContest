@@ -1,27 +1,64 @@
 package fr.mineral.Core.Referee;
 
 
-import fr.mineral.Core.Game.Game;
-import fr.mineral.Translation.Lang;
-import fr.mineral.mineralcontest;
+import fr.mineral.Core.Referee.Inventory.*;
+import fr.mineral.Core.Referee.Items.RefereeItemTemplate;
+import fr.mineral.Core.Referee.Items.SetInvisibleItem;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.LinkedList;
 
 public class RefereeInventory {
     private Inventory inventory;
+    protected static LinkedList<InventoryTemplate> inventaires;
+    protected static LinkedList<RefereeItemTemplate> items;
+
 
     public static RefereeInventory instance;
 
-    public RefereeInventory() {
+    private RefereeInventory() {
+        if (inventaires == null) {
+            inventaires = new LinkedList<>();
+            items = new LinkedList<>();
+            registerInventories();
+            registerItems();
+        }
         this.inventory = Bukkit.createInventory(null, 9, "Menu Arbitrage");
         RefereeInventory.instance = this;
         fillInventory();
     }
 
+    protected static LinkedList<RefereeItemTemplate> getItems() {
+        return items;
+    }
+
+
+    private void registerItems() {
+        //items.add(new TeleportMenuInventory());
+        items.add(new SetInvisibleItem(null, null));
+    }
+
+    private void registerInventories() {
+        inventaires.add(new TeleportMenuInventory());
+        inventaires.add(new InventoryViewerInventory());
+        inventaires.add(new TeamChestInventory());
+        inventaires.add(new MapSelectorInventory());
+        inventaires.add(new GestionPartieInventory());
+    }
+
     private void fillInventory() {
+
+
+        inventory.clear();
+
+        for (InventoryTemplate inventaire : inventaires) {
+            inventory.addItem(inventaire.toItemStack());
+        }
+
+        for (RefereeItemTemplate item : items) {
+            inventory.addItem(item.toItemStack());
+        }
 
         // TODO
 

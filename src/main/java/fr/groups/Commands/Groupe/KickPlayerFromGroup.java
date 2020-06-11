@@ -19,6 +19,8 @@ public class KickPlayerFromGroup extends CommandTemplate {
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(GROUP_REQUIRED);
         this.accessCommande.add(GROUP_ADMIN);
+        accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+
 
     }
 

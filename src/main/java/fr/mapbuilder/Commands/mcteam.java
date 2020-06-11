@@ -45,8 +45,6 @@ public class mcteam extends CommandTemplate {
 
         if (monde == null) monde = new Monde();
 
-        monde.ajouterEquipe("testeur", ChatColor.RED);
-
         accessCommande.add(PLAYER_COMMAND);
         constructArguments();
     }

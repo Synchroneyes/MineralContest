@@ -3,6 +3,7 @@ package fr.groups.Commands;
 import fr.groups.Core.Groupe;
 import fr.groups.Utils.Etats;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ChatColorString;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,6 +26,8 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int GROUP_VOTE_STARTED = 6;
     protected final int REQUIRE_GROUP_UNLOCKED = 7;
     protected final int REQUIRE_GROUP_LOCKED = 8;
+    protected final int REQUIRE_COMMUNITY_VERSION = 9;
+
 
 
 
@@ -118,6 +121,11 @@ public abstract class CommandTemplate extends BukkitCommand {
                 if (playerGroupe.isGroupLocked()) throw new Exception(Lang.error_group_is_locked.toString());
             }
 
+            if (condition == REQUIRE_COMMUNITY_VERSION) {
+                if (!mineralcontest.communityVersion)
+                    throw new Exception(Lang.error_command_unavailable_in_this_version.toString());
+            }
+
         }
 
         if (arguments.size() != receivedArgs.length) {
@@ -134,8 +142,8 @@ public abstract class CommandTemplate extends BukkitCommand {
         StringBuilder sb = new StringBuilder();
         if (arguments == null) this.arguments = new HashMap<>();
         for (Map.Entry<String, Boolean> argument : arguments.entrySet())
-            if (argument.getValue()) sb.append("<" + ChatColor.RED + argument.getKey() + "> ");
-            else sb.append("<" + ChatColor.YELLOW + argument.getKey() + "> ");
+            if (argument.getValue()) sb.append(ChatColor.RED + "<" + argument.getKey() + "> " + ChatColor.WHITE);
+            else sb.append(ChatColor.YELLOW + "<" + argument.getKey() + "> " + ChatColor.WHITE);
         return sb.toString();
     }
 

@@ -673,6 +673,7 @@ public class Game implements Listener {
             }
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
+
     }
 
     /**

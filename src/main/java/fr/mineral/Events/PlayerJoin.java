@@ -57,9 +57,17 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
+        Bukkit.getLogger().severe("Joueur in mineralcontest world: " + mineralcontest.isAMineralContestWorld(worldEvent));
+
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
 
             initVariables(event.getPlayer());
+            Bukkit.getLogger().severe("Player joined, community version: " + mineralcontest.communityVersion);
+            if (!mineralcontest.communityVersion) {
+                mineralcontest.plugin.getNonCommunityGroup().addJoueur(event.getPlayer());
+                if (event.getPlayer().isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(event.getPlayer());
+                initVariables(event.getPlayer());
+            }
             if (game == null) return;
 
 
@@ -213,7 +221,9 @@ public class PlayerJoin implements Listener {
 
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), game.groupe);
+                String message = mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), game);
+
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + message, game.groupe);
                 if (game.areAllPlayerLoggedIn()) game.enableVote();
             }, 20);
 

@@ -2,6 +2,7 @@ package fr.mineral.Teams;
 
 import fr.groups.Core.Groupe;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.House;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
@@ -13,7 +14,11 @@ import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 
@@ -23,15 +28,22 @@ public class Equipe {
     private ChatColor couleur;
     private int score = 0;
     private int penalty = 0;
+    private House maison;
 
     private Groupe groupe;
 
 
-    public Equipe(String nom, ChatColor c, Groupe g) {
+    public Equipe(String nom, ChatColor c, Groupe g, House maison) {
         this.joueurs = new LinkedList<Player>();
         this.nomEquipe = nom;
         this.couleur = c;
         this.groupe = g;
+        this.maison = maison;
+    }
+
+
+    public House getMaison() {
+        return maison;
     }
 
     public void clear() {
@@ -42,8 +54,35 @@ public class Equipe {
 
     public int getPenalty() { return this.penalty; }
 
-    public void updateScore() {
+    public void updateScore() throws Exception {
 
+        int _score = 0;
+        Block block_coffre = maison.getCoffreEquipeLocation().getBlock();
+        Chest openedChest = ((Chest) block_coffre.getState());
+
+        ItemStack[] items = openedChest.getInventory().getContents();
+        for (ItemStack item : items) {
+
+            if (item != null) {
+                if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
+                }
+            }
+        }
+
+        setScore(_score);
     }
 
     public void sendMessage(String message, Player sender) {

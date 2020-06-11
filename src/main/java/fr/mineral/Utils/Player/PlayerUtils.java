@@ -5,10 +5,10 @@ import fr.groups.GroupeExtension;
 import fr.groups.Utils.Etats;
 import fr.mineral.Core.Arena.Zones.DeathZone;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.Referee.Items.RefereeItem;
+import fr.mineral.Core.Referee.Referee;
 import fr.mineral.Settings.GameSettings;
-import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Core.House;
-import fr.mineral.Core.Referee.RefereeItem;
 import fr.mineral.Scoreboard.ScoreboardUtil;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
@@ -18,13 +18,11 @@ import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.*;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,8 +77,6 @@ public class PlayerUtils {
         World world = Bukkit.getWorld(world_name);
 
         mineralcontest.plugin.pluginWorld = world;
-
-
         return world;
     }
 
@@ -165,6 +161,7 @@ public class PlayerUtils {
 
     public static void drawPlayersHUD() {
 
+        //Bukkit.broadcastMessage("Nombre de joueur en ligne: " + Bukkit.getOnlinePlayers().size());
         if(mineralcontest.plugin.pluginWorld == null) {
             Bukkit.getLogger().info("playerHudNull");
             return;
@@ -179,12 +176,11 @@ public class PlayerUtils {
         }
 
 
-
         ArrayList<String> elementsADisplay = new ArrayList<>();
         // Si la game n'a pas démarré
         for (Player online : Bukkit.getOnlinePlayers()) {
             //Bukkit.getLogger().info("playerHud " + online.getDisplayName() + "=> isInAWorld" + mineralcontest.isInAMineralContestWorld(online));
-            if (!mineralcontest.isInAMineralContestWorld(online)) return;
+            if (!mineralcontest.isInAMineralContestWorld(online)) continue;
             Game playergame = mineralcontest.getPlayerGame(online);
             //Bukkit.getLogger().info(online.getDisplayName() + " => playergame==null:" + (playergame == null));
 
@@ -229,7 +225,7 @@ public class PlayerUtils {
                                 playerGroup.getEtatPartie().equals(Etats.PREGAME) ||
                                 playerGroup.getEtatPartie().equals(Etats.GAME_EN_COURS)) {
                             sendPlayerInGameHUD(online);
-                            return;
+                            continue;
                         }
                     }
 
@@ -251,7 +247,7 @@ public class PlayerUtils {
                 if (mineralcontest.isInAMineralContestWorld(online)) {
                     // Si on vote
 
-                    if (playergame == null) return;
+                    if (playergame == null) continue;
                     boolean gameStarted = playergame.isGameStarted();
                     boolean gamePaused = playergame.isGamePaused();
                     boolean isPreGame = playergame.isPreGame();
@@ -475,10 +471,23 @@ public class PlayerUtils {
 
 
     public static void equipReferee(Player joueur) {
+
         if (mineralcontest.getPlayerGame(joueur).isReferee(joueur)) {
-            joueur.getInventory().setItemInMainHand(new RefereeItem().getItem());
+            joueur.getInventory().setItemInMainHand(Referee.getRefereeItem());
             joueur.setGameMode(GameMode.CREATIVE);
         }
+
+        /*if (mineralcontest.getPlayerGame(joueur).isReferee(joueur)) {
+            joueur.getInventory().setItemInMainHand(new RefereeItem().getItem());
+            joueur.setGameMode(GameMode.CREATIVE);
+        }*/
+    }
+
+
+    public static boolean isPlayerHidden(Player p) {
+        for (Player online : Bukkit.getOnlinePlayers())
+            if (!online.canSee(p)) return true;
+        return false;
     }
 
 

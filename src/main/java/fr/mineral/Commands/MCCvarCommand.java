@@ -10,13 +10,15 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 public class MCCvarCommand extends CommandTemplate {
 
     public MCCvarCommand() {
         super();
-        addArgument("paramtre", true);
+        addArgument("parametre", true);
         addArgument("valeur", false);
 
         accessCommande.add(PLAYER_COMMAND);
@@ -28,7 +30,7 @@ public class MCCvarCommand extends CommandTemplate {
 
     @Override
     public String getCommand() {
-        return "mc_cvar";
+        return "mcvar";
     }
 
     @Override
@@ -66,7 +68,13 @@ public class MCCvarCommand extends CommandTemplate {
                     }
                     cvar.setValeur(args[1]);
                     joueur.sendMessage(mineralcontest.prefixPrive + "Valeur mise à jour, " + cvar.getCommand() + " => " + cvar.getValeur());
-                    Bukkit.getLogger().severe("MAJ: " + cvar.toString());
+
+                    if (cvar.getCommand().equalsIgnoreCase("enable_monster_in_protected_zone") && cvar.getValeurNumerique() == 0) {
+                        for (Entity entite : joueur.getWorld().getEntities())
+                            if (entite instanceof Monster) entite.remove();
+
+                    }
+
                     return false;
                 }
 

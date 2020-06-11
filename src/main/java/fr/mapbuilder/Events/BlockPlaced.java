@@ -35,27 +35,6 @@ public class BlockPlaced implements Listener {
 
 
 
-        /*if(itemName.equalsIgnoreCase(BlueHouseItem.itemName)) {
-            placedItem.setType(Material.AIR);
-            placedItem.setAmount(0);
 
-            Location spawnedItemLocation = event.getBlock().getLocation();
-            House.spawn(spawnedItemLocation, BlueHouseItem.color, player);
-            event.setCancelled(true);
-        } else if(itemName.equalsIgnoreCase(RedHouseItem.itemName)) {
-            placedItem.setType(Material.AIR);
-            placedItem.setAmount(0);
-
-            Location spawnedItemLocation = event.getBlock().getLocation();
-            House.spawn(spawnedItemLocation, RedHouseItem.color, player);
-            event.setCancelled(true);
-        }else if(itemName.equalsIgnoreCase(YellowHouseItem.itemName)) {
-            placedItem.setType(Material.AIR);
-            placedItem.setAmount(0);
-
-            Location spawnedItemLocation = event.getBlock().getLocation();
-            House.spawn(spawnedItemLocation, YellowHouseItem.color, player);
-            event.setCancelled(true);
-        }*/
     }
 }

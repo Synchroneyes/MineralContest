@@ -13,6 +13,8 @@ public class QuitterGroupe extends CommandTemplate {
         super();
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(this.GROUP_REQUIRED);
+        accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+
     }
 
     @Override

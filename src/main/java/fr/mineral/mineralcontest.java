@@ -2,6 +2,7 @@ package fr.mineral;
 
 import fr.groups.Core.Groupe;
 import fr.groups.GroupeExtension;
+import fr.groups.Utils.Etats;
 import fr.mineral.Commands.*;
 import fr.mineral.Commands.Developper.SaveWorldCommand;
 import fr.mineral.Commands.Developper.SetupCommand;
@@ -48,7 +49,7 @@ public final class mineralcontest extends JavaPlugin {
      * If set to false, one group will automatically be created, OP players will be set as admin, and every players joining the server
      * will automatically be added to the group.
      */
-    public static boolean communityVersion = true;
+    public static boolean communityVersion = false;
 
     public static String prefix = "[MineralContest]";
     public static String prefixErreur;
@@ -59,7 +60,6 @@ public final class mineralcontest extends JavaPlugin {
     public static String prefixGroupe;
     public static Logger log = Bukkit.getLogger();
     public static mineralcontest plugin;
-    private Game partie;
     public World pluginWorld;
 
     public Location defaultSpawn;
@@ -80,7 +80,6 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     public static String getPluginConfigValue(String configName) {
-        // TODO
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(new File(mineralcontest.plugin.getDataFolder(), "plugin_config.yml"));
         return (String) configuration.get(configName);
     }
@@ -97,11 +96,19 @@ public final class mineralcontest extends JavaPlugin {
         return null;
     }
 
+    public Groupe getNonCommunityGroup() {
+        return groupes.getFirst();
+    }
+
     public void creerNouveauGroupe(Groupe nouveauGroupe) {
-        Bukkit.getLogger().info("Creating new groupe ...");
+
+        if (!communityVersion) return;
+
+        GameLogger.addLog(new Log("group_create", "Creating a new group with name " + nouveauGroupe.getNom(), "mineralcontest: creerNouveauGroupe"));
         for (Groupe groupe : groupes) {
             if (groupe.getNom().equals(nouveauGroupe.getNom())) {
                 groupe.sendToadmin(prefixErreur + Lang.error_group_with_this_name_already_exists.toString());
+                GameLogger.addLog(new Log("error_group_create", Lang.error_group_with_this_name_already_exists.getDefault(), "mineralcontest: creerNouveauGroupe"));
                 return;
             }
         }
@@ -113,6 +120,8 @@ public final class mineralcontest extends JavaPlugin {
 
         this.groupes.add(nouveauGroupe);
         nouveauGroupe.sendToEveryone(prefixPrive + Lang.success_group_successfully_created.toString());
+        GameLogger.addLog(new Log("group_created", "created a new group with name " + nouveauGroupe.getNom() + " and ID: " + nouveauGroupe.getIdentifiant(), "mineralcontest: creerNouveauGroupe"));
+
     }
 
     private boolean isGroupeIdentifiantUnique(Groupe groupe) {
@@ -125,6 +134,22 @@ public final class mineralcontest extends JavaPlugin {
         this.defaultSpawn = defaultSpawn;
     }
 
+
+    public void initCommunityVersion() {
+        Bukkit.getLogger().severe("COMMUNITY VERSION: " + communityVersion);
+        if (!communityVersion) {
+            Groupe defaut = new Groupe();
+            defaut.setEtat(Etats.EN_ATTENTE);
+            defaut.setNom("MineralContest");
+            groupes.add(defaut);
+
+            if (pluginWorld == null) pluginWorld = PlayerUtils.getPluginWorld();
+            if (pluginWorld == null) return;
+            for (Player joueur : mineralcontest.plugin.pluginWorld.getPlayers())
+                if (joueur.isOp()) getNonCommunityGroup().addAdmin(joueur);
+                else getNonCommunityGroup().addJoueur(joueur);
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -157,6 +182,7 @@ public final class mineralcontest extends JavaPlugin {
                 PlayerUtils.drawPlayersHUD();
             }
         }.runTaskTimer(this, 0, 20);
+        initCommunityVersion();
     }
 
     @Override
@@ -220,7 +246,6 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("start").setExecutor(new StartGameCommand());
         getCommand("pause").setExecutor(new PauseGameCommand());
         getCommand("stopGame").setExecutor(new StopGameCommand());
-        if (!groupeExtension.enabled) getCommand("vote").setExecutor(new VoteCommand());
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
         getCommand("join").setExecutor(new JoinCommand());
@@ -247,23 +272,7 @@ public final class mineralcontest extends JavaPlugin {
         }
 
 
-        /*getCommand("mp_randomize_team").setExecutor(new mp_randomize_team());
-        getCommand("mp_iron_score").setExecutor(new mp_iron_score());
-        getCommand("mp_gold_score").setExecutor(new mp_gold_score());
-        getCommand("mp_diamond_score").setExecutor(new mp_diamond_score());
-        getCommand("mp_emerald_score").setExecutor(new mp_emerald_score());
-        getCommand("mp_team_max_players").setExecutor(new mp_team_max_players());
-        getCommand("mp_enable_metrics").setExecutor(new mp_enable_metrics());
-        getCommand("mp_add_team_penality").setExecutor(new mp_add_team_penality());
-        getCommand("mp_reset_team_penality").setExecutor(new mp_reset_team_penality());
-        getCommand("mp_start_vote").setExecutor(new mp_start_vote());
-        getCommand("mp_enable_item_drop").setExecutor(new mp_enable_item_drop());
-        getCommand("mp_set_language").setExecutor(new mp_set_language());
-        getCommand("mp_enable_old_pvp").setExecutor(new mp_enable_old_pvp());
-        getCommand("mp_enable_block_adding").setExecutor(new mp_enable_block_adding());
 
-        getCommand("mp_set_playzone_radius").setExecutor(new mp_set_playzone_radius());
-        getCommand("mp_enable_friendly_fire").setExecutor(new mp_enable_friendly_fire());*/
         getCommand("spawnchest").setExecutor(new SpawnChestCommand());
         getCommand("allow").setExecutor(new AllowCommand());
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
@@ -344,7 +353,7 @@ public final class mineralcontest extends JavaPlugin {
 
     public static boolean isAMineralContestWorld(World w) {
         for (Groupe groupe : plugin.groupes)
-            if (groupe.getMonde() == null) return false;
+            if (groupe.getMonde() == null && communityVersion) return false;
             else if (w.equals(groupe.getMonde())) return true;
         return w.equals(plugin.pluginWorld);
     }

@@ -32,7 +32,7 @@ public class House {
     public House(String nomEquipe, ChatColor couleur, Groupe g) {
         this.teamName = nomEquipe;
         this.color = couleur;
-        this.team = new Equipe(this.teamName, this.color, g);
+        this.team = new Equipe(this.teamName, this.color, g, this);
         this.doors = new AutomaticDoors(team, g);
         this.blocks = new LinkedHashMap<>();
         this.groupe = g;

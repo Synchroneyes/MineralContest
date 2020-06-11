@@ -29,6 +29,7 @@ public class EntityDamage implements Listener {
             if (event.getEntity() instanceof Player && partie.isGameStarted()) {
                 Player victime = (Player) event.getEntity();
 
+
                 if (victime.getHealth() - event.getDamage() < 0) {
                     victime.setHealth(20D);
                     event.setCancelled(true);
@@ -76,8 +77,9 @@ public class EntityDamage implements Listener {
                     Equipe attaquantTeam = partie.getPlayerTeam(attaquant);
                     Equipe victimeTeam = partie.getPlayerTeam(victime);
 
+
                     int enable_friendly_fire = settings.getCVAR("mp_enable_friendly_fire").getValeurNumerique();
-                    if (attaquantTeam.equals(victimeTeam) && enable_friendly_fire == 0) {
+                    if ((attaquantTeam != null || victimeTeam != null) && attaquantTeam.equals(victimeTeam) && enable_friendly_fire == 0) {
                         event.setCancelled(true);
                         return;
                     }
@@ -118,7 +120,8 @@ public class EntityDamage implements Listener {
             } else {
 
                 if (!(event.getEntity() instanceof Chicken)) {
-                    event.setCancelled(true);
+                    if (partie.groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1)
+                        event.setCancelled(true);
                 }
             }
             return;

@@ -125,6 +125,8 @@ public class Groupe {
     public boolean chargerMonde(String nomMonde) {
 
         try {
+
+            sendToEveryone(mineralcontest.prefixGroupe + "Chargement de la map \"" + nomMonde + "\" en cours ...");
             this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
             this.gameWorld.setAutoSave(false);
         } catch (Exception e) {
@@ -144,7 +146,8 @@ public class Groupe {
 
         setMapName(nomMonde);
 
-        this.mapVote.clearVotes();
+
+        if (this.mapVote != null) this.mapVote.clearVotes();
         return true;
     }
 
@@ -315,7 +318,7 @@ public class Groupe {
     }
 
     public void retirerJoueur(Player joueur) {
-        if (isGroupeCreateur(joueur)) {
+        if (isGroupeCreateur(joueur) && mineralcontest.communityVersion) {
 
             sendToEveryone(mineralcontest.prefixPrive + Lang.group_got_deleted.toString());
             this.joueurs.clear();

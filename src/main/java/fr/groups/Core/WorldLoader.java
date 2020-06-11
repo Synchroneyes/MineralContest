@@ -4,6 +4,8 @@ import fr.groups.Utils.Etats;
 import fr.groups.Utils.FileManager.FileCopy;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
+import fr.mineral.Settings.GameSettings;
+import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.apache.commons.io.FileUtils;
@@ -21,6 +23,7 @@ public class WorldLoader {
 
     private Groupe groupe;
     private String nomMonde;
+    private Location spawnLocation;
 
     public WorldLoader(Groupe g) {
         this.groupe = g;
@@ -81,8 +84,17 @@ public class WorldLoader {
             World createdWorld = Bukkit.getServer().createWorld(wc);
 
             lireFichierMonde(nomMondeDossier, createdWorld);
+            lireConfigurationPartie(nomMondeDossier, createdWorld);
+            lireFichierConfigurationContenuCoffreArene(nomMondeDossier, createdWorld);
 
-            createdWorld.setSpawnLocation(groupe.getGame().getArene().getCoffre().getPosition());
+
+            if (this.spawnLocation != null) {
+                this.spawnLocation.setWorld(createdWorld);
+            } else {
+                this.spawnLocation = groupe.getGame().getArene().getCoffre().getPosition();
+            }
+            createdWorld.setSpawnLocation(this.spawnLocation);
+            createdWorld.setAutoSave(false);
 
             return createdWorld;
         } catch (IOException ioe) {
@@ -129,6 +141,15 @@ public class WorldLoader {
         if (houses == null)
             throw new Exception("Unable to load \"house\" section from " + nomFichierConfig + ". World file settings is not correct.");
 
+        if (yamlConfiguration.getConfigurationSection("default_spawn") == null) {
+            spawnLocation = null;
+        } else {
+            ConfigurationSection spawn_loc = yamlConfiguration.getConfigurationSection("default_spawn");
+            Location loc = null;
+            if (spawn_loc.get("x") != null) {
+                this.spawnLocation = new Location(null, Double.parseDouble(spawn_loc.get("x").toString()), Double.parseDouble(spawn_loc.get("y").toString()), Double.parseDouble(spawn_loc.get("z").toString()));
+            }
+        }
 
         ConfigurationSection arena_chest = yamlConfiguration.getConfigurationSection("arena.chest");
         Location chestLocation = new Location(monde, Double.parseDouble(arena_chest.get("x").toString()),
@@ -182,8 +203,56 @@ public class WorldLoader {
             groupe.getGame().addEquipe(nouvelleEquipe);
         }
 
+
         groupe.getGame().isGameInitialized = true;
         groupe.setEtat(Etats.ATTENTE_DEBUT_PARTIE);
+
+    }
+
+    private void lireConfigurationPartie(String nomDossier, World monde) {
+        GameSettings parametres = groupe.getParametresPartie();
+        String nomFichierConfig = "mc_game_settings.yml";
+        File fichierConfigPartie = new File(nomDossier + File.separator + nomFichierConfig);
+
+        if (!fichierConfigPartie.exists()) {
+            groupe.sendToadmin(mineralcontest.prefixAdmin + Lang.error_cant_load_game_settings_file.toString());
+            return;
+        }
+
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierConfigPartie);
+        ConfigurationSection config = yamlConfiguration.getConfigurationSection("config");
+        if (config == null) {
+            groupe.sendToadmin(mineralcontest.prefixAdmin + Lang.error_cant_load_game_settings_file.toString());
+            return;
+        }
+
+        for (String section : config.getKeys(false)) {
+            for (String variable : config.getConfigurationSection(section).getKeys(false)) {
+                try {
+                    parametres.setCVARValeur(variable, (String) config.get(section + "." + variable));
+                } catch (Exception e) {
+                    groupe.sendToadmin(mineralcontest.prefixErreur + "Setting " + variable + " doesnt exists");
+                }
+            }
+        }
+
+        groupe.sendToadmin(mineralcontest.prefixGroupe + "Les paramètres de la carte ont bien été chargé!");
+
+
+    }
+
+    private void lireFichierConfigurationContenuCoffreArene(String nomDossier, World monde) {
+        // mc_arena_chest_content
+        GameSettings parametres = groupe.getParametresPartie();
+        String nomFichierConfig = "mc_arena_chest_content.yml";
+        File fichierConfigPartie = new File(nomDossier + File.separator + nomFichierConfig);
+
+        try {
+            groupe.getGame().getArene().getCoffre().initializeChestContent(fichierConfigPartie);
+        } catch (Exception e) {
+            Error.Report(e, groupe.getGame());
+        }
+
 
     }
 

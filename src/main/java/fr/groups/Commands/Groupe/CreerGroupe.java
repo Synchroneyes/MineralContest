@@ -16,6 +16,10 @@ public class CreerGroupe extends CommandTemplate {
         addArgument("nom", true);
         constructArguments();
 
+        accessCommande.add(PLAYER_COMMAND);
+        accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+        accessCommande.add(NO_GROUP);
+
     }
 
     @Override
@@ -37,6 +41,15 @@ public class CreerGroupe extends CommandTemplate {
     @Override
     public boolean execute(CommandSender commandSender, String command, String[] args) {
         if (commandSender instanceof Player) {
+
+
+            try {
+                canPlayerUseCommand(commandSender, args);
+            } catch (Exception e) {
+                commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+                return false;
+            }
+
             Player joueur = (Player) commandSender;
             if (!joueur.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
                 commandSender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_hub_world.toString());

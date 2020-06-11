@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ChestEvent implements Listener {
@@ -53,41 +54,35 @@ public class ChestEvent implements Listener {
                         return;
                     }
 
-                    House playerHouse = partie.getPlayerHouse(player);
-                    if(playerHouse == null) {
-                        return;
+
+                    // Si le joueur est un arbitre
+                    if (partie.isReferee(player)) {
+                        // On récupère l'équipe du coffre ouvert
+                        Inventory inventaireFerme = event.getInventory();
+
+                        // Pour chaque maison de la partie
+                        // On regarde si l'inventaire fermé est le même que celui d'une équipe
+                        for (House maison : partie.getHouses()) {
+                            Block blockCoffreMaison = maison.getCoffreEquipeLocation().getBlock();
+
+                            // On s'assure que c'est bien un coffre
+                            if (!(blockCoffreMaison.getState() instanceof Chest)) return;
+                            Chest coffre = ((Chest) blockCoffreMaison.getState());
+                            if (inventaireFerme.equals(coffre.getInventory())) {
+                                maison.getTeam().updateScore();
+                                return;
+                            }
+                        }
                     }
 
+
+                    House playerHouse = partie.getPlayerHouse(player);
                     Coffre teamChest = playerHouse.getCoffre();
                     // Si le coffre fermé est celui de son équipe
                     if (openedInventoryBlock.getLocation().equals(teamChest.getPosition())) {
                         // Team Chest
-                        int score = 0;
                         try {
-                            ItemStack[] items = openedChest.getInventory().getContents();
-                            for (ItemStack item : items) {
-
-                                if (item != null) {
-                                    if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
-                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
-                                    }
-
-                                    if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
-                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
-                                    }
-
-                                    if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
-                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
-                                    }
-
-                                    if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
-                                        score += partie.groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
-                                    }
-                                }
-                            }
-
-                            playerHouse.getTeam().setScore(score);
-
+                            playerHouse.getTeam().updateScore();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Error.Report(e, partie);

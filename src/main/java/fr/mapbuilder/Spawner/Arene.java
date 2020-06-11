@@ -3,8 +3,10 @@ package fr.mapbuilder.Spawner;
 import fr.mapbuilder.Blocks.BlocksColorChanger;
 import fr.mapbuilder.Blocks.BlocksDataColor;
 import fr.mapbuilder.Blocks.SaveableBlock;
+import fr.mapbuilder.MapBuilder;
 import fr.mapbuilder.RessourceFilesManager;
 import fr.mapbuilder.Util;
+import fr.mineral.Utils.BlockSaver;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,13 +26,12 @@ import java.util.Stack;
 public class Arene {
 
     private static mineralcontest plugin = mineralcontest.plugin;
-    private static Stack<SaveableBlock> blocksModified = new Stack<>();
+    private static Stack<BlockSaver> blocksModified = new Stack<>();
 
-    public static void addModifiedBlock(Block b) {
-        SaveableBlock blockToAdd = new SaveableBlock(b);
+    public static void addModifiedBlock(Block b, BlockSaver.Type type) {
+        BlockSaver blockToAdd = new BlockSaver(b, type);
         if (!blocksModified.contains(blockToAdd)) blocksModified.add(blockToAdd);
     }
-
 
     public static void spawn(Location location, Player player) {
 
@@ -78,6 +79,8 @@ public class Arene {
 
             BlockData blockData = mineralcontest.plugin.getServer().createBlockData(yamlConfiguration.get("arena.normal_blocks." + index + ".blockdata").toString());
 
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
+
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().setBlockData(blockData, false);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
@@ -96,6 +99,8 @@ public class Arene {
             newY = (int) (y + Double.parseDouble(yamlConfiguration.get("arena.special_block." + index + ".location.y").toString()));
             newZ = (int) (z + Double.parseDouble(yamlConfiguration.get("arena.special_block." + index + ".location.z").toString()));
             Location locTMP = new Location(loc.getWorld(), newX, newY, newZ);
+
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
 
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("arena.special_block." + index + ".material").toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("arena.special_block." + index + ".blockByte").toString());
@@ -130,6 +135,9 @@ public class Arene {
             locTMP.getBlock().getLocation().setZ(locTMP.getZ());
             locTMP.getBlock().getState().getData().setData(blockByte);
         }
+
+        MapBuilder.modifications.push((Stack<BlockSaver>) blocksModified.clone());
+        blocksModified.clear();
     }
 
 

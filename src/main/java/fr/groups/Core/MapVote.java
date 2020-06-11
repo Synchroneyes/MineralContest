@@ -88,8 +88,7 @@ public class MapVote {
             // On récupère la map gagnante
             String mapAcharger = getMapGagnante();
             // On demande à charger la map
-            playerGroupe.sendToEveryone(mineralcontest.prefixGroupe + "La map gagnante est " + mapAcharger);
-            playerGroupe.sendToEveryone(mineralcontest.prefixGroupe + "Chargement de la map en cours ...");
+
             playerGroupe.chargerMonde(mapAcharger);
 
         }

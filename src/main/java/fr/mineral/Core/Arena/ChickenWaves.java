@@ -23,6 +23,7 @@ public class ChickenWaves {
     private Arene arene;
     private World monde;
     private boolean started = false;
+    private boolean enabled = true;
 
     private LinkedList<LivingEntity> pouletsEnVie;
 
@@ -38,6 +39,15 @@ public class ChickenWaves {
 
     }
 
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public boolean isStarted() {
         return started;
     }
@@ -46,7 +56,7 @@ public class ChickenWaves {
      * Démarre les vagues de poulets
      */
     public void start() {
-        if (started) return;
+        if (started || !enabled) return;
         this.started = true;
         arene.groupe.sendToEveryone(ChatColor.GOLD + "----------------------");
         arene.groupe.sendToEveryone(mineralcontest.prefixGlobal + "Les vagues d'apparition de poulet dans l'arène ont débuté !");
@@ -62,18 +72,21 @@ public class ChickenWaves {
         new BukkitRunnable() {
             @Override
             public void run() {
-                tempsRestantAvantProchaineVague--;
-                if (tempsRestantAvantProchaineVague <= 0) {
-                    apparitionPoulets();
-                    genererProchaineVague();
+                if (enabled) {
+                    tempsRestantAvantProchaineVague--;
+                    if (tempsRestantAvantProchaineVague <= 0) {
+                        apparitionPoulets();
+                        genererProchaineVague();
 
-                    try {
-                        tempsRestantAvantProchaineVague = arene.groupe.getParametresPartie().getCVAR("chicken_spawn_interval").getValeurNumerique();
-                    } catch (Exception e) {
-                        Error.Report(e, arene.groupe.getGame());
+                        try {
+                            tempsRestantAvantProchaineVague = arene.groupe.getParametresPartie().getCVAR("chicken_spawn_interval").getValeurNumerique();
+                        } catch (Exception e) {
+                            Error.Report(e, arene.groupe.getGame());
+                        }
+
                     }
-
                 }
+
             }
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
 
@@ -124,7 +137,7 @@ public class ChickenWaves {
     /**
      * Génère la prochaine vague de poulet
      */
-    private void genererProchaineVague() {
+    public void genererProchaineVague() {
         GameSettings parametres = arene.groupe.getParametresPartie();
         // Formule pour generer un nombre entre [X .... Y]
         // ((Y - X) + 1) + X

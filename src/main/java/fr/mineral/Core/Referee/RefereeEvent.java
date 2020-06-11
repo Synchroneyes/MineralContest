@@ -1,9 +1,13 @@
 package fr.mineral.Core.Referee;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.Referee.Inventory.InventoryTemplate;
+import fr.mineral.Core.Referee.Items.RefereeItem;
+import fr.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +31,7 @@ public class RefereeEvent implements Listener {
                 ItemStack itemEnMain = joueur.getInventory().getItemInMainHand();
                 ItemMeta itemEnMainMeta = itemEnMain.getItemMeta();
 
-                if(!itemEnMain.getType().equals(Material.AIR) && itemEnMainMeta.getDisplayName().equals(RefereeItem.nomItem)) {
+                if (!itemEnMain.getType().equals(Material.AIR) && itemEnMainMeta.getDisplayName().equals(Referee.getRefereeItem().getItemMeta().getDisplayName())) {
                     // C'est le livre d'arbitrage
                     joueur.openInventory(RefereeInventory.getInventory());
                 }
@@ -40,101 +44,47 @@ public class RefereeEvent implements Listener {
         Player joueur = (Player) event.getWhoClicked();
         if (!mineralcontest.isInAMineralContestWorld(joueur)) return;
         if (mineralcontest.getPlayerGame(joueur) != null && mineralcontest.getPlayerGame(joueur).isReferee(joueur)) {
-            Inventory inventaire = event.getClickedInventory();
-            if(inventaire.equals(RefereeInventory.getInventory())) {
-                if(event.getCurrentItem() != null) {
-                    ItemStack item = event.getCurrentItem();
 
-                    /*
-                        GREEN_CONCRETE : START / RESUME
-                        YELLOW CONCRETE: PAUSE
-                        RED CONCRETE: STOP
-                        BLUE CONCRETE: LEADERBOARD
-                        PINK CONCRETE: ALL TEAM SCORE
-                        BROWN CONCRETE: START VOTE
-                        BLACK: REFEREE SELECT BIOME
+            Inventory inventaireOuvert = event.getClickedInventory();
 
-                     */
-                    Game game = mineralcontest.getPlayerGame(joueur);
-                    // GREEN CONCRETE : START
-                    Material itemType = item.getType();
-                    if(itemType.equals(Material.GREEN_CONCRETE)) {
-                        if(!game.isGameStarted()) {
-                            try {
-                                game.demarrerPartie(true);
-                            }catch (Exception e) {
-                                e.printStackTrace();
-                                Error.Report(e, mineralcontest.getPlayerGame(joueur));
-                            }
-                        }else if(game.isGameStarted() && game.isGamePaused()) {
-                            game.resumeGame();
-                        } else {
-                            sendActionUnavailable(joueur);
-                        }
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem == null || clickedItem.getItemMeta() == null) return;
+
+            // Si on est sur l'inventaire de base de l'arbitre
+            if (inventaireOuvert.equals(RefereeInventory.getInventory())) {
+                // On vérifie si on click sur un menh à ouvrir
+                for (InventoryTemplate inventaire : RefereeInventory.inventaires) {
+                    if (inventaire.isRepresentedItemStack(clickedItem)) {
+                        inventaire.openInventory(joueur);
+                        event.setCancelled(true);
+                        return;
                     }
+                }
 
-                    // YELLOW = PAUSE / RESUME
-                    if(itemType.equals(Material.YELLOW_CONCRETE)) {
-                        if(game.isGameStarted() && !game.isGamePaused()) game.pauseGame();
-                        else if(game.isGameStarted() && game.isGamePaused()) game.resumeGame();
-                        else sendActionUnavailable(joueur);
-
+                // Sinon, on a clické sur un item
+                for (RefereeItemTemplate item : RefereeInventory.items) {
+                    if (item.toItemStack().equals(clickedItem)) {
+                        item.performClick(joueur);
+                        event.setCancelled(true);
+                        return;
                     }
-
-                    // RED = STOP
-                    if(itemType.equals(Material.RED_CONCRETE)) {
-                        if(game.isGameStarted()) {
-                            try {
-                                game.terminerPartie();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Error.Report(e, mineralcontest.getPlayerGame(joueur));
-                            }
-                        }
-                        else sendActionUnavailable(joueur);
-                    }
-
-                    // BLUE = leaderboard
-                    if(itemType.equals(Material.BLUE_CONCRETE)) {
-                        if(game.isGameStarted()) Referee.displayLeaderboard();
-                        else sendActionUnavailable(joueur);
-                    }
-
-                    /*// brown = start vote
-                    if(itemType.equals(Material.BROWN_CONCRETE)) {
-                        if(!game.isGameStarted() && !game.votemap.voteEnabled) game.votemap.enableVote(true);
-                        else sendActionUnavailable(joueur);
-                    }*/
-
-                    // pink = spawn arena chest
-                    if(itemType.equals(Material.PINK_CONCRETE)) {
-                        if(game.isGameStarted()) {
-                            try {
-                                game.getArene().getCoffre().spawn();
-                            }catch (Exception e) {
-                                e.printStackTrace();
-                                Error.Report(e, mineralcontest.getPlayerGame(joueur));
-                            }
-                        }
-                        else sendActionUnavailable(joueur);
-                    }
-
-                    /*// BLACK = Force a biome
-                    if(itemType.equals(Material.BLACK_CONCRETE)) {
-                        if(!game.isGameStarted()) {
-                            Referee.forceVote(joueur);
-                            game.votemap.enableVote(true);
-                            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.referee_will_now_select_biome.toString());
-                        }
-                    }*/
-
-                    joueur.closeInventory();
-                    event.setCancelled(true);
-                    return;
-
-
                 }
             }
+
+            for (InventoryTemplate inventaireCustom : RefereeInventory.inventaires) {
+                if (inventaireCustom.isEqualsToInventory(inventaireOuvert)) {
+                    for (RefereeItemTemplate item : inventaireCustom.getObjets())
+                        if (item.toItemStack().equals(clickedItem)) {
+                            item.performClick(joueur);
+                            event.setCancelled(true);
+                            return;
+                        }
+                }
+            }
+
+            // Sinon, il faut vérifier si l'inventaire est un inventaire custom
+
         }
     }
 

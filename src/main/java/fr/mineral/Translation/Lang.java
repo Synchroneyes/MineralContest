@@ -105,7 +105,7 @@ public enum Lang {
     arena_teleporting("arena_teleporting", "Téléportation vers l'arène"),
     arena_teleport_disabled("arena_teleport_disabled", "La téléportation de l'arène n'est pas active"),
     arena_now_teleporting("arena_now_teleporting", "Téléportation vers l'arène ..."),
-    arena_chest_title("arena_chest_title", "Coffre d'arène !"),
+    arena_chest_title("arena_chest_title", "%gold%Coffre d'arène !"),
     arena_chest_being_opened("arena_chest_being_opened", "Quelqu'un ouvre déjà le coffre"),
     arena_teleport_now_enabled("arena_teleport_now_enabled", "Vous pouvez vous téléporter vers l'arène avec la commande /arene"),
     arena_teleport_now_disabled("arena_teleport_now_disabled", "Il n'est plus possible de se téléporter vers l'arène"),
@@ -194,8 +194,38 @@ public enum Lang {
     cvar_error_invalid_team_name("cvar_error_invalid_team_name", "Cette équipe n'existe pas"),
     error_vote_available_only_when_no_game("error_vote_available_only_when_no_game", "Le démarrage du vote est disponible seulement avant le début d'une partie"),
     group_finished_their_game_winner_display("group_finished_their_game_winner_display", "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !"),
-    custom_chicken_name("custom_chicken_name", "POULET DE RESSOURCE");
-
+    custom_chicken_name("custom_chicken_name", "POULET DE RESSOURCE"),
+    error_command_unavailable_in_this_version("error_command_unavailable_in_this_version", "Cette commande n'est pas disponible dans cette version du plugin"),
+    error_cant_load_game_settings_file("error_cant_load_game_settings_file", "Impossible de charger le fichier de configuration de la carte. Ce chargement %red%n'est pas obligatoire %white%et n'empêche pas le chargement du monde"),
+    referee_item_teleport_to_player_description("referee_item_teleport_to_player_description", "Cet objet permet de vous téléporter à "),
+    referee_item_teleport_to_player_title("referee_item_teleport_to_player_title", "Se téléporter à "),
+    referee_item_teleport_inventory_title("referee_item_teleport_inventory_title", "Menu de téléportation"),
+    referee_item_teleporting_you_to_player("referee_item_teleporting_you_to_player", "Téléportation vers le joueur en cours ..."),
+    referee_inventory_teleport_description("referee_inventory_teleport_description", "Menu affichant la liste des joueurs de la partie, permettant de s'y téléporter"),
+    referee_item_teleport_to_house_title("referee_item_teleport_to_house_title", "Se téléporter vers la base %coloredTeamName%"),
+    referee_item_teleport_to_house_description("referee_item_teleport_to_house_description", "Vous permet de vous téléporter vers la base de l'équipe %coloredTeamName%"),
+    referee_item_inventory_of_player_title("referee_item_inventory_of_player_title", "Inventaire de "),
+    referee_item_inventory_of_player_description("referee_item_inventory_of_player_description", "Ouvrir l'inventaire du joueur "),
+    referee_item_player_inventory_title("referee_item_player_inventory_title", "Liste des inventaires"),
+    referee_item_player_inventory_description("referee_item_player_inventory_description", "Ouvrir le menu pour les inventaires"),
+    referee_item_team_chest_inventory_title("referee_item_team_chest_inventory_title", "Inventaire des coffres d'équipes"),
+    referee_item_team_chest_inventory_description("referee_item_team_chest_inventory_description", "Permet d'ouvrir les coffres d'équipes à distance"),
+    referee_item_team_chest_item_title("referee_item_team_chest_item_title", "Coffre de l'équipe %coloredTeamName%"),
+    referee_item_team_chest_item_description("referee_item_team_chest_item_description", "Ouvrir le coffre de l'équipe %coloredTeamName%"),
+    referee_team_current_score("referee_team_current_score", "Le score actuel de l'équipe %coloredTeamName% est de: %teamScore% points"),
+    referee_item_inventory_map_selector_title("referee_item_inventory_map_selector_title", "Selectionner une carte à jouer"),
+    referee_item_inventory_map_selector_description("referee_item_inventory_map_selector_description", "Permet de choisir la carte à jouer"),
+    referee_item_map_selector_description("referee_item_map_selector_description", "Charge la carte: "),
+    referee_error_map_selector_only_hub("referee_error_map_selector_only_hub", "La selection de map ne peut se faire que dans le hub"),
+    referee_inventory_game_title("referee_inventory_game_title", "Gestion de la partie"),
+    referee_inventory_game_description("referee_inventory_game_description", "Gérer la partie (spawn coffre, début vagues de poulet, pause....)"),
+    referee_item_enable_disable_chicken_wave_title("referee_item_enable_disable_chicken_wave_title", "Activer/Désactiver poulets"),
+    referee_item_enable_disable_chicken_wave_description("referee_item_enable_disable_chicken_wave_description", "Activer ou désactiver les vagues de poulets"),
+    referee_item_start_chicken_wave_title("referee_item_start_chicken_wave_title", "Démarrer les vagues de poulets"),
+    chiken_wave_now_enabled("chiken_wave_now_enabled", "Les vagues de poulets sont désormais activé"),
+    chiken_wave_now_disabled("chiken_wave_now_disabled", "Les vagues de poulets sont désormais désactivé"),
+    chicken_wave_error_disabled("chicken_wave_error_disabled", "Les vagues de poulets sont désactivé."),
+    chicken_wave_spawned("chicken_wave_spawned", "Des poulets sont apparu dans l'arène !");
 
     private String path;
     private String def;
@@ -394,7 +424,7 @@ public enum Lang {
         if(string.contains("%blue%")) string = string.replace("%blue%", "" + ChatColor.BLUE);
         if(string.contains("%green%")) string = string.replace("%green%", "" + ChatColor.GREEN);
         if(string.contains("%aqua%")) string = string.replace("%aqua%", "" + ChatColor.AQUA);
-        if(string.contains("%red%")) string = string.replace("%red%", "" + ChatColor.AQUA);
+        if (string.contains("%red%")) string = string.replace("%red%", "" + ChatColor.RED);
         if(string.contains("%light_purple%")) string = string.replace("%light_purple%", "" + ChatColor.LIGHT_PURPLE);
         if(string.contains("%yellow%")) string = string.replace("%yellow%", "" + ChatColor.YELLOW);
         if(string.contains("%white%")) string = string.replace("%white%", "" + ChatColor.WHITE);
@@ -418,10 +448,13 @@ public enum Lang {
 
         try {
             if (string.contains("%requiredPlayers%"))
-                string = string.replace("%requiredPlayers%", "" + (3 * partie.groupe.getParametresPartie().getCVAR("mp_max_player_team").getValeurNumerique()));
+                string = string.replace("%requiredPlayers%", "" + (3 * partie.groupe.getParametresPartie().getCVAR("mp_team_max_player").getValeurNumerique()));
         } catch (Exception e) {
             Error.Report(e, partie);
         }
+
+        if (string.contains("%onlinePlayers%"))
+            string = string.replace("%onlinePlayers%", partie.groupe.getPlayerCount() + "");
 
         return string;
 

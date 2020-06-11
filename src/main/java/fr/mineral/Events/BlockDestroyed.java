@@ -41,7 +41,9 @@ public class BlockDestroyed implements Listener {
 
             if (game.isGameStarted() && !game.isGamePaused()) {
                 try {
-                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), game.getArene().arenaRadius)) {
+                    //protected_zone_area_radius arena_safezone_radius enable_monster_in_protected_zone
+
+                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), settings.getCVAR("protected_zone_area_radius").getValeurNumerique())) {
                         if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                             BlockManager blockManager = BlockManager.getInstance();
                             if (blockManager.wasBlockAdded(event.getBlock()))
@@ -49,15 +51,18 @@ public class BlockDestroyed implements Listener {
                             else {
                                 event.setCancelled(true);
                                 event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+                                return;
                             }
                         } else {
                             event.setCancelled(true);
                             event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+                            return;
                         }
                     }
                 } catch (Exception e) {
                     Error.Report(e, game);
                     event.setCancelled(true);
+                    return;
                 }
             } else {
                 event.setCancelled(true);

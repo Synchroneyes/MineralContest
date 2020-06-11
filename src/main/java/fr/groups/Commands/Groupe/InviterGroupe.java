@@ -19,6 +19,8 @@ public class InviterGroupe extends CommandTemplate {
         this.accessCommande.add(GROUP_REQUIRED);
         this.accessCommande.add(GROUP_ADMIN);
         this.accessCommande.add(REQUIRE_GROUP_UNLOCKED);
+        accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+
     }
 
     @Override
