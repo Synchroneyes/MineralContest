@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 
-public class Equipe {
+public class Equipe implements Comparable<Equipe> {
     private LinkedList<Player> joueurs;
     private String nomEquipe;
     private ChatColor couleur;
@@ -201,5 +201,10 @@ public class Equipe {
         if(this.nomEquipe.equals(Lang.blue_team.toString())) return Color.BLUE;
 
         return Color.WHITE;
+    }
+
+    @Override
+    public int compareTo(Equipe equipe) {
+        return (int) (this.getScore() - equipe.getScore());
     }
 }

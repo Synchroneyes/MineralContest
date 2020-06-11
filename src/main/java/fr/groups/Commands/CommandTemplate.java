@@ -27,6 +27,7 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int REQUIRE_GROUP_UNLOCKED = 7;
     protected final int REQUIRE_GROUP_LOCKED = 8;
     protected final int REQUIRE_COMMUNITY_VERSION = 9;
+    protected final int PLAYER_ADMIN = 10;
 
 
 
@@ -126,6 +127,10 @@ public abstract class CommandTemplate extends BukkitCommand {
                     throw new Exception(Lang.error_command_unavailable_in_this_version.toString());
             }
 
+            if (condition == PLAYER_ADMIN) {
+                if (!p.isOp()) throw new Exception(Lang.error_you_must_be_server_admin.toString());
+            }
+
         }
 
         if (arguments.size() != receivedArgs.length) {
@@ -135,6 +140,8 @@ public abstract class CommandTemplate extends BukkitCommand {
 
             if (receivedArgs.length != requiredArgSize) throw new Exception(getUsage());
         }
+
+
     }
 
 

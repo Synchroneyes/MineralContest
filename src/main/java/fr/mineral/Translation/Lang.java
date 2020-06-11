@@ -196,6 +196,7 @@ public enum Lang {
     group_finished_their_game_winner_display("group_finished_their_game_winner_display", "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !"),
     custom_chicken_name("custom_chicken_name", "POULET DE RESSOURCE"),
     error_command_unavailable_in_this_version("error_command_unavailable_in_this_version", "Cette commande n'est pas disponible dans cette version du plugin"),
+    error_you_must_be_server_admin("error_you_must_be_server_admin", "Vous devez être OP sur le serveur"),
     error_cant_load_game_settings_file("error_cant_load_game_settings_file", "Impossible de charger le fichier de configuration de la carte. Ce chargement %red%n'est pas obligatoire %white%et n'empêche pas le chargement du monde"),
     referee_item_teleport_to_player_description("referee_item_teleport_to_player_description", "Cet objet permet de vous téléporter à "),
     referee_item_teleport_to_player_title("referee_item_teleport_to_player_title", "Se téléporter à "),
@@ -225,7 +226,17 @@ public enum Lang {
     chiken_wave_now_enabled("chiken_wave_now_enabled", "Les vagues de poulets sont désormais activé"),
     chiken_wave_now_disabled("chiken_wave_now_disabled", "Les vagues de poulets sont désormais désactivé"),
     chicken_wave_error_disabled("chicken_wave_error_disabled", "Les vagues de poulets sont désactivé."),
-    chicken_wave_spawned("chicken_wave_spawned", "Des poulets sont apparu dans l'arène !");
+    chicken_wave_spawned("chicken_wave_spawned", "Des poulets sont apparu dans l'arène !"),
+    referee_item_inventory_stopgame_title("referee_item_inventory_stopgame_title", "Arrêter la partie"),
+    referee_item_inventory_stopgame_description("referee_item_inventory_stopgame_description", "Affiche le menu de confirmation d'arrêt de partie"),
+    referee_item_cancel_game_stop_title("referee_item_cancel_game_stop_title", "Annuler"),
+    referee_item_confirm_game_stop_title("referee_item_confirm_game_stop_title", "Confirmer"),
+    referee_item_show_score_to_admin_title("referee_item_show_score_to_admin_title", "Afficher le score aux admins"),
+    referee_item_show_score_to_admin_description("referee_item_show_score_to_admin_description", "Le score ne sera affiché qu'au admins."),
+    referee_item_show_score_to_everyone_title("referee_item_show_score_to_everyone_title", "Afficher le score à tout le monde"),
+    referee_item_show_score_to_everyone_description("referee_item_show_score_to_everyone_description", "Le score sera affiché à tout le monde (Tout le monde verra les points !"),
+    map_downloader_inventory_name("map_downloader_inventory_name", "Menu de téléchargement de maps"),
+    map_downloader_inventory_maps_list_name("map_downloader_inventory_maps_list_name", "Liste des maps disponible");
 
     private String path;
     private String def;

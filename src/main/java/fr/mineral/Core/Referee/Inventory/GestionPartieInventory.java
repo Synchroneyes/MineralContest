@@ -14,6 +14,9 @@ public class GestionPartieInventory extends InventoryTemplate {
         registerItem(new SpawnChestItem(null, this));
         registerItem(new StartChickenItem(null, this));
         registerItem(new EnableDisableChickenItem(null, this));
+
+        registerItem(new AfficherScoreboardToAdminsItem(null, this));
+        registerItem(new AfficherScoreboardToEveryoneItem(null, this));
     }
 
     @Override

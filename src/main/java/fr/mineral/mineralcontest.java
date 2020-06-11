@@ -21,6 +21,7 @@ import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
+import fr.world_downloader.WorldDownloader;
 import jdk.internal.jline.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,6 +69,7 @@ public final class mineralcontest extends JavaPlugin {
 
     public GroupeExtension groupeExtension;
     public LinkedList<Groupe> groupes;
+    public WorldDownloader worldDownloader;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
@@ -158,6 +160,7 @@ public final class mineralcontest extends JavaPlugin {
         defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
 
         this.mapBuilderInstance = MapBuilder.getInstance();
+        this.worldDownloader = WorldDownloader.getInstance();
 
 
         Lang.copyLangFilesFromRessources();
