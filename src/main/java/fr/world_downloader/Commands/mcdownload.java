@@ -1,6 +1,7 @@
 package fr.world_downloader.Commands;
 
 import fr.groups.Commands.CommandTemplate;
+import fr.mineral.mineralcontest;
 import fr.world_downloader.WorldDownloader;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ public class mcdownload extends CommandTemplate {
     public mcdownload() {
         accessCommande.add(PLAYER_COMMAND);
         accessCommande.add(PLAYER_ADMIN);
+        accessCommande.add(PLAYER_IN_HUB);
         constructArguments();
     }
 
@@ -24,7 +26,7 @@ public class mcdownload extends CommandTemplate {
         try {
             canPlayerUseCommand(commandSender, strings);
         } catch (Exception e) {
-            e.printStackTrace();
+            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
             return false;
         }
 

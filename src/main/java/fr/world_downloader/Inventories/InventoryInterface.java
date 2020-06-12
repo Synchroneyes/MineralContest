@@ -19,20 +19,33 @@ public abstract class InventoryInterface {
     protected LinkedList<ItemInterface> items;
     protected Inventory inventaire;
 
-    public InventoryInterface() {
+    // Si oui, on l'affiche dans le menu principal
+    protected boolean displayInMainMenu = true;
+
+    public InventoryInterface(boolean displayInMainMenu) {
         this.items = new LinkedList<>();
         this.inventaire = Bukkit.createInventory(null, 54, getNomInventaire());
         inventaire.setMaxStackSize(1);
+        this.displayInMainMenu = displayInMainMenu;
     }
 
     public void registerItem(ItemInterface itemTemplate) {
         this.items.add(itemTemplate);
     }
 
+    public void clearItems() {
+        this.items.clear();
+    }
+
+    public boolean isDisplayInMainMenu() {
+        return displayInMainMenu;
+    }
 
     public abstract void setInventoryItems(Player arbitre);
 
     public void openInventory(Player admin) {
+        inventaire.clear();
+        clearItems();
         setInventoryItems(admin);
         for (ItemInterface item : items) {
             inventaire.addItem(item.toItemStack());

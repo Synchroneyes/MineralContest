@@ -28,6 +28,7 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int REQUIRE_GROUP_LOCKED = 8;
     protected final int REQUIRE_COMMUNITY_VERSION = 9;
     protected final int PLAYER_ADMIN = 10;
+    protected final int PLAYER_IN_HUB = 11;
 
 
 
@@ -129,6 +130,13 @@ public abstract class CommandTemplate extends BukkitCommand {
 
             if (condition == PLAYER_ADMIN) {
                 if (!p.isOp()) throw new Exception(Lang.error_you_must_be_server_admin.toString());
+            }
+
+            if (condition == PLAYER_IN_HUB) {
+                if (!(p instanceof Player)) throw new Exception(Lang.error_command_can_only_be_used_in_game.toString());
+                Player joueur = (Player) p;
+                if (!joueur.getWorld().equals(mineralcontest.plugin.pluginWorld))
+                    throw new Exception(Lang.error_command_can_only_be_used_hub_world.toString());
             }
 
         }

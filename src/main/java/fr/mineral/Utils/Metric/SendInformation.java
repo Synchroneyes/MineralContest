@@ -4,13 +4,13 @@ import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.UrlFetcher.Urls;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 
 public class SendInformation {
 
     private static boolean enabled = true;
-    private static String ApiServerURL = "http://mineral.synchroneyes.fr/api/metrics";
     public static String start = "start";
     public static String ended = "ended";
 
@@ -38,7 +38,7 @@ public class SendInformation {
                 try {
                     // On crée un nouvel objet request
                     URLRequest request = new URLRequest("POST");
-                    request.setUrl(ApiServerURL);
+                    request.setUrl(Urls.API_URL_SEND_METRIC);
 
                     // On lui passe les parametres
                     request.addParameters("serverPort", Bukkit.getServer().getPort());

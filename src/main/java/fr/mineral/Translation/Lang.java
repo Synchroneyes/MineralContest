@@ -236,7 +236,13 @@ public enum Lang {
     referee_item_show_score_to_everyone_title("referee_item_show_score_to_everyone_title", "Afficher le score à tout le monde"),
     referee_item_show_score_to_everyone_description("referee_item_show_score_to_everyone_description", "Le score sera affiché à tout le monde (Tout le monde verra les points !"),
     map_downloader_inventory_name("map_downloader_inventory_name", "Menu de téléchargement de maps"),
-    map_downloader_inventory_maps_list_name("map_downloader_inventory_maps_list_name", "Liste des maps disponible");
+    map_downloader_inventory_maps_list_name("map_downloader_inventory_maps_list_name", "Liste des maps disponible"),
+    error_already_downloading_a_map("error_already_downloading_a_map", "Un téléchargement est déjà en cours, veuillez patienter"),
+    downloading_map_progress("downloading_map_progress", "Téléchargement de la map %mapName% en cours: %percentage%%"),
+    downloading_map_done_now_extracting("downloading_map_done_now_extracting", "Téléchargement de la carte terminée, démarrage de l'extraction de la map ..."),
+    downloading_map_extracted("downloading_map_extracted", "Extraction de la map terminée, vous pouvez désormais jouer dessus"),
+    map_downloader_delete_title("map_downloader_delete_title", "Menu de suppression de map"),
+    map_downloader_delete_description("map_downloader_delete_description", "Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après");
 
     private String path;
     private String def;

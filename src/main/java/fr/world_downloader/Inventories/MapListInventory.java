@@ -2,28 +2,25 @@ package fr.world_downloader.Inventories;
 
 import fr.mineral.Translation.Lang;
 import fr.world_downloader.Items.MapDownloadItem;
+import fr.world_downloader.MapInfo;
+import fr.world_downloader.WorldDownloader;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.util.LinkedList;
 
 public class MapListInventory extends InventoryInterface {
 
 
+    public MapListInventory(boolean displayInMainMenu) {
+        super(displayInMainMenu);
+    }
+
     @Override
     public void setInventoryItems(Player arbitre) {
-        String json = "{ \"maps\": [ { \"map_name\": \"mc_savane\", \"map_url\": \"http://localhost/get/savane\", \"map_description\": \"Une petite map à jouer avec 3 équipes\\n, Dans la savane\" }, { \"map_name\": \"mc_egypte\", \"map_url\": \"http://localhost/get/egypte\", \"map_description\": \"Une petite map à jouer avec 3 équipes\\n, dans des pyramides\" }, { \"map_name\": \"mc_4_team_max\", \"map_url\": \"http://localhost/get/4_team_max\", \"map_description\": \"Une petite map à jouer avec 4 teams\\n, avec 4 tams\" }, ] }";
-        JSONObject jsonObject = new JSONObject(json);
-
-        JSONArray maps = jsonObject.getJSONArray("maps");
-        for (int i = 0; i < maps.length(); ++i) {
-            JSONObject map = maps.getJSONObject(i);
-
-            registerItem(new MapDownloadItem(map.get("map_name").toString(),
-                    map.get("map_url").toString(),
-                    map.get("map_description").toString()));
-        }
-
+        LinkedList<MapInfo> maps = WorldDownloader.getMaps();
+        for (MapInfo map : maps)
+            registerItem(MapDownloadItem.fromMapInfo(map));
     }
 
     @Override

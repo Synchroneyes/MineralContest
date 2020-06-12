@@ -21,12 +21,11 @@ import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Save.MapFileHandler;
+import fr.mineral.Utils.UrlFetcher.Urls;
+import fr.mineral.Utils.VersionChecker.Version;
 import fr.world_downloader.WorldDownloader;
 import jdk.internal.jline.internal.Nullable;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -74,11 +73,32 @@ public final class mineralcontest extends JavaPlugin {
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
-        //this.partie = new Game();
+        Lang.loadLang(getPluginConfigValue("mp_set_language"));
+
+        // On récupère toutes les URL
+        Urls.FetchAllUrls(true);
+
+        // On vérifie la version du plugin
+        Version.Check();
+
+        if (Version.hasUpdated) {
+            Bukkit.reload();
+            return;
+        }
+
         Lang.loadLang(getPluginConfigValue("mp_set_language"));
 
         this.groupeExtension = GroupeExtension.getInstance();
         this.groupes = new LinkedList<>();
+    }
+
+    /**
+     * Retourne le fichier JAR du plugin
+     *
+     * @return
+     */
+    public File getPluginFile() {
+        return getFile();
     }
 
     public static String getPluginConfigValue(String configName) {
@@ -155,37 +175,39 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!Version.hasUpdated) {
 
-        pluginWorld = PlayerUtils.getPluginWorld();
-        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+            this.mapBuilderInstance = MapBuilder.getInstance();
+            this.worldDownloader = WorldDownloader.getInstance();
 
-        this.mapBuilderInstance = MapBuilder.getInstance();
-        this.worldDownloader = WorldDownloader.getInstance();
-
-
-        Lang.copyLangFilesFromRessources();
-        registerCommands();
-        registerEvents();
-        MapFileHandler.copyMapFileToPluginRessourceFolder();
-        PlayerBaseItem.copyDefaultFileToPluginDataFolder();
+            pluginWorld = PlayerUtils.getPluginWorld();
+            defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+            if (pluginWorld != null) pluginWorld.setDifficulty(Difficulty.PEACEFUL);
 
 
-        if(!debug)
-            if(pluginWorld != null)
-                for(Player online : pluginWorld.getPlayers())
-                    PlayerUtils.teleportPlayer(online, defaultSpawn);
-
-        PlayerUtils.runScoreboardManager();
-        GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
+            Lang.copyLangFilesFromRessources();
+            registerCommands();
+            registerEvents();
+            MapFileHandler.copyMapFileToPluginRessourceFolder();
+            PlayerBaseItem.copyDefaultFileToPluginDataFolder();
 
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PlayerUtils.drawPlayersHUD();
-            }
-        }.runTaskTimer(this, 0, 20);
-        initCommunityVersion();
+            if (!debug)
+                if (pluginWorld != null)
+                    for (Player online : pluginWorld.getPlayers())
+                        PlayerUtils.teleportPlayer(online, defaultSpawn);
+
+            PlayerUtils.runScoreboardManager();
+            GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PlayerUtils.drawPlayersHUD();
+                }
+            }.runTaskTimer(this, 0, 20);
+            initCommunityVersion();
+        }
     }
 
     @Override

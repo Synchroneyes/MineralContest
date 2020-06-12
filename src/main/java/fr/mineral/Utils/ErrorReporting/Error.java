@@ -1,6 +1,7 @@
 package fr.mineral.Utils.ErrorReporting;
 
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Utils.UrlFetcher.Urls;
 import fr.mineral.mineralcontest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -50,7 +51,7 @@ public class Error {
     }
 
     private static void Send(JSONObject json) throws IOException {
-        String url_post = "http://mineral.synchroneyes.fr/api/error/send";
+        // String url_post = "http://mineral.synchroneyes.fr/api/error/send";
         //String url_post = "http://localhost:8000/api/error/send";
         /*
         HttpPost post = new HttpPost(url);
@@ -67,7 +68,7 @@ public class Error {
             System.out.println("Response => " + EntityUtils.toString(response.getEntity()));
         }*/
 
-        URL url = new URL(url_post);
+        URL url = new URL(Urls.API_URL_SEND_ERROR);
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("report", json.toString());
         //params.put("email", "fishie@seamail.example.com");
