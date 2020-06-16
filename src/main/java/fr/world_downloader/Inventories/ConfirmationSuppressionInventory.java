@@ -27,7 +27,7 @@ public class ConfirmationSuppressionInventory extends InventoryInterface {
 
     @Override
     public void setInventoryItems(Player arbitre) {
-        LinkedList<MapInfo> maps = WorldDownloader.getMaps();
+        LinkedList<MapInfo> maps = WorldDownloader.getMaps(false);
         registerItem(new ConfirmMapDeletionItem(nom_dossier));
         registerItem(new CancelMapDeletionItem(nom_dossier));
     }

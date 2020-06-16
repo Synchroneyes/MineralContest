@@ -33,6 +33,5 @@ public class CancelMapDeletionItem extends ItemInterface {
     @Override
     public void performClick(Player joueur) {
         joueur.closeInventory();
-        joueur.sendMessage(mineralcontest.prefixPrive + "Map deletion got cancelled");
     }
 }

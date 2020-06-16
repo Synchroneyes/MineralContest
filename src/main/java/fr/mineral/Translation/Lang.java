@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public enum Lang {
@@ -242,13 +243,17 @@ public enum Lang {
     downloading_map_done_now_extracting("downloading_map_done_now_extracting", "Téléchargement de la carte terminée, démarrage de l'extraction de la map ..."),
     downloading_map_extracted("downloading_map_extracted", "Extraction de la map terminée, vous pouvez désormais jouer dessus"),
     map_downloader_delete_title("map_downloader_delete_title", "Menu de suppression de map"),
-    map_downloader_delete_description("map_downloader_delete_description", "Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après");
+    map_downloader_delete_description("map_downloader_delete_description", "Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après"),
+    player_base_item_inventory_title("player_base_item_inventory_title", "Inventaire de réapparition"),
+    player_base_item_close_inventory_item_title("player_base_item_close_inventory_item_title", "Fermer le menu");
+
+
 
     private String path;
     private String def;
     private static YamlConfiguration LANG = new YamlConfiguration();
 
-    public static String langDataFolderName = "lang";
+    public static String langDataFolderName = "language";
 
 
     /**
@@ -264,7 +269,7 @@ public enum Lang {
 
     public static void copyLangFilesFromRessources() {
         mineralcontest plugin = mineralcontest.plugin;
-        String LangFileName = "";
+        String LangFileName;
         // For each language, we copy the langfile
         for (Language langage : Language.values()) {
             LangFileName = langage.getLanguageName() + ".yml";
@@ -350,7 +355,7 @@ public enum Lang {
     public String toString() {
 
         //return get(findByValue(LANG.getString(this.path, def)).getPath());
-        return translate((LANG.getString(this.path, def)));
+        return translate((Objects.requireNonNull(LANG.getString(this.path, def))));
         //return "toString" + LANG.getString(this.path, def);
     }
 
@@ -412,7 +417,7 @@ public enum Lang {
 
     public static String translate(String string, Player player) {
         if (string.contains("%deathTime%"))
-            string = string.replace("%deathTime%", "" + mineralcontest.getPlayerGame(player).getArene().getDeathZone().getPlayerDeathTime(player));
+            string = string.replace("%deathTime%", "" + Objects.requireNonNull(mineralcontest.getPlayerGame(player)).getArene().getDeathZone().getPlayerDeathTime(player));
         if(string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
         if(string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
 

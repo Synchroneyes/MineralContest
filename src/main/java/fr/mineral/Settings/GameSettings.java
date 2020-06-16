@@ -1,5 +1,6 @@
 package fr.mineral.Settings;
 
+import fr.file_manager.FileList;
 import fr.mineral.Utils.ErrorReporting.Configuration;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Log.GameLogger;
@@ -37,8 +38,7 @@ public class GameSettings {
                 parametres.add(new GameCVAR(parametre.getCommand(), parametre.getValeur(), parametre.getDescription(), parametre.getType(), parametre.canBeReloaded(), parametre.isNumber()));
         }
 
-        fichierConfiguration = new File(mineralcontest.plugin.getDataFolder() + File.separator + "game_settings.yml");
-        if (!fichierConfiguration.exists()) saveToFile("game_settings", true);
+        fichierConfiguration = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
 
     }
 

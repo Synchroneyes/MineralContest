@@ -17,7 +17,6 @@ import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.MobKiller;
 import fr.mineral.Utils.Player.CouplePlayerTeam;
-import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -352,9 +351,11 @@ public class Game implements Listener {
             this.referees.add(player);
             PlayerUtils.equipReferee(player);
 
+            if (getPlayerTeam(player) != null) getPlayerTeam(player).removePlayer(player);
+
             if(!isGameStarted()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), groupe);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), this), groupe);
                 }, 20);
             }
         }
@@ -365,12 +366,31 @@ public class Game implements Listener {
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);
             PlayerUtils.clearPlayer(player);
-            PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
+            //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
             if(!isGameStarted()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString(), groupe);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), this), groupe);
                 }, 20);
             }
+
+            if (isGameStarted() || isPreGame()) setPlayerRandomTeam(player);
+        }
+
+    }
+
+    /**
+     * Affecte une team de manière aléatoire à un joueur
+     *
+     * @param p
+     */
+    public void setPlayerRandomTeam(Player p) {
+        int nombreAleatoire = new Random().nextInt(equipes.size());
+
+        if (getPlayerTeam(p) != null) getPlayerTeam(p).removePlayer(p);
+        try {
+            equipes.get(nombreAleatoire).getTeam().addPlayerToTeam(p, true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -576,7 +596,7 @@ public class Game implements Listener {
                                     online.getInventory().clear();
                                     //PlayerUtils.givePlayerBaseItems(online);
                                     try {
-                                        PlayerBaseItem.givePlayerItems(online, PlayerBaseItem.onFirstSpawnName);
+                                        groupe.getPlayerBaseItem().giveItemsToPlayer(online);
                                     } catch (Exception e) {
                                         mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console", groupe);
                                         e.printStackTrace();
@@ -584,7 +604,6 @@ public class Game implements Listener {
                                     }
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20*5, 0);
-                                    PlayerMove.handlePushs();
 
                                     // On TP le joueur dans sa maison
                                     try {
@@ -595,7 +614,7 @@ public class Game implements Listener {
                                             online.setGameMode(GameMode.CREATIVE);
                                             PlayerUtils.equipReferee(online);
                                         }
-                                        MobKiller.killMobNearArena(80, instance);
+                                        //MobKiller.killMobNearArena(80, instance);
 
                                     }catch (Exception e) {
                                         e.printStackTrace();
@@ -1015,7 +1034,10 @@ public class Game implements Listener {
 
         Bukkit.getLogger().info("RANDOMIZING !");
         LinkedList<House> equipesDispo = new LinkedList<>();
-        LinkedList<Player> joueursEnAttente = new LinkedList<>(groupe.getMonde().getPlayers());
+        LinkedList<Player> joueursEnAttente = new LinkedList<>();
+
+        for (Player joueur : groupe.getMonde().getPlayers())
+            if (!isReferee(joueur)) joueursEnAttente.add(joueur);
 
         for (int index = 0; index < joueursEnAttente.size(); ++index) {
             equipesDispo.add(equipes.get(index % equipes.size()));

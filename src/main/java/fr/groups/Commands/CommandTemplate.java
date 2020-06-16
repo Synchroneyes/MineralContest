@@ -33,6 +33,7 @@ public abstract class CommandTemplate extends BukkitCommand {
 
 
 
+
     public abstract String getCommand();
 
     public abstract String getDescription();
@@ -56,18 +57,7 @@ public abstract class CommandTemplate extends BukkitCommand {
         this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
         this.accessCommande = new LinkedList<>();
         this.arguments = new HashMap<>();
-    }
-
-    protected CommandTemplate(String name) {
-        super("");
-        this.description = getDescription();
-        this.setName(getCommand());
-        this.setPermission(this.getPermissionRequise());
-        this.setPermissionMessage(getErrorMessage());
-        this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
-        this.arguments = new HashMap<>();
-        this.accessCommande = new LinkedList<>();
-
+        constructArguments();
     }
 
     public void addArgument(String arg, boolean argIsRequired) {
@@ -94,7 +84,7 @@ public abstract class CommandTemplate extends BukkitCommand {
                 if (playerGroupe == null) throw new Exception(Lang.error_you_must_be_in_a_group.toString());
 
             if (condition == GROUP_ADMIN) {
-                if (!playerGroupe.isAdmin((Player) p))
+                if (playerGroupe == null || !playerGroupe.isAdmin((Player) p))
                     throw new Exception(Lang.error_you_must_be_group_admin.toString());
             }
 
@@ -152,6 +142,24 @@ public abstract class CommandTemplate extends BukkitCommand {
 
     }
 
+
+    public abstract boolean performCommand(CommandSender commandSender, String command, String[] args);
+
+
+    @Override
+    public boolean execute(CommandSender commandSender, String s, String[] strings) {
+
+        try {
+            canPlayerUseCommand(commandSender, strings);
+        } catch (Exception e) {
+            commandSender.sendMessage(e.getMessage());
+            return false;
+        }
+
+        Bukkit.getLogger().severe("Received: " + s);
+
+        return performCommand(commandSender, s, strings);
+    }
 
     public String getArgumentsString() {
         StringBuilder sb = new StringBuilder();

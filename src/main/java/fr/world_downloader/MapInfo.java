@@ -9,6 +9,7 @@ public class MapInfo {
     public String map_size_display;
     public String map_description;
     public String map_file_name;
+    public String map_folder_name;
 
     public static MapInfo fromJsonObject(JSONObject object) {
         MapInfo map = new MapInfo();
@@ -18,6 +19,7 @@ public class MapInfo {
         map.map_size_display = object.getString("map_size_display");
         map.map_description = object.getString("map_description");
         map.map_file_name = object.getString("map_file_name");
+        map.map_folder_name = object.getString("map_folder_name");
 
         return map;
     }

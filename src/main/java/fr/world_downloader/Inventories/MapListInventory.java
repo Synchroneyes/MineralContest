@@ -18,7 +18,7 @@ public class MapListInventory extends InventoryInterface {
 
     @Override
     public void setInventoryItems(Player arbitre) {
-        LinkedList<MapInfo> maps = WorldDownloader.getMaps();
+        LinkedList<MapInfo> maps = WorldDownloader.getMaps(false);
         for (MapInfo map : maps)
             registerItem(MapDownloadItem.fromMapInfo(map));
     }

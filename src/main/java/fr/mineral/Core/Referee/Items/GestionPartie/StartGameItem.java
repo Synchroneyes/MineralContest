@@ -21,6 +21,8 @@ public class StartGameItem extends RefereeItemTemplate {
         if (groupe == null) return;
         if (groupe.getGame() == null) return;
 
+        if (mineralcontest.isInMineralContestHub(joueur)) return;
+
         if (!groupe.getGame().isGameStarted()) {
             try {
                 groupe.getGame().demarrerPartie(true);

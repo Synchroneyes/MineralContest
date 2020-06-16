@@ -16,9 +16,19 @@ public class mcrevert extends CommandTemplate {
         return "mcrevert";
     }
 
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] strings) {
 
+    @Override
+    public String getDescription() {
+        return "Permet";
+    }
+
+    @Override
+    public String getPermissionRequise() {
+        return null;
+    }
+
+    @Override
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         if (!MapBuilder.modifications.empty()) {
             Stack<BlockSaver> dernierPose = MapBuilder.modifications.pop();
             for (BlockSaver block : dernierPose)
@@ -29,15 +39,5 @@ public class mcrevert extends CommandTemplate {
 
         }
         return false;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Permet";
-    }
-
-    @Override
-    public String getPermissionRequise() {
-        return null;
     }
 }

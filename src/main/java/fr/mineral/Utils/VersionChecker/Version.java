@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -30,11 +31,52 @@ public class Version {
     public static boolean isUpdating = false;
     public static boolean hasUpdated = false;
 
-    public static void Check() {
-        // $.post("http://localhost:8000/api/plugin/check-version", {version: "2"}).done(function(data){console.log(data)})
-        // $.post("http://localhost:8000/api/plugin/get-messages", {version: "1.0"}).done(function(data){console.log(data)})
+    /**
+     * Récupère tous les messages à partir du site web pour cette version du plugin
+     *
+     * @param threadedFetch - Utiliser un thread ou non pour l'utilisation de cette fonction
+     * @param listToFill    - Une liste à remplir avec les messages du site
+     */
+    public static void fetchAllMessages(boolean threadedFetch, List<String> listToFill) {
+
+        // On récupère la verison du plugin
+        String currentVersion = mineralcontest.plugin.getDescription().getVersion();
+
+        // On crée la nouvelle requete
+        HttpPost request = new HttpPost(Urls.API_URL_GET_CURRENT_VERSION_MESSAGES);
+        try {
+            // On ajoute un paramètre à la requete
+            List<NameValuePair> parametres = new ArrayList<>();
+            parametres.add(new BasicNameValuePair("version", currentVersion));
+            request.setEntity(new UrlEncodedFormEntity(parametres));
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = null;
+
+            // On execute la requete
+            response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            // On récupère le contenu de la requete
+            String entityContents = EntityUtils.toString(entity);
+
+            // On sait que le résultat est un tableau au format JSON, on le traite donc comme un tableau
+            JSONArray reponse = new JSONArray(entityContents);
+            // Si on reçois aucun message, on arrête
+            if (reponse.isEmpty()) return;
+
+            // Sinon, on rempli la liste
+            for (int indexMessage = 0; indexMessage < reponse.length(); ++indexMessage)
+                listToFill.add(Lang.translate(reponse.get(indexMessage).toString()));
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private static void doCheck() {
         String currentVersion = mineralcontest.plugin.getDescription().getVersion();
         HttpPost request = new HttpPost(Urls.API_URL_LAST_VERSION_CHECK);
         try {
@@ -67,6 +109,21 @@ public class Version {
         }
     }
 
+    public static void Check(boolean theadedCheck) {
+        // $.post("http://localhost:8000/api/plugin/check-version", {version: "2"}).done(function(data){console.log(data)})
+        // $.post("http://localhost:8000/api/plugin/get-messages", {version: "1.0"}).done(function(data){console.log(data)})
+
+
+        if (theadedCheck) {
+            Thread thread = new Thread(Version::doCheck);
+            thread.start();
+        } else {
+            doCheck();
+        }
+
+
+    }
+
 
     /**
      * Converti une version (ex: 1.0.2) en "nombre" (ex: 102). En gros retire les "." ou les ","
@@ -82,6 +139,7 @@ public class Version {
 
     private static void DownloadNewVersion(String url, String fileName, String fileSize) throws InterruptedException {
         Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + "" + ChatColor.GOLD + " Downloading version " + url);
+        Bukkit.broadcastMessage(mineralcontest.prefix + ChatColor.GOLD + "Downloading a new version of the plugin ...");
 
         try {
 
@@ -118,8 +176,6 @@ public class Version {
             client.close();
 
             Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Download complete!");
-            //Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.RED + " Sending: " + "reload " + mineralcontest.plugin.getDescription().getName());
-            //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "reload " + mineralcontest.plugin.getDescription().getName());
             isUpdating = false;
             hasUpdated = true;
 

@@ -50,19 +50,7 @@ public class mcteam extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "mcteam";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + getUsage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
         if (args[0].equalsIgnoreCase("creer")) {
             if (args.length == 3) {
@@ -124,6 +112,12 @@ public class mcteam extends CommandTemplate {
 
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "mcteam";
+    }
+
 
 
     /**

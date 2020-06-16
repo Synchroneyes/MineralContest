@@ -3,6 +3,7 @@ package fr.groups.Commands.Vote;
 import fr.groups.Commands.CommandTemplate;
 import fr.groups.Core.Groupe;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,6 @@ public class Vote extends CommandTemplate {
     public Vote() {
         super();
         addArgument("ID du biome", true);
-        constructArguments();
 
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(GROUP_REQUIRED);
@@ -19,21 +19,8 @@ public class Vote extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "vote";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-
-
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+        Bukkit.getLogger().severe("Player voted");
         Player joueur = (Player) commandSender;
         Groupe playerGroupe = null;
         int mapVoter = -1;
@@ -51,9 +38,14 @@ public class Vote extends CommandTemplate {
 
         // On a plus qu'a enregistrer le vote
         playerGroupe.getMapVote().enregistrerVoteJoueur(mapVoter, joueur);
-
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "vote";
+    }
+
 
     @Override
     public String getDescription() {

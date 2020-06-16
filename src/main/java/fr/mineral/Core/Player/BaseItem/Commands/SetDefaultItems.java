@@ -1,43 +1,42 @@
-package fr.groups.Commands.Groupe;
+package fr.mineral.Core.Player.BaseItem.Commands;
 
 import fr.groups.Commands.CommandTemplate;
 import fr.groups.Core.Groupe;
-import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class QuitterGroupe extends CommandTemplate {
+public class SetDefaultItems extends CommandTemplate {
 
-    public QuitterGroupe() {
-        super();
-        this.accessCommande.add(PLAYER_COMMAND);
-        this.accessCommande.add(GROUP_REQUIRED);
-        accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+    public SetDefaultItems() {
+        accessCommande.add(PLAYER_COMMAND);
+        accessCommande.add(GROUP_REQUIRED);
+        accessCommande.add(GROUP_ADMIN);
 
     }
 
     @Override
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
-        Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
-        playerGroup.retirerJoueur(joueur);
+        Groupe groupe = mineralcontest.getPlayerGroupe(joueur);
+
+        groupe.getPlayerBaseItem().openInventory(joueur);
+
         return false;
     }
 
     @Override
     public String getCommand() {
-        return "quittergroupe";
+        return "mcdefaultitems";
     }
-
 
     @Override
     public String getDescription() {
-        return "Permet de quitter son groupe";
+        return "Permet de définir les objets par défaut";
     }
 
     @Override
     public String getPermissionRequise() {
-        return null;
+        return "";
     }
 }

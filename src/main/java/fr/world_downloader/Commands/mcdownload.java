@@ -16,26 +16,26 @@ public class mcdownload extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "mcdownloader";
-    }
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+        Player joueur = (Player) commandSender;
 
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] strings) {
 
-        try {
-            canPlayerUseCommand(commandSender, strings);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
+        if (!WorldDownloader.areMapsLoaded) {
+            joueur.sendMessage(mineralcontest.prefixErreur + "Getting all maps, please wait ...");
             return false;
         }
 
-        Player joueur = (Player) commandSender;
         joueur.closeInventory();
         joueur.openInventory(WorldDownloader.getInstance().getInventory());
 
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "mcdownloader";
+    }
+
 
     @Override
     public String getDescription() {

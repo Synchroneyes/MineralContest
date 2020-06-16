@@ -8,7 +8,7 @@ import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Log.GameLogger;
 import fr.mineral.Utils.Log.Log;
-import fr.mineral.Utils.Player.PlayerBaseItem;
+
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
@@ -147,7 +147,7 @@ public class Equipe implements Comparable<Equipe> {
 
 
             if (PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.getPlayerGame(p).isGameInitialized) {
-                PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
+                //PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
                 PlayerUtils.teleportPlayer(p, mineralcontest.getPlayerGroupe(p).getMonde(), mineralcontest.getPlayerGame(p).getPlayerHouse(p).getHouseLocation());
             }
 

@@ -1,5 +1,6 @@
 package fr.world_downloader;
 
+import fr.groups.Core.MapVote;
 import fr.mapbuilder.Core.Monde;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.UrlFetcher.Urls;
@@ -35,10 +36,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -56,6 +54,7 @@ public class WorldDownloader {
     public LinkedList<ItemInterface> items;
 
     public boolean downloading = false;
+    public static boolean areMapsLoaded = false;
 
     public static Monde monde;
     private BossBar status_telechargement;
@@ -82,9 +81,11 @@ public class WorldDownloader {
 
         registerEvents();
         registerCommands();
+    }
 
+    public void initMapLists() {
         printToConsole("Loading all map from workshop ...");
-        getMaps();
+        getMaps(true);
     }
 
     private void registerInventories() {
@@ -120,10 +121,15 @@ public class WorldDownloader {
         return instance;
     }
 
-    public static LinkedList<MapInfo> getMaps() {
+    public static LinkedList<MapInfo> getMaps(boolean download) {
         WorldDownloader worldDownloader = getInstance();
+        MapVote mapVote = new MapVote();
+        List<String> maps_existing = mapVote.getMaps();
 
-        if (worldDownloader.maps.isEmpty()) {
+
+        if (download) {
+            Bukkit.getLogger().severe("getMaps ...");
+            areMapsLoaded = false;
 
             HttpGet request = new HttpGet(Urls.API_URL_WORKSHOP_LIST);
             HttpClient httpClient = new DefaultHttpClient();
@@ -139,14 +145,21 @@ public class WorldDownloader {
 
                 for (int i = 0; i < maps.length(); ++i) {
                     JSONObject map = maps.getJSONObject(i);
-                    worldDownloader.maps.add(MapInfo.fromJsonObject(map));
+                    MapInfo mapInfo = MapInfo.fromJsonObject(map);
+
+                    // Si la map existe déjà, on ne la stock pas ;)
+                    if (!maps_existing.contains(mapInfo.map_folder_name)) worldDownloader.maps.add(mapInfo);
                 }
 
-                WorldDownloader.getInstance().printToConsole("Loaded " + worldDownloader.maps.size() + " maps from website");
+                // We remove the one already existing
+
+                WorldDownloader.getInstance().printToConsole(worldDownloader.maps.size() + " maps are available to download from website");
+                areMapsLoaded = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
 
         return instance.maps;
     }

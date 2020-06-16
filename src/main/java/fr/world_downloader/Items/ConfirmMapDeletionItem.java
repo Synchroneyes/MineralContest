@@ -3,6 +3,7 @@ package fr.world_downloader.Items;
 import fr.groups.Utils.FileManager.DirectoryManager;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
+import fr.world_downloader.WorldDownloader;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -41,6 +42,12 @@ public class ConfirmMapDeletionItem extends ItemInterface {
             DirectoryManager.deleteDirectory(dossierMap);
             joueur.sendMessage(mineralcontest.prefixPrive + "Map got deleted");
             joueur.closeInventory();
+
+            // On re-récupère les maps dispo
+            Thread t = new Thread(() -> {
+                WorldDownloader.getMaps(true);
+            });
+            t.start();
         }
     }
 }

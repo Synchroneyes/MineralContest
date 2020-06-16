@@ -48,20 +48,7 @@ public class mcbuild extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "mcbuild";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
         if (args[0].equalsIgnoreCase("save")) {
             if (args.length == 2) {
@@ -97,6 +84,12 @@ public class mcbuild extends CommandTemplate {
 
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "mcbuild";
+    }
+
 
     private void sauvegarderMonde(String nom) {
         Monde monde = MapBuilder.monde;

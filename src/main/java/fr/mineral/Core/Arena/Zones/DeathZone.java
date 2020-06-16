@@ -8,7 +8,6 @@ import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.CouplePlayer;
-import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -163,9 +162,8 @@ public class DeathZone {
             }
 
             // On rend le stuff du joueur
-            //PlayerUtils.givePlayerBaseItems(joueur);
             try {
-                PlayerBaseItem.givePlayerItems(joueur, PlayerBaseItem.everyRespawnName);
+                groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
             }catch (Exception e) {
                 mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), partie.groupe);
                 e.printStackTrace();

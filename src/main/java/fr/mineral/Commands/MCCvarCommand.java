@@ -27,22 +27,8 @@ public class MCCvarCommand extends CommandTemplate {
 
     }
 
-
     @Override
-    public String getCommand() {
-        return "mcvar";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
         Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
         Bukkit.getLogger().severe(playerGroup.toString());
@@ -81,6 +67,12 @@ public class MCCvarCommand extends CommandTemplate {
         }
 
         return false;
+    }
+
+
+    @Override
+    public String getCommand() {
+        return "mcvar";
     }
 
     @Override

@@ -9,17 +9,18 @@ package fr.groups.Core;
 import fr.groups.Utils.Etats;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
+import fr.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.mineral.Settings.GameSettings;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
+import javafx.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 public class Groupe {
     private int tailleIdentifiant = 10;
@@ -42,12 +43,18 @@ public class Groupe {
 
     private GameSettings parametresPartie;
 
+    private PlayerBaseItem playerBaseItem;
+
+    private HashMap<UUID, Pair<Equipe, Location>> disconnectedPlayers;
+
 
     public Groupe() {
         this.equipes = new LinkedList<>();
         this.admins = new LinkedList<>();
         this.joueurs = new LinkedList<>();
         this.joueursInvites = new LinkedList<>();
+
+        this.disconnectedPlayers = new HashMap<>();
 
         parametresPartie = new GameSettings(true);
 
@@ -59,8 +66,13 @@ public class Groupe {
         this.etat = Etats.EN_ATTENTE;
         this.worldLoader = new WorldLoader(this);
         genererIdentifiant();
+
+        this.playerBaseItem = new PlayerBaseItem(this);
     }
 
+    public PlayerBaseItem getPlayerBaseItem() {
+        return playerBaseItem;
+    }
 
     public GameSettings getParametresPartie() {
         return parametresPartie;
@@ -337,6 +349,62 @@ public class Groupe {
 
     public LinkedList<Player> getAdmins() {
         return admins;
+    }
+
+    /**
+     * Sauvegarde les membres du groupe ayant été déconnecté, avec leur position
+     *
+     * @param p
+     */
+    public void addDisconnectedPlayer(Player p) {
+        Pair<Equipe, Location> playerInfo = new Pair<>(getPlayerTeam(p), p.getLocation());
+        if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);
+    }
+
+    /**
+     * Reconnecte un joueur, on le re TP dans sa position initiale, et dans son équipe
+     *
+     * @param p
+     */
+    public void playerHaveReconnected(Player p) {
+        if (havePlayerDisconnected(p)) {
+            Pair<Equipe, Location> playerInfo = disconnectedPlayers.get(p.getUniqueId());
+
+            Equipe playerTeam = playerInfo.getKey();
+            Location playerLocation = playerInfo.getValue();
+            p.setFlying(false);
+            // Si la team n'est pas nulle, on le remet dans son équipe
+            if (playerTeam != null) {
+                try {
+                    playerTeam.addPlayerToTeam(p, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                if (p.isOp()) {
+                    partie.addReferee(p);
+                    return;
+                }
+            }
+
+            // On téléport le joueur à sa dernière position
+            p.teleport(playerLocation);
+
+            // On le supprime de la liste des déco
+            disconnectedPlayers.remove(p.getUniqueId());
+
+            // SI il n'y a plus personne dans la liste, on relance la partie!
+            if (disconnectedPlayers.isEmpty()) partie.resumeGame();
+        }
+    }
+
+    /**
+     * Retourne VRAI si le joueur s'était déjà déconnecté
+     *
+     * @param p
+     */
+    public boolean havePlayerDisconnected(Player p) {
+        return disconnectedPlayers.containsKey(p.getUniqueId());
     }
 
 

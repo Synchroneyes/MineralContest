@@ -1,16 +1,15 @@
 package fr.mineral;
 
+import fr.file_manager.FileList;
+import fr.file_manager.RessourceFilesManager;
 import fr.groups.Core.Groupe;
 import fr.groups.GroupeExtension;
 import fr.groups.Utils.Etats;
 import fr.mineral.Commands.*;
-import fr.mineral.Commands.Developper.SaveWorldCommand;
-import fr.mineral.Commands.Developper.SetupCommand;
-import fr.mineral.Commands.Developper.ValiderCommand;
 import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
+import fr.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.mineral.Settings.GameSettings;
-import fr.mineral.Settings.GameSettingsOLD;
-import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Referee.RefereeEvent;
 import fr.mineral.Events.*;
@@ -18,9 +17,7 @@ import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Log.GameLogger;
 import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Metric.SendInformation;
-import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
-import fr.mineral.Utils.Save.MapFileHandler;
 import fr.mineral.Utils.UrlFetcher.Urls;
 import fr.mineral.Utils.VersionChecker.Version;
 import fr.world_downloader.WorldDownloader;
@@ -36,6 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
@@ -65,7 +63,10 @@ public final class mineralcontest extends JavaPlugin {
     public Location defaultSpawn;
     public MapBuilder mapBuilderInstance;
 
-
+    /**
+     * Array of all the messages we can fetch from synchroneyes's plugin website.
+     */
+    private ArrayList<String> messagesFromWebsite;
     public GroupeExtension groupeExtension;
     public LinkedList<Groupe> groupes;
     public WorldDownloader worldDownloader;
@@ -73,36 +74,29 @@ public final class mineralcontest extends JavaPlugin {
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
-        Lang.loadLang(getPluginConfigValue("mp_set_language"));
-
-        // On récupère toutes les URL
-        Urls.FetchAllUrls(true);
-
-        // On vérifie la version du plugin
-        Version.Check();
-
-        if (Version.hasUpdated) {
-            Bukkit.reload();
-            return;
-        }
-
-        Lang.loadLang(getPluginConfigValue("mp_set_language"));
-
-        this.groupeExtension = GroupeExtension.getInstance();
-        this.groupes = new LinkedList<>();
     }
+
 
     /**
-     * Retourne le fichier JAR du plugin
-     *
-     * @return
+     * Affiche dans le chat les messages récupéré depuis le site web, lié à cette version du plugin
      */
-    public File getPluginFile() {
-        return getFile();
+    public static void afficherMessageVersion() {
+        // Pour chaque message
+        for (String message : plugin.messagesFromWebsite) {
+            broadcastMessage(mineralcontest.prefixGlobal + message);
+        }
     }
 
+    public static void afficherMessageVersionToPlayer(Player joueur) {
+        for (String message : plugin.messagesFromWebsite) {
+            joueur.sendMessage(mineralcontest.prefixPrive + message);
+        }
+    }
+
+
     public static String getPluginConfigValue(String configName) {
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(new File(mineralcontest.plugin.getDataFolder(), "plugin_config.yml"));
+        File fichierConfigurationPlugin = new File(plugin.getDataFolder(), FileList.Config_default_plugin.toString());
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(fichierConfigurationPlugin);
         return (String) configuration.get(configName);
     }
 
@@ -175,39 +169,69 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!Version.hasUpdated) {
 
-            this.mapBuilderInstance = MapBuilder.getInstance();
-            this.worldDownloader = WorldDownloader.getInstance();
-
-            pluginWorld = PlayerUtils.getPluginWorld();
-            defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
-            if (pluginWorld != null) pluginWorld.setDifficulty(Difficulty.PEACEFUL);
+        // On copie les fichiers par défaut
+        RessourceFilesManager.createDefaultFiles();
 
 
-            Lang.copyLangFilesFromRessources();
-            registerCommands();
-            registerEvents();
-            MapFileHandler.copyMapFileToPluginRessourceFolder();
-            PlayerBaseItem.copyDefaultFileToPluginDataFolder();
+        // On charge le fichier de langue
+        Lang.loadLang(getPluginConfigValue("language"));
 
 
-            if (!debug)
-                if (pluginWorld != null)
-                    for (Player online : pluginWorld.getPlayers())
-                        PlayerUtils.teleportPlayer(online, defaultSpawn);
+        // Initialisation des variables du plugin
+        this.groupeExtension = GroupeExtension.getInstance();
+        this.groupes = new LinkedList<>();
+        this.mapBuilderInstance = MapBuilder.getInstance();
+        this.messagesFromWebsite = new ArrayList<>();
+        this.worldDownloader = WorldDownloader.getInstance();
 
-            PlayerUtils.runScoreboardManager();
-            GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PlayerUtils.drawPlayersHUD();
+        pluginWorld = PlayerUtils.getPluginWorld();
+        defaultSpawn = (pluginWorld != null) ? pluginWorld.getSpawnLocation() : null;
+        if (pluginWorld != null) pluginWorld.setDifficulty(Difficulty.PEACEFUL);
+
+
+        registerCommands();
+        registerEvents();
+
+
+        if (!debug)
+            if (pluginWorld != null)
+                for (Player online : pluginWorld.getPlayers())
+                    PlayerUtils.teleportPlayer(online, defaultSpawn);
+
+        PlayerUtils.runScoreboardManager();
+        GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerUtils.drawPlayersHUD();
+            }
+        }.runTaskTimer(this, 0, 20);
+        initCommunityVersion();
+
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+
+
+            Thread operationsThreade = new Thread(() -> {
+                // On récupère toutes les URL du plugin
+                Urls.FetchAllUrls(true);
+                worldDownloader.initMapLists();
+
+                Version.fetchAllMessages(true, messagesFromWebsite);
+
+                Version.Check(true);
+                if (Version.hasUpdated) {
+                    Bukkit.broadcastMessage(mineralcontest.prefix + " Plugin has updated, Bukkit plugins will now be reloaded");
+                    Bukkit.reload();
                 }
-            }.runTaskTimer(this, 0, 20);
-            initCommunityVersion();
-        }
+            });
+
+            operationsThreade.start();
+
+        });
+
     }
 
     @Override
@@ -264,6 +288,10 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
 
 
+        // PlayerBaseItem
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+
+
     }
 
     private void registerCommands() {
@@ -292,6 +320,7 @@ public final class mineralcontest extends JavaPlugin {
             CommandMap bukkitCommandMap = (CommandMap) cmdMapField.get(Bukkit.getPluginManager());
 
             bukkitCommandMap.register("", new MCCvarCommand());
+            bukkitCommandMap.register("", new SetDefaultItems());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -355,10 +384,18 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     public static void broadcastMessage(String message, Groupe groupe) {
-
         groupe.sendToEveryone(message);
-        Bukkit.getLogger().info(message);
+        Bukkit.getConsoleSender().sendMessage(message);
         GameLogger.addLog(new Log("broadcast-group", message, "server"));
+    }
+
+    public static void broadcastMessage(String message) {
+        for (Player joueur : Bukkit.getOnlinePlayers())
+            if (isInAMineralContestWorld(joueur))
+                joueur.sendMessage(message);
+
+        Bukkit.getConsoleSender().sendMessage(message);
+        GameLogger.addLog(new Log("broadcast-plugin", message, "server"));
     }
 
     public static void broadcastMessageToAdmins(String message) {
@@ -374,6 +411,10 @@ public final class mineralcontest extends JavaPlugin {
             if (groupe.getMonde() != null && p.getWorld().equals(groupe.getMonde())) return true;
 
         return p.getWorld().equals(mineralcontest.plugin.pluginWorld);
+    }
+
+    public static boolean isInMineralContestHub(Player p) {
+        return p.getWorld().equals(plugin.pluginWorld);
     }
 
     public static boolean isAMineralContestWorld(World w) {

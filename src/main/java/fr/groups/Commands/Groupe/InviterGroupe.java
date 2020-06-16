@@ -24,40 +24,25 @@ public class InviterGroupe extends CommandTemplate {
     }
 
     @Override
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+        Player joueur = (Player) commandSender;
+        Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+        Player joueurInvite = Bukkit.getPlayer(args[0]);
+        if (joueurInvite == null) {
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_no_player_with_this_name.toString());
+            return false;
+        }
+
+        playerGroup.inviterJoueur(joueurInvite);
+        return false;
+    }
+
+    @Override
     public String getCommand() {
         return "invitergroupe";
     }
 
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-        if (commandSender instanceof Player) {
-            if (s.equalsIgnoreCase(getCommand())) {
-                Player joueur = (Player) commandSender;
-                Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
-
-                try {
-                    canPlayerUseCommand(joueur, args);
-                } catch (Exception e) {
-                    joueur.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-                    return false;
-                }
-
-
-                Player joueurInvite = Bukkit.getPlayer(args[0]);
-                if (joueurInvite == null) {
-                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_no_player_with_this_name.toString());
-                    return false;
-                }
-
-                playerGroup.inviterJoueur(joueurInvite);
-                return false;
-            }
-        } else {
-            commandSender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
-            return false;
-        }
-        return false;
-    }
 
     @Override
     public String getDescription() {

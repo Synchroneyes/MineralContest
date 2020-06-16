@@ -21,20 +21,7 @@ public class RetirerAdmin extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "retireradmin";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
         Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
 
@@ -65,6 +52,12 @@ public class RetirerAdmin extends CommandTemplate {
 
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "retireradmin";
+    }
+
 
     @Override
     public String getDescription() {

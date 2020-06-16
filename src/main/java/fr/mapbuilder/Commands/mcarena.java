@@ -34,19 +34,7 @@ public class mcarena extends CommandTemplate {
     }
 
     @Override
-    public String getCommand() {
-        return "mcarena";
-    }
-
-    @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args) {
-        try {
-            canPlayerUseCommand(commandSender, args);
-        } catch (Exception e) {
-            commandSender.sendMessage(mineralcontest.prefixErreur + getUsage());
-            return false;
-        }
-
+    public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
         if (args[0].equalsIgnoreCase("setCoffreLocation")) {
             Location coffreLocation = joueur.getLocation().getBlock().getLocation();
@@ -65,6 +53,12 @@ public class mcarena extends CommandTemplate {
 
         return false;
     }
+
+    @Override
+    public String getCommand() {
+        return "mcarena";
+    }
+
 
     @Override
     public String getDescription() {

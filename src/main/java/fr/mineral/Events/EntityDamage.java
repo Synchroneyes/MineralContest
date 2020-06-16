@@ -120,7 +120,7 @@ public class EntityDamage implements Listener {
             } else {
 
                 if (!(event.getEntity() instanceof Chicken)) {
-                    if (partie.groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1)
+                    if (partie != null && partie.groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1)
                         event.setCancelled(true);
                 }
             }

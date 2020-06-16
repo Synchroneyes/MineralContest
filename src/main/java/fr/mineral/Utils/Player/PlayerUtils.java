@@ -236,7 +236,7 @@ public class PlayerUtils {
                         index++;
                     }
 
-                    elements[0] = Lang.title.toString();
+                    elements[0] = Lang.title.toString() + " - " + ChatColor.GREEN + mineralcontest.plugin.getDescription().getVersion();
 
                     ScoreboardUtil.unrankedSidebarDisplay(online, elements);
 
@@ -402,7 +402,7 @@ public class PlayerUtils {
             index++;
         }
 
-        elements[0] = Lang.title.toString();
+        elements[0] = Lang.title.toString() + " - " + ChatColor.GREEN + mineralcontest.plugin.getDescription().getVersion();
 
         ScoreboardUtil.unrankedSidebarDisplay(player, elements);
 

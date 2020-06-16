@@ -46,7 +46,7 @@ public class PlayerJoin implements Listener {
         // havePlayerTriedTOLogin returns true if player have already tried to login
         this.isPlayerFirstJoinAttempt = !game.havePlayerTriedToLogin(playerName);
         this.isPlayerAllowedToJoin = (!this.isPlayerFirstJoinAttempt) && game.isPlayerAllowedToLogIn(playerName);
-        this.havePlayerDisconnectedEarlier = game.havePlayerDisconnected(playerName);
+        this.havePlayerDisconnectedEarlier = game.groupe.havePlayerDisconnected(player);
         this.oldPlayerTeam = (this.havePlayerDisconnectedEarlier) ? game.getDisconnectedPlayerTeam(playerName) : null;
     }
 
@@ -57,12 +57,12 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
-        Bukkit.getLogger().severe("Joueur in mineralcontest world: " + mineralcontest.isAMineralContestWorld(worldEvent));
 
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
 
             initVariables(event.getPlayer());
-            Bukkit.getLogger().severe("Player joined, community version: " + mineralcontest.communityVersion);
+
+
             if (!mineralcontest.communityVersion) {
                 mineralcontest.plugin.getNonCommunityGroup().addJoueur(event.getPlayer());
                 if (event.getPlayer().isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(event.getPlayer());
@@ -90,7 +90,11 @@ public class PlayerJoin implements Listener {
                 if(havePlayerDisconnectedEarlier) {
                     // Player was connected earlier
 
-                    // if oldPLayerTeam is null, then he wasn't in a team
+                    // We reconnect the player
+                    game.groupe.playerHaveReconnected(player);
+                    return;
+
+                    /*// if oldPLayerTeam is null, then he wasn't in a team
                     // If he is OP, then he should be referee
                     // Else, admin need to decide what to do
                     if(oldPlayerTeam == null) {
@@ -121,7 +125,7 @@ public class PlayerJoin implements Listener {
                         game.removePlayerFromDisconnected(player);
                         if(game.getDisconnectedPlayersCount() == 0) game.resumeGame();
                         return;
-                    }
+                    }*/
 
                 } else {
                     // The player was not connected earlier
@@ -226,6 +230,9 @@ public class PlayerJoin implements Listener {
                 mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + message, game.groupe);
                 if (game.areAllPlayerLoggedIn()) game.enableVote();
             }, 20);
+
+            if (player.isOp()) mineralcontest.afficherMessageVersionToPlayer(player);
+
 
 
 

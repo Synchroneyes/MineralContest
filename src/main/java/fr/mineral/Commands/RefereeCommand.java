@@ -26,15 +26,12 @@ public class RefereeCommand implements CommandExecutor {
                         return false;
                     } else {
 
-                        if(game.isGameStarted() || game.isPreGame()) {
-                            player.sendMessage(mineralcontest.prefixPrive + Lang.cant_remove_admin_game_in_progress.toString());
-                            return false;
-                        }
                         try {
                             game.removeReferee(player);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                         return false;
                     }
                 }

@@ -54,7 +54,6 @@ public class MapBuilder {
         registerCommands();
         if(isBuilderModeEnabled) enableMapBuilding();
 
-        RessourceFilesManager.copyFilesToPluginFolder();
     }
 
 
@@ -82,7 +81,6 @@ public class MapBuilder {
         this.bukkitCommandMap.register(SpawnHouse.pluginCommand, new SpawnHouse());
         this.bukkitCommandMap.register(SpawnArena.pluginCommand, new SpawnArena());
 
-        this.bukkitCommandMap.register("", new SaveArena());
         this.bukkitCommandMap.register("", new mcteam());
         this.bukkitCommandMap.register("", new mcarena());
         this.bukkitCommandMap.register("", new mcbuild());
@@ -108,7 +106,7 @@ public class MapBuilder {
 
     }
 
-    protected void printToConsole(String text) {
+    private void printToConsole(String text) {
         String prefix = "[MINERALC] [CUSTOM-MAPS] ";
         Bukkit.getLogger().info(prefix + text);
     }

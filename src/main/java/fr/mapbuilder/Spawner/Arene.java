@@ -1,11 +1,7 @@
 package fr.mapbuilder.Spawner;
 
-import fr.mapbuilder.Blocks.BlocksColorChanger;
-import fr.mapbuilder.Blocks.BlocksDataColor;
-import fr.mapbuilder.Blocks.SaveableBlock;
+import fr.file_manager.FileList;
 import fr.mapbuilder.MapBuilder;
-import fr.mapbuilder.RessourceFilesManager;
-import fr.mapbuilder.Util;
 import fr.mineral.Utils.BlockSaver;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -36,7 +32,7 @@ public class Arene {
     public static void spawn(Location location, Player player) {
 
         String houseToLoad = "arene.yml";
-        String path = RessourceFilesManager.datafolder_name + File.separator + houseToLoad;
+        String path = FileList.CustomMap_arena_scheme.toString();
         File houseFileToLoad = new File(plugin.getDataFolder(), path);
 
 

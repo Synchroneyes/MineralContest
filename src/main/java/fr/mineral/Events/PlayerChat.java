@@ -41,21 +41,6 @@ public class PlayerChat implements Listener {
 
 
 
-
-            /*if(partie.votemap.isVoteEnded() &&
-                    !partie.isGameStarted() &&
-                    !partie.isGamePaused() &&
-                    !partie.isGameEnded()) {
-
-                if(partie.isPlayerReady(sender)) {
-                    event.setFormat(ChatColor.GREEN + Lang.ready_tag.toString() + ChatColor.WHITE + "%s:" + ChatColor.RESET + " %s" );
-                } else {
-                    event.setFormat(ChatColor.RED + Lang.not_ready_tag.toString() + ChatColor.WHITE + "%s:" + ChatColor.RESET + " %s" );
-
-                }
-                return;
-            }*/
-
             if (partie == null) return;
 
 
@@ -71,7 +56,7 @@ public class PlayerChat implements Listener {
 
 
             // On fait en sorte à ce que seul les personnes de la partie recoivent un message
-            if (partie.isGameStarted() && !partie.isGamePaused()) {
+            if (partie.isGameStarted() || partie.isPreGame()) {
                 receveurs.clear();
                 receveurs.addAll(partie.groupe.getPlayers());
             }
