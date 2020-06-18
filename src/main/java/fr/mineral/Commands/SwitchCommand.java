@@ -1,5 +1,7 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,13 +13,24 @@ public class SwitchCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player) && !mineralcontest.plugin.pluginWorld.equals(player.getWorld())) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
             if(command.getName().equalsIgnoreCase("switch")) {
                 if(sender.isOp()) {
                     if(args.length == 2) {
                         try {
-                            mineralcontest.plugin.getGame().switchPlayer(Bukkit.getPlayer(args[0]), args[1]);
+                            partie.switchPlayer(Bukkit.getPlayer(args[0]), args[1]);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

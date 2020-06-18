@@ -11,25 +11,27 @@ import org.bukkit.entity.Player;
 public class RefereeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // todo
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isInAMineralContestWorld(player)) {
             if(command.getName().equalsIgnoreCase("referee") || command.getName().equalsIgnoreCase("arbitre") ) {
                 if(sender.isOp()) {
-                    Game game = mineralcontest.plugin.getGame();
-                    if(!mineralcontest.plugin.getGame().isReferee(player)) {
+                    Game game = mineralcontest.getPlayerGame(player);
+                    if (game == null) {
+                        sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                        return false;
+                    }
+                    if (!game.isReferee(player)) {
                         game.addReferee(player);
                         return false;
                     } else {
 
-                        if(game.isGameStarted() || game.isPreGame()) {
-                            player.sendMessage(mineralcontest.prefixPrive + Lang.cant_remove_admin_game_in_progress.toString());
-                            return false;
-                        }
                         try {
                             game.removeReferee(player);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                         return false;
                     }
                 }

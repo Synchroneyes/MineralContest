@@ -1,11 +1,13 @@
 package fr.mineral.Core;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Arena.Coffre;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,14 +26,16 @@ public class House {
     private Location spawnLocation;
     private String teamName;
     private ChatColor color;
+    private Groupe groupe;
 
 
-    public House(String nomEquipe, ChatColor couleur) {
+    public House(String nomEquipe, ChatColor couleur, Groupe g) {
         this.teamName = nomEquipe;
         this.color = couleur;
-        this.team = new Equipe(this.teamName, this.color);
-        this.doors = new AutomaticDoors(team);
+        this.team = new Equipe(this.teamName, this.color, g, this);
+        this.doors = new AutomaticDoors(team, g);
         this.blocks = new LinkedHashMap<>();
+        this.groupe = g;
     }
 
     public void clearHouse() {
@@ -98,9 +102,9 @@ public class House {
 
 
     public void setCoffreEquipe(Location loc) {
-        this.coffre = new Coffre();
+        this.coffre = new Coffre(groupe);
         this.coffre.setPosition(loc);
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team));
+        if(mineralcontest.debug) mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team), groupe);
 
     }
 
@@ -112,21 +116,19 @@ public class House {
 
     public void spawnCoffreEquipe() throws Exception {
         Location loc = coffre.getPosition();
-        loc.setWorld(PlayerUtils.getPluginWorld());
         coffre.clear();
-        Block block = loc.getBlock();
         loc.getBlock().setType(Material.CHEST);
-        mineralcontest.plugin.getGame().addAChest(loc.getBlock());
+        this.groupe.getGame().addAChest(loc.getBlock());
     }
 
     public void setHouseLocation(Location houseLocation){
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team));
+        if(mineralcontest.debug)  mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team), groupe);
         this.spawnLocation = houseLocation;
     }
 
-    public Location getHouseLocation() {
+    public Location getHouseLocation() throws Exception {
         if(this.spawnLocation == null)
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_not_added.toString(), team));
+            throw new Exception(Lang.translate(Lang.team_house_location_not_added.toString(), team));
         return spawnLocation;
     }
 

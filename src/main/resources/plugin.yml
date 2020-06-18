@@ -72,12 +72,6 @@ commands:
     permission:
     permission-message: you do not have the permission
 
-  vote:
-    description: Permet de voter pour un monde
-    use: /vote <worldId>
-    permission:
-    permission-message: you do not have the permission
-
 
   arene:
     description: Permet de se teleporter vers l'arene
@@ -89,103 +83,6 @@ commands:
     description: Teleport to the arena
     use: /arena
     permission:
-    permission-message: you do not have the permission
-
-  mp_add_team_penality:
-    description: Add a team penalty
-    use: /mp_add_team_penality <amount> <team>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_randomize_team:
-    description: set team random
-    use: /mp_randomize_team <1 | 0>
-    permission: admin
-    permission-message: you do not have the permission
-
-
-  mp_reset_team_penality:
-    description: reset a team penalty
-    use: /mp_reset_team_penality <team>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_iron_score:
-    description: Permet de choisir le score d'un lingot de fer
-    use: /mp_iron_score <valeur>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_gold_score:
-    description: Permet de choisir le score d'un lingot d'or
-    use: /mp_gold_score <valeur>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_diamond_score:
-    description: Permet de choisir le score d'un lingot de diamand
-    use: /mp_diamond_score <valeur>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_emerald_score:
-    description: Permet de choisir le score d'un lingot d'émeraude
-    use: /mp_emerauld_score <valeur>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_team_max_players:
-    description: Permet de choisir le nombre de personne par équipe
-    use: /mp_team_max_players <valeur>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_enable_friendly_fire:
-    description: Activer ou non le tir allié
-    use: /mp_enable_friendly_fire <0 or 1>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_set_playzone_radius:
-    description: Définir le rayon de la map
-    use: /mp_set_playzone_radius <value>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_enable_metrics:
-    description: Permet d'activer ou non les statistiques
-    use: /mp_enable_metrics <1 ou 0>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_set_language:
-    description: Permet de changer le langage
-    use: /mp_set_language <lang>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_start_vote:
-    description: Démarrer un vote
-    use: /mp_start_vote
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_enable_item_drop:
-    description: Autoriser le fait de dropper ses items à la mort
-    use: /mp_enable_item_drop <0, 1, 2>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_enable_old_pvp:
-    description: Activer ou non l'ancien système de pvp (pas de délais entre chaque attaque)
-    use: /mp_enable_old_pvp <0, 1>
-    permission: admin
-    permission-message: you do not have the permission
-
-  mp_enable_block_adding:
-    description: Activer ou non la pose de block
-    use: /mp_enable_block_adding <0, 1>
-    permission: admin
     permission-message: you do not have the permission
 
   join:
@@ -209,6 +106,24 @@ commands:
   spawnchest:
     description: Spawn le coffre d'arène
     use: /spawnchest
+    permission: admin
+    permission-message: you do not have the permission
+
+  setup:
+    description: Spawn le coffre d'arène
+    use: /setup
+    permission: admin
+    permission-message: you do not have the permission
+
+  saveworld:
+    description: Spawn le coffre d'arène
+    use: /saveworld
+    permission: admin
+    permission-message: you do not have the permission
+
+  valider:
+    description: Spawn le coffre d'arène
+    use: /valider
     permission: admin
     permission-message: you do not have the permission
 

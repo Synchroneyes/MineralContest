@@ -1,11 +1,13 @@
 package fr.mapbuilder.Spawner;
 
+import fr.file_manager.FileList;
 import fr.mapbuilder.Blocks.BlocksColorChanger;
 import fr.mapbuilder.Blocks.BlocksDataColor;
-import fr.mapbuilder.Blocks.SaveableBlock;
-import fr.mapbuilder.RessourceFilesManager;
+import fr.mapbuilder.MapBuilder;
 import fr.mapbuilder.Util;
+import fr.mineral.Utils.BlockSaver;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,10 +21,10 @@ import java.util.Stack;
 public class House {
 
     private static mineralcontest plugin = mineralcontest.plugin;
-    private static Stack<SaveableBlock> blocksModified = new Stack<>();
+    private static Stack<BlockSaver> blocksModified = new Stack<>();
 
-    public static void addModifiedBlock(Block b) {
-        SaveableBlock blockToAdd = new SaveableBlock(b);
+    public static void addModifiedBlock(Block b, BlockSaver.Type type) {
+        BlockSaver blockToAdd = new BlockSaver(b, type);
         if(!blocksModified.contains(blockToAdd)) blocksModified.add(blockToAdd);
     }
 
@@ -33,15 +35,29 @@ public class House {
     public static void spawn(Location location, BlocksDataColor color, Player player) {
         String houseName = getHouseDirectionBasedOnPlayer(player);
 
-        String houseToLoad = "houses/" + houseName.toLowerCase() + ".yml";
-        String path = RessourceFilesManager.datafolder_name + File.separator + houseToLoad;
-        File houseFileToLoad = new File(plugin.getDataFolder(), path);
+        String houseToLoad = houseName;
+        switch (houseName) {
+            case "east":
+                houseToLoad = FileList.CustomMap_east_house_scheme.toString();
+                break;
 
+            case "north":
+                houseToLoad = FileList.CustomMap_north_house_scheme.toString();
+                break;
 
-        if(!houseFileToLoad.exists()) {
-            player.sendMessage(path + " n'existe pas.");
-            return;
+            case "south":
+                houseToLoad = FileList.CustomMap_south_house_scheme.toString();
+                break;
+
+            case "west":
+                houseToLoad = FileList.CustomMap_west_house_scheme.toString();
+                break;
         }
+
+        Bukkit.getLogger().info(houseToLoad);
+        File houseFileToLoad = new File(plugin.getDataFolder(), houseToLoad);
+
+
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(houseFileToLoad);
         ConfigurationSection blocks = yamlConfiguration.getConfigurationSection("house.blocks");
@@ -73,6 +89,8 @@ public class House {
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("house.blocks." + i + ".block.type").toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("house.blocks." + i + ".block.data").toString());
 
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
+
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
             locTMP.getBlock().getLocation().setY(locTMP.getY());
@@ -99,6 +117,8 @@ public class House {
             Material blockMaterial = Material.valueOf(yamlConfiguration.get("house.door.blocks." + i + ".block.type").toString());
             Byte blockByte = Byte.parseByte(yamlConfiguration.get("house.door.blocks." + i + ".block.data").toString());
 
+            addModifiedBlock(locTMP.getBlock(), BlockSaver.Type.DESTROYED);
+
             locTMP.getBlock().setType(blockMaterial);
             locTMP.getBlock().getLocation().setX(locTMP.getX());
             locTMP.getBlock().getLocation().setY(locTMP.getY());
@@ -107,6 +127,10 @@ public class House {
             BlocksColorChanger.changeBlockColor(locTMP.getBlock(), color);
 
         }
+
+        MapBuilder.modifications.push((Stack<BlockSaver>) blocksModified.clone());
+        blocksModified.clear();
+
     }
 
 
@@ -116,12 +140,21 @@ public class House {
         switch(playerLookingDirection) {
             case "NE":
             case "NW":
-                playerLookingDirection = "N";
+            case "N":
+                playerLookingDirection = "north";
                 break;
 
             case "SE":
             case "SW":
-                playerLookingDirection = "S";
+            case "S":
+                playerLookingDirection = "south";
+                break;
+
+            case "E":
+                playerLookingDirection = "east";
+                break;
+            case "W":
+                playerLookingDirection = "west";
                 break;
         }
 

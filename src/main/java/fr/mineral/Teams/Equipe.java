@@ -1,29 +1,49 @@
 package fr.mineral.Teams;
 
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.groups.Core.Groupe;
+import fr.mineral.Core.Game.Game;
+import fr.mineral.Core.House;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Translation.Lang;
-import fr.mineral.Utils.Player.PlayerBaseItem;
+import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
+
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 
-public class Equipe {
+public class Equipe implements Comparable<Equipe> {
     private LinkedList<Player> joueurs;
     private String nomEquipe;
     private ChatColor couleur;
     private int score = 0;
     private int penalty = 0;
+    private House maison;
+
+    private Groupe groupe;
 
 
-    public Equipe(String nom, ChatColor c) {
+    public Equipe(String nom, ChatColor c, Groupe g, House maison) {
         this.joueurs = new LinkedList<Player>();
         this.nomEquipe = nom;
         this.couleur = c;
+        this.groupe = g;
+        this.maison = maison;
+    }
+
+
+    public House getMaison() {
+        return maison;
     }
 
     public void clear() {
@@ -34,8 +54,35 @@ public class Equipe {
 
     public int getPenalty() { return this.penalty; }
 
-    public void updateScore() {
+    public void updateScore() throws Exception {
 
+        int _score = 0;
+        Block block_coffre = maison.getCoffreEquipeLocation().getBlock();
+        Chest openedChest = ((Chest) block_coffre.getState());
+
+        ItemStack[] items = openedChest.getInventory().getContents();
+        for (ItemStack item : items) {
+
+            if (item != null) {
+                if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
+                }
+
+                if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
+                    _score += groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
+                }
+            }
+        }
+
+        setScore(_score);
     }
 
     public void sendMessage(String message, Player sender) {
@@ -48,11 +95,11 @@ public class Equipe {
 
     public void addPenalty(int penalty){
         this.penalty += penalty;
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this), groupe);
     }
 
     public void resetPenalty() {
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this));
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this), groupe);
 
         this.penalty = 0;
     }
@@ -62,6 +109,8 @@ public class Equipe {
     public int getScore() { return this.score - this.penalty; }
     public void setScore(int score) {
         this.score = score;
+        GameLogger.addLog(new Log("TeamChestScoreUpdated", "The team " + getNomEquipe() + " score got updated to " + score + "", "ChestEvent"));
+
         for(Player online : joueurs)
             online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
     }
@@ -69,31 +118,42 @@ public class Equipe {
 
     // Retourne true si la team est pleine, false si non
     public boolean isTeamFull() {
-        if(this.joueurs.size() >= (int) GameSettingsCvar.mp_team_max_player.getValue())
-            return true;
+        try {
+            if (this.joueurs.size() >= groupe.getParametresPartie().getCVAR("mp_team_max_player").getValeurNumerique())
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, groupe.getGame());
+        }
         return false;
     }
 
     public boolean addPlayerToTeam(Player p, boolean switched) throws Exception {
-        if(!isTeamFull() || switched || mineralcontest.plugin.getGame().isReferee(p)) {
+        if (!isTeamFull() || switched || mineralcontest.getPlayerGame(p).isReferee(p)) {
 
-            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(p);
-            if(team != null) team.removePlayer(p);
-            if(mineralcontest.plugin.getGame().isReferee(p)) mineralcontest.plugin.getGame().removeReferee(p);
+            Game partie = mineralcontest.getPlayerGame(p);
+
+            if (partie != null) {
+                Equipe team = mineralcontest.getPlayerGame(p).getPlayerTeam(p);
+                if (team != null) team.removePlayer(p);
+                if (mineralcontest.getPlayerGame(p).isReferee(p)) mineralcontest.getPlayerGame(p).removeReferee(p);
+            }
+
+
 
             this.joueurs.add(p);
 
             p.setGameMode(GameMode.SURVIVAL);
 
 
-            if(PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.plugin.getGame().isGameInitialized) {
-                PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
-                PlayerUtils.teleportPlayer(p, mineralcontest.plugin.getGame().getPlayerHouse(p).getHouseLocation());
+            if (PlayerUtils.getPlayerItemsCountInInventory(p) == 0 && mineralcontest.getPlayerGame(p).isGameInitialized) {
+                //PlayerBaseItem.givePlayerItems(p, PlayerBaseItem.onFirstSpawnName);
+                PlayerUtils.teleportPlayer(p, mineralcontest.getPlayerGroupe(p).getMonde(), mineralcontest.getPlayerGame(p).getPlayerHouse(p).getHouseLocation());
             }
 
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p));
+            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p), groupe);
             return true;
         }
 
@@ -141,5 +201,10 @@ public class Equipe {
         if(this.nomEquipe.equals(Lang.blue_team.toString())) return Color.BLUE;
 
         return Color.WHITE;
+    }
+
+    @Override
+    public int compareTo(Equipe equipe) {
+        return (int) (this.getScore() - equipe.getScore());
     }
 }

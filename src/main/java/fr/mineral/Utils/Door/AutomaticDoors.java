@@ -1,7 +1,9 @@
 package fr.mineral.Utils.Door;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -23,6 +25,8 @@ public class AutomaticDoors {
     public static final int maxDoorSize = 9;
     Equipe proprietaire;
 
+    private Groupe groupe;
+
     // On a une Liste de block
     private LinkedList<DisplayBlock> porte;
 
@@ -32,10 +36,11 @@ public class AutomaticDoors {
 
 
     // Prend un bloc, et un rayon
-    public AutomaticDoors(Equipe equipe) {
+    public AutomaticDoors(Equipe equipe, Groupe g) {
         this.porte = new LinkedList<DisplayBlock>();
         this.proprietaire = equipe;
         this.playerNearDoor = new LinkedList<Player>();
+        this.groupe = g;
     }
 
     public void clear() {
@@ -45,21 +50,24 @@ public class AutomaticDoors {
     }
 
     // On initialise la pile de blocs
-    public void addToDoor(Block b) {
+    public boolean addToDoor(Block b) {
         // Pour chaque bloc de la porte
         boolean ajouter = false;
-
         if(porte.size() == 0) {
             porte.add(new DisplayBlock(b));
-            if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté");
+            if (mineralcontest.debug)
+                mineralcontest.broadcastMessage(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté", groupe);
         } else {
             for(DisplayBlock db : porte) {
                 if(db.getBlock().equals(b)) {
                     porte.remove(db);
-                    if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.YELLOW + "- Le bloc selectionné a été supprimé");
+                    if (mineralcontest.debug)
+                        mineralcontest.broadcastMessage(ChatColor.YELLOW + "- Le bloc selectionné a été supprimé", groupe);
                 } else {
                     if(porte.size() >= maxDoorSize) {
-                        if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.RED + "# - Porte pleine");
+                        if (mineralcontest.debug)
+                            mineralcontest.broadcastMessage(ChatColor.RED + "# - Porte pleine", groupe);
+                        return false;
                     } else {
                         ajouter = true;
                     }
@@ -68,12 +76,15 @@ public class AutomaticDoors {
             }
             if(ajouter) {
                 porte.add(new DisplayBlock(b));
-                if(mineralcontest.debug) mineralcontest.plugin.getLogger().info(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté à la porte");
-
+                if (mineralcontest.debug)
+                    mineralcontest.broadcastMessage(ChatColor.GREEN + "+ Le bloc selectionné a été ajouté à la porte", groupe);
+                return true;
             }
+
+            return true;
         }
 
-
+        return true;
 
 
     }
@@ -127,7 +138,7 @@ public class AutomaticDoors {
     }
 
     public void playerIsNearDoor(Player joueur) {
-        if(!this.playerNearDoor.contains(joueur) && !mineralcontest.plugin.getGame().getArene().getDeathZone().isPlayerDead(joueur)) {
+        if (!this.playerNearDoor.contains(joueur) && !mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().isPlayerDead(joueur)) {
             this.playerNearDoor.add(joueur);
             openDoor();
         }

@@ -1,7 +1,12 @@
 package fr.mineral.Events;
 
+import fr.mapbuilder.MapBuilder;
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
+import fr.mineral.Utils.Metric.SendInformation;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Setup;
 import fr.mineral.mineralcontest;
@@ -21,31 +26,31 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
         World worldEvent = event.getPlayer().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = (Player) event.getPlayer();
+            Game partie = mineralcontest.getWorldGame(worldEvent);
 
-            if(event.getClickedBlock() != null) {
-                Block listCommandBlock = worldEvent.getBlockAt(new Location(worldEvent, 111, 169, -168));
-                if(listCommandBlock.getLocation().equals(event.getClickedBlock().getLocation()) && listCommandBlock.getType().equals(Material.LIME_STAINED_GLASS)) {
-                    PlayerUtils.sendPluginCommandsToPlayer(joueur);
-                }
-            }
 
-            if(!mineralcontest.plugin.getGame().isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
+            if (partie != null && !partie.isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
             }
 
         }
+
+
     }
 
     @EventHandler
     public void blockVillagerTrades(PlayerInteractAtEntityEvent entityEvent) {
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
 
         World current_world = entityEvent.getPlayer().getWorld();
-
-        if(current_world.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(current_world)) {
             Player p = entityEvent.getPlayer();
 
             if(entityEvent.getRightClicked() instanceof Villager ||

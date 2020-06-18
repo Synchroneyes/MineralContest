@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -13,22 +14,35 @@ public class AreneTeleportCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
         Player player = (Player) sender;
-        if(player.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
+
+
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
+            if (partie.isGameStarted() && !partie.isGamePaused()) {
                 if(command.getName().equals("arene") || command.getName().equals("arena")) {
                     Player joueur = (Player) sender;
 
-                    if(mineralcontest.plugin.getGame().isReferee(joueur)) {
+                    if (partie.isReferee(joueur)) {
                         teleportToArena(joueur);
                         return false;
                     }
 
-                    if(mineralcontest.plugin.getGame().getArene().isTeleportAllowed()) {
-                        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
+                    if (partie.getArene().isTeleportAllowed()) {
+                        Equipe team = partie.getPlayerTeam(joueur);
 
                         for(Player membre : team.getJoueurs()) {
-                            if(!mineralcontest.plugin.getGame().isReferee(membre))
+                            if (!partie.isReferee(membre))
                                 teleportToArena(membre);
                         }
                     } else {
@@ -42,7 +56,10 @@ public class AreneTeleportCommand implements CommandExecutor {
     }
 
     private void teleportToArena(Player p) {
-        PlayerUtils.teleportPlayer(p, mineralcontest.plugin.getGame().getArene().getTeleportSpawn());
+
+        Game partie = mineralcontest.getPlayerGame(p);
+
+        PlayerUtils.teleportPlayer(p, partie.groupe.getMonde(), partie.getArene().getTeleportSpawn());
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_teleporting.toString()));
     }
 }

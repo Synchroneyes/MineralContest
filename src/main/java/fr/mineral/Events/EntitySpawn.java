@@ -1,9 +1,11 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Phantom;
@@ -15,19 +17,23 @@ public class EntitySpawn implements Listener {
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent e) throws Exception {
         World worldEvent = e.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             if(e.getEntity() instanceof Phantom) {
                 e.setCancelled(true);
-                Bukkit.getLogger().info("[INFO] Blocked a phantom spawn");
+                Bukkit.getLogger().info("[MineralContest][INFO] Blocked a phantom spawn");
+                return;
             }
 
-            if(e.getEntity() instanceof Monster || e.getEntity() instanceof Mob) {
-                if(mineralcontest.plugin.getGame().isGameStarted()){
-                    if (Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), e.getEntity().getLocation(), 60)) {
-                        e.setCancelled(true);
+            // TODO
+            Game partie = mineralcontest.getWorldGame(worldEvent);
+            if (e.getEntity() instanceof Monster || e.getEntity() instanceof Mob && !(e.getEntity() instanceof Chicken)) {
+                if (partie != null && partie.isGameStarted()) {
+                    if (Radius.isBlockInRadius(partie.getArene().getCoffre().getPosition(), e.getEntity().getLocation(), partie.groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique())) {
+                        if (partie.groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1) {
+                            e.setCancelled(true);
+                        }
                     }
                 }
-
             }
         }
     }

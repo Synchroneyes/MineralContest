@@ -1,21 +1,24 @@
 package fr.mapbuilder;
 
-import fr.mapbuilder.Commands.SpawnHouse;
-import fr.mapbuilder.Commands.mcbuild;
+import fr.mapbuilder.Commands.*;
+import fr.mapbuilder.Core.Monde;
 import fr.mapbuilder.Events.BlockPlaced;
+import fr.mapbuilder.Events.PlayerInteract;
 import fr.mineral.Scoreboard.ScoreboardUtil;
+import fr.mineral.Utils.BlockSaver;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class MapBuilder {
 
@@ -24,25 +27,41 @@ public class MapBuilder {
     public boolean isBuilderModeEnabled = false;
     private CommandMap bukkitCommandMap;
 
+    public static Stack<Stack<BlockSaver>> modifications;
+
+    public static Monde monde;
+
     private MapBuilder() {
         instance = this;
-        mineralcontest.debug = isBuilderModeEnabled;
+        //mineralcontest.debug = isBuilderModeEnabled;
+        modifications = new Stack<>();
 
-        if(!isBuilderModeEnabled) return;
+
+        monde = new Monde();
 
         try {
             getPluginCommandMap();
         }catch (Exception e) {
             e.printStackTrace();
+            Error.Report(e, null);
         }
 
 
         printToConsole("Loading custom maps module ...");
         registerEvents();
         registerCommands();
-        if(isBuilderModeEnabled) enableMapBuilding();
 
-        RessourceFilesManager.copyFilesToPluginFolder();
+
+    }
+
+    public static void enableMapBuilder() {
+        instance.isBuilderModeEnabled = true;
+        instance.enableMapBuilding();
+    }
+
+    public static void disableMapBuilder() {
+        instance.isBuilderModeEnabled = false;
+        instance.disableMapBuilding();
     }
 
 
@@ -61,13 +80,19 @@ public class MapBuilder {
     private void registerEvents() {
         printToConsole("Registering events");
         this.plugin.getServer().getPluginManager().registerEvents(new BlockPlaced(), plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(new PlayerInteract(), plugin);
     }
 
     private void registerCommands() {
         printToConsole("Registering commands");
 
         this.bukkitCommandMap.register(SpawnHouse.pluginCommand, new SpawnHouse());
-        this.bukkitCommandMap.register(fr.mapbuilder.Commands.mcbuild.pluginCommand, new mcbuild());
+        this.bukkitCommandMap.register(SpawnArena.pluginCommand, new SpawnArena());
+
+        this.bukkitCommandMap.register("", new mcteam());
+        this.bukkitCommandMap.register("", new mcarena());
+        this.bukkitCommandMap.register("", new mcbuild());
+        this.bukkitCommandMap.register("", new mcrevert());
 
     }
 
@@ -85,11 +110,24 @@ public class MapBuilder {
             for(Player p : game_world.getPlayers())
                 p.setGameMode(GameMode.CREATIVE);
         }
-
-
     }
 
-    protected void printToConsole(String text) {
+    private void disableMapBuilding() {
+        isBuilderModeEnabled = false;
+        World game_world = mineralcontest.plugin.pluginWorld;
+        int size = 1000000;
+
+        if(game_world != null) {
+            game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
+            game_world.getWorldBorder().setSize(size);
+            game_world.setDifficulty(Difficulty.NORMAL);
+
+            for(Player p : game_world.getPlayers())
+                p.setGameMode(GameMode.SURVIVAL);
+        }
+    }
+
+    private void printToConsole(String text) {
         String prefix = "[MINERALC] [CUSTOM-MAPS] ";
         Bukkit.getLogger().info(prefix + text);
     }

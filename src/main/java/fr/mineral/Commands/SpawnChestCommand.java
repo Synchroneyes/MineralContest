@@ -1,5 +1,6 @@
 package fr.mineral.Commands;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.mineralcontest;
@@ -11,14 +12,29 @@ import org.bukkit.entity.Player;
 public class SpawnChestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if(commandSender instanceof Player) {
+
+
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
+            return false;
+        }
+
+        Player player = (Player) commandSender;
+        if (mineralcontest.isInAMineralContestWorld(player)) {
+            Game partie = mineralcontest.getPlayerGame(player);
+            if (partie == null) {
+                commandSender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
+                return false;
+            }
+
+            Groupe playerGroupe = partie.groupe;
+
+
             if(command.getName().equalsIgnoreCase("spawnchest")) {
-                Player p = (Player) commandSender;
-                Game game = mineralcontest.plugin.getGame();
-                if(p.isOp()) {
-                    if(game.isGameStarted()) {
+                if (playerGroupe.isAdmin(player)) {
+                    if (partie.isGameStarted()) {
                         try {
-                            game.getArene().getCoffre().spawn();
+                            partie.getArene().getCoffre().spawn();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -30,10 +46,8 @@ public class SpawnChestCommand implements CommandExecutor {
 
                 return false;
             }
-        } else {
-            commandSender.sendMessage("This command can only be executed in game.");
-            return false;
         }
+
 
         return false;
     }

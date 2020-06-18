@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.mineralcontest;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -11,8 +12,9 @@ public class ExplosionEvent implements Listener {
     @EventHandler
     public void onExplosionEvent(ExplosionPrimeEvent event) {
         World worldEvent = event.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGamePaused() || !mineralcontest.plugin.getGame().isGameStarted())
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            Game partie = mineralcontest.getWorldGame(worldEvent);
+            if (partie != null && (partie.isGamePaused() || !partie.isGameStarted()))
                 event.setCancelled(true);
         }
 
@@ -21,8 +23,9 @@ public class ExplosionEvent implements Listener {
     @EventHandler
     public void onExplosion(EntityExplodeEvent e) {
         World worldEvent = e.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGamePaused() || !mineralcontest.plugin.getGame().isGameStarted())
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            Game partie = mineralcontest.getWorldGame(worldEvent);
+            if (partie != null && (partie.isGamePaused() || !partie.isGameStarted()))
                 e.setCancelled(true);
         }
 

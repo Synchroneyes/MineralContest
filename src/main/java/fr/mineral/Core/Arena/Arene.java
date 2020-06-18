@@ -1,9 +1,11 @@
 package fr.mineral.Core.Arena;
 
+import fr.groups.Core.Groupe;
 import fr.mineral.Core.Arena.Zones.DeathZone;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -34,22 +36,36 @@ public class Arene {
     private CoffreAvecCooldown coffre;
     private boolean allowTeleport;
     private DeathZone deathZone;
-    private int MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests"); // mins
-    private int MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");;
+    private int MAX_TIME_BETWEEN_CHEST = 0; // mins
+    private int MIN_TIME_BETWEEN_CHEST = 0;
     private int TIME_BEFORE_CHEST = 0;
-    private double TELEPORT_TIME_LEFT = (int) GameSettingsCvar.getValueFromCVARName("max_teleport_time");
-    private double TELEPORT_TIME_LEFT_VAR = (int) GameSettingsCvar.getValueFromCVARName("max_teleport_time");
+    private double TELEPORT_TIME_LEFT = 0;
+    private double TELEPORT_TIME_LEFT_VAR = 0;
     private boolean CHEST_SPAWNED = false;
     private boolean CHEST_INITIALIZED = false;
     public boolean CHEST_USED = false;
     public int arenaRadius = 60;
     private BossBar teleportStatusBar;
 
-    public Arene() {
-        this.deathZone = new DeathZone();
+    public Groupe groupe;
 
-        MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests");
-        MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");
+    public ChickenWaves chickenWaves;
+
+    public Arene(Groupe g) {
+        this.groupe = g;
+        this.deathZone = new DeathZone(g);
+        this.chickenWaves = new ChickenWaves(this);
+
+        try {
+            MAX_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("max_time_between_chests").getValeurNumerique();
+            MIN_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("min_time_between_chests").getValeurNumerique();
+            TELEPORT_TIME_LEFT = g.getParametresPartie().getCVAR("max_teleport_time").getValeurNumerique();
+            TELEPORT_TIME_LEFT_VAR = TELEPORT_TIME_LEFT;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, groupe.getGame());
+        }
 
         // If the min time is greater than the max time
         if(MAX_TIME_BETWEEN_CHEST < MIN_TIME_BETWEEN_CHEST) {
@@ -57,6 +73,7 @@ public class Arene {
             MIN_TIME_BETWEEN_CHEST = MAX_TIME_BETWEEN_CHEST;
             MAX_TIME_BETWEEN_CHEST = tmp;
         }
+
     }
 
 
@@ -74,8 +91,13 @@ public class Arene {
 
     public void generateTimeBetweenChest() {
 
-        MAX_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("max_time_between_chests");
-        MIN_TIME_BETWEEN_CHEST = (int) GameSettingsCvar.getValueFromCVARName("min_time_between_chests");
+        try {
+            MAX_TIME_BETWEEN_CHEST = groupe.getParametresPartie().getCVAR("max_time_between_chests").getValeurNumerique();
+            MIN_TIME_BETWEEN_CHEST = groupe.getParametresPartie().getCVAR("min_time_between_chests").getValeurNumerique();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, groupe.getGame());
+        }
 
 
         // If the min time is greater than the max time
@@ -101,18 +123,27 @@ public class Arene {
 
     // Supprime les mobs autour de l'arène
     public void startAutoMobKill() {
+        Arene instance = this;
         new BukkitRunnable() {
             public void run() {
-                for(Entity entite : mineralcontest.plugin.getServer().getWorld("world").getEntities()) {
-                    if(entite instanceof Monster) {
-                        try {
-                            if(Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getCoffre().getPosition(), entite.getLocation(), 100))
-                                entite.remove();
-                        }catch(Exception e) {
-                            e.printStackTrace();
+                try {
+                    if (groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1) {
+                        for (Entity entite : groupe.getMonde().getEntities()) {
+                            if (entite instanceof Monster) {
+                                try {
+                                    if (Radius.isBlockInRadius(coffre.getPosition(), entite.getLocation(), 100))
+                                        entite.remove();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Error.Report(e, groupe.getGame());
+                                }
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    Error.Report(e, groupe.getGame());
                 }
+
             }
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
@@ -124,11 +155,10 @@ public class Arene {
 
         generateTimeBetweenChest();
         // Coffre initialisé
-
         new BukkitRunnable() {
             public void run() {
 
-                if(mineralcontest.plugin.getGame().isGameStarted() && !mineralcontest.plugin.getGame().isGamePaused()) {
+                if (groupe.getGame().isGameStarted() && !groupe.getGame().isGamePaused()) {
                     try {
                         // Si le coffre est initialisé et n'est pas encore apparu
                         if(CHEST_INITIALIZED && !getCoffre().isChestSpawned()) {
@@ -166,6 +196,7 @@ public class Arene {
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
+                        Error.Report(e, groupe.getGame());
                     }
 
                 }
@@ -181,7 +212,7 @@ public class Arene {
 
     public void enableTeleport() {
         String separator = ChatColor.GOLD + "----------------";
-        for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+        for (Player online : groupe.getPlayers()) {
             online.sendMessage(separator);
             online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_chest_spawned.toString());
             online.sendMessage(separator);
@@ -205,7 +236,7 @@ public class Arene {
         double status = (TELEPORT_TIME_LEFT / TELEPORT_TIME_LEFT_VAR);
         teleportStatusBar.setProgress(status);
 
-        for(Player player : mineralcontest.plugin.pluginWorld.getPlayers()) {
+        for (Player player : groupe.getPlayers()) {
             teleportStatusBar.removePlayer(player);
             teleportStatusBar.addPlayer(player);
         }
@@ -215,7 +246,7 @@ public class Arene {
         String separator = ChatColor.GOLD + "----------------";
 
         if(allowTeleport) {
-            for(Player online : mineralcontest.plugin.pluginWorld.getPlayers()) {
+            for (Player online : groupe.getPlayers()) {
                 online.sendMessage(separator);
                 online.sendMessage(mineralcontest.prefixGlobal + Lang.arena_teleport_now_disabled.toString());
                 online.sendMessage(separator);
@@ -229,15 +260,18 @@ public class Arene {
 
 
     public void setTeleportSpawn(Location z) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());
+        if(mineralcontest.debug)  mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());
         this.teleportSpawn = z;
     }
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
-        this.coffre = new CoffreAvecCooldown(position);
-        this.coffre.setPosition(position);
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
+        this.coffre = new CoffreAvecCooldown(position, this);
+        if(mineralcontest.debug)  mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -251,7 +285,7 @@ public class Arene {
             throw new Exception("ArenaTeleportZoneNotAdded");
         }
 
-        Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
+        Equipe team = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
 
         if(team == null) {
             throw new Exception(Lang.cant_teleport_player_without_team.toString());

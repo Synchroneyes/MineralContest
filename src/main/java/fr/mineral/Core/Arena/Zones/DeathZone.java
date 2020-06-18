@@ -1,13 +1,16 @@
 package fr.mineral.Core.Arena.Zones;
 
+import fr.groups.Core.Groupe;
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Core.House;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.CouplePlayer;
-import fr.mineral.Utils.Player.PlayerBaseItem;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -31,10 +34,17 @@ public class DeathZone {
     // Temps en seconde
     private int timeInDeathzone = 0;
     private Location spawnLocation;
+    private Groupe groupe;
 
-    public DeathZone() {
+    public DeathZone(Groupe g) {
         this.joueurs = new LinkedList<CouplePlayer>();
-        timeInDeathzone = (int) GameSettingsCvar.getValueFromCVARName("death_time");
+        this.groupe = g;
+        try {
+
+            timeInDeathzone = g.getParametresPartie().getCVAR("death_time").getValeurNumerique();
+        } catch (Exception e) {
+            Error.Report(e, g.getGame());
+        }
     }
     public LinkedList<CouplePlayer> getPlayers() { return this.joueurs; }
 
@@ -83,13 +93,14 @@ public class DeathZone {
     }
 
     public void add(Player joueur) throws Exception {
-        timeInDeathzone = (int) GameSettingsCvar.getValueFromCVARName("death_time");
+        timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
+        Game partie = mineralcontest.getPlayerGame(joueur);
 
-        if(mineralcontest.plugin.getGame().isReferee(joueur) && mineralcontest.plugin.getGame().isGameStarted()) {
+        if (partie.isReferee(joueur) && partie.isGameStarted()) {
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
             joueur.setHealth(20f);
-            PlayerUtils.teleportPlayer(joueur, mineralcontest.plugin.getGame().getArene().getCoffre().getPosition());
+            PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getArene().getCoffre().getPosition());
             return;
         }
 
@@ -99,10 +110,11 @@ public class DeathZone {
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //PlayerUtils.teleportPlayer(this.spawnLocation);
         try {
-            PlayerUtils.teleportPlayer(joueur, mineralcontest.plugin.getGame().getPlayerHouse(joueur).getHouseLocation());
+            PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getPlayerHouse(joueur).getHouseLocation());
 
         }catch(Exception e) {
             e.printStackTrace();
+            Error.Report(e, partie);
         }
 
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20*(timeInDeathzone*3), 1));
@@ -128,14 +140,21 @@ public class DeathZone {
             joueur.setFireTicks(0);
             joueur.setHealth(20f);
 
-            Equipe team = mineralcontest.plugin.getGame().getPlayerTeam(joueur);
-            House teamHouse = mineralcontest.plugin.getGame().getPlayerHouse(joueur);
+            Game partie = mineralcontest.getPlayerGame(joueur);
+
+            Equipe team = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
+            House teamHouse = mineralcontest.getPlayerGame(joueur).getPlayerHouse(joueur);
             if(team == null) {
                 // On le téléporte vers l'arene
-                throw new Exception("TODO: Redirecte vers spawn arene quand le joueur a fini son temps en deathzone et n'a pas de team");
+                // On le téléporte vers l'arene
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a été TP au centre de l'arène car il n'a pas d'équipe et vient de réapparaitre suite à une mort", partie.groupe);
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a également été mis spectateur. Vous devez changer son gamemode", partie.groupe);
+                mineralcontest.getPlayerGame(joueur).teleportToLobby(joueur);
+                joueur.setGameMode(GameMode.SPECTATOR);
+
             } else {
                 // ON le TP vers son spawn equipe
-                PlayerUtils.teleportPlayer(joueur, teamHouse.getHouseLocation());
+                PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), teamHouse.getHouseLocation());
                 joueur.removePotionEffect(PotionEffectType.INVISIBILITY);
                 joueur.removePotionEffect(PotionEffectType.BLINDNESS);
 
@@ -143,12 +162,12 @@ public class DeathZone {
             }
 
             // On rend le stuff du joueur
-            //PlayerUtils.givePlayerBaseItems(joueur);
             try {
-                PlayerBaseItem.givePlayerItems(joueur, PlayerBaseItem.everyRespawnName);
+                groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
             }catch (Exception e) {
-                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage());
+                mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), partie.groupe);
                 e.printStackTrace();
+                Error.Report(e, partie);
             }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2*20, 1);
 

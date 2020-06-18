@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mineral.Core.Game.Game;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.Utils.Radius;
 import fr.mineral.mineralcontest;
@@ -16,11 +17,13 @@ public class SafeZoneEvent implements Listener {
     @EventHandler
     public void onAttack( EntityDamageByEntityEvent event) throws Exception {
         World worldEvent = event.getEntity().getWorld();
-        if(worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
-            if(mineralcontest.plugin.getGame().isGameStarted()) {
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+            if (!(event.getEntity() instanceof Player)) return;
+            Player joueur = (Player) event.getEntity();
+            Game partie = mineralcontest.getPlayerGame(joueur);
+            if (partie != null && partie.isGameStarted()) {
                 if(event.getEntity() instanceof Player) {
                     Player victime = (Player) event.getEntity();
-
                     Player attaquant = null;
 
                     if(event.getDamager() instanceof Arrow) {
@@ -45,7 +48,7 @@ public class SafeZoneEvent implements Listener {
                         event.setCancelled(true);
 
                     if(attaquant != null) {
-                        if(Radius.isBlockInRadius(mineralcontest.plugin.getGame().getArene().getTeleportSpawn(), attaquant.getLocation(), 5 )){
+                        if (Radius.isBlockInRadius(partie.getArene().getTeleportSpawn(), attaquant.getLocation(), partie.groupe.getParametresPartie().getCVAR("arena_safezone_radius").getValeurNumerique())) {
                             event.setCancelled(true);
                         }
                     }

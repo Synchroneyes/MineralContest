@@ -26,11 +26,16 @@ public class BlockManager {
         placedBlocks = new Stack<>();
     }
 
+    public Stack<Block> getPlacedBlocks() {
+        return placedBlocks;
+    }
+
     public void addBlock(Block b) {
         // If block was added, we dont add it
         if(wasBlockAdded(b)) return;
 
-        if(b.getType().equals(CHEST)) mineralcontest.plugin.getGame().addAChest(b);
+
+        if (b.getType().equals(CHEST)) mineralcontest.getPlayerGame(b.getWorld().getPlayers().get(0)).addAChest(b);
 
         this.placedBlocks.add(b);
     }

@@ -1,5 +1,6 @@
 package fr.mineral.Utils;
 
+import fr.mineral.Utils.ErrorReporting.Error;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -14,7 +15,7 @@ public class AutomaticSetup {
 
 
     public static void setPositionSpawnArene(Location l) {
-        try {
+    /*    try {
             if(positionSpawnArene == null) {
                 AutomaticSetup.positionSpawnArene = l;
                 double x,y,z;
@@ -58,6 +59,7 @@ public class AutomaticSetup {
             }
         }catch(Exception e) {
             mineralcontest.plugin.getServer().getLogger().info(e.getCause().toString());
+            Error.Report(e, null);
         }
 
     }
@@ -94,5 +96,6 @@ public class AutomaticSetup {
 
     public static String toString(Location x) {
         return new String(x.getX() + " " + x.getY() + " " + x.getZ());
+    */
     }
 }

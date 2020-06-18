@@ -1,7 +1,8 @@
 package fr.mineral.Events;
 
 import fr.mineral.Core.Game.Game;
-import fr.mineral.Settings.GameSettingsCvar;
+import fr.mineral.Settings.GameSettings;
+import fr.mineral.Settings.GameSettingsCvarOLD;
 import fr.mineral.Teams.Equipe;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Player.PlayerUtils;
@@ -36,14 +37,16 @@ public class PlayerJoin implements Listener {
 
     private void initVariables(Player player) {
         mineralcontest plugin = mineralcontest.plugin;
-        this.game = plugin.getGame();
+        this.game = mineralcontest.getPlayerGame(player);
+
+        if (game == null) return;
         this.thereIsAnAdminLoggedIn = game.isThereAnAdminLoggedIn();
         this.player = player;
         this.playerName = player.getDisplayName();
         // havePlayerTriedTOLogin returns true if player have already tried to login
         this.isPlayerFirstJoinAttempt = !game.havePlayerTriedToLogin(playerName);
         this.isPlayerAllowedToJoin = (!this.isPlayerFirstJoinAttempt) && game.isPlayerAllowedToLogIn(playerName);
-        this.havePlayerDisconnectedEarlier = game.havePlayerDisconnected(playerName);
+        this.havePlayerDisconnectedEarlier = game.groupe.havePlayerDisconnected(player);
         this.oldPlayerTeam = (this.havePlayerDisconnectedEarlier) ? game.getDisconnectedPlayerTeam(playerName) : null;
     }
 
@@ -54,16 +57,26 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
-        if (worldEvent.equals(mineralcontest.plugin.pluginWorld)) {
+
+        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
 
             initVariables(event.getPlayer());
+
+
+            if (!mineralcontest.communityVersion) {
+                mineralcontest.plugin.getNonCommunityGroup().addJoueur(event.getPlayer());
+                if (event.getPlayer().isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(event.getPlayer());
+                initVariables(event.getPlayer());
+            }
+            if (game == null) return;
 
 
             // First, we check if the map is correct
             mineralcontest.checkIfMapIsCorrect();
 
+            GameSettings settings = game.groupe.getParametresPartie();
             // We need to apply the pvp system
-            if((int) GameSettingsCvar.getValueFromCVARName("mp_enable_old_pvp") == 1) {
+            if (settings.getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1) {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
             } else {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
@@ -77,7 +90,11 @@ public class PlayerJoin implements Listener {
                 if(havePlayerDisconnectedEarlier) {
                     // Player was connected earlier
 
-                    // if oldPLayerTeam is null, then he wasn't in a team
+                    // We reconnect the player
+                    game.groupe.playerHaveReconnected(player);
+                    return;
+
+                    /*// if oldPLayerTeam is null, then he wasn't in a team
                     // If he is OP, then he should be referee
                     // Else, admin need to decide what to do
                     if(oldPlayerTeam == null) {
@@ -108,7 +125,7 @@ public class PlayerJoin implements Listener {
                         game.removePlayerFromDisconnected(player);
                         if(game.getDisconnectedPlayersCount() == 0) game.resumeGame();
                         return;
-                    }
+                    }*/
 
                 } else {
                     // The player was not connected earlier
@@ -208,9 +225,14 @@ public class PlayerJoin implements Listener {
 
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.hud_awaiting_players.toString());
-                if(game.areAllPlayerLoggedIn()) game.votemap.enableVote(false);
+                String message = mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), game);
+
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + message, game.groupe);
+                if (game.areAllPlayerLoggedIn()) game.enableVote();
             }, 20);
+
+            if (player.isOp()) mineralcontest.afficherMessageVersionToPlayer(player);
+
 
 
 
