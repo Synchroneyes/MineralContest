@@ -195,7 +195,6 @@ public class GameSettings {
         if (parametresParDefaut == null) parametresParDefaut = new LinkedList<>();
         if (parametresParDefaut.isEmpty()) {
             GameLogger.addLog(new Log("game_cvar", "Adding default game cvars ...", "GameSettings: getParametresParDefaut"));
-            parametresParDefaut.add(new GameCVAR("mp_enable_metrics", "1", "Permet d'activer ou non l'envoie de stats", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_randomize_team", "0", "Permet d'activer ou non les équipes aléatoires", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_item_drop", "2", "Permet d'activer ou non le drop d'item à la mort. 0 pour aucun, 1 pour les minerais uniquement, 2 pour tout", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("SCORE_IRON", "10", "Permet de définir le score pour un lingot de fer", "cvar", true, true));
@@ -225,6 +224,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("protected_zone_area_radius", "300", "Permet de définir le rayon en bloc de la zone protégé, où les blocs ne peuvent pas être cassé", "settings", false, true));
             parametresParDefaut.add(new GameCVAR("enable_monster_in_protected_zone", "1", "Permet d'activer ou non l'apparition de monstre dans la zone protégée", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("arena_safezone_radius", "5", "Permet de modifier le rayon de safezone de la zone de téléportation de l'arène", "arena", true, true));
+
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

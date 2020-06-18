@@ -263,24 +263,34 @@ public class Game implements Listener {
     public void setPlayerReady(Player p) throws Exception {
         if(!isPlayerReady(p)) {
             playersReady.add(p);
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p), groupe);
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p));
             if(areAllPlayersReady()) {
-                if(!allPlayerHaveTeam()) {
 
-                    if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
-                        randomizeTeam(true);
-                        demarrerPartie(false);
-                        return;
-                    } else {
-                        //warnPlayerWithNoTeam();
-                        startAllPlayerHaveTeamTimer();
-                        return;
+                if(groupe.getEtatPartie().equals(Etats.EN_ATTENTE)) {
+                    Bukkit.getLogger().severe("initVoteMap");
+                    groupe.initVoteMap();
+                    playersReady.clear();
+                } else {
+                    if(!allPlayerHaveTeam()) {
+
+                        if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
+                            randomizeTeam(true);
+                            demarrerPartie(false);
+                            return;
+                        } else {
+                            //warnPlayerWithNoTeam();
+                            startAllPlayerHaveTeamTimer();
+                            return;
+                        }
+
                     }
 
+                    if(isGamePaused()) resumeGame();
+                    else demarrerPartie(false);
                 }
 
-                if(isGamePaused()) resumeGame();
-                else demarrerPartie(false);
+
+
             }
         }
     }
@@ -436,7 +446,7 @@ public class Game implements Listener {
     private void removeAllDroppedItems() {
         World world = null;//get the world
         try {
-            world = Bukkit.getServer().getWorld(mineralcontest.getPluginConfigValue("world_name"));
+            world = Bukkit.getServer().getWorld(mineralcontest.getPluginConfigValue("world_name").toString());
         } catch (Exception e) {
             e.printStackTrace();
             Error.Report(e, this);

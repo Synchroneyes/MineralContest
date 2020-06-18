@@ -128,7 +128,6 @@ public class WorldDownloader {
 
 
         if (download) {
-            Bukkit.getLogger().severe("getMaps ...");
             areMapsLoaded = false;
 
             HttpGet request = new HttpGet(Urls.API_URL_WORKSHOP_LIST);

@@ -59,10 +59,9 @@ public class Groupe {
         parametresPartie = new GameSettings(true);
 
         this.partie = new Game(this);
-
-
         this.partie.init();
         partie.setGroupe(this);
+
         this.etat = Etats.EN_ATTENTE;
         this.worldLoader = new WorldLoader(this);
         genererIdentifiant();
@@ -153,8 +152,10 @@ public class Groupe {
         }
 
         Location worldSpawnLocation = gameWorld.getSpawnLocation();
-        for (Player joueur : joueurs)
+        for (Player joueur : joueurs) {
             joueur.teleport(worldSpawnLocation);
+            joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
+        }
 
         setMapName(nomMonde);
 
@@ -196,8 +197,19 @@ public class Groupe {
     }
 
     public void initVoteMap() {
-        if (this.mapVote != null) return;
         this.mapVote = new MapVote();
+
+        if(mapVote.getMaps().isEmpty()) {
+            mapVote.disableVote();
+            setEtat(Etats.EN_ATTENTE);
+            setGroupLocked(false);
+            sendToadmin(mineralcontest.prefixErreur + Lang.error_no_maps_downloaded_to_start_game.toString());
+            sendToadmin(mineralcontest.prefixErreur + Lang.error_no_maps_downloaded_to_start_game.toString());
+        } else {
+            setEtat(Etats.VOTE_EN_COURS);
+            setGroupLocked(true);
+            sendToEveryone(mineralcontest.prefixGroupe + Lang.vote_started.toString());
+        }
     }
 
     public void enableVote() {
@@ -316,7 +328,12 @@ public class Groupe {
         this.joueursInvites.remove(p);
         this.joueurs.add(p);
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.successfully_joined_a_group.toString(), this));
-        sendToadmin(mineralcontest.prefixAdmin + p.getDisplayName() + " a rejoin le groupe");
+        sendToEveryone(mineralcontest.prefixGroupe + Lang.translate(Lang.player_joined_our_group.toString(), p));
+
+        for(Player joueur : joueurs) {
+            if(!partie.isPlayerReady(joueur))
+                joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_votemap.toString());
+        }
     }
 
     public void addAdmin(Player p) {
@@ -358,6 +375,7 @@ public class Groupe {
      */
     public void addDisconnectedPlayer(Player p) {
         Pair<Equipe, Location> playerInfo = new Pair<>(getPlayerTeam(p), p.getLocation());
+        joueurs.remove(p);
         if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);
     }
 

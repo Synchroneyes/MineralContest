@@ -94,10 +94,10 @@ public final class mineralcontest extends JavaPlugin {
     }
 
 
-    public static String getPluginConfigValue(String configName) {
+    public static Object getPluginConfigValue(String configName) {
         File fichierConfigurationPlugin = new File(plugin.getDataFolder(), FileList.Config_default_plugin.toString());
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(fichierConfigurationPlugin);
-        return (String) configuration.get(configName);
+        return configuration.get(configName);
     }
 
     public static void supprimerGroupe(Groupe g) {
@@ -175,7 +175,7 @@ public final class mineralcontest extends JavaPlugin {
 
 
         // On charge le fichier de langue
-        Lang.loadLang(getPluginConfigValue("language"));
+        Lang.loadLang(getPluginConfigValue("language").toString());
 
 
         // Initialisation des variables du plugin
@@ -211,26 +211,58 @@ public final class mineralcontest extends JavaPlugin {
         }.runTaskTimer(this, 0, 20);
         initCommunityVersion();
 
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+
+        /*
+            Verification de mise à jour et téléchargement automatique
+            Seulement si la config l'autorise
+         */
+        if((boolean) getPluginConfigValue("enable_auto_update")) {
+
+            // On lance la procédure de vérification de version une fois que le plugin est totalement chargé
+            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
 
 
-            Thread operationsThreade = new Thread(() -> {
-                // On récupère toutes les URL du plugin
-                Urls.FetchAllUrls(true);
-                worldDownloader.initMapLists();
+                Version.isCheckingStarted = true;
+                Thread operationsThreade = new Thread(() -> {
+                    // On récupère toutes les URL du plugin
+                    Urls.FetchAllUrls();
+                    worldDownloader.initMapLists();
 
-                Version.fetchAllMessages(true, messagesFromWebsite);
+                    Version.fetchAllMessages(messagesFromWebsite);
 
-                Version.Check(true);
-                if (Version.hasUpdated) {
-                    Bukkit.broadcastMessage(mineralcontest.prefix + " Plugin has updated, Bukkit plugins will now be reloaded");
-                    Bukkit.reload();
-                }
+                    afficherMessageVersion();
+
+                    Version.Check(true);
+
+                });
+
+                operationsThreade.start();
+
+                // On lance un timer qui vérifie, à chaque seconde, si le téléchargement est terminé
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // La procédure à commencer
+                        if(Version.isCheckingStarted) {
+
+                            // Si le plugin a été mis à jour, on reload le plugin
+                            if(Version.hasUpdated) {
+                                Bukkit.reload();
+                            }
+
+                        } else {
+                            // On arrête le timer
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(this, 20, 20);
+
             });
 
-            operationsThreade.start();
 
-        });
+
+        }
+
 
     }
 
@@ -258,12 +290,10 @@ public final class mineralcontest extends JavaPlugin {
 
     private void registerEvents() {
 
-        if(mapBuilderInstance != null && !mapBuilderInstance.isBuilderModeEnabled) {
-            Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
-            Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
-            Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
-            Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
-        }
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
 
 
         Bukkit.getServer().getPluginManager().registerEvents(new BucketEvent(), this);
@@ -271,12 +301,15 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
+
 
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
+
         Bukkit.getServer().getPluginManager().registerEvents(new SafeZoneEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerChat(), this);
 
@@ -285,7 +318,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerPick(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WorldLoaded(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
+
 
 
         // PlayerBaseItem

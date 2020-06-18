@@ -16,13 +16,17 @@ public class MapVote {
     private ArrayList<String> maps;
     //              (nom_map, joueur)
     private HashMap<Player, String> votes;
-    protected boolean voteEnabled = false;
+    protected boolean voteEnabled;
 
     public MapVote() {
         this.maps = new ArrayList<>();
         this.votes = new HashMap<>();
         chargerNomMaps();
         voteEnabled = true;
+    }
+
+    public void disableVote() {
+        voteEnabled = false;
     }
 
     public void clearVotes() {

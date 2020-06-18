@@ -73,10 +73,11 @@ public class PlayerUtils {
 
     public static World getPluginWorld() {
 
-        String world_name = mineralcontest.getPluginConfigValue("world_name");
+        String world_name = mineralcontest.getPluginConfigValue("world_name").toString();
         World world = Bukkit.getWorld(world_name);
 
         mineralcontest.plugin.pluginWorld = world;
+        if(world != null) mineralcontest.plugin.defaultSpawn = world.getSpawnLocation();
         return world;
     }
 
@@ -163,7 +164,6 @@ public class PlayerUtils {
 
         //Bukkit.broadcastMessage("Nombre de joueur en ligne: " + Bukkit.getOnlinePlayers().size());
         if(mineralcontest.plugin.pluginWorld == null) {
-            Bukkit.getLogger().info("playerHudNull");
             return;
         }
         if (Bukkit.getOnlinePlayers().size() == 0) {
@@ -366,7 +366,7 @@ public class PlayerUtils {
         elementsADisplay.add("                      ");
 
         if (playerGame.isPreGame()) {
-            elementsADisplay.add(Lang.hud_game_starting.toString());
+            elementsADisplay.add(Lang.translate(Lang.hud_game_starting.toString(), playerGame));
             getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
         } else if (playerGame.isGameStarted()) {
             elementsADisplay.add(Lang.translate(Lang.hud_time_left.toString(), playerGame));

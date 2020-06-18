@@ -260,14 +260,14 @@ public class Arene {
 
 
     public void setTeleportSpawn(Location z) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());
+        if(mineralcontest.debug)  mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_spawn_added.toString());
         this.teleportSpawn = z;
     }
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
         this.coffre = new CoffreAvecCooldown(position, this);
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
+        if(mineralcontest.debug)  mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
         try {
         } catch (Exception e) {
             e.printStackTrace();

@@ -104,7 +104,7 @@ public class House {
     public void setCoffreEquipe(Location loc) {
         this.coffre = new Coffre(groupe);
         this.coffre.setPosition(loc);
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team), groupe);
+        if(mineralcontest.debug) mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team), groupe);
 
     }
 
@@ -122,7 +122,7 @@ public class House {
     }
 
     public void setHouseLocation(Location houseLocation){
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team), groupe);
+        if(mineralcontest.debug)  mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_house_location_added.toString(), team), groupe);
         this.spawnLocation = houseLocation;
     }
 

@@ -3,6 +3,7 @@ package fr.mapbuilder.Events;
 import fr.mapbuilder.Blocks.BlocksDataColor;
 import fr.mapbuilder.Items.AreneItem;
 import fr.mapbuilder.Items.ColoredHouseItem;
+import fr.mapbuilder.MapBuilder;
 import fr.mapbuilder.Spawner.Arene;
 import fr.mapbuilder.Spawner.House;
 import org.bukkit.Location;
@@ -16,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 public class BlockPlaced implements Listener {
     @EventHandler
     public void onBlockPlaced(BlockPlaceEvent event) {
+
+        if(!MapBuilder.getInstance().isBuilderModeEnabled) return;
         ItemStack placedItem = event.getItemInHand();
         String itemName = placedItem.getItemMeta().getDisplayName();
         Player player = event.getPlayer();

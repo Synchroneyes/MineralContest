@@ -9,6 +9,8 @@ import fr.groups.Commands.Groupe.*;
 import fr.groups.Commands.Vote.StartVote;
 import fr.groups.Commands.Vote.Vote;
 import fr.mineral.Utils.ErrorReporting.Error;
+import fr.mineral.Utils.Log.GameLogger;
+import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Player.PlayerUtils;
 import fr.mineral.mineralcontest;
 import org.apache.commons.io.FileUtils;
@@ -60,6 +62,11 @@ public class GroupeExtension {
             }
         }
 
+
+        if(mineralcontest.plugin.pluginWorld == null) {
+            mineralcontest.plugin.pluginWorld = PlayerUtils.getPluginWorld();
+        }
+
         for (World world : Bukkit.getWorlds()) {
             if (world.getName().contains("mc_")) {
                 world.setAutoSave(false);
@@ -67,12 +74,14 @@ public class GroupeExtension {
                     if (mineralcontest.plugin.defaultSpawn == null) {
                         p.setHealth(0);
                     } else {
+                        p.sendMessage("Teleporting you to plugin hub");
                         p.teleport(mineralcontest.plugin.defaultSpawn);
                     }
                 }
 
                 Bukkit.unloadWorld(world, false);
                 Bukkit.getLogger().info("Successfully unloaded world " + world.getName());
+                GameLogger.addLog(new Log("world_unload", "Successfully unloaded world " + world.getName(), "GroupeExtension: supprimerMapsExistantes"));
 
             }
         }

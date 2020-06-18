@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.Door.AutomaticDoors;
@@ -25,6 +26,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = (Player) event.getPlayer();
@@ -43,6 +46,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void blockVillagerTrades(PlayerInteractAtEntityEvent entityEvent) {
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
 
         World current_world = entityEvent.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(current_world)) {

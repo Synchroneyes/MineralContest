@@ -8,6 +8,7 @@ import fr.mineral.Utils.Log.GameLogger;
 import fr.mineral.Utils.Log.Log;
 import fr.mineral.Utils.Range;
 import fr.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Chicken;
 import org.bukkit.event.EventHandler;
@@ -23,16 +24,19 @@ public class EntityDeathEvent implements Listener {
         if (mineralcontest.isAMineralContestWorld(event.getEntity().getWorld())) {
             Game partie = mineralcontest.getWorldGame(event.getEntity().getWorld());
             if (event.getEntity() instanceof Chicken && partie != null && partie.isGameStarted()) {
+
                 Chicken poulet = (Chicken) event.getEntity();
                 // Seulement sur les poulets "custom"
+
+                if(poulet.getCustomName() == null) return;
                 if (poulet.getCustomName().equalsIgnoreCase(Lang.custom_chicken_name.toString())) {
 
                     event.getDrops().clear();
                     Range[] items = new Range[4];
-                    items[0] = new Range(Material.IRON_INGOT, 0, 50);
-                    items[1] = new Range(Material.GOLD_INGOT, 50, 75);
-                    items[2] = new Range(Material.DIAMOND, 75, 90);
-                    items[3] = new Range(Material.EMERALD, 90, 100);
+                    items[0] = new Range(Material.IRON_INGOT, 0, 75);
+                    items[1] = new Range(Material.GOLD_INGOT, 75, 95);
+                    items[2] = new Range(Material.DIAMOND, 95, 98);
+                    items[3] = new Range(Material.EMERALD, 98, 100);
 
                     GameSettings settings = partie.groupe.getParametresPartie();
 

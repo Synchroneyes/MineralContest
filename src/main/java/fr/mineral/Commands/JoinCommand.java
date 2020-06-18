@@ -28,7 +28,7 @@ public class JoinCommand implements CommandExecutor {
 
         if (mineralcontest.isInAMineralContestWorld(player)) {
             Game partie = mineralcontest.getPlayerGame(player);
-            if (partie == null) {
+            if (partie == null || (partie.groupe != null && partie.groupe.getMonde() == null)) {
                 sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
                 return false;
             }

@@ -73,7 +73,7 @@ public enum Lang {
     vote_plain("vote_plain", "Plaine"),
     vote_mountain("vote_mountain", "Montagne"),
     vote_swamp("vote_swamp", "Marécage"),
-    vote_started("vote_started", "Le vote a démarré ! Vous pouvez voter pour votre biome préféré avec la commande /vote <numero du biome>"),
+    vote_started("vote_started", "Le vote a démarré ! Vous pouvez voter pour votre biome préféré avec la commande /vote <numero du monde>"),
     vote_ended("vote_ended", "Le vote est terminé"),
     vote_explain("vote_explain", "Ex: pour voter neige: /vote 0"),
     game_successfully_started("game_successfully_started", "La partie vient de commencer"),
@@ -146,6 +146,7 @@ public enum Lang {
     player_is_no_longer_ready("player_is_no_longer_ready", "%playerName% n'est plus prêt"),
     warn_player_you_dont_have_a_team("warn_player_you_dont_have_a_team", "Attention, vous n'êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe>"),
     set_yourself_as_ready_to_start_game("set_yourself_as_ready_to_start_game", "Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready "),
+    set_yourself_as_ready_to_start_votemap("set_yourself_as_ready_to_start_votemap", "Tous les joueurs doivent être prêt pour démarrer le vote, marquez-vous comme prêt avec la commande /ready"),
     teamChat("teamChat", "[TEAM]"),
     cvar_friendly_fire_enabled("cvar_friendly_fire_enabled", "Les dégats entre coéquipiers sont désormais actif"),
     cvar_friendly_fire_disabled("cvar_friendly_fire_disabled", "Les dégats entre coéquipiers sont désormais désactivés"),
@@ -167,6 +168,7 @@ public enum Lang {
     error_you_cant_join_this_group("error_you_cant_join_this_group", "Vous ne pouvez pas rejoindre ce groupe."),
     error_group_doesnt_exists("error_group_doesnt_exists", "Ce groupe n'existe pas"),
     successfully_joined_a_group("successfully_joined_a_group", "Vous avez rejoin le groupe %groupName% avec succès !"),
+    player_joined_our_group("player_joined_our_group", "Le joueur %playerName% a rejoin le groupe !"),
     you_got_invited_to_a_group("you_got_invited_to_a_group", "Vous avez été invité à rejoindre le groupe %groupName%. Vous pouvez le rejoindre avec la commande /joingroupe %groupName%"),
     error_player_already_have_a_group("error_player_already_jave_a_group", "Le joueur %playerName% a déjà un groupe."),
     error_player_already_in_this_group("error_player_already_in_this_group", "Le joueur %playerName% est déjà dans votre groupe."),
@@ -245,7 +247,8 @@ public enum Lang {
     map_downloader_delete_title("map_downloader_delete_title", "Menu de suppression de map"),
     map_downloader_delete_description("map_downloader_delete_description", "Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après"),
     player_base_item_inventory_title("player_base_item_inventory_title", "Inventaire de réapparition"),
-    player_base_item_close_inventory_item_title("player_base_item_close_inventory_item_title", "Fermer le menu");
+    player_base_item_close_inventory_item_title("player_base_item_close_inventory_item_title", "Fermer le menu"),
+    error_no_maps_downloaded_to_start_game("error_no_maps_downloaded_to_start_game", "Aucune map n'a été téléchargée, un joueur OP peut en télécharger avec la commande /mcdownloader");
 
 
 

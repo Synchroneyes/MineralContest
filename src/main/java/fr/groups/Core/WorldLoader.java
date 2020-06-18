@@ -199,7 +199,7 @@ public class WorldLoader {
 
             nouvelleEquipe.setCoffreEquipe(chestLoc);
             nouvelleEquipe.setHouseLocation(spawnLoc);
-            groupe.sendToadmin(mineralcontest.prefixPrive + "L'équipe " + couleur + nomEquipe + ChatColor.WHITE + " a bien été crée");
+            if(mineralcontest.debug) groupe.sendToadmin(mineralcontest.prefixPrive + "L'équipe " + couleur + nomEquipe + ChatColor.WHITE + " a bien été crée");
             groupe.getGame().addEquipe(nouvelleEquipe);
         }
 

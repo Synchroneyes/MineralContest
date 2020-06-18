@@ -1,5 +1,6 @@
 package fr.mineral.Utils.VersionChecker;
 
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Translation.Lang;
 import fr.mineral.Utils.UrlFetcher.Urls;
 import fr.mineral.mineralcontest;
@@ -30,14 +31,15 @@ public class Version {
 
     public static boolean isUpdating = false;
     public static boolean hasUpdated = false;
+    public static boolean isCheckingStarted = false;
 
     /**
      * Récupère tous les messages à partir du site web pour cette version du plugin
      *
-     * @param threadedFetch - Utiliser un thread ou non pour l'utilisation de cette fonction
+     * @paramNonUsed threadedFetch - Utiliser un thread ou non pour l'utilisation de cette fonction
      * @param listToFill    - Une liste à remplir avec les messages du site
      */
-    public static void fetchAllMessages(boolean threadedFetch, List<String> listToFill) {
+    public static void fetchAllMessages(List<String> listToFill) {
 
         // On récupère la verison du plugin
         String currentVersion = mineralcontest.plugin.getDescription().getVersion();
@@ -97,7 +99,9 @@ public class Version {
             if (reponse.getString("status").equals("update")) {
                 Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.RED + " A new update is available, plugin will now auto-update to version " + reponse.getString("message"));
                 isUpdating = true;
-                DownloadNewVersion(reponse.getString("url"), reponse.getString("file_name"), reponse.get("file_size").toString());
+                DownloadNewVersion(reponse.getString("url"), reponse.getString("file_name"), reponse.get("file_size").toString(), reponse.get("message").toString());
+            } else {
+                isCheckingStarted = false;
             }
 
             if (reponse.getString("status").equals("same")) {
@@ -110,9 +114,8 @@ public class Version {
     }
 
     public static void Check(boolean theadedCheck) {
-        // $.post("http://localhost:8000/api/plugin/check-version", {version: "2"}).done(function(data){console.log(data)})
-        // $.post("http://localhost:8000/api/plugin/get-messages", {version: "1.0"}).done(function(data){console.log(data)})
-
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+        if(!isCheckingStarted) isCheckingStarted = true;
 
         if (theadedCheck) {
             Thread thread = new Thread(Version::doCheck);
@@ -137,9 +140,9 @@ public class Version {
 
     }
 
-    private static void DownloadNewVersion(String url, String fileName, String fileSize) throws InterruptedException {
-        Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + "" + ChatColor.GOLD + " Downloading version " + url);
-        Bukkit.broadcastMessage(mineralcontest.prefix + ChatColor.GOLD + "Downloading a new version of the plugin ...");
+    private static void DownloadNewVersion(String url, String fileName, String fileSize, String version) throws InterruptedException {
+        Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + "" + ChatColor.GOLD + " Downloading version " + version);
+        Bukkit.broadcastMessage(mineralcontest.prefix + ChatColor.GOLD + " Downloading a new version of the plugin ...");
 
         try {
 
@@ -167,7 +170,7 @@ public class Version {
                 downloaded++;
 
                 if (downloaded % (taille_mo / 10) == 0)
-                    Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + "Download progress: " + ((downloaded / taille_fichier) * 100) + "%");
+                    Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Download progress: " + ((downloaded / taille_fichier) * 100) + "%");
             }
 
             is.close();
@@ -175,7 +178,7 @@ public class Version {
 
             client.close();
 
-            Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Download complete!");
+            Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Download complete! Now reloading ...");
             isUpdating = false;
             hasUpdated = true;
 

@@ -28,7 +28,7 @@ public class GameLogger {
         if (instance == null) instance = new GameLogger();
         log.setId(logs.size()+1);
         logs.add(log);
-        Bukkit.getLogger().severe(log.toJson());
+        Bukkit.getLogger().info(log.toJson());
     }
 
     public static String toJson() {

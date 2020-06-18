@@ -7,7 +7,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.logging.Logger;
@@ -21,14 +20,16 @@ public class Urls {
     public static String API_URL_SEND_METRIC = "";
 
 
-    public static String WEBSITE_URL = "http://localhost:8000";
+    public static String WEBSITE_URL = "http://beta.synchroneyes.fr";
     public static String GET_ALL_URL_ROUTE = "/api/getAllUrls";
 
 
     /**
      * Récupères toutes les URL de l'api
      */
-    public static void FetchAllUrls(boolean displayInConsole) {
+    public static void FetchAllUrls() {
+
+        boolean displayInConsole = mineralcontest.debug;
 
         Logger logger = mineralcontest.plugin.getLogger();
         if (displayInConsole) logger.info(mineralcontest.prefix + "Fetching all URLs");

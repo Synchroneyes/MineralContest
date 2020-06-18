@@ -2,6 +2,7 @@ package fr.mapbuilder.Events;
 
 import com.sun.tools.javac.util.List;
 import fr.mapbuilder.Commands.mcteam;
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.House;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -18,6 +19,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerClickOnBlock(PlayerInteractEvent event) {
+        if(!MapBuilder.getInstance().isBuilderModeEnabled) return;
+
         if (event.getClickedBlock() != null && event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             Player joueur = event.getPlayer();
             House maisonJoueur = mcteam.getPlayerAllocatedHouse(joueur);

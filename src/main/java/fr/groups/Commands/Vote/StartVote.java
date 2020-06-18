@@ -29,9 +29,9 @@ public class StartVote extends CommandTemplate {
             return false;
         }
 
-        playerGroup.setEtat(Etats.VOTE_EN_COURS);
+
         playerGroup.initVoteMap();
-        playerGroup.setGroupLocked(true);
+
 
         if (!joueur.getWorld().equals(mineralcontest.plugin.pluginWorld)) {
             commandSender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_hub_world.toString());

@@ -33,7 +33,7 @@ public class SendInformation {
         GameSettings settings = partie.groupe.getParametresPartie();
 
         try {
-            if (settings.getCVAR("mp_enable_metrics").getValeurNumerique() == 1) {
+            if (((boolean)mineralcontest.getPluginConfigValue("enable_metrics"))) {
 
                 try {
                     // On crée un nouvel objet request

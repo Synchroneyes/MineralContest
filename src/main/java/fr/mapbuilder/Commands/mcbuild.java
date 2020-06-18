@@ -36,6 +36,8 @@ public class mcbuild extends CommandTemplate {
         actionsPossible.add("save");
         actionsPossible.add("menu");
         actionsPossible.add("setSpawn");
+        actionsPossible.add("enable");
+        actionsPossible.add("disable");
 
 
         addArgument("action", true);
@@ -78,6 +80,12 @@ public class mcbuild extends CommandTemplate {
             monde.setSpawnDepart(joueur.getLocation());
             joueur.sendMessage(mineralcontest.prefixPrive + "Le spawn de départ pour ce monde a bien été enregistré !");
             return false;
+        }
+
+        if(args[0].equalsIgnoreCase("enable")) {
+            MapBuilder.enableMapBuilder();
+        } else if(args[0].equalsIgnoreCase("disable")) {
+            MapBuilder.disableMapBuilder();
         }
 
 

@@ -131,7 +131,7 @@ public class ArenaChestContentGenerator {
             item.setItemProbability(Integer.parseInt(section.get(item_id + ".probability").toString()));
 
             items.add(item);
-            Bukkit.getLogger().severe("Added " + item.getItemMaterial().toString() + " with=> " + item.getItemProbability());
+            if(mineralcontest.debug) Bukkit.getLogger().severe("ArenaChestContentGenerator: Added " + item.getItemMaterial().toString() + " with=> " + item.getItemProbability());
         }
 
         initialized = true;

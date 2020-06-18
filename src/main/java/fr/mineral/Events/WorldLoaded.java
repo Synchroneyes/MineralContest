@@ -19,7 +19,7 @@ public class WorldLoaded implements Listener {
         if (mineralcontest.plugin.pluginWorld == null) {
             String world_name = "";
             try {
-                world_name = mineralcontest.getPluginConfigValue("world_name");
+                world_name = mineralcontest.getPluginConfigValue("world_name").toString();
             } catch (Exception e) {
                 e.printStackTrace();
                 Error.Report(e, null);

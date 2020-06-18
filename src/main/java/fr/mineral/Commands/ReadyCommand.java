@@ -14,26 +14,6 @@ public class ReadyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
-        /*Player player = (Player) commandSender;
-        if(mineralcontest.isInAMineralContestWorld(player)) {
-            Game game = mineralcontest.getPlayerGame(player);
-            Player joueur = (Player) commandSender;
-
-            // TODO
-            if(game.isGamePaused()) {
-                if(!game.isPlayerReady(joueur)) {
-                    try {
-                        game.setPlayerReady(joueur);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else game.removePlayerReady(joueur);
-            } else {
-                joueur.sendMessage("vote is not ended");
-            }
-        }*/
-
 
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
@@ -50,6 +30,14 @@ public class ReadyCommand implements CommandExecutor {
                 return false;
             }
             if (command.getName().equalsIgnoreCase("ready")) {
+
+                if(partie.groupe.getEtatPartie().equals(Etats.EN_ATTENTE)) {
+                    try {
+                        partie.setPlayerReady(player);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 if (partie.groupe.getEtatPartie().equals(Etats.ATTENTE_DEBUT_PARTIE)) {
                     try {

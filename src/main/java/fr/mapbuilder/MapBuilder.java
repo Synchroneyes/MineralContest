@@ -33,11 +33,9 @@ public class MapBuilder {
 
     private MapBuilder() {
         instance = this;
-        mineralcontest.debug = isBuilderModeEnabled;
+        //mineralcontest.debug = isBuilderModeEnabled;
         modifications = new Stack<>();
 
-
-        if(!isBuilderModeEnabled) return;
 
         monde = new Monde();
 
@@ -52,8 +50,18 @@ public class MapBuilder {
         printToConsole("Loading custom maps module ...");
         registerEvents();
         registerCommands();
-        if(isBuilderModeEnabled) enableMapBuilding();
 
+
+    }
+
+    public static void enableMapBuilder() {
+        instance.isBuilderModeEnabled = true;
+        instance.enableMapBuilding();
+    }
+
+    public static void disableMapBuilder() {
+        instance.isBuilderModeEnabled = false;
+        instance.disableMapBuilding();
     }
 
 
@@ -102,8 +110,21 @@ public class MapBuilder {
             for(Player p : game_world.getPlayers())
                 p.setGameMode(GameMode.CREATIVE);
         }
+    }
 
+    private void disableMapBuilding() {
+        isBuilderModeEnabled = false;
+        World game_world = mineralcontest.plugin.pluginWorld;
+        int size = 1000000;
 
+        if(game_world != null) {
+            game_world.getWorldBorder().setCenter(mineralcontest.plugin.defaultSpawn);
+            game_world.getWorldBorder().setSize(size);
+            game_world.setDifficulty(Difficulty.NORMAL);
+
+            for(Player p : game_world.getPlayers())
+                p.setGameMode(GameMode.SURVIVAL);
+        }
     }
 
     private void printToConsole(String text) {

@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Game.BlockManager;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.Settings.GameSettings;
@@ -19,6 +20,10 @@ public class BlockDestroyed implements Listener {
 
     @EventHandler
     public void onBlockDestroyed(BlockBreakEvent event) {
+
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
+
         World worldEvent = event.getPlayer().getWorld();
         Game game = mineralcontest.getPlayerGame(event.getPlayer());
 

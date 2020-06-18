@@ -1,5 +1,6 @@
 package fr.mineral.Events;
 
+import fr.mapbuilder.MapBuilder;
 import fr.mineral.Core.Game.Game;
 import fr.mineral.mineralcontest;
 import org.bukkit.World;
@@ -15,6 +16,9 @@ public class EntityInteract implements Listener {
 
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
+
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
         World worldEvent = event.getEntity().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Game partie = mineralcontest.getWorldGame(worldEvent);
@@ -29,6 +33,9 @@ public class EntityInteract implements Listener {
 
     @EventHandler
     public void onEntityAttack(EntityDamageByEntityEvent event) {
+
+        if(MapBuilder.getInstance().isBuilderModeEnabled) return;
+
         World worldEvent = event.getEntity().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Game partie = mineralcontest.getWorldGame(worldEvent);
