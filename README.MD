@@ -5,7 +5,7 @@ Ce mode de jeu a probablement été inventé par l'équipe de Squeezie, je ne m'
 Les règles du jeu sont les suivantes:
 
 * Il y a trois équipes, l'équipe ROUGE, BLEU, et l'équipe JAUNE
-* Ces trois équipes peuvent être composé de plusieurs joueurs (définissable, 2 par défaut)
+* Ces trois équipes peuvent être composé de p lusieurs joueurs (définissable, 2 par défaut)
 * Chaque équipe doit récolté le plus de lingot, chaque lingot rapporte un certain nombre de points
 * Il y a une arène, à un certain moment un coffre apparaitra, il sera possible de s'y téléporter, mais attention, une téléportation téléportera toute l'équipe ...
 * Une partie dure 1 heure, 60 minutes.
