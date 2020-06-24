@@ -140,7 +140,7 @@ error_command_can_only_be_used_in_game: This command can only be used in game.
 error_you_already_have_a_group: You already have a group.
 error_group_with_this_name_already_exists: There is already a group existing with this name
 success_group_successfully_created: Group has been created !
-error_command_can_only_be_used_hub_world: This command can only be used in main world
+error_command_can_only_be_used_hub_world: This command can only be used in the world '%hubWorldName%'
 error_you_must_be_in_a_group: You must be in a group.
 error_you_must_be_group_admin: You must be a group admin
 error_no_player_with_this_name: There is no player with this name
@@ -230,3 +230,7 @@ player_base_item_close_inventory_item_title: Close
 error_no_maps_downloaded_to_start_game: There is no map downloaded. A server admin needs to run the command /mcdownloader
 set_yourself_as_ready_to_start_votemap: All players must be ready in order to start the vote. Set yourself as ready with the following command /ready
 player_joined_our_group: %playerName% have joined our group!
+error_no_teams_with_player: There is no teams with players!
+currently_no_player_in_this_team: "The team is empty"
+arena_chest_will_spawn_in: "Arena chest will spawn in %arenaChestTimeLeft% seconds!"
+

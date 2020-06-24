@@ -1,94 +1,37 @@
-# MineralContest - [Site web](http://mineral.synchroneyes.fr)
+## Welcome to Mineral Contest !
+
+*(The plugin has been completly rewrote in order to support custom maps made by the community)*
 
 
-Ce mode de jeu a probablement été inventé par l'équipe de Squeezie, je ne m'avancerai pas sur ça.
-Les règles du jeu sont les suivantes:
+This gamemode has probably been imagined by the french youtuber Squeezie.
+The rules are the following:
 
-* Il y a trois équipes, l'équipe ROUGE, BLEU, et l'équipe JAUNE
-* Ces trois équipes peuvent être composé de p lusieurs joueurs (définissable, 2 par défaut)
-* Chaque équipe doit récolté le plus de lingot, chaque lingot rapporte un certain nombre de points
-* Il y a une arène, à un certain moment un coffre apparaitra, il sera possible de s'y téléporter, mais attention, une téléportation téléportera toute l'équipe ...
-* Une partie dure 1 heure, 60 minutes.
+The rules are the following:
 
-## Commandes
+-   There are teams (3 or 4, can be more too)
+-   Each team are composed of players
+-   Each team have to mine the most ingot in order to win the most points (Iron, Gold, Diamond, Emerald)
+-   There is an arena in which, at a random moment, a chest will appear and will contains ingots.
+-   A game last 1 hour, so 60 minutes. (Maybe more or less, it is configurable)
 
-```
-[ADMIN] mp_randomize_team <1 ou 0> # Permet d'activer ou non les équipes aléatoires (1 = oui, 0 = non aléatoire)
+## Features
 
-[ADMIN] mp_iron_score  # Permet de modifier les points rapporté par un lingot de fer
-
-[ADMIN] mp_gold_score  # Permet de modifier les points rapporté par un lingot d'or
-
-[ADMIN] mp_diamond_score  # Permet de modifier les points rapporté par un lingot de diamant
-
-[ADMIN] mp_emerald_score  # Permet de modifier les points rapporté par un lingot d'émeraude
-
-[ADMIN] mp_team_max_player  # Permet de modifier le nombre de joueur requis par équipe pour lancer une partie
-
-[ADMIN] mp_enable_metrics  <1 ou 0> # Permet d'activer ou non l'envoie de statistique
-
-[ADMIN] mp_add_team_penality   # Ajoute une pénalité à une équipe
-
-[ADMIN] mp_reset_team_penality  # Supprime une pénalité d'équipe
-
-[ADMIN] mp_set_language  # Choisit le langage à 
-
-[ADMIN] mp_start_vote  # Démarre un vote
-
-[ADMIN] mp_enable_item_drop <0 ou 1 ou 2> # 0 = aucun drop, 1 = drop de minerais, 2 = drop tout 
-l'inventaire
-
-[ADMIN] mp_enable_friendly_fire <0 ou 1> # Active ou non le tir allié
-
-[ADMIN] mp_set_playzone_radius <valeur> # Défini la taille en block de la zone de jeu
-
-[ADMIN] start  # Permet de démarrer une partie, si la valeur "force" est ajoutée, alors la partie démarrera sans tenir compte du nombre de joueur en ligne
-
-[ADMIN] resume # Permet de reprendre une partie en pause
-
-[ADMIN] pause # permet de mettre une partie en pause
-
-[ADMIN] switch   # Permet de mettre un joueur dans une équipe
-
-[ADMIN] allow <pseudo> # Permet la connexion d'un joueur
-
-[ADMIN] referee # Permet de devenir arbitre
-
-[ADMIN] stopgame # Arrête une partie
-
-ready # Permet de se mettre prêt
-
-join  # permet de rejoindre une équipe
-
-t <message> # Envoie un message à son équipe
-
-team <message> # Envoie un message à son équipe
-
-
-```
+ - Built-in map downloading system
+ - Auto-updater
+ - Fetching message from my website
+ - Group feature (in order to run a community server, coming really soon)
+ - MapBuilder feature (getting rewrote, coming soon aswell)
+ - Completly customizable plugin!
+ - Many worlds available
 
 ## Installation
+The installation process has been simplified. Now, it is simpler. You just have to install the plugin, drop it into your plugins folder and run the server! The plugin will automatically create all needed files.
+Open "plugins/MineralContest/config/plugin_config.yml" and change the value for "world_name" to the world you want the plugin to run on, then you can reload the server and you are ready to go!
+In order to play a map, you will need to run the following command: /mcdownloader.
 
-1. Télécharger la map [http://mineral.synchroneyes.fr/downloads](http://synchroneyes.fr/downloads/)
-2. Glisser le dossier la map dans le dossier du serveur et le renommer si necessaire en "world"
-3. Télécharger le fichier jar [MineralContest-1.5.4.1.jar](https://github.com/jaunefra/MineralContest/releases/download/1.5.4.1/MineralContest-1.5.4.1.jar)
-4. Glisser  le fichier .jar dans le dossier plugin
-(OPTIONEL) Supprimer le fichier MineralContest-1.0.jar si il existe
-5. Lancer le jeu
-6. Have fun !
+## Commands
+The list of commands is coming soon, they need to be translated into english. If you want to read them with any translation service, you can get them [here.](http://beta.synchroneyes.fr/commandes)
 
-## Librairies externes
-[JSON.org](https://stleary.github.io/JSON-java/)
-
-[EasyScoreboards](https://github.com/WinterAlexander/EasyScoreboards)
-
-## Auteurs
-[Synchroneyes](https://github.com/jaunefra)
-[Turtle](https://github.com/IliasElabbassi)
-
-
-___
-
-## A faire
-- Remplacer la lecture de fichier json en fichier yml
-- Ajouter la possibilité de créer ses propres map (déjà implémenter mais besoin de modification (plus de json, mais du yml))
+## Installing maps manually
+Installing a map manually is pretty easy. Just navigate to [our "workshop"](http://beta.synchroneyes.fr/workshop/) and click on the download icon of the map you want to download. Once the download is done, just extract the folder (starting with "mc_") inside plugins/MineralContest/worlds.
+And now, you are ready to go! You can start to play on your map.

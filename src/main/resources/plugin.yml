@@ -1,6 +1,6 @@
 name: MineralContest
 version: ${project.version}
-main: fr.mineral.mineralcontest
+main: fr.synchroneyes.mineral.mineralcontest
 api-version: 1.13
 prefix: MINERALC
 load: STARTUP

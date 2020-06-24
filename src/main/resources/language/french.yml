@@ -140,7 +140,7 @@ error_command_can_only_be_used_in_game: Cette commande ne peut être utilisé qu
 error_you_already_have_a_group: Vous avez déjà un groupe.
 error_group_with_this_name_already_exists: Un groupe avec ce nom existe déjà
 success_group_successfully_created: Le groupe a été crée avec succès
-error_command_can_only_be_used_hub_world: Cette commande ne peut être utilisé que dans le HUB.
+error_command_can_only_be_used_hub_world: Cette commande ne peut être utilisé que dans le monde %hubWorldName%.
 error_you_must_be_in_a_group: Vous devez être dans un groupe.
 error_you_must_be_group_admin: Vous devez être administrateur du groupe
 error_no_player_with_this_name: Il n'y a pas de joueurs avec ce nom
@@ -230,3 +230,6 @@ player_base_item_close_inventory_item_title: Fermer le menu
 error_no_maps_downloaded_to_start_game: Aucune map n'a été téléchargée, un joueur OP peut en télécharger avec la commande /mcdownloader
 set_yourself_as_ready_to_start_votemap: Tous les joueurs doivent être prêt pour démarrer le vote, marquez-vous comme prêt avec la commande /ready
 player_joined_our_group: Le joueur %playerName% a rejoin le groupe !
+currently_no_player_in_this_team: "Aucun joueur dans cette équipe pour le moment"
+arena_chest_will_spawn_in: "Le coffre d'arène va apparaitre dans %arenaChestTimeLeft% secondes!"
+
