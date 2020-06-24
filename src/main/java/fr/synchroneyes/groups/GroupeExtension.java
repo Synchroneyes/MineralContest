@@ -1,3 +1,6 @@
+/**
+ * TODO: - Charger les differents spawns de la map depuis le dossier du monde ;)
+ */
 package fr.synchroneyes.groups;
 
 import fr.synchroneyes.groups.Commands.Admin.AjouterAdmin;

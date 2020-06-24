@@ -31,6 +31,110 @@ public class GameToFile {
 
         JSONArray porteRouge = new JSONArray();
 
+        // TODO TODO TODO
+        /*for(int i = 0; i < mineralcontest.getPlayerGame(joueur).getRedHouse().getPorte().getPorte().size(); i++) {
+            JSONObject tempBlock = new JSONObject();
+            //tempBlock.put("x", mineralcontest.getPlayerGame(joueur).getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            //tempBlock.put("y", mineralcontest.getPlayerGame(joueur).getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            //tempBlock.put("z", mineralcontest.getPlayerGame(joueur).getRedHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            porteRouge.put(tempBlock);
+        }
+
+
+        JSONArray porteJaune = new JSONArray();
+        for(int i = 0; i < mineralcontest.getPlayerGame(joueur).getYellowHouse().getPorte().getPorte().size(); i++) {
+            JSONObject tempBlock = new JSONObject();
+            tempBlock.put("x", mineralcontest.getPlayerGame(joueur).getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            tempBlock.put("y", mineralcontest.getPlayerGame(joueur).getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            tempBlock.put("z", mineralcontest.getPlayerGame(joueur).getYellowHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            porteJaune.put(tempBlock);
+
+        }
+
+        JSONArray porteBleu = new JSONArray();
+        for(int i = 0; i < mineralcontest.getPlayerGame(joueur).getBlueHouse().getPorte().getPorte().size(); i++) {
+            JSONObject tempBlock = new JSONObject();
+            tempBlock.put("x", mineralcontest.getPlayerGame(joueur).getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getX());
+            tempBlock.put("y", mineralcontest.getPlayerGame(joueur).getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getY());
+            tempBlock.put("z", mineralcontest.getPlayerGame(joueur).getBlueHouse().getPorte().getPorte().get(i).getBlock().getLocation().getZ());
+            porteBleu.put(tempBlock);
+
+        }
+
+
+
+        JSONObject json = new JSONObject()
+                .put(worldName, new JSONObject()
+                                .put("teams", new JSONObject()
+                                            .put("rouge", new JSONObject()
+
+                                                    .put("spawn", new JSONObject()
+                                                                .put("x", mineralcontest.getPlayerGame(joueur).getRedHouse().getHouseLocation().getX())
+                                                                .put("y", mineralcontest.getPlayerGame(joueur).getRedHouse().getHouseLocation().getY())
+                                                                .put("z", mineralcontest.getPlayerGame(joueur).getRedHouse().getHouseLocation().getZ())
+                                                    )
+                                                    .put("coffre", new JSONObject()
+                                                            .put("x", mineralcontest.getPlayerGame(joueur).getRedHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.getPlayerGame(joueur).getRedHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.getPlayerGame(joueur).getRedHouse().getCoffreEquipeLocation().getZ())
+                                                    )
+                                                    .put("porte", porteRouge)
+
+                                            )
+                                            .put("jaune", new JSONObject()
+
+                                                    .put("spawn", new JSONObject()
+                                                            .put("x", mineralcontest.getPlayerGame(joueur).getYellowHouse().getHouseLocation().getX())
+                                                            .put("y", mineralcontest.getPlayerGame(joueur).getYellowHouse().getHouseLocation().getY())
+                                                            .put("z", mineralcontest.getPlayerGame(joueur).getYellowHouse().getHouseLocation().getZ())
+                                                    )
+                                                    .put("coffre", new JSONObject()
+                                                            .put("x", mineralcontest.getPlayerGame(joueur).getYellowHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.getPlayerGame(joueur).getYellowHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.getPlayerGame(joueur).getYellowHouse().getCoffreEquipeLocation().getZ())
+                                                    )
+                                                    .put("porte", porteJaune)
+
+                                            )
+                                            .put("bleu", new JSONObject()
+
+                                                    .put("spawn", new JSONObject()
+                                                            .put("x", mineralcontest.getPlayerGame(joueur).getBlueHouse().getHouseLocation().getX())
+                                                            .put("y", mineralcontest.getPlayerGame(joueur).getBlueHouse().getHouseLocation().getY())
+                                                            .put("z", mineralcontest.getPlayerGame(joueur).getBlueHouse().getHouseLocation().getZ())
+                                                    )
+                                                    .put("coffre", new JSONObject()
+                                                            .put("x", mineralcontest.getPlayerGame(joueur).getBlueHouse().getCoffreEquipeLocation().getX())
+                                                            .put("y", mineralcontest.getPlayerGame(joueur).getBlueHouse().getCoffreEquipeLocation().getY())
+                                                            .put("z", mineralcontest.getPlayerGame(joueur).getBlueHouse().getCoffreEquipeLocation().getZ())
+                                                    )
+                                                    .put("porte", porteBleu)
+
+                                            )
+                                )
+                                .put("arene", new JSONObject()
+                                            .put("spawn", new JSONObject()
+                                                    .put("x", mineralcontest.getPlayerGame(joueur).getArene().getTeleportSpawn().getX())
+                                                    .put("y", mineralcontest.getPlayerGame(joueur).getArene().getTeleportSpawn().getY())
+                                                    .put("z", mineralcontest.getPlayerGame(joueur).getArene().getTeleportSpawn().getZ()))
+
+                                            .put("deathZone", new JSONObject()
+                                                    .put("x", mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().getSpawnLocation().getX())
+                                                    .put("y", mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().getSpawnLocation().getY())
+                                                    .put("z", mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().getSpawnLocation().getZ()))
+
+                                            .put("coffre", new JSONObject()
+                                                    .put("x", mineralcontest.getPlayerGame(joueur).getArene().getCoffre().getPosition().getX())
+                                                    .put("y", mineralcontest.getPlayerGame(joueur).getArene().getCoffre().getPosition().getY())
+                                                    .put("z", mineralcontest.getPlayerGame(joueur).getArene().getCoffre().getPosition().getZ()))
+                                )
+
+                );
+
+         */
+
+        //mineralcontest.broadcastMessage(json.toString());
+        //mineralcontest.plugin.getServer().getLogger().info(json.toString());
 
         String biomefolder = mineralcontest.plugin.getDataFolder() + File.separator + "biome" + File.separator;
         FileWriter nouveau_biome = new FileWriter(biomefolder + "nouveau_biome.json");

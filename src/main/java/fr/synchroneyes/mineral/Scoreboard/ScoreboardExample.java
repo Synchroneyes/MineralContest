@@ -30,6 +30,7 @@ public class ScoreboardExample {
                 "Your ration: " + (30d / 20d),
                 "  "});
     }
-
-
+	
+	
+	
 }

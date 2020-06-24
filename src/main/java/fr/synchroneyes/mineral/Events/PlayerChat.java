@@ -38,6 +38,7 @@ public class PlayerChat implements Listener {
             }
 
 
+
             if (partie == null) return;
 
 

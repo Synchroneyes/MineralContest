@@ -26,6 +26,7 @@ public class mcbuild extends CommandTemplate {
     public static Monde monde = MapBuilder.monde;
 
 
+
     public mcbuild() {
 
         this.actionsPossible = new LinkedList<>();

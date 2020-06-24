@@ -261,8 +261,7 @@ public enum Lang {
 
     /**
      * Lang enum constructor.
-     *
-     * @param path  The string path.
+     * @param path The string path.
      * @param start The default string.
      */
     Lang(String path, String start) {
@@ -340,7 +339,6 @@ public enum Lang {
 
     /**
      * Set the {@code YamlConfiguration} to use.
-     *
      * @param config The config to set.
      */
     public static void setFile(YamlConfiguration config) {
@@ -379,7 +377,6 @@ public enum Lang {
 
     /**
      * Get the default value of the path.
-     *
      * @return The default value of the path.
      */
     public String getDefault() {
@@ -388,12 +385,12 @@ public enum Lang {
 
     /**
      * Get the path to the string.
-     *
      * @return The path to the string.
      */
     public String getPath() {
         return this.path;
     }
+
 
 
     public static String translate(String string, Equipe team, Player p) {

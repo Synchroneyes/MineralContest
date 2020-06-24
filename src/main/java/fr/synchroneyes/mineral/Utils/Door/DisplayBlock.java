@@ -47,7 +47,6 @@ public class DisplayBlock {
         }
 
     }
-
     public void hide() {
 
         position.getBlock().setType(Material.AIR);

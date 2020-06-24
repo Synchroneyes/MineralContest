@@ -159,7 +159,6 @@ public class Game implements Listener {
 
     /**
      * Getter des maisons
-     *
      * @return Liste de maisons
      */
     public LinkedList<House> getHouses() {
@@ -168,7 +167,6 @@ public class Game implements Listener {
 
     /**
      * Setter du groupe de la partie
-     *
      * @param g - groupe
      */
     public void setGroupe(Groupe g) {
@@ -186,7 +184,6 @@ public class Game implements Listener {
 
     /**
      * Est-ce que le bloc donné est un coffre, retourne vrai si oui
-     *
      * @param b
      * @return boolean
      */
@@ -196,7 +193,6 @@ public class Game implements Listener {
 
     /**
      * Ajoute un bloc dans la liste des coffre autorisé à être ouvert
-     *
      * @param block
      */
     public void addAChest(Block block) {
@@ -236,7 +232,6 @@ public class Game implements Listener {
 
     /**
      * Ajoute une équipe
-     *
      * @param t Equipe à ajouter
      */
     public void addEquipe(House t) {
@@ -246,7 +241,6 @@ public class Game implements Listener {
 
     /**
      * Retourne vrai si le bloc passé en paramètre est un bloc autorisé à être détruit
-     *
      * @param b
      * @return
      */
@@ -258,7 +252,6 @@ public class Game implements Listener {
 
     /**
      * Supprime un coffre enregistré
-     *
      * @param block
      */
     public void remove(Block block) {
@@ -268,7 +261,6 @@ public class Game implements Listener {
 
     /**
      * Téléporte un joueur au lobby
-     *
      * @param player
      */
     public void teleportToLobby(Player player) {
@@ -359,6 +351,7 @@ public class Game implements Listener {
                     if (isGamePaused()) resumeGame();
                     else demarrerPartie(false);
                 }
+
 
 
             }
@@ -769,6 +762,7 @@ public class Game implements Listener {
     }
 
 
+
     /**
      * Affiche dans le chat le score de toutes les équipes
      */
@@ -780,7 +774,6 @@ public class Game implements Listener {
 
     /**
      * Affiche dans le chat le gagnat de la partie
-     *
      * @return Equipe gagnante
      */
     private Equipe afficherGagnant() {
@@ -804,7 +797,6 @@ public class Game implements Listener {
 
     /**
      * Retourne l'équipe d'un joueur
-     *
      * @param j - Le joueur en question
      * @return Equipe si il en possède une, null sinon
      */
@@ -817,7 +809,6 @@ public class Game implements Listener {
 
     /**
      * Retourne la maison d'un joueur
-     *
      * @param j - Le joueur en question
      * @return House si il possède une maison, null sinon
      */
@@ -927,7 +918,6 @@ public class Game implements Listener {
 
     /**
      * Retourne si la partie va reprendre et que la partie était en cours
-     *
      * @return true|false
      */
     public boolean isPreGameAndGameStarted() {
@@ -936,7 +926,6 @@ public class Game implements Listener {
 
     /**
      * Retourne vrai si tous les joueurs ont une équipe, faux sinon
-     *
      * @return
      */
     public boolean allPlayerHaveTeam() {
@@ -969,7 +958,6 @@ public class Game implements Listener {
 
     /**
      * Démarre la partie
-     *
      * @param forceGameStart - Boolean (force le démarrage de la partie)
      * @return boolean, true si tout se passe bien, faux sinon
      * @throws Exception
@@ -1095,7 +1083,6 @@ public class Game implements Listener {
 
     /**
      * Permet d'attribuer à chaque joueur une équipe
-     *
      * @param force
      * @throws Exception
      */

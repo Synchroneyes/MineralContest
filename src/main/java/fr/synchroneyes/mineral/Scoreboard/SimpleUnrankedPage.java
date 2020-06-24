@@ -11,6 +11,6 @@ public class SimpleUnrankedPage implements BoardPage {
 
     @Override
     public void update(Player p) {
-        ScoreboardUtil.unrankedSidebarDisplay(p, content);
+        ScoreboardUtil.unrankedSidebarDisplay(p, content);   
     }
 }

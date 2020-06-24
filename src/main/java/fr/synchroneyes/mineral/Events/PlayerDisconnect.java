@@ -3,7 +3,6 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Teams.Equipe;
-import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -52,6 +51,7 @@ public class PlayerDisconnect implements Listener {
 
             if (team != null)
                 team.removePlayer(joueur);
+
 
 
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {

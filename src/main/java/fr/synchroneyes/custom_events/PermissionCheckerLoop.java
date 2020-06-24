@@ -6,7 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.TimerTask;
 
 public class PermissionCheckerLoop implements Runnable {
 

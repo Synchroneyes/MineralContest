@@ -118,7 +118,6 @@ public class GameSettings {
 
     /**
      * Permet de sauvegarder la configuration actuelle vers un fichier
-     *
      * @param saveDefaultPluginSetting - True si on sauvegarde le fichier par défaut du plugin, false si un fichier custom
      */
     public void saveToFile(String nomDeFichier, boolean saveDefaultPluginSetting) {

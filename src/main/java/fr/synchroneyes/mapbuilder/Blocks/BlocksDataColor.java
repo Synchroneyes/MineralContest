@@ -53,7 +53,6 @@ public enum BlocksDataColor {
         }
         return black;
     }
-
     public static BlocksDataColor fromItemName(String itemName) {
 
         for (BlocksDataColor couleur : values()) {

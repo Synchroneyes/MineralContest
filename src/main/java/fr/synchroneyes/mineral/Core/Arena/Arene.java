@@ -98,6 +98,8 @@ public class Arene {
     }
 
 
+
+
     public void clear() {
         if (this.coffre != null) this.coffre.clear();
         removePlayerTeleportBar();

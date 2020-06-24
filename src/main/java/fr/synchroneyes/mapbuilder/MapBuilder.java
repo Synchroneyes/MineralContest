@@ -1,6 +1,9 @@
 package fr.synchroneyes.mapbuilder;
 
-import fr.synchroneyes.mapbuilder.Commands.*;
+import fr.synchroneyes.mapbuilder.Commands.mcarena;
+import fr.synchroneyes.mapbuilder.Commands.mcbuild;
+import fr.synchroneyes.mapbuilder.Commands.mcrevert;
+import fr.synchroneyes.mapbuilder.Commands.mcteam;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.Events.BlockPlaced;
 import fr.synchroneyes.mapbuilder.Events.PlayerInteract;

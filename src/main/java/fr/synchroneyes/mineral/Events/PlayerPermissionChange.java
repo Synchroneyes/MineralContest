@@ -3,7 +3,6 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.custom_events.PlayerPermissionChangeEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

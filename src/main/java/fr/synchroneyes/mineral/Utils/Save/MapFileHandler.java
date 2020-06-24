@@ -7,7 +7,6 @@ import java.io.File;
 public class MapFileHandler {
     private static int number_of_biomes = 6;
     public static String biome_data_folderPath = "biome";
-
     /*
         Copy the maps inside the .jar into the plugin data folder
      */

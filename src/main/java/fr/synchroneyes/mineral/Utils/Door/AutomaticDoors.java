@@ -11,6 +11,11 @@ import org.bukkit.entity.Player;
 import java.util.LinkedList;
 
 
+/*
+    On ne traite que des "portes" carrées
+
+    TODO: sauvegarder lla couleur des portes
+ */
 public class AutomaticDoors {
 
     // Le bloc du centre

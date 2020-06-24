@@ -53,7 +53,6 @@ public class Range {
     public boolean isInRange(int valeur) {
         return (min <= valeur && valeur < max);
     }
-
     public static Material getInsideRange(Range[] r, int valeur) throws MaterialNotInRangeException {
         for (Range interval : r) {
             if (interval.isInRange(valeur))

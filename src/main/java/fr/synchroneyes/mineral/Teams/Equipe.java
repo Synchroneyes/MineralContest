@@ -6,7 +6,6 @@ import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
-
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.ChatColor;
@@ -111,7 +110,6 @@ public class Equipe implements Comparable<Equipe> {
     public int getScore() {
         return this.score - this.penalty;
     }
-
     public void setScore(int score) {
         this.score = score;
         GameLogger.addLog(new Log("TeamChestScoreUpdated", "The team " + getNomEquipe() + " score got updated to " + score + "", "ChestEvent"));

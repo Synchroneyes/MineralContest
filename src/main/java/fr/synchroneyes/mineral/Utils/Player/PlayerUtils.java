@@ -5,10 +5,10 @@ import fr.synchroneyes.groups.GroupeExtension;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
 import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Core.Referee.Referee;
-import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -266,6 +266,7 @@ public class PlayerUtils {
                 elementsADisplay.add(Lang.translate(Lang.hud_team_name_no_score.toString(), playerTeam));
             }
         }
+
 
 
         String[] elements = new String[elementsADisplay.size() + 1];

@@ -6,15 +6,15 @@ import fr.synchroneyes.file_manager.RessourceFilesManager;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.GroupeExtension;
 import fr.synchroneyes.groups.Utils.Etats;
+import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Commands.*;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
-import fr.synchroneyes.mineral.Settings.GameSettings;
-import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -265,6 +265,7 @@ public final class mineralcontest extends JavaPlugin {
             });
 
 
+
         }
 
 
@@ -276,7 +277,7 @@ public final class mineralcontest extends JavaPlugin {
         for (Groupe groupe : groupes) {
             Game game = groupe.getGame();
             SendInformation.sendGameData(SendInformation.ended, game);
-
+            // todo GETGAME
             if (pluginWorld != null && !debug) {
                 for (Player player : pluginWorld.getPlayers()) {
                     game.teleportToLobby(player);
@@ -350,6 +351,7 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("team").setExecutor(new TeamChat());
 
 
+
         getCommand("switch").setExecutor(new SwitchCommand());
         getCommand("resume").setExecutor(new ResumeGameCommand());
 
@@ -364,6 +366,7 @@ public final class mineralcontest extends JavaPlugin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+
 
 
         getCommand("spawnchest").setExecutor(new SpawnChestCommand());
@@ -384,7 +387,12 @@ public final class mineralcontest extends JavaPlugin {
 
         WorldBorder world = pluginWorld.getWorldBorder();
 
+        // TODO getGame
+        //Location arenaCenterLocation = getGame().getArene().getCoffre().getPosition().clone();
 
+        //arenaCenterLocation.setX(arenaCenterLocation.getX()-marge);
+        //world.setCenter(arenaCenterLocation);
+        //world.setSize(playZoneRadius + marge);
     }
 
     public void setDefaultWorldBorder() {

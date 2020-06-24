@@ -58,6 +58,7 @@ public class House {
         File houseFileToLoad = new File(plugin.getDataFolder(), houseToLoad);
 
 
+
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(houseFileToLoad);
         ConfigurationSection blocks = yamlConfiguration.getConfigurationSection("house.blocks");
 

@@ -34,8 +34,8 @@ public class Version {
     /**
      * Récupère tous les messages à partir du site web pour cette version du plugin
      *
-     * @param listToFill - Une liste à remplir avec les messages du site
      * @paramNonUsed threadedFetch - Utiliser un thread ou non pour l'utilisation de cette fonction
+     * @param listToFill    - Une liste à remplir avec les messages du site
      */
     public static void fetchAllMessages(List<String> listToFill) {
 

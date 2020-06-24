@@ -24,6 +24,7 @@ public class EntitySpawn implements Listener {
                 return;
             }
 
+            // TODO
             Game partie = mineralcontest.getWorldGame(worldEvent);
             if (e.getEntity() instanceof Monster || e.getEntity() instanceof Mob && !(e.getEntity() instanceof Chicken)) {
                 if (partie != null && partie.isGameStarted()) {

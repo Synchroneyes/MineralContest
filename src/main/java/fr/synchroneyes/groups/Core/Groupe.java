@@ -1,3 +1,9 @@
+/**
+ * TODO:
+ * - Votemap
+ * - Démarrer partie
+ * - Creer teams (max3)
+ */
 package fr.synchroneyes.groups.Core;
 
 import fr.synchroneyes.groups.Utils.Etats;
@@ -10,7 +16,6 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import javafx.util.Pair;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -331,7 +336,6 @@ public class Groupe {
 
     /**
      * Envoie un message aux admins
-     *
      * @param message: Message à envoyer
      */
     public void sendToadmin(String message) {
@@ -347,8 +351,7 @@ public class Groupe {
 
     /**
      * Permet de créer une équipe
-     *
-     * @param nom     - Nom de l'équipe
+     * @param nom - Nom de l'équipe
      * @param couleur - Couleur de l'équipe
      */
     public void addEquipe(String nom, ChatColor couleur) {
@@ -357,7 +360,6 @@ public class Groupe {
 
     /**
      * Permet de supprimer une équipe
-     *
      * @param nom
      */
     public void removeEquipe(String nom) {

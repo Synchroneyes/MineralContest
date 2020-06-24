@@ -19,6 +19,7 @@ public class BlockManager {
     private Material[] blockedMaterials = {AIR, OBSIDIAN, WATER, LAVA, BUCKET, LAVA_BUCKET, WATER_BUCKET, BEDROCK};
 
 
+
     private BlockManager() {
         instance = this;
         placedBlocks = new Stack<>();

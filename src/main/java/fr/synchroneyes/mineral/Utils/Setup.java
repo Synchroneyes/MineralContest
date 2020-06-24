@@ -19,7 +19,6 @@ public class Setup {
     public static Location emplacementTemporaire;
     public static Player Joueur;
     public static boolean addDoors = false;
-
     public Setup() {
         Setup.instance = this;
         porteBleu = new LinkedList<>();

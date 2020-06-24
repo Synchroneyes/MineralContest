@@ -15,6 +15,6 @@ public class SimpleRankedPage implements BoardPage {
 
     @Override
     public void update(Player p) {
-        ScoreboardUtil.rankedSidebarDisplay(p, title, content);
+        ScoreboardUtil.rankedSidebarDisplay(p, title, content);   
     }
 }

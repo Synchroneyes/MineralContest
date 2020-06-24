@@ -24,6 +24,6 @@ public abstract class AutomaticBoard extends UpdatableBoard implements Runnable 
 
     @Override
     public void run() {
-        this.update();
+        this.update();   
     }
 }
