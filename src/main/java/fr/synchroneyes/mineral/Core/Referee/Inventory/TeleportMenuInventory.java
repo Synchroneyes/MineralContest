@@ -25,6 +25,7 @@ public class TeleportMenuInventory extends InventoryTemplate {
     @Override
     public void setInventoryItems(Player arbitre) {
 
+
         LinkedList<TeleportToHouseItem> maisons = new LinkedList<>();
 
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(arbitre);

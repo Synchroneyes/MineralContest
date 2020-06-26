@@ -32,8 +32,8 @@ public class EntityDamage implements Listener {
                 Player victime = (Player) event.getEntity();
 
 
-                if (victime.getHealth() - event.getDamage() < 0) {
-                    victime.setHealth(20D);
+                if (victime.getHealth() - event.getFinalDamage() < 0) {
+                    PlayerUtils.setMaxHealth(victime);
                     event.setCancelled(true);
                     PlayerUtils.killPlayer(victime);
 
@@ -110,7 +110,7 @@ public class EntityDamage implements Listener {
                     partie.getArene().getCoffre().close();
 
                 // Si une entité meurt d'un coup/explosion/...
-                if (victime.getHealth() - event.getDamage() < 0) {
+                if (victime.getHealth() - event.getFinalDamage() < 0) {
                     victime.setHealth(20D);
                     event.setCancelled(true);
 

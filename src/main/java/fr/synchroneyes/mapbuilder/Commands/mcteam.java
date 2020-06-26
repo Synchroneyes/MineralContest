@@ -1,6 +1,7 @@
 package fr.synchroneyes.mapbuilder.Commands;
 
 import fr.synchroneyes.groups.Commands.CommandTemplate;
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.House;
@@ -10,10 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class mcteam extends CommandTemplate {
 
@@ -292,14 +290,38 @@ public class mcteam extends CommandTemplate {
 
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        if (alias.equalsIgnoreCase("mcteam")) {
-            if (args.length == 0 || args.length == 1) return actionsPossible;
+    public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) throws IllegalArgumentException {
+        if (sender instanceof Player) {
+            Player joueur = (Player) sender;
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+            if (playerGroup == null) return null;
 
-            if (args.length == 2) {
-                if (!args[0].equalsIgnoreCase("creer")) return monde.getNomsEquipe();
+            if (arguments.length == 1) {
+                String argument = arguments[0];
+
+                List<String> available_cvar = new ArrayList<>();
+                for (String action : actionsPossible) {
+                    if (action.equalsIgnoreCase(argument) || action.toLowerCase().contains(argument.toLowerCase()))
+                        available_cvar.add(action);
+                }
+
+                if (available_cvar.isEmpty()) available_cvar.add("No results");
+                return available_cvar;
+            }
+
+            if (arguments.length == 2) {
+                if (!arguments[0].equalsIgnoreCase("creer")) {
+                    String nomEquipe = arguments[1].toLowerCase();
+                    List<String> equipes = new ArrayList<>();
+                    for (House maison : monde.getHouses())
+                        if (maison.getTeam().getNomEquipe().toLowerCase().equalsIgnoreCase(nomEquipe) ||
+                                maison.getTeam().getNomEquipe().toLowerCase().contains(nomEquipe))
+                            equipes.add(maison.getTeam().getNomEquipe());
+                    return equipes;
+                }
             }
         }
-        return new LinkedList<>();
+        return null;
     }
+
 }

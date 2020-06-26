@@ -442,6 +442,6 @@ public class PlayerUtils {
 
     public static void setMaxHealth(Player p) {
         p.setHealth(20);
-        p.setFoodLevel(25);
+        p.setFoodLevel(30);
     }
 }

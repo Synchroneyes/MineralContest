@@ -1,10 +1,7 @@
 package fr.synchroneyes.mapbuilder.Commands;
 
 import fr.synchroneyes.groups.Commands.CommandTemplate;
-import fr.synchroneyes.mapbuilder.Blocks.BlocksDataColor;
 import fr.synchroneyes.mapbuilder.Core.Monde;
-import fr.synchroneyes.mapbuilder.Items.AreneItem;
-import fr.synchroneyes.mapbuilder.Items.ColoredHouseItem;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
@@ -64,14 +61,15 @@ public class mcbuild extends CommandTemplate {
         }
 
         if (args[0].equalsIgnoreCase("menu")) {
-            for (BlocksDataColor color : BlocksDataColor.values()) {
+            /*for (BlocksDataColor color : BlocksDataColor.values()) {
                 ColoredHouseItem house = new ColoredHouseItem(color);
                 house.giveItemToPlayer((Player) commandSender);
             }
             commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu les blocs de création de maison. Vous n'avez plus qu'a les poser");
             AreneItem item = new AreneItem();
             item.giveItemToPlayer((Player) commandSender);
-            commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu le bloc de création d'arène Vous n'avez plus qu'a le poser");
+            commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu le bloc de création d'arène Vous n'avez plus qu'a le poser");*/
+            MapBuilder.getInstance().getMenuManager().openInventory(joueur);
             return false;
         }
 

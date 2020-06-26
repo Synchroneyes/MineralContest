@@ -1,6 +1,7 @@
 package fr.synchroneyes.mapbuilder.Commands;
 
 import fr.synchroneyes.groups.Commands.CommandTemplate;
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -8,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,10 +73,26 @@ public class mcarena extends CommandTemplate {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        if (alias.equalsIgnoreCase("mcarena")) {
-            if (args.length == 0 || args.length == 1) return actionsPossible;
+    public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) throws IllegalArgumentException {
+        if (sender instanceof Player) {
+            Player joueur = (Player) sender;
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+            if (playerGroup == null) return null;
+
+            if (arguments.length == 1) {
+                String argument = arguments[0];
+
+                List<String> available_cvar = new ArrayList<>();
+                for (String action : actionsPossible) {
+                    if (action.equalsIgnoreCase(argument) || action.toLowerCase().contains(argument.toLowerCase()))
+                        available_cvar.add(action);
+                }
+
+                if (available_cvar.isEmpty()) available_cvar.add("No results");
+                return available_cvar;
+            }
         }
-        return new LinkedList<>();
+
+        return null;
     }
 }

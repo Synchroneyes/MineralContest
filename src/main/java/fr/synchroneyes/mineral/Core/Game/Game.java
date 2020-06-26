@@ -11,6 +11,7 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.ChatColorString;
 import fr.synchroneyes.mineral.Utils.Door.AutomaticDoors;
+import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -442,11 +443,6 @@ public class Game implements Listener {
 
             if (getPlayerTeam(player) != null) getPlayerTeam(player).removePlayer(player);
 
-            if (!isGameStarted()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), this), groupe);
-                }, 20);
-            }
         }
     }
 
@@ -456,11 +452,7 @@ public class Game implements Listener {
             this.referees.remove(player);
             PlayerUtils.clearPlayer(player);
             //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
-            if (!isGameStarted()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(mineralcontest.plugin, () -> {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.hud_awaiting_players.toString(), this), groupe);
-                }, 20);
-            }
+
 
             if (isGameStarted() || isPreGame()) setPlayerRandomTeam(player);
         }
@@ -587,7 +579,7 @@ public class Game implements Listener {
 
     public void handleDoors() {
 
-        int rayonPorte = 2;
+        int rayonPorte = 3;
         int nomrbeTicks = 5;
 
         new BukkitRunnable() {
@@ -605,10 +597,15 @@ public class Game implements Listener {
                         for (House maison : equipes) {
                             Equipe equipe = maison.getTeam();
                             if (isReferee(online) || equipe.isPlayerInTeam(online)) {
-                                if (Radius.isBlockInRadius(maison.getPorte().getMiddleBlockLocation(), online.getLocation(), rayonPorte))
-                                    maison.getPorte().playerIsNearDoor(online);
-                                else
-                                    maison.getPorte().playerIsNotNearDoor(online);
+                                for (DisplayBlock blockDePorte : maison.getPorte().getPorte()) {
+                                    if (Radius.isBlockInRadius(blockDePorte.getPosition(), online.getLocation(), rayonPorte)) {
+                                        //maison.getPorte().playerIsNearDoor(online);
+                                        blockDePorte.hide();
+                                    } else {
+                                        blockDePorte.display();
+                                        //maison.getPorte().playerIsNotNearDoor(online);
+                                    }
+                                }
                             }
                         }
                     }

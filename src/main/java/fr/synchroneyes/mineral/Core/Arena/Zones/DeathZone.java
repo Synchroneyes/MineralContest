@@ -54,6 +54,13 @@ public class DeathZone {
         this.spawnLocation = pos;
     }
 
+    public CouplePlayer getPlayerInfo(Player p) {
+        for (CouplePlayer playerInfo : getPlayers())
+            if (playerInfo.getJoueur().equals(p)) return playerInfo;
+        return null;
+    }
+
+
     public Location getSpawnLocation() throws Exception {
         if (spawnLocation == null) {
             throw new Exception(Lang.translate(Lang.deathzone_spawn_location_undefined.toString()));
@@ -70,6 +77,10 @@ public class DeathZone {
         if (joueurs.size() != 0) {
             for (CouplePlayer joueur : this.joueurs) {
 
+                if (joueur.getJoueur() == null || !joueur.getJoueur().isOnline()) {
+                    this.joueurs.remove(joueur);
+                    return;
+                }
                 // Si le joueur a fini sa peine
                 if (joueur.getValeur() <= 0)
                     libererJoueur(joueur);
@@ -95,6 +106,21 @@ public class DeathZone {
     }
 
     public synchronized void add(Player joueur) throws Exception {
+        this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
+        applyDeathEffectToPlayer(joueur);
+
+    }
+
+    public synchronized void add(CouplePlayer couplePlayer) throws Exception {
+        Player joueur = couplePlayer.getJoueur();
+        this.joueurs.add(couplePlayer);
+        applyDeathEffectToPlayer(joueur);
+
+    }
+
+
+    private void applyDeathEffectToPlayer(Player joueur) throws Exception {
+
         timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         Game partie = mineralcontest.getPlayerGame(joueur);
 
@@ -106,7 +132,6 @@ public class DeathZone {
             return;
         }
 
-        this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         joueur.setGameMode(GameMode.ADVENTURE);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
@@ -121,7 +146,6 @@ public class DeathZone {
 
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * (timeInDeathzone * 3), 1));
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (timeInDeathzone * 3), 1));
-
     }
 
     public synchronized boolean isPlayerDead(Player joueur) {
@@ -137,7 +161,14 @@ public class DeathZone {
 
         // SI le joueur n'a plus de temps à passer ici
         if (DeathZonePlayer.getValeur() <= 0) {
+
             Player joueur = DeathZonePlayer.getJoueur();
+
+            if (!joueur.isOnline()) {
+                this.joueurs.remove(DeathZonePlayer);
+                return;
+            }
+
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
             joueur.setHealth(20f);

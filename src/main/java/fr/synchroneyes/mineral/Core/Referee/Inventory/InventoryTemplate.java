@@ -32,6 +32,9 @@ public abstract class InventoryTemplate {
     public abstract void setInventoryItems(Player arbitre);
 
     public void openInventory(Player arbitre) {
+        this.items.clear();
+        this.inventaire.clear();
+
         setInventoryItems(arbitre);
         for (RefereeItemTemplate item : items) {
             inventaire.addItem(item.toItemStack());

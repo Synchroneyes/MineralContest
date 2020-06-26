@@ -1,14 +1,17 @@
 package fr.synchroneyes.mineral.Settings;
 
 import fr.synchroneyes.file_manager.FileList;
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +28,9 @@ public class GameSettings {
     // Les paramètres du fichier de configuration à ne pas tenir compte
     private static LinkedList<GameCVAR> parametresExclu;
 
-    public GameSettings(boolean loadDefaultSettings) {
+    private Groupe groupe;
+
+    public GameSettings(boolean loadDefaultSettings, Groupe g) {
         if (parametresExclu == null) {
             parametresExclu = new LinkedList<>();
             parametresExclu.add(new GameCVAR("chest_content", "", "", "arena", false, false));
@@ -38,7 +43,7 @@ public class GameSettings {
         }
 
         fichierConfiguration = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
-
+        this.groupe = g;
     }
 
 
@@ -93,6 +98,18 @@ public class GameSettings {
         for (GameCVAR parametre : parametres) {
             if (parametre.getCommand().equalsIgnoreCase(cvar)) {
                 gameCVAR = parametre;
+
+                if (parametre.getCommand().equalsIgnoreCase("mp_enable_old_pvp")) {
+                    for (Player player : groupe.getPlayers()) {
+                        if (parametre.getValeurNumerique() == 1) {
+                            player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
+                        } else {
+                            player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+
+                        }
+                    }
+
+                }
                 break;
             }
         }

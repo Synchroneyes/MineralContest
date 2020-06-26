@@ -7,6 +7,8 @@ import fr.synchroneyes.mapbuilder.Commands.mcteam;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.Events.BlockPlaced;
 import fr.synchroneyes.mapbuilder.Events.PlayerInteract;
+import fr.synchroneyes.mapbuilder.Menus.MenuEvent;
+import fr.synchroneyes.mapbuilder.Menus.MenuManager;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -32,6 +34,8 @@ public class MapBuilder {
 
     public static Stack<Stack<BlockSaver>> modifications;
 
+    private MenuManager menuManager;
+
     public static Monde monde;
 
     private MapBuilder() {
@@ -39,6 +43,7 @@ public class MapBuilder {
         //mineralcontest.debug = isBuilderModeEnabled;
         modifications = new Stack<>();
 
+        menuManager = new MenuManager();
 
         monde = new Monde();
 
@@ -55,6 +60,10 @@ public class MapBuilder {
         registerCommands();
 
 
+    }
+
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
 
     public static void enableMapBuilder() {
@@ -85,6 +94,9 @@ public class MapBuilder {
         printToConsole("Registering events");
         this.plugin.getServer().getPluginManager().registerEvents(new BlockPlaced(), plugin);
         this.plugin.getServer().getPluginManager().registerEvents(new PlayerInteract(), plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(new MenuEvent(), plugin);
+
+
     }
 
     private void registerCommands() {

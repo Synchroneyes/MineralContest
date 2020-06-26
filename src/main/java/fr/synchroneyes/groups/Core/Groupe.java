@@ -14,8 +14,9 @@ import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
+import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.mineralcontest;
-import javafx.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,7 +24,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public class Groupe {
     private int tailleIdentifiant = 10;
@@ -50,8 +53,9 @@ public class Groupe {
 
 
     // UUID, <NomEquipe, PositionDeco>
-    private HashMap<UUID, Pair<String, Location>> disconnectedPlayers;
-
+    //
+    // private HashMap<UUID, Pair<String, Location>> disconnectedPlayers;
+    private LinkedList<DisconnectedPlayer> disconnectedPlayers;
 
     public Groupe() {
         this.equipes = new LinkedList<>();
@@ -59,9 +63,9 @@ public class Groupe {
         this.joueurs = new LinkedList<>();
         this.joueursInvites = new LinkedList<>();
 
-        this.disconnectedPlayers = new HashMap<>();
+        this.disconnectedPlayers = new LinkedList<>();
 
-        parametresPartie = new GameSettings(true);
+        parametresPartie = new GameSettings(true, this);
 
         this.partie = new Game(this);
         this.partie.init();
@@ -419,10 +423,24 @@ public class Groupe {
      * @param p
      */
     public void addDisconnectedPlayer(Player p) {
-        Pair<String, Location> playerInfo = new Pair<>(getPlayerTeam(p).getNomEquipe(), p.getLocation());
+        /*Pair<String, Location> playerInfo = new Pair<>(getPlayerTeam(p).getNomEquipe(), p.getLocation());
         retirerJoueur(p);
-        if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);
+        if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);*/
+
+        Equipe oldPlayerTeam = getPlayerTeam(p);
+        CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
+
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation());
+        if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
+        retirerJoueur(p);
     }
+
+    public DisconnectedPlayer getDisconnectedPlayerInfo(Player p) {
+        for (DisconnectedPlayer disconnectedPlayer : disconnectedPlayers)
+            if (disconnectedPlayer.getPlayerUUID().equals(p.getUniqueId())) return disconnectedPlayer;
+        return null;
+    }
+
 
     /**
      * Reconnecte un joueur, on le re TP dans sa position initiale, et dans son équipe
@@ -431,7 +449,48 @@ public class Groupe {
      */
     public void playerHaveReconnected(Player p) {
         if (havePlayerDisconnected(p)) {
-            Pair<String, Location> playerInfo = disconnectedPlayers.get(p.getUniqueId());
+
+            DisconnectedPlayer infoJoueur = this.getDisconnectedPlayerInfo(p);
+
+            try {
+                // On traite maintenant les différent les informations
+
+                // On remet le joueur dans son groupe
+                if (infoJoueur.getOldPlayerGroupe() != null) {
+                    if (p.isOp()) infoJoueur.getOldPlayerGroupe().addAdmin(p);
+                    else infoJoueur.getOldPlayerGroupe().addJoueur(p);
+
+                    // On remet le joueur dans son équipe
+                    if (infoJoueur.getOldPlayerTeam() != null)
+                        infoJoueur.getOldPlayerTeam().addPlayerToTeam(p, true, false);
+
+                    // Si le joueur était mort, on le remets
+                    if (infoJoueur.wasPlayerDead()) {
+                        CouplePlayer deathTime = new CouplePlayer(p, infoJoueur.getOldPlayerDeathTime().getValeur());
+                        Groupe playerGroup = infoJoueur.getOldPlayerGroupe();
+                        if (playerGroup.getGame() != null)
+                            if (playerGroup.getGame().getArene() != null)
+                                if (playerGroup.getGame().getArene().getDeathZone() != null)
+                                    playerGroup.getGame().getArene().getDeathZone().add(deathTime);
+
+                    }
+
+                    p.teleport(infoJoueur.getOldPlayerLocation());
+
+                    // On le supprime de la liste des déco
+                    disconnectedPlayers.remove(infoJoueur);
+
+                    // SI il n'y a plus personne dans la liste, on relance la partie!
+                    //if (disconnectedPlayers.isEmpty()) partie.resumeGame();
+
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+
+            /*Pair<String, Location> playerInfo = disconnectedPlayers.get(p.getUniqueId());
 
             Equipe playerTeam = partie.getHouseFromName(playerInfo.getKey()).getTeam();
             Location playerLocation = playerInfo.getValue();
@@ -448,18 +507,12 @@ public class Groupe {
                     partie.addReferee(p);
                     return;
                 }
-            }
+            }*/
 
             // On téléport le joueur à sa dernière position
-            p.teleport(playerLocation);
 
-            // On le supprime de la liste des déco
-            disconnectedPlayers.remove(p.getUniqueId());
 
-            // SI il n'y a plus personne dans la liste, on relance la partie!
-            if (disconnectedPlayers.isEmpty()) partie.resumeGame();
-            joueurs.add(p);
-        }
+
     }
 
     /**
@@ -468,7 +521,10 @@ public class Groupe {
      * @param p
      */
     public boolean havePlayerDisconnected(Player p) {
-        return disconnectedPlayers.containsKey(p.getUniqueId());
+
+        for (DisconnectedPlayer disconnectedPlayer : disconnectedPlayers)
+            if (disconnectedPlayer.getPlayerUUID().equals(p.getUniqueId())) return true;
+        return false;
     }
 
 

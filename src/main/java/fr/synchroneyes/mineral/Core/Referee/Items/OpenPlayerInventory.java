@@ -1,7 +1,10 @@
 package fr.synchroneyes.mineral.Core.Referee.Items;
 
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Referee.Inventory.InventoryTemplate;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.Utils.ChatColorString;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -50,6 +53,9 @@ public class OpenPlayerInventory extends RefereeItemTemplate {
 
     @Override
     public Material getItemMaterial() {
-        return Material.CHEST;
+        Player playerToTeleportName = (Player) target;
+        Game playerGame = mineralcontest.getPlayerGame(playerToTeleportName);
+        if (playerGame == null || playerGame.getPlayerHouse(playerToTeleportName) == null) return Material.WHITE_WOOL;
+        return Material.valueOf(ChatColorString.toStringEN(playerGame.getPlayerHouse(playerToTeleportName).getTeam().getCouleur()) + "_CONCRETE");
     }
 }
