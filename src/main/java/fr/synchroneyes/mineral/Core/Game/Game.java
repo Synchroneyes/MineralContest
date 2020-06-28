@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Core.Arena.Arene;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.InventoryInterface;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInventory;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Statistics.StatsManager;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
@@ -28,6 +29,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -77,6 +79,9 @@ public class Game implements Listener {
      */
     private InventoryInterface available_teams_inventory;
 
+    // Gestionnaire de stats
+    private StatsManager statsManager;
+
 
     // Group of the game
     public Groupe groupe;
@@ -97,9 +102,19 @@ public class Game implements Listener {
         this.equipes = new LinkedList<>();
         this.addedChests = new LinkedList<>();
         this.arene = new Arene(groupe);
+
+        this.statsManager = new StatsManager(this);
         initGameSettings();
     }
 
+    /**
+     * Retourne l'instance de stats de la partie!
+     *
+     * @return StatsManager
+     */
+    public StatsManager getStatsManager() {
+        return statsManager;
+    }
 
     /**
      * Récupère l'équipe avec le plus de points
@@ -454,6 +469,7 @@ public class Game implements Listener {
             //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
 
 
+
             if (isGameStarted() || isPreGame()) setPlayerRandomTeam(player);
         }
 
@@ -596,14 +612,14 @@ public class Game implements Listener {
                     for (Player online : groupe.getPlayers()) {
                         for (House maison : equipes) {
                             Equipe equipe = maison.getTeam();
-                            if (isReferee(online) || equipe.isPlayerInTeam(online)) {
+                            if ((isReferee(online) || equipe.isPlayerInTeam(online)) && !getArene().getDeathZone().isPlayerDead(online)) {
                                 for (DisplayBlock blockDePorte : maison.getPorte().getPorte()) {
                                     if (Radius.isBlockInRadius(blockDePorte.getPosition(), online.getLocation(), rayonPorte)) {
-                                        //maison.getPorte().playerIsNearDoor(online);
-                                        blockDePorte.hide();
+                                        maison.getPorte().playerIsNearDoor(online);
+                                        //blockDePorte.hide();
                                     } else {
-                                        blockDePorte.display();
-                                        //maison.getPorte().playerIsNotNearDoor(online);
+                                        //blockDePorte.display();
+                                        maison.getPorte().playerIsNotNearDoor(online);
                                     }
                                 }
                             }
@@ -852,6 +868,13 @@ public class Game implements Listener {
         }
 
 
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            Inventory inventaireStat = getMenuStatistiques();
+            for (Player joueur : groupe.getPlayers())
+                joueur.openInventory(inventaireStat);
+        }, 20);
+
+
         this.resetMap();
         this.clear();
         this.GamePaused = false;
@@ -863,6 +886,16 @@ public class Game implements Listener {
         this.groupe.enableVote();
         this.groupe.resetGame();
 
+    }
+
+    private Inventory getMenuStatistiques() {
+        Inventory inventaireStats = Bukkit.createInventory(null, 27, Lang.stats_menu_title.getDefault());
+
+        for (ItemStack item : getStatsManager().getAllStatsAsItemStack())
+            inventaireStats.addItem(item);
+
+
+        return inventaireStats;
     }
 
 
@@ -964,6 +997,9 @@ public class Game implements Listener {
         if (isGameStarted()) {
             throw new Exception(Lang.get("game_already_started"));
         }
+
+        this.statsManager = null;
+        this.statsManager = new StatsManager(this);
 
 
         if (forceGameStart) {

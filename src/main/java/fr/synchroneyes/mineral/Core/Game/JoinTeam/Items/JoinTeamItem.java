@@ -21,7 +21,11 @@ public class JoinTeamItem extends ItemInterface {
 
     @Override
     public Material getItemMaterial() {
-        return Material.valueOf(ChatColorString.toStringEN(team.getCouleur()) + "_CONCRETE");
+        try {
+            return Material.valueOf(ChatColorString.toStringEN(team.getCouleur()) + "_CONCRETE");
+        } catch (IllegalArgumentException iae) {
+            return Material.WHITE_WOOL;
+        }
     }
 
     @Override

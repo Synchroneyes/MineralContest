@@ -17,6 +17,8 @@ public class JoinGroupe extends CommandTemplate {
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(NO_GROUP);
         accessCommande.add(REQUIRE_COMMUNITY_VERSION);
+        accessCommande.add(GAME_NOT_STARTED);
+
 
 
     }

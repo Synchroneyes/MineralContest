@@ -144,6 +144,7 @@ public class Equipe implements Comparable<Equipe> {
 
         p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_welcome.toString(), this));
 
+
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p), groupe);
 
         return true;
@@ -154,6 +155,7 @@ public class Equipe implements Comparable<Equipe> {
         if (isPlayerInTeam(p)) {
             this.joueurs.remove(p);
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_kicked.toString(), this));
+
             return true;
         }
         return false;

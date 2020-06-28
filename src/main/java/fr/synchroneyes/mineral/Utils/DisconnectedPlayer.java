@@ -4,7 +4,11 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,13 +20,18 @@ public class DisconnectedPlayer {
     private Groupe oldPlayerGroupe;
     private CouplePlayer oldPlayerDeathTime;
     private Location oldPlayerLocation;
+    private List<ItemStack> oldPlayerInventory;
 
-    public DisconnectedPlayer(UUID playerUUID, Equipe oldPlayerTeam, Groupe oldPlayerGroupe, CouplePlayer oldPlayerDeathTime, Location oldPlayerLocation) {
+    public DisconnectedPlayer(UUID playerUUID, Equipe oldPlayerTeam, Groupe oldPlayerGroupe, CouplePlayer oldPlayerDeathTime, Location oldPlayerLocation, Player p) {
         this.playerUUID = playerUUID;
         this.oldPlayerTeam = oldPlayerTeam;
         this.oldPlayerGroupe = oldPlayerGroupe;
         this.oldPlayerDeathTime = oldPlayerDeathTime;
         this.oldPlayerLocation = oldPlayerLocation;
+        this.oldPlayerInventory = new LinkedList<>();
+
+        for (ItemStack item : p.getInventory().getContents())
+            if (item != null) oldPlayerInventory.add(item);
     }
 
     public UUID getPlayerUUID() {
@@ -47,5 +56,10 @@ public class DisconnectedPlayer {
 
     public boolean wasPlayerDead() {
         return (oldPlayerDeathTime != null && oldPlayerDeathTime.getValeur() > 0);
+    }
+
+
+    public List<ItemStack> getOldPlayerInventory() {
+        return oldPlayerInventory;
     }
 }

@@ -97,6 +97,9 @@ public class PlayerUtils {
                 StringBuilder playerPrefix = new StringBuilder();
                 Game game = mineralcontest.getPlayerGame(onlinePlayer);
 
+                if (mineralcontest.communityVersion)
+                    playerPrefix.append(ChatColor.GOLD + "<" + playerGame.groupe.getNom() + "> " + ChatColor.RESET);
+
                 if (game.getArene().getDeathZone().isPlayerDead(onlinePlayer)) {
                     playerPrefix.append(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "");
                 } else {
@@ -376,6 +379,7 @@ public class PlayerUtils {
 
         // On récupère l'inventaire du joueur
         List<ItemStack> inventaire = new LinkedList<>();
+        player.setLevel(0);
         for (ItemStack item : player.getInventory().getContents())
             if (item != null)
                 inventaire.add(item);
@@ -396,6 +400,10 @@ public class PlayerUtils {
             item_a_drop.add(Material.GOLD_ORE);
             item_a_drop.add(Material.DIAMOND_ORE);
             item_a_drop.add(Material.EMERALD_ORE);
+            item_a_drop.add(Material.IRON_ORE);
+            item_a_drop.add(Material.GOLD_ORE);
+            item_a_drop.add(Material.EMERALD_ORE);
+            item_a_drop.add(Material.DIAMOND_ORE);
 
             Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
             GameSettings settings = playerGroup.getParametresPartie();

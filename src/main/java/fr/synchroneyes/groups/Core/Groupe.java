@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -374,6 +375,7 @@ public class Groupe {
     public void addJoueur(Player p) {
         if (this.joueurs.contains(p)) return;
 
+        p.setLevel(0);
         this.joueursInvites.remove(p);
         this.joueurs.add(p);
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.successfully_joined_a_group.toString(), this));
@@ -396,7 +398,7 @@ public class Groupe {
     }
 
     public void retirerJoueur(Player joueur) {
-        if (isGroupeCreateur(joueur) && mineralcontest.communityVersion && partie != null && !partie.isGameStarted()) {
+        /*if (isGroupeCreateur(joueur) && mineralcontest.communityVersion && partie != null && !partie.isGameStarted()) {
 
             sendToEveryone(mineralcontest.prefixPrive + Lang.group_got_deleted.toString());
             this.joueurs.clear();
@@ -404,7 +406,7 @@ public class Groupe {
             this.joueursInvites.clear();
             mineralcontest.supprimerGroupe(this);
             return;
-        }
+        }*/
 
         this.joueurs.remove(joueur);
         this.admins.remove(joueur);
@@ -430,7 +432,7 @@ public class Groupe {
         Equipe oldPlayerTeam = getPlayerTeam(p);
         CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
 
-        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation());
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p);
         if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
         retirerJoueur(p);
     }
@@ -474,6 +476,10 @@ public class Groupe {
                                     playerGroup.getGame().getArene().getDeathZone().add(deathTime);
 
                     }
+
+                    p.getInventory().clear();
+                    for (ItemStack item : infoJoueur.getOldPlayerInventory())
+                        p.getInventory().addItem(item);
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
 

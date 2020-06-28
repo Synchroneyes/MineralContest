@@ -25,7 +25,6 @@ public class MenuEvent implements Listener {
 
             // Si on est bien sur le plugin & que le mode est activé
             if (mineralcontest.isInAMineralContestWorld(joueur) && MapBuilder.getInstance().isBuilderModeEnabled) {
-                Bukkit.getLogger().info("eventOK! event.getCursor() == null: " + (event.getCursor() == null));
 
                 // On regarde si l'item clické est un menu ou un inventaire
                 if (event.getCurrentItem() == null) return;

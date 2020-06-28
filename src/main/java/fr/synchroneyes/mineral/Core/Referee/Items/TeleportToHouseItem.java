@@ -44,6 +44,12 @@ public class TeleportToHouseItem extends RefereeItemTemplate {
     public Material getItemMaterial() {
         Equipe equipe = (Equipe) target;
         if (equipe == null) return Material.WHITE_WOOL;
-        return Material.valueOf(ChatColorString.toStringEN(equipe.getCouleur()) + "_CONCRETE");
+
+        try {
+            return Material.valueOf(ChatColorString.toStringEN(equipe.getCouleur()) + "_CONCRETE");
+        } catch (IllegalArgumentException iae) {
+            return Material.WHITE_WOOL;
+        }
+
     }
 }

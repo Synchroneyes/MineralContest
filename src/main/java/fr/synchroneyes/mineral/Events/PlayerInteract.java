@@ -24,6 +24,14 @@ public class PlayerInteract implements Listener {
             Player joueur = (Player) event.getPlayer();
             Game partie = mineralcontest.getWorldGame(worldEvent);
 
+            if (mineralcontest.isInMineralContestHub(joueur)) {
+                event.setCancelled(true);
+
+                if (event.getClickedBlock() != null)
+                    event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
+                return;
+            }
+
 
             if (partie != null && !partie.isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);

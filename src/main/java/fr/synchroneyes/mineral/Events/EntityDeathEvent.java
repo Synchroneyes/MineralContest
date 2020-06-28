@@ -2,6 +2,8 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Statistics.Class.ChickenKillerStat;
+import fr.synchroneyes.mineral.Statistics.Class.MonsterKillerStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
@@ -10,6 +12,8 @@ import fr.synchroneyes.mineral.Utils.Range;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +28,9 @@ public class EntityDeathEvent implements Listener {
             Game partie = mineralcontest.getWorldGame(event.getEntity().getWorld());
             if (event.getEntity() instanceof Chicken && partie != null && partie.isGameStarted()) {
 
+
                 Chicken poulet = (Chicken) event.getEntity();
+                Player tueur = poulet.getKiller();
                 // Seulement sur les poulets "custom"
 
                 if (poulet.getCustomName() == null) return;
@@ -51,11 +57,20 @@ public class EntityDeathEvent implements Listener {
                             event.getDrops().add(new ItemStack(droppedItem, 1));
                         }
 
+                        if (tueur != null) partie.getStatsManager().register(ChickenKillerStat.class, tueur, null);
+
                     } catch (Exception e) {
                         Error.Report(e, partie);
                     }
 
 
+                }
+            }
+
+            if (event.getEntity() instanceof Monster && partie != null && partie.isGameStarted()) {
+                Player tueur = event.getEntity().getKiller();
+                if (tueur != null) {
+                    partie.getStatsManager().register(MonsterKillerStat.class, tueur, null);
                 }
             }
         }

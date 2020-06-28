@@ -2,10 +2,12 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -15,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 
+
 public class EntityDamage implements Listener {
 
     @EventHandler
@@ -22,7 +25,18 @@ public class EntityDamage implements Listener {
         World worldEvent = event.getEntity().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Game partie = mineralcontest.getWorldGame(worldEvent);
-            if (partie == null) return;
+
+            if (event.getEntity() instanceof Player && mineralcontest.isInMineralContestHub((Player) event.getEntity())) {
+                event.setCancelled(true);
+                return;
+            }
+
+
+            if (partie == null) {
+                event.setCancelled(true);
+                return;
+            }
+
             if (!partie.isGameStarted() || partie.isGamePaused()) {
                 event.setCancelled(true);
                 return;
@@ -37,10 +51,20 @@ public class EntityDamage implements Listener {
                     event.setCancelled(true);
                     PlayerUtils.killPlayer(victime);
 
+
                     if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
                         EntityDamageByEntityEvent event1 = (EntityDamageByEntityEvent) event;
                         if (event1.getDamager() instanceof Player) {
                             registerKill(victime, (Player) event1.getDamager());
+                        }
+                    } else if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+                        EntityDamageByEntityEvent event2 = (EntityDamageByEntityEvent) event;
+                        if (event2.getDamager() instanceof Arrow) {
+                            Arrow fleche = (Arrow) event2.getDamager();
+                            if (fleche.getShooter() instanceof Player) {
+                                Player attaquant_f = (Player) fleche.getShooter();
+                                registerKill(victime, attaquant_f);
+                            }
                         }
                     } else {
                         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), victime), partie.groupe);
@@ -114,10 +138,20 @@ public class EntityDamage implements Listener {
                     victime.setHealth(20D);
                     event.setCancelled(true);
 
+                    if (event.getDamager() instanceof Arrow) {
+                        Arrow fleche = (Arrow) event.getDamager();
+                        if (fleche.getShooter() instanceof Player) {
+                            Player attaquant_f = (Player) fleche.getShooter();
+                            Bukkit.broadcastMessage(attaquant_f.getDisplayName() + " a attacké " + victime.getDisplayName());
+                            registerKill(victime, attaquant_f);
+                        }
+                    }
+
                     // Si c'est un joueur qui a tué notre victime
                     if (event.getDamager() instanceof Player) {
                         registerKill(victime, (Player) event.getDamager());
                     }
+
 
                     PlayerUtils.killPlayer(victime);
 
@@ -130,6 +164,11 @@ public class EntityDamage implements Listener {
     private void registerKill(Player dead, Player attacker) {
         if (mineralcontest.getPlayerGame(dead) == null) return;
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_killed.toString(), dead, attacker), mineralcontest.getPlayerGame(dead).groupe);
+
+        Game partie = mineralcontest.getPlayerGame(attacker);
+        if (partie != null && partie.isGameStarted()) {
+            partie.getStatsManager().register(KillStat.class, attacker, dead);
+        }
 
         mineralcontest.getPlayerGame(dead).killCounter++;
     }

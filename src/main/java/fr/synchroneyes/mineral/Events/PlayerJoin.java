@@ -69,6 +69,10 @@ public class PlayerJoin implements Listener {
                     if (playerGroupe.havePlayerDisconnected(joueur)) playerGroupe.playerHaveReconnected(joueur);
                     return;
 
+                } else {
+                    for (Groupe groupe : mineralcontest.plugin.groupes)
+                        if (groupe.havePlayerDisconnected(joueur))
+                            groupe.playerHaveReconnected(joueur);
                 }
             }
 

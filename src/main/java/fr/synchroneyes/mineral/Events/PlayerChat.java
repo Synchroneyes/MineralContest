@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Statistics.Class.TalkStat;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -23,7 +24,7 @@ public class PlayerChat implements Listener {
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player sender = event.getPlayer();
-            Game partie = mineralcontest.getWorldGame(worldEvent);
+            Game partie = mineralcontest.getPlayerGame(sender);
 
 
             Set<Player> receveurs = event.getRecipients();
@@ -57,6 +58,8 @@ public class PlayerChat implements Listener {
             if (partie.isGameStarted() || partie.isPreGame()) {
                 receveurs.clear();
                 receveurs.addAll(partie.groupe.getPlayers());
+
+                partie.getStatsManager().register(TalkStat.class, sender, null);
             }
 
 

@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Commands;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Statistics.Class.TalkStat;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -35,6 +36,9 @@ public class TeamChat implements CommandExecutor {
                     message.append(arg + " ");
 
                 playerTeam.sendMessage(message.toString(), player);
+
+                partie.getStatsManager().register(TalkStat.class, player, null);
+
             }
         }
 

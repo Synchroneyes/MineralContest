@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*
     Classe représentant la deathzone
@@ -27,7 +27,7 @@ public class DeathZone {
             - Player joueur
             - int valeur
      */
-    LinkedList<CouplePlayer> joueurs;
+    ConcurrentLinkedQueue<CouplePlayer> joueurs;
 
     // Temps en seconde
     private int timeInDeathzone = 0;
@@ -35,7 +35,7 @@ public class DeathZone {
     private Groupe groupe;
 
     public DeathZone(Groupe g) {
-        this.joueurs = new LinkedList<CouplePlayer>();
+        this.joueurs = new ConcurrentLinkedQueue<CouplePlayer>();
         this.groupe = g;
         try {
 
@@ -45,7 +45,7 @@ public class DeathZone {
         }
     }
 
-    public LinkedList<CouplePlayer> getPlayers() {
+    public ConcurrentLinkedQueue<CouplePlayer> getPlayers() {
         return this.joueurs;
     }
 
@@ -106,12 +106,14 @@ public class DeathZone {
     }
 
     public synchronized void add(Player joueur) throws Exception {
+        timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         applyDeathEffectToPlayer(joueur);
 
     }
 
     public synchronized void add(CouplePlayer couplePlayer) throws Exception {
+
         Player joueur = couplePlayer.getJoueur();
         this.joueurs.add(couplePlayer);
         applyDeathEffectToPlayer(joueur);

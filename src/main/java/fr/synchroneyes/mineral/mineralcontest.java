@@ -333,6 +333,10 @@ public final class mineralcontest extends JavaPlugin {
         // JoinMenu
         Bukkit.getServer().getPluginManager().registerEvents(new JoinTeamInventoryEvent(), this);
 
+        // Drop
+
+        //Bukkit.getServer().getPluginManager().registerEvents(new BowEvent(), this);
+
 
     }
 
@@ -363,6 +367,9 @@ public final class mineralcontest extends JavaPlugin {
 
             bukkitCommandMap.register("", new MCCvarCommand());
             bukkitCommandMap.register("", new SetDefaultItems());
+
+            //bukkitCommandMap.register("", new SpawnDrop());
+
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -460,8 +467,11 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     public static boolean isAMineralContestWorld(World w) {
+
+        if (w.equals(plugin.pluginWorld)) return true;
+
         for (Groupe groupe : plugin.groupes)
-            if (groupe.getMonde() == null && communityVersion) return false;
+            if (groupe.getMonde() == null) return false;
             else if (w.equals(groupe.getMonde())) return true;
         return w.equals(plugin.pluginWorld);
     }

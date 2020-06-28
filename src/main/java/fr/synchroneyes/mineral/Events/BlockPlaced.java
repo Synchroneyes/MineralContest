@@ -4,6 +4,7 @@ import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.Game.BlockManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Statistics.Class.BuilderStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -35,10 +36,13 @@ public class BlockPlaced implements Listener {
             }
 
             // Si on est pas dans une game, on arrête là, ne devrait pas arriver
-            if (game == null) {
+            if (mineralcontest.isInMineralContestHub(event.getPlayer())) {
+                event.setCancelled(true);
                 Bukkit.getLogger().severe("[MineralContest] Block got placed, but not inside a game ...");
                 return;
             }
+
+            if (game == null) return;
 
             if (game.isGameStarted() && !game.isGamePaused()) {
                 try {
@@ -54,6 +58,8 @@ public class BlockPlaced implements Listener {
                                 event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.block_not_allowed_to_be_placed.toString());
                             }
                             blockManager.addBlock(event.getBlock());
+                            game.getStatsManager().register(BuilderStat.class, event.getPlayer(), null);
+
                         } else {
                             // We block the block adding
                             event.setCancelled(true);
@@ -74,6 +80,8 @@ public class BlockPlaced implements Listener {
             game.addAChest(event.getBlock());
             // Save the block
             game.addBlock(event.getBlock(), BlockSaver.Type.PLACED);
+
+            game.getStatsManager().register(BuilderStat.class, event.getPlayer(), null);
         }
 
     }

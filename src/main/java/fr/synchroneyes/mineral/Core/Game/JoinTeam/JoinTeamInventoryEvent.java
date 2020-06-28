@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Core.Game.JoinTeam;
 
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Items.ItemInterface;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -27,9 +28,12 @@ public class JoinTeamInventoryEvent implements Listener {
             Player joueur = (Player) event.getWhoClicked();
             Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
             if (playerGroup == null) return;
-            if (playerGroup.getGame() == null || playerGroup.getMonde() == null) return;
+
+            if (playerGroup.getGame() == null || playerGroup.getMonde() == null || playerGroup.getEtatPartie() != Etats.ATTENTE_DEBUT_PARTIE)
+                return;
             ItemStack clickedItem = event.getCurrentItem();
             Inventory clickedInventory = event.getInventory();
+
 
             if (playerGroup.getGame().getTeamSelectionMenu().getInventory() == null) return;
             // Si l'inventaire où on a effectué le click est l'inventaire de séléction d'équipe
@@ -68,7 +72,7 @@ public class JoinTeamInventoryEvent implements Listener {
             if (playerGroup.getGame() == null) return;
 
             ItemStack item = event.getItem();
-            if (item != null && item.equals(Game.getTeamSelectionItem())) {
+            if (item != null && playerGroup.getEtatPartie() == Etats.ATTENTE_DEBUT_PARTIE && item.equals(Game.getTeamSelectionItem())) {
                 playerGroup.getGame().openTeamSelectionMenuToPlayer(joueur);
                 event.setCancelled(true);
                 return;

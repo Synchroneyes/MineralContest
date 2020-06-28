@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Core.Arena;
 
 import fr.synchroneyes.mineral.Core.Arena.ArenaChestContent.ArenaChestContentGenerator;
+import fr.synchroneyes.mineral.Statistics.Class.ArenaChestStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -207,6 +208,10 @@ public class CoffreAvecCooldown {
                         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.arena_chest_opened.toString(), arene.groupe);
                         mineralcontest.getPlayerGame(joueur).getArene().disableTeleport();
                         arene.setChestSpawned(false);
+
+                        // On enregistre l'ouverture du coffre!
+                        arene.groupe.getGame().getStatsManager().register(ArenaChestStat.class, joueur, null);
+
                         this.cancel();
 
                     }

@@ -233,4 +233,23 @@ player_joined_our_group: %playerName% have joined our group!
 error_no_teams_with_player: There is no teams with players!
 currently_no_player_in_this_team: "The team is empty"
 arena_chest_will_spawn_in: "Arena chest will spawn in %arenaChestTimeLeft% seconds!"
+stats_arena_chest_title:  "Indiana Jones"
+stats_arena_chest_subtitle: "With %d opened chests"
+stats_builder_title: "John the builder"
+stats_builder_subtitle: "with %d placed blocks"
+stats_chicken_killer_title: "KFC's chief"
+stats_chicken_killer_subtitle: "With %d killed chicken"
+stats_kill_best_ranked_title: "Jack the Ripper"
+stats_kill_worst_ranked_title: "Victim"
+stats_kill_best_ranked_subtitle: "With %d kill(s)"
+stats_kill_worst_ranked_subtitle: "With %d death(s)"
+stats_miner_best_ranked_title: "The human drill"
+stats_miner_worst_ranked_title: "René the mole"
+stats_miner_subtitle: "With %d mined blocks"
+stats_monster_killer_title: "The Witcher"
+stats_monster_killer_subtitle: "With %d monster(s) killed"
+stats_most_talking_title: "The writer"
+stats_most_talking_subtitle: "With %d messages sent"
+stats_menu_title: "Game ending stats"
+
 

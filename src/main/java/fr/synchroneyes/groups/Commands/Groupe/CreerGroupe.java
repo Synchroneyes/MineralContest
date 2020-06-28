@@ -18,6 +18,8 @@ public class CreerGroupe extends CommandTemplate {
         accessCommande.add(PLAYER_COMMAND);
         accessCommande.add(REQUIRE_COMMUNITY_VERSION);
         accessCommande.add(NO_GROUP);
+        accessCommande.add(GAME_NOT_STARTED);
+
 
     }
 

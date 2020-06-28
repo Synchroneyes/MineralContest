@@ -39,6 +39,10 @@ public class TeleportToPlayerItem extends RefereeItemTemplate {
         Player playerToTeleportName = (Player) target;
         Game playerGame = mineralcontest.getPlayerGame(playerToTeleportName);
         if (playerGame == null || playerGame.getPlayerHouse(playerToTeleportName) == null) return Material.WHITE_WOOL;
-        return Material.valueOf(ChatColorString.toStringEN(playerGame.getPlayerHouse(playerToTeleportName).getTeam().getCouleur()) + "_CONCRETE");
+        try {
+            return Material.valueOf(ChatColorString.toStringEN(playerGame.getPlayerTeam(playerToTeleportName).getCouleur()) + "_CONCRETE");
+        } catch (IllegalArgumentException iae) {
+            return Material.WHITE_WOOL;
+        }
     }
 }

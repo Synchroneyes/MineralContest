@@ -250,7 +250,32 @@ public enum Lang {
     error_no_teams_with_player("error_no_teams_with_player", "Il n'y a aucune équipe avec des joueurs!"),
     currently_no_player_in_this_team("currently_no_player_in_this_team", "Aucun joueur dans cette équipe pour le moment"),
     item_team_selection_title("item_team_selection_title", "Choisir une équipe"),
-    arena_chest_will_spawn_in("arena_chest_will_spawn_in", "Le coffre d'arène va apparaitre dans %arenaChestTimeLeft% secondes!");
+    arena_chest_will_spawn_in("arena_chest_will_spawn_in", "Le coffre d'arène va apparaitre dans %arenaChestTimeLeft% secondes!"),
+
+
+    stats_arena_chest_title("stats_arena_chest_title", "Indiana Jones"),
+    stats_arena_chest_subtitle("stats_arena_chest_subtitle", "Avec %d coffre d'ouvert(s)"),
+    stats_builder_title("stats_builder_title", "Jean le maçon"),
+    stats_builder_subtitle("stats_builder_subtitle", "Avec %d bloc(s) de poser"),
+    stats_chicken_killer_title("stats_chicken_killer_title", "Cuisiner chez KFC"),
+    stats_chicken_killer_subtitle("stats_chicken_killer_subtitle", "Avec %d de poulet(s) tuer"),
+    stats_kill_best_ranked_title("stats_kill_best_ranked_title", "Jack l'éventreur"),
+    stats_kill_worst_ranked_title("stats_kill_worst_ranked_title", "Victime"),
+    stats_kill_best_ranked_subtitle("stats_kill_best_ranked_subtitle", "Avec %d meurtre(s)"),
+    stats_kill_worst_ranked_subtitle("stats_kill_worst_ranked_subtitle", "Avec %d décès"),
+    stats_miner_best_ranked_title("stats_miner_best_ranked_title", "La foreuse humaine"),
+    stats_miner_worst_ranked_title("stats_miner_worst_ranked_title", "René la taupe"),
+    stats_miner_subtitle("stats_miner_subtitle", "Avec %d bloc(s) de miner"),
+    stats_monster_killer_title("stats_monster_killer_title", "The Witcher"),
+    stats_monster_killer_subtitle("stats_monster_killer_subtitle", "Avec %d de monstre(s) tué(s)"),
+    stats_most_talking_title("stats_most_talking_title", "Le blabla-teur"),
+    stats_most_talking_subtitle("stats_most_talking_subtitle", "Avec %d message(s) envoyé(s)"),
+    stats_menu_title("stats_menu_title", "Menu de stats de fin de partie");
+
+
+
+
+
 
     private String path;
     private String def;

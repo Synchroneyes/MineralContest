@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Arena.Coffre;
 import fr.synchroneyes.mineral.Core.Arena.CoffreAvecCooldown;
 import fr.synchroneyes.mineral.Core.Game.Game;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
@@ -159,5 +161,48 @@ public class ChestEvent implements Listener {
             }
         }
 
+    }
+
+
+    @EventHandler
+    public void onItemClick(InventoryClickEvent event) throws Exception {
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+            if (playerGroup == null) return;
+            if (playerGroup.getGame() == null) return;
+
+            Game partie = playerGroup.getGame();
+            Inventory clickedInventory = event.getInventory();
+
+            if (partie.isGameStarted()) {
+                if (partie.getArene().getCoffre().getPosition().getBlock().getState() instanceof Chest) {
+                    Chest arenaChest = (Chest) (partie.getArene().getCoffre().getPosition().getBlock().getState());
+                    if (arenaChest.getInventory().equals(clickedInventory)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+
+            }
+        }
+    }
+
+    @EventHandler
+    public void onStatItemClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+                Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+                if (playerGroup == null) return;
+                if (playerGroup.getGame() == null) return;
+
+                if (event.getView().getTitle().equals(Lang.stats_menu_title.getDefault())) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+            }
+        }
     }
 }
