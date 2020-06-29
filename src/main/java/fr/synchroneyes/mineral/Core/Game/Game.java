@@ -859,7 +859,7 @@ public class Game implements Listener {
             if (online == null) continue;
             if (referees != null)
                 if (!isReferee(online))
-                    if (getPlayerTeam(online).equals(gagnant))
+                    if (getPlayerTeam(online) != null && getPlayerTeam(online).equals(gagnant))
                         PlayerUtils.setFirework(online, gagnant.toColor());
         }
 

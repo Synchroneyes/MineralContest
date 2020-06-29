@@ -34,7 +34,13 @@ public class TeleportMenuInventory extends InventoryTemplate {
             for (Player joueur : maison.getTeam().getJoueurs()) {
                 String nomItem = ChatColorString.toStringEN(maison.getTeam().getCouleur()) + "_CONCRETE";
 
-                Material materialItem = Material.valueOf(nomItem);
+
+                Material materialItem = null;
+                try {
+                    materialItem = Material.valueOf(nomItem);
+                } catch (IllegalArgumentException iae) {
+                    materialItem = Material.WHITE_WOOL;
+                }
 
                 ItemStack itemJoueur = new ItemStack(materialItem, 1);
                 ItemMeta itemMeta = itemJoueur.getItemMeta();

@@ -11,7 +11,9 @@ import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -63,9 +65,16 @@ public class BlockDestroyed implements Listener {
                             if (blockManager.wasBlockAdded(event.getBlock()))
                                 blockManager.removeBlock(event.getBlock());
                             else {
-                                event.setCancelled(true);
-                                event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+
+                                Block destroyedBlock = event.getBlock();
+                                if (destroyedBlock.getType() != Material.GRASS && destroyedBlock.getType() != Material.DEAD_BUSH && destroyedBlock.getType() != Material.TALL_GRASS) {
+                                    event.setCancelled(true);
+                                    event.getPlayer().sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+                                    return;
+                                }
+
                                 return;
+
                             }
                         } else {
                             event.setCancelled(true);

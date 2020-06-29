@@ -29,7 +29,6 @@ commands:
   stopGame:
     description: Arrête une partie
     use: /stopGame
-    permission: admin
     permission-message: you do not have the permission
 
 

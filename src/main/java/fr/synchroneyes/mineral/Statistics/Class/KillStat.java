@@ -2,7 +2,7 @@ package fr.synchroneyes.mineral.Statistics.Class;
 
 import fr.synchroneyes.mineral.Statistics.Statistic;
 import fr.synchroneyes.mineral.Translation.Lang;
-import javafx.util.Pair;
+import fr.synchroneyes.mineral.Utils.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Commands;
 
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -19,6 +20,16 @@ public class StopGameCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+        Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
+        if (playerGroup == null) {
+            return false;
+        }
+
+        if (!playerGroup.isAdmin(player)) {
+            sender.sendMessage(mineralcontest.prefixErreur + Lang.error_you_must_be_group_admin.getDefault());
+            return false;
+        }
+
         if (mineralcontest.isInAMineralContestWorld(player) && !mineralcontest.plugin.pluginWorld.equals(player.getWorld())) {
             Game partie = mineralcontest.getPlayerGame(player);
             if (partie == null) {

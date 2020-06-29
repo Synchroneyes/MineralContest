@@ -1,8 +1,8 @@
 package fr.synchroneyes.mineral.Commands;
 
 import fr.synchroneyes.groups.Commands.CommandTemplate;
+import fr.synchroneyes.mineral.Utils.Pair;
 import fr.synchroneyes.mineral.mineralcontest;
-import javafx.util.Pair;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
