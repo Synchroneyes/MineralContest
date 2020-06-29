@@ -22,11 +22,12 @@ public class StopGameCommand implements CommandExecutor {
         Player player = (Player) sender;
         Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
         if (playerGroup == null) {
+            player.sendMessage(mineralcontest.prefixErreur + Lang.error_you_must_be_in_a_group.toString());
             return false;
         }
 
         if (!playerGroup.isAdmin(player)) {
-            sender.sendMessage(mineralcontest.prefixErreur + Lang.error_you_must_be_group_admin.getDefault());
+            sender.sendMessage(mineralcontest.prefixErreur + Lang.error_you_must_be_group_admin.toString());
             return false;
         }
 
@@ -38,19 +39,19 @@ public class StopGameCommand implements CommandExecutor {
             }
 
             if (command.getName().equalsIgnoreCase("stopGame")) {
-                if (sender.isOp()) {
-                    // On est jamais trop prudent ...
-                    if (partie.isGameStarted()) {
-                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()), partie.groupe);
-                        try {
-                            partie.terminerPartie();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_not_started.toString()));
+
+                // On est jamais trop prudent ...
+                if (partie.isGameStarted()) {
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()), partie.groupe);
+                    try {
+                        partie.terminerPartie();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_not_started.toString()));
                 }
+
             }
         }
 

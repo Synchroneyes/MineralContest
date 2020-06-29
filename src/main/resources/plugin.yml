@@ -30,6 +30,7 @@ commands:
     description: Arrête une partie
     use: /stopGame
     permission-message: you do not have the permission
+    permission:
 
 
   switch:
