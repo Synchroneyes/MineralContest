@@ -61,13 +61,6 @@ public class DeathZone {
     }
 
 
-    public Location getSpawnLocation() throws Exception {
-        if (spawnLocation == null) {
-            throw new Exception(Lang.translate(Lang.deathzone_spawn_location_undefined.toString()));
-        }
-
-        return this.spawnLocation;
-    }
 
     // Cette fonction réduit le temps des joueurs d'une seconde
     // Elle sera appelée dans le runnable bukkit qui gère le temps
@@ -105,7 +98,7 @@ public class DeathZone {
         return 0;
     }
 
-    public synchronized void add(Player joueur) throws Exception {
+    public synchronized void add(Player joueur) {
         timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         applyDeathEffectToPlayer(joueur);
@@ -121,7 +114,7 @@ public class DeathZone {
     }
 
 
-    private void applyDeathEffectToPlayer(Player joueur) throws Exception {
+    private void applyDeathEffectToPlayer(Player joueur) {
 
         timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
         Game partie = mineralcontest.getPlayerGame(joueur);
@@ -129,22 +122,19 @@ public class DeathZone {
         if (partie.isReferee(joueur) && partie.isGameStarted()) {
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
-            joueur.setHealth(20f);
+
             PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getArene().getCoffre().getPosition());
             return;
         }
 
         joueur.setGameMode(GameMode.ADVENTURE);
+        PlayerUtils.setMaxHealth(joueur);
         joueur.getInventory().clear();
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //PlayerUtils.teleportPlayer(this.spawnLocation);
-        try {
-            PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getPlayerHouse(joueur).getHouseLocation());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Error.Report(e, partie);
-        }
+        PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getPlayerHouse(joueur).getHouseLocation());
+
 
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * (timeInDeathzone * 3), 1));
         joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (timeInDeathzone * 3), 1));

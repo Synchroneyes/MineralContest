@@ -1,5 +1,6 @@
 package fr.synchroneyes.world_downloader.Inventories;
 
+import fr.synchroneyes.groups.Core.MapVote;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.world_downloader.Items.MapDownloadItem;
 import fr.synchroneyes.world_downloader.MapInfo;
@@ -7,6 +8,7 @@ import fr.synchroneyes.world_downloader.WorldDownloader;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MapListInventory extends InventoryInterface {
@@ -18,9 +20,14 @@ public class MapListInventory extends InventoryInterface {
 
     @Override
     public void setInventoryItems(Player arbitre) {
-        LinkedList<MapInfo> maps = WorldDownloader.getMaps(false);
-        for (MapInfo map : maps)
-            registerItem(MapDownloadItem.fromMapInfo(map));
+        LinkedList<MapInfo> maps_available = WorldDownloader.getMaps(false);
+
+        MapVote mapVote = new MapVote();
+        ArrayList<String> maps_telecharger = mapVote.getMaps();
+
+        for (MapInfo map : maps_available)
+            if (!maps_telecharger.contains(map.map_folder_name))
+                registerItem(MapDownloadItem.fromMapInfo(map));
     }
 
     @Override

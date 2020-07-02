@@ -127,9 +127,7 @@ public class House {
         this.spawnLocation = houseLocation;
     }
 
-    public Location getHouseLocation() throws Exception {
-        if (this.spawnLocation == null)
-            throw new Exception(Lang.translate(Lang.team_house_location_not_added.toString(), team));
+    public Location getHouseLocation() {
         return spawnLocation;
     }
 

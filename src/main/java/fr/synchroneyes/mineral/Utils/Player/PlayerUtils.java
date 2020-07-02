@@ -182,6 +182,8 @@ public class PlayerUtils {
                             elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "");
                             elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + playerGroup.getEtatPartie().getNom());
                             elementsADisplay.add("========= ");
+                            if (playerGroup.getNomsJoueurNonPret().length() > 0)
+                                elementsADisplay.add(Lang.non_ready_hud.toString() + playerGroup.getNomsJoueurNonPret());
                             elementsADisplay.add("Admins: ");
                             for (Player admin : playerGroup.getAdmins()) {
                                 elementsADisplay.add(admin.getDisplayName());
@@ -189,6 +191,13 @@ public class PlayerUtils {
                         }
                         if (playerGroup.getEtatPartie().equals(Etats.VOTE_EN_COURS)) {
                             elementsADisplay.clear();
+
+                            StringBuilder joueurSansVote = new StringBuilder();
+                            for (Player joueur_sans_vote : playerGroup.getMapVote().joueurAyantNonVote())
+                                joueurSansVote.append(joueur_sans_vote.getDisplayName());
+
+                            if (joueurSansVote.toString().length() > 0)
+                                elementsADisplay.add(Lang.non_voted_hud.toString() + joueurSansVote.toString());
                             ArrayList<String> maps = playerGroup.getMapVote().getMaps();
                             int index = 0;
                             for (String map : maps) {
@@ -262,6 +271,9 @@ public class PlayerUtils {
             // game en attente
         } else {
             elementsADisplay.add(Lang.hud_game_waiting_start.toString());
+            if (playerGroup.getNomsJoueurNonPret().length() > 0)
+                elementsADisplay.add(Lang.non_ready_hud.toString() + playerGroup.getNomsJoueurNonPret());
+
             elementsADisplay.add("                 ");
             if (playerTeam == null) {
                 elementsADisplay.add(Lang.hud_you_are_not_in_team.toString());

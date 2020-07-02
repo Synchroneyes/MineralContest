@@ -18,7 +18,6 @@ import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
-import fr.synchroneyes.mineral.Utils.Metric.SendInformation;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
@@ -26,7 +25,6 @@ import fr.synchroneyes.world_downloader.WorldDownloader;
 import jdk.internal.jline.internal.Nullable;
 import org.bukkit.*;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
@@ -49,7 +47,7 @@ public final class mineralcontest extends JavaPlugin {
      * If set to false, one group will automatically be created, OP players will be set as admin, and every players joining the server
      * will automatically be added to the group.
      */
-    public static boolean communityVersion = false;
+    public static boolean communityVersion = true;
 
     public static String prefix = "[MineralContest]";
     public static String prefixErreur;
@@ -64,6 +62,7 @@ public final class mineralcontest extends JavaPlugin {
 
     public Location defaultSpawn;
     public MapBuilder mapBuilderInstance;
+
 
     /**
      * Array of all the messages we can fetch from synchroneyes's plugin website.
@@ -171,6 +170,7 @@ public final class mineralcontest extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
         // On copie les fichiers par défaut
         RessourceFilesManager.createDefaultFiles();
 
@@ -268,7 +268,6 @@ public final class mineralcontest extends JavaPlugin {
 
         }
 
-
     }
 
     @Override
@@ -276,7 +275,7 @@ public final class mineralcontest extends JavaPlugin {
 
         for (Groupe groupe : groupes) {
             Game game = groupe.getGame();
-            SendInformation.sendGameData(SendInformation.ended, game);
+            //SendInformation.sendGameData(SendInformation.ended, game);
             // todo GETGAME
             if (pluginWorld != null && !debug) {
                 for (Player player : pluginWorld.getPlayers()) {
@@ -303,7 +302,12 @@ public final class mineralcontest extends JavaPlugin {
 
         Bukkit.getServer().getPluginManager().registerEvents(new BucketEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
+
+        //
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
+
+
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
@@ -335,7 +339,6 @@ public final class mineralcontest extends JavaPlugin {
 
         // Drop
 
-        //Bukkit.getServer().getPluginManager().registerEvents(new BowEvent(), this);
 
 
     }
@@ -380,10 +383,6 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("allow").setExecutor(new AllowCommand());
         getCommand("leaveteam").setExecutor(new LeaveTeamCommand());
 
-        /*getCommand("setup").setExecutor(new SetupCommand());
-        getCommand("saveworld").setExecutor(new SaveWorldCommand());
-        getCommand("valider").setExecutor(new ValiderCommand());*/
-
     }
 
     // Called when the game start
@@ -415,22 +414,6 @@ public final class mineralcontest extends JavaPlugin {
         }
     }
 
-
-    public static void checkIfMapIsCorrect() {
-        if (mineralcontest.plugin.pluginWorld == null) {
-            mineralcontest.plugin.pluginWorld = PlayerUtils.getPluginWorld();
-        }
-        if (mineralcontest.debug) return;
-        if (mineralcontest.plugin.pluginWorld == null) {
-            ConsoleCommandSender console = mineralcontest.plugin.getServer().getConsoleSender();
-            log.severe("NULL");
-            log.severe(mineralcontest.prefixErreur + Lang.bad_map_loaded.toString());
-            log.severe(mineralcontest.prefixErreur + Lang.github_link.toString());
-            log.severe(mineralcontest.prefixErreur + Lang.plugin_shutdown.toString());
-            Bukkit.getPluginManager().disablePlugin(mineralcontest.plugin);
-
-        }
-    }
 
     public static void broadcastMessage(String message, Groupe groupe) {
         groupe.sendToEveryone(message);

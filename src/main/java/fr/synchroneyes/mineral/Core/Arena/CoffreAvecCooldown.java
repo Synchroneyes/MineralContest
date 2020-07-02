@@ -87,10 +87,7 @@ public class CoffreAvecCooldown {
     }
 
 
-
-    public Location getPosition() throws Exception {
-        if (this.position == null)
-            throw new Exception("ArenaChestNotDefined");
+    public Location getPosition() {
         return this.position;
     }
 

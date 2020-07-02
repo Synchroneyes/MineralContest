@@ -107,6 +107,16 @@ public class Game implements Listener {
         initGameSettings();
     }
 
+
+    /**
+     * Retourne la liste des joueurs prêts
+     *
+     * @return
+     */
+    public LinkedList<Player> getPlayersReady() {
+        return playersReady;
+    }
+
     /**
      * Retourne l'instance de stats de la partie!
      *
@@ -343,6 +353,7 @@ public class Game implements Listener {
         if (!isPlayerReady(p)) {
             playersReady.add(p);
             groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p));
+
             if (areAllPlayersReady()) {
 
                 if (groupe.getEtatPartie().equals(Etats.EN_ATTENTE)) {
@@ -1108,6 +1119,8 @@ public class Game implements Listener {
 
         // On supprime tous les items au sol
         groupe.removeAllDroppedItem();
+
+        if (!mineralcontest.communityVersion) mineralcontest.afficherMessageVersion();
 
         return true;
 

@@ -270,8 +270,9 @@ public enum Lang {
     stats_monster_killer_subtitle("stats_monster_killer_subtitle", "Avec %d de monstre(s) tué(s)"),
     stats_most_talking_title("stats_most_talking_title", "Le blabla-teur"),
     stats_most_talking_subtitle("stats_most_talking_subtitle", "Avec %d message(s) envoyé(s)"),
-    stats_menu_title("stats_menu_title", "Menu de stats de fin de partie");
-
+    stats_menu_title("stats_menu_title", "Menu de stats de fin de partie"),
+    non_ready_hud("non_ready_hud", "Non prêt: "),
+    non_voted_hud("non_voted_hud", "Sans vote: ");
 
 
 

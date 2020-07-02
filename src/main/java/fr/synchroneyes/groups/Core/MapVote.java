@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapVote {
@@ -154,5 +155,31 @@ public class MapVote {
 
     public void setVoteEnabled(boolean voteEnabled) {
         this.voteEnabled = voteEnabled;
+    }
+
+
+    /**
+     * Retourne la liste des joueurs n'ayent pas voté
+     *
+     * @return
+     */
+    public List<Player> joueurAyantNonVote() {
+        if (votes.isEmpty()) return new ArrayList<>();
+
+        List<Player> joueurSansVote = new ArrayList<>();
+
+        // On récupère le premier joueur de la liste
+        Groupe groupe = mineralcontest.getPlayerGroupe(votes.entrySet().iterator().next().getKey());
+
+        if (groupe == null) return joueurSansVote;
+
+        // Maintenant, on va ajouter tous les joueurs du groupe dans les votants;
+        joueurSansVote.addAll(groupe.getPlayers());
+
+        // Et on va supprimer chaque joueur ayant déjà voté
+        for (Map.Entry<Player, String> infoVote : votes.entrySet())
+            joueurSansVote.remove(infoVote.getKey());
+
+        return joueurSansVote;
     }
 }

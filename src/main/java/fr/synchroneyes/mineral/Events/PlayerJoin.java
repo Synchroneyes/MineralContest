@@ -34,23 +34,6 @@ public class PlayerJoin implements Listener {
 
 
 
-
-    /*private void initVariables(Player player) {
-        mineralcontest plugin = mineralcontest.plugin;
-        this.game = mineralcontest.getPlayerGame(player);
-
-        if (game == null) return;
-        this.thereIsAnAdminLoggedIn = game.isThereAnAdminLoggedIn();
-        this.player = player;
-        this.playerName = player.getDisplayName();
-        // havePlayerTriedTOLogin returns true if player have already tried to login
-        this.isPlayerFirstJoinAttempt = !game.havePlayerTriedToLogin(playerName);
-        this.isPlayerAllowedToJoin = (!this.isPlayerFirstJoinAttempt) && game.isPlayerAllowedToLogIn(playerName);
-        this.havePlayerDisconnectedEarlier = game.groupe.havePlayerDisconnected(player);
-        this.oldPlayerTeam = (this.havePlayerDisconnectedEarlier) ? game.getDisconnectedPlayerTeam(playerName) : null;
-    }*/
-
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();

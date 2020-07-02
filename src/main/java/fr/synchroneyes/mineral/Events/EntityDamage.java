@@ -1,14 +1,10 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
-import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,156 +16,182 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class EntityDamage implements Listener {
 
+
+    /**
+     * Evenement appelé dès lors qu'un joueur reçoit un dégat, ou se blesse
+     *
+     * @param event
+     */
     @EventHandler
     public void onPlayerDamage(EntityDamageEvent event) {
-        World worldEvent = event.getEntity().getWorld();
-        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
-            Game partie = mineralcontest.getWorldGame(worldEvent);
+        // On ne traite que les joueurs
+        if (event.getEntity() instanceof Player) {
 
-            if (event.getEntity() instanceof Player && mineralcontest.isInMineralContestHub((Player) event.getEntity())) {
+            Player joueur = (Player) event.getEntity();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+            // On vérifie si on est dans un monde mineral contest ou non, si ce n'est pas le cas, les dégats on s'en fou
+            if (!mineralcontest.isInAMineralContestWorld(joueur)) return;
+
+            // Le joueur est dans un monde mineralcontest
+            // On doit bloquer les dégats si la game du joueur n'est pas démarré ou si il est dans le lobby, ou si on est en pregame
+            if (mineralcontest.isInMineralContestHub(joueur) || playerGroup == null || !playerGroup.getGame().isGameStarted() || playerGroup.getGame().isPreGame() || playerGroup.getGame().isGamePaused()) {
                 event.setCancelled(true);
                 return;
             }
 
+            // On doit bloquer les dégats si ils sont causé par un autre joueur de la même équipe
+            if (event instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
 
-            if (partie == null) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (!partie.isGameStarted() || partie.isGamePaused()) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (event.getEntity() instanceof Player && partie.isGameStarted()) {
-                Player victime = (Player) event.getEntity();
+                // Si le joueur a été blessé par un autre joueur ...
+                if (entityDamageByEntityEvent.getDamager() instanceof Player || ((entityDamageByEntityEvent.getDamager() instanceof Arrow) && ((Arrow) entityDamageByEntityEvent.getDamager()).getShooter() instanceof Player)) {
+                    Player damager = null;
 
 
-                if (victime.getHealth() - event.getFinalDamage() < 0) {
-                    PlayerUtils.setMaxHealth(victime);
-                    event.setCancelled(true);
-                    PlayerUtils.killPlayer(victime);
-
-
-                    if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-                        EntityDamageByEntityEvent event1 = (EntityDamageByEntityEvent) event;
-                        if (event1.getDamager() instanceof Player) {
-                            registerKill(victime, (Player) event1.getDamager());
-                        }
-                    } else if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-                        EntityDamageByEntityEvent event2 = (EntityDamageByEntityEvent) event;
-                        if (event2.getDamager() instanceof Arrow) {
-                            Arrow fleche = (Arrow) event2.getDamager();
-                            if (fleche.getShooter() instanceof Player) {
-                                Player attaquant_f = (Player) fleche.getShooter();
-                                registerKill(victime, attaquant_f);
-                            }
-                        }
-                    } else {
-                        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), victime), partie.groupe);
+                    if (entityDamageByEntityEvent.getDamager() instanceof Player)
+                        damager = (Player) entityDamageByEntityEvent.getDamager();
+                    if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
+                        Arrow fleche = (Arrow) entityDamageByEntityEvent.getDamager();
+                        damager = (Player) fleche.getShooter();
                     }
+
+                    // Si les deux sont de la même équipe et que les dégats entre coéquipier sont désactivé, on annule l'event
+                    if (playerGroup.getPlayerTeam(joueur).equals(playerGroup.getPlayerTeam(damager))) {
+                        if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() > 0) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                    }
+
+                    // Si la personne recevant des dégats ouvrait le coffre d'arène, on lui ferme
+                    if (joueur.equals(playerGroup.getGame().getArene().getCoffre().openingPlayer)) {
+                        // On ferme et on annule l'ouverture
+                        playerGroup.getGame().getArene().getCoffre().close();
+                        joueur.closeInventory();
+                    }
+
                 }
             }
-        }
-
-    }
 
 
-    @EventHandler
-    public void onEntityDamage(EntityDamageByEntityEvent event) throws Exception {
+            // On doit vérifier si le joueur est mort ou non ...
+            // Un joueur est considéré comme mort SI, les dégats totaux qui seront infligé sont supérieur à la vie du joueur
+            if (event.getFinalDamage() > joueur.getHealth()) {
+                // Le joueur est désormais considéré comme mort ...
+                // Deux cas de figure, le joueur a été tué, ou le joueur s'est suicidé.
 
-        World worldEvent = event.getEntity().getWorld();
-        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
-            Game partie = mineralcontest.getWorldGame(worldEvent);
-            if (partie != null && (!partie.isGameStarted() || partie.isGamePaused())) {
-                event.setCancelled(true);
-                return;
-            }
-            if (event.getEntity() instanceof Player && partie != null && partie.isGameStarted()) {
-                Player victime = (Player) event.getEntity();
-                Player attaquant = null;
-                // We will check If they are both on the same team
-                if (event.getDamager() instanceof Player) {
-                    attaquant = (Player) event.getDamager();
-                } else if (event.getDamager() instanceof Arrow) {
-                    Arrow arrow = (Arrow) event.getDamager();
-                    if (arrow.getShooter() instanceof Player) {
-                        attaquant = (Player) arrow.getShooter();
-                    }
-                }
+                // Si cet event peut s'appliquer à un evenement appelé lors de dégats infligé par une autre entitée, ex: une attaque par un autre joueur
+                if (event instanceof EntityDamageByEntityEvent) {
+                    EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
 
-                GameSettings settings = partie.groupe.getParametresPartie();
+                    // Si la personne ayant fait des dégats est un joueur
+                    if (entityDamageByEntityEvent.getDamager() instanceof Player) {
 
-
-                // Do the check
-                if (attaquant != null) {
-                    Equipe attaquantTeam = partie.getPlayerTeam(attaquant);
-                    Equipe victimeTeam = partie.getPlayerTeam(victime);
-
-
-                    int enable_friendly_fire = settings.getCVAR("mp_enable_friendly_fire").getValeurNumerique();
-                    if ((attaquantTeam != null || victimeTeam != null) && attaquantTeam.equals(victimeTeam) && enable_friendly_fire == 0) {
+                        // On annule l'event, on enregistre le kill, et on ajoute la personne venant de mourir à la deathzone, elle sera donc automatiquement
+                        // TP dans sa base avec les effets de mort
+                        Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
+                        registerKill(joueur, attaquant);
                         event.setCancelled(true);
                         return;
                     }
-                }
 
-                if (event.getDamager() instanceof Player && partie.isReferee((Player) event.getDamager())) {
-                    event.setCancelled(true);
-                    return;
-                }
+                    // On peut également vérifier si le joueur est morte d'une flèche ...
+                    if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
+                        // Le joueur est mort d'une fleche
+                        Arrow fleche = (Arrow) entityDamageByEntityEvent.getDamager();
 
-                if (partie.isReferee(victime)) {
-                    event.setCancelled(true);
-                    return;
-                }
-
-                if (partie.getArene().getDeathZone().isPlayerDead(victime)) {
-                    event.setCancelled(true);
-                    return;
-                }
-
-                if (partie.getArene().getCoffre().openingPlayer != null && partie.getArene().getCoffre().openingPlayer.equals(victime))
-                    partie.getArene().getCoffre().close();
-
-                // Si une entité meurt d'un coup/explosion/...
-                if (victime.getHealth() - event.getFinalDamage() < 0) {
-                    victime.setHealth(20D);
-                    event.setCancelled(true);
-
-                    if (event.getDamager() instanceof Arrow) {
-                        Arrow fleche = (Arrow) event.getDamager();
+                        // Si la flèche a été tirée par un joueur ...
                         if (fleche.getShooter() instanceof Player) {
-                            Player attaquant_f = (Player) fleche.getShooter();
-                            Bukkit.broadcastMessage(attaquant_f.getDisplayName() + " a attacké " + victime.getDisplayName());
-                            registerKill(victime, attaquant_f);
+                            Player attaquant = (Player) fleche.getShooter();
+                            registerKill(joueur, attaquant);
+                            event.setCancelled(true);
+                            return;
                         }
+
+                        // Sinon, la flèche a été tirée par un mob...
+                        registerPlayerDeadByEntity(joueur);
+                        event.setCancelled(true);
+                        return;
                     }
 
-                    // Si c'est un joueur qui a tué notre victime
-                    if (event.getDamager() instanceof Player) {
-                        registerKill(victime, (Player) event.getDamager());
-                    }
-
-
-                    PlayerUtils.killPlayer(victime);
-
+                    // Sinon, le joueur a été tué par une entité
+                    registerPlayerDeadByEntity(joueur);
+                    event.setCancelled(true);
+                    return;
                 }
+
+                // Si on arrive là, le joueur est mort d'un suicide
+                registerPlayerSuicide(joueur);
+                event.setCancelled(true);
+                return;
+
 
             }
+
         }
     }
 
+
+    /**
+     * Fonction permettant d'enregistrer un kill entre deux joueurs, ajoute aussi la personne morte dans la deathzone
+     *
+     * @param dead
+     * @param attacker
+     */
     private void registerKill(Player dead, Player attacker) {
         if (mineralcontest.getPlayerGame(dead) == null) return;
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_killed.toString(), dead, attacker), mineralcontest.getPlayerGame(dead).groupe);
 
-        Game partie = mineralcontest.getPlayerGame(attacker);
+        Game partie = mineralcontest.getPlayerGame(dead);
         if (partie != null && partie.isGameStarted()) {
             partie.getStatsManager().register(KillStat.class, attacker, dead);
+
         }
+
+        // On ajoute le joueur à la deathzone
+        partie.getArene().getDeathZone().add(dead);
 
         mineralcontest.getPlayerGame(dead).killCounter++;
     }
+
+
+    /**
+     * Fonction permettant d'enregistrer un suicide par un joueur
+     *
+     * @param dead - Le joueur mort
+     */
+    private void registerPlayerSuicide(Player dead) {
+        Game partie = mineralcontest.getPlayerGame(dead);
+
+        if (partie == null) return;
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), dead), partie.groupe);
+
+        if (partie.isGameStarted()) {
+            partie.getStatsManager().register(KillStat.class, dead, dead);
+        }
+
+        // On ajoute le joueur à la deathzone
+        partie.getArene().getDeathZone().add(dead);
+    }
+
+    /**
+     * Fonction permettant d'enregistrer une mort causée par un monstre
+     * note: pourquoi pas add une stats "tué par mob" ?
+     *
+     * @param dead - Le joueur mort
+     */
+    private void registerPlayerDeadByEntity(Player dead) {
+        Game partie = mineralcontest.getPlayerGame(dead);
+
+        if (partie == null) return;
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), dead), partie.groupe);
+
+        if (partie.isGameStarted()) {
+            partie.getStatsManager().register(KillStat.class, dead, dead);
+        }
+
+        // On ajoute le joueur à la deathzone
+        partie.getArene().getDeathZone().add(dead);
+    }
+
 }

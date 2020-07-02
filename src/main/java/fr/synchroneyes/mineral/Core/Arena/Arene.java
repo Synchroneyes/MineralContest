@@ -300,7 +300,7 @@ public class Arene {
 
     }
 
-    public CoffreAvecCooldown getCoffre() throws Exception {
+    public CoffreAvecCooldown getCoffre() {
         return this.coffre;
     }
 

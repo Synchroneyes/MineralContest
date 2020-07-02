@@ -25,6 +25,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -86,6 +87,28 @@ public class Groupe {
     public void resetGame() {
         this.partie = new Game(this);
         this.partie.init();
+    }
+
+
+    /**
+     * Retourne une chaine contenant la liste des joueurs non prêt
+     *
+     * @return
+     */
+    public String getNomsJoueurNonPret() {
+
+        List<Player> joueurNonPrets = new ArrayList<>(joueurs);
+
+        StringBuilder joueursNonPret_text = new StringBuilder();
+
+        for (Player joueurPret : partie.getPlayersReady())
+            joueurNonPrets.remove(joueurPret);
+
+        for (Player joueurNonPret : joueurNonPrets)
+            joueursNonPret_text.append(joueurNonPret.getDisplayName() + " ");
+
+        return joueursNonPret_text.toString();
+
     }
 
     /**
@@ -378,8 +401,10 @@ public class Groupe {
         p.setLevel(0);
         this.joueursInvites.remove(p);
         this.joueurs.add(p);
-        p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.successfully_joined_a_group.toString(), this));
-        sendToEveryone(mineralcontest.prefixGroupe + Lang.translate(Lang.player_joined_our_group.toString(), p));
+        if (mineralcontest.communityVersion)
+            p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.successfully_joined_a_group.toString(), this));
+        if (mineralcontest.communityVersion)
+            sendToEveryone(mineralcontest.prefixGroupe + Lang.translate(Lang.player_joined_our_group.toString(), p));
 
         for (Player joueur : joueurs) {
             if (!partie.isPlayerReady(joueur))
@@ -390,7 +415,8 @@ public class Groupe {
     public void addAdmin(Player p) {
         if (!this.joueurs.contains(p)) addJoueur(p);
         if (!this.admins.contains(p)) this.admins.add(p);
-        sendToadmin(mineralcontest.prefixPrive + Lang.translate(Lang.player_is_now_group_admin.toString(), p));
+        if (mineralcontest.communityVersion)
+            sendToadmin(mineralcontest.prefixPrive + Lang.translate(Lang.player_is_now_group_admin.toString(), p));
     }
 
     public int getPlayerCount() {
