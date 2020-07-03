@@ -9,24 +9,64 @@ import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 public class BlockDestroyed implements Listener {
 
+    public static LinkedHashMap<Location, Material> blocks = new LinkedHashMap<>();
+    public static Location positionCoffre = null;
+    public static int index = 0;
     /**
      * Evenement appelé lors de la destruction d'un bloc
      *
      * @param event
      */
     @EventHandler
-    public void _onBlockDestroyed(BlockBreakEvent event) {
+    public void onBlockDestroyed(BlockBreakEvent event) {
 
         // Si on est en mode création de map, on ignore l'event
-        if (MapBuilder.getInstance().isBuilderModeEnabled) return;
+        if (MapBuilder.getInstance().isBuilderModeEnabled) {
+            /*if(index == 0) positionCoffre = event.getBlock().getLocation();
+            Location substractedLocation = null;
+
+            Location blockLocation = event.getBlock().getLocation();
+
+            substractedLocation = new Location(positionCoffre.getWorld(),
+                    blockLocation.getX() - positionCoffre.getX(),
+                    blockLocation.getY() - positionCoffre.getY(),
+                    blockLocation.getZ() - positionCoffre.getZ()
+            );
+
+
+            try {
+                File fichierConfig = new File(mineralcontest.plugin.getDataFolder(), "airdrop.yml");
+                YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierConfig);
+                yamlConfiguration.set(index + ".x", substractedLocation.getX());
+                yamlConfiguration.set(index + ".y", substractedLocation.getY());
+                yamlConfiguration.set(index + ".z", substractedLocation.getZ());
+                yamlConfiguration.set(index + ".material", event.getBlock().getType().toString());
+
+                yamlConfiguration.save(fichierConfig);
+
+                ++index;
+            }catch (IOException ioe){
+                ioe.printStackTrace();
+            }
+*/
+
+
+            return;
+        }
+
 
         // On récupère le joueur ayant cassé le bloc
         Player joueur = event.getPlayer();
@@ -58,6 +98,14 @@ public class BlockDestroyed implements Listener {
 
         // Maintenant, on doit vérifier si la partie est en cours
         if (partie.isGameStarted()) {
+
+
+            // On vérifie si c'est un block que l'on veut supprimer sans check
+            if (canBlockBeDestroyed(event.getBlock())) {
+                event.setDropItems(false);
+                return;
+            }
+
             // On doit vérifier si on se trouve autour de la zone protegée
             int rayonZoneProtege = playerGroupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
             Block blockDetruit = event.getBlock();
@@ -83,5 +131,41 @@ public class BlockDestroyed implements Listener {
         }
 
 
+    }
+
+    private boolean canBlockBeDestroyed(Block b) {
+
+        List<Material> allowedToBeDestroyed = new ArrayList<>();
+
+        allowedToBeDestroyed.add(Material.GRASS);
+        allowedToBeDestroyed.add(Material.WHEAT);
+        allowedToBeDestroyed.add(Material.TALL_GRASS);
+        allowedToBeDestroyed.add(Material.CHORUS_PLANT);
+        allowedToBeDestroyed.add(Material.KELP_PLANT);
+        allowedToBeDestroyed.add(Material.BROWN_MUSHROOM);
+        allowedToBeDestroyed.add(Material.POTTED_BROWN_MUSHROOM);
+        allowedToBeDestroyed.add(Material.RED_MUSHROOM_BLOCK);
+        allowedToBeDestroyed.add(Material.RED_MUSHROOM);
+        allowedToBeDestroyed.add(Material.MUSHROOM_STEW);
+        allowedToBeDestroyed.add(Material.SUGAR_CANE);
+        allowedToBeDestroyed.add(Material.FERN);
+        allowedToBeDestroyed.add(Material.LARGE_FERN);
+        allowedToBeDestroyed.add(Material.POTTED_FERN);
+        allowedToBeDestroyed.add(Material.DEAD_BUSH);
+        allowedToBeDestroyed.add(Material.POTTED_DEAD_BUSH);
+        allowedToBeDestroyed.add(Material.ROSE_BUSH);
+        allowedToBeDestroyed.add(Material.SWEET_BERRY_BUSH);
+        allowedToBeDestroyed.add(Material.VINE);
+        allowedToBeDestroyed.add(Material.SUNFLOWER);
+        allowedToBeDestroyed.add(Material.CORNFLOWER);
+        allowedToBeDestroyed.add(Material.POTTED_CORNFLOWER);
+        allowedToBeDestroyed.add(Material.BEETROOT);
+        allowedToBeDestroyed.add(Material.BEETROOTS);
+        allowedToBeDestroyed.add(Material.SUNFLOWER);
+        allowedToBeDestroyed.add(Material.OXEYE_DAISY);
+        allowedToBeDestroyed.add(Material.POTTED_OXEYE_DAISY);
+
+
+        return allowedToBeDestroyed.contains(b.getType());
     }
 }

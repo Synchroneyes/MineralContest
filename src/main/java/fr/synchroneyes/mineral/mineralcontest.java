@@ -47,7 +47,7 @@ public final class mineralcontest extends JavaPlugin {
      * If set to false, one group will automatically be created, OP players will be set as admin, and every players joining the server
      * will automatically be added to the group.
      */
-    public static boolean communityVersion = true;
+    public static boolean communityVersion = false;
 
     public static String prefix = "[MineralContest]";
     public static String prefixErreur;
@@ -92,6 +92,7 @@ public final class mineralcontest extends JavaPlugin {
         for (String message : plugin.messagesFromWebsite) {
             joueur.sendMessage(mineralcontest.prefixPrive + message);
         }
+
     }
 
 
@@ -371,7 +372,12 @@ public final class mineralcontest extends JavaPlugin {
             bukkitCommandMap.register("", new MCCvarCommand());
             bukkitCommandMap.register("", new SetDefaultItems());
 
-            //bukkitCommandMap.register("", new SpawnDrop());
+            //bukkitCommandMap.register("", new SaveDropToFile());
+
+
+            //bukkitCommandMap.register("", new SpawnShop());
+
+            bukkitCommandMap.register("", new SpawnDrop());
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

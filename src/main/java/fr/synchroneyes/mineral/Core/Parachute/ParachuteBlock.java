@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Core.Parachute;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 public class ParachuteBlock {
 
@@ -27,5 +28,16 @@ public class ParachuteBlock {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    public static ParachuteBlock fromBlock(Block b) {
+        return new ParachuteBlock(b.getLocation(), b.getType());
+    }
+
+    /**
+     * Permet de supprimer un bloc
+     */
+    public void remove() {
+        this.location.getBlock().setType(Material.AIR);
     }
 }

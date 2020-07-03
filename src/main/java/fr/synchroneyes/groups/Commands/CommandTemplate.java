@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public abstract class CommandTemplate extends BukkitCommand {
 
     public abstract String getPermissionRequise();
 
-    protected HashMap<String, Boolean> arguments;
+    protected LinkedHashMap<String, Boolean> arguments;
     protected LinkedList<Integer> accessCommande;
 
 
@@ -53,7 +53,7 @@ public abstract class CommandTemplate extends BukkitCommand {
         this.setPermissionMessage(getErrorMessage());
         this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
         this.accessCommande = new LinkedList<>();
-        this.arguments = new HashMap<>();
+        this.arguments = new LinkedHashMap<>();
         constructArguments();
     }
 
@@ -165,7 +165,7 @@ public abstract class CommandTemplate extends BukkitCommand {
 
     public String getArgumentsString() {
         StringBuilder sb = new StringBuilder();
-        if (arguments == null) this.arguments = new HashMap<>();
+        if (arguments == null) this.arguments = new LinkedHashMap<>();
         for (Map.Entry<String, Boolean> argument : arguments.entrySet())
             if (argument.getValue()) sb.append(ChatColor.RED + "<" + argument.getKey() + "> " + ChatColor.WHITE);
             else sb.append(ChatColor.YELLOW + "<" + argument.getKey() + "> " + ChatColor.WHITE);

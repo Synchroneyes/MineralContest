@@ -24,12 +24,12 @@ import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -214,7 +214,7 @@ public class Game implements Listener {
      * @return boolean
      */
     public boolean isTheBlockAChest(Block b) {
-        return (b.getState() instanceof Chest || b instanceof DoubleChest);
+        return (b.getState() instanceof InventoryHolder || b.getState() instanceof Chest);
     }
 
     /**
