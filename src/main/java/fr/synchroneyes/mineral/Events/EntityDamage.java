@@ -4,6 +4,7 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -39,9 +40,22 @@ public class EntityDamage implements Listener {
                 return;
             }
 
+
             // On doit bloquer les dégats si ils sont causé par un autre joueur de la même équipe
             if (event instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
+
+                if (entityDamageByEntityEvent.getDamager() instanceof Player) {
+                    Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
+                    if (playerGroup.getPlayerTeam(joueur).equals(playerGroup.getPlayerTeam(attaquant))) {
+                        // Si les deux sont de la même équipe et que les dégats entre coéquipier sont désactivé, on annule l'event
+                        if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() == 1) {
+                            event.setCancelled(true);
+                            return;
+                        }
+
+                    }
+                }
 
                 // Si le joueur a été blessé par un autre joueur ...
                 if (entityDamageByEntityEvent.getDamager() instanceof Player || ((entityDamageByEntityEvent.getDamager() instanceof Arrow) && ((Arrow) entityDamageByEntityEvent.getDamager()).getShooter() instanceof Player)) {
@@ -55,13 +69,6 @@ public class EntityDamage implements Listener {
                         damager = (Player) fleche.getShooter();
                     }
 
-                    // Si les deux sont de la même équipe et que les dégats entre coéquipier sont désactivé, on annule l'event
-                    if (playerGroup.getPlayerTeam(joueur).equals(playerGroup.getPlayerTeam(damager))) {
-                        if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() > 0) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                    }
 
                     // Si la personne recevant des dégats ouvrait le coffre d'arène, on lui ferme
                     if (joueur.equals(playerGroup.getGame().getArene().getCoffre().openingPlayer)) {
@@ -148,6 +155,9 @@ public class EntityDamage implements Listener {
 
         }
 
+        PlayerUtils.killPlayer(dead);
+
+
         // On ajoute le joueur à la deathzone
         partie.getArene().getDeathZone().add(dead);
 
@@ -170,6 +180,8 @@ public class EntityDamage implements Listener {
             partie.getStatsManager().register(KillStat.class, dead, dead);
         }
 
+        PlayerUtils.killPlayer(dead);
+
         // On ajoute le joueur à la deathzone
         partie.getArene().getDeathZone().add(dead);
     }
@@ -191,6 +203,7 @@ public class EntityDamage implements Listener {
         }
 
         // On ajoute le joueur à la deathzone
+        PlayerUtils.killPlayer(dead);
         partie.getArene().getDeathZone().add(dead);
     }
 

@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Coffre;
 
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 
@@ -18,7 +19,7 @@ public class AutomatedChestManager {
 
 
     private void registerCoffres() {
-        this.coffresAvecAnimation.add(new TestAnimation());
+        this.coffresAvecAnimation.add(new CoffreParachute());
     }
 
     public AutomatedChestAnimation getFromClass(Class c) {

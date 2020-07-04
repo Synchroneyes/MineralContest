@@ -49,6 +49,14 @@ public abstract class AutomatedChestAnimation {
         return inventaireCoffre;
     }
 
+
+    /**
+     * Fonction permettant d'afficher ou non les items d'attente
+     *
+     * @return
+     */
+    public abstract boolean displayWaitingItems();
+
     /**
      * Récupère le nom du coffre lors de l'ouverture
      *
@@ -72,16 +80,16 @@ public abstract class AutomatedChestAnimation {
     /**
      * Le WaitingItemMaterial est l'item qui sera affiché en tout premier
      *
-     * @return Material
+     * @return ItemStack
      */
-    public abstract Material getWaitingItemMaterial();
+    public abstract ItemStack getWaitingItemMaterial();
 
     /**
      * Le UsedItemMaterial est l'item qui sera affiché lorsque l'animation sera en cours
      *
-     * @return
+     * @return ItemStack
      */
-    public abstract Material getUsedItemMaterial();
+    public abstract ItemStack getUsedItemMaterial();
 
     /**
      * Récupère la séquence d'ouverture du coffre (pour l'animation, les numéros de slots, ex: 27;26;25;24;10;11;12 ...)
@@ -142,7 +150,7 @@ public abstract class AutomatedChestAnimation {
         int nombreItemSequence = getOpeningSequence().size();
 
         // On récupère le temps d'execution
-        double tempsExecution = getAnimationTime() + 1;
+        double tempsExecution = getAnimationTime();
 
         // Variable permettant de mettre en pause l'animation avant de passer au prochain tour de boucle
         // On multiplie le tempsExecution afin d'avoir un résultat en millisecondes
@@ -151,8 +159,10 @@ public abstract class AutomatedChestAnimation {
         double intervalTimer = (tempsPauseEntreChaqueTour * 20) / 1000;
 
         // On commence par remplir l'inventaire avec les items en attente
-        for (int slot : getOpeningSequence())
-            inventaireCoffre.setItem(slot, new ItemStack(getWaitingItemMaterial(), 1));
+        // Seulement si l'option est activée
+        if (displayWaitingItems())
+            for (int slot : getOpeningSequence())
+                inventaireCoffre.setItem(slot, getWaitingItemMaterial());
 
 
         // Variable pour stocker la séquence actuelle afin de savoir quelle bloc il faut changer
@@ -198,7 +208,7 @@ public abstract class AutomatedChestAnimation {
 
                 // On remplace l'index actuel par le bloc "utilisé"
                 int slot = getOpeningSequence().get(indexSequence.get());
-                inventaireCoffre.setItem(slot, new ItemStack(getUsedItemMaterial(), 1));
+                inventaireCoffre.setItem(slot, getUsedItemMaterial());
 
                 // On incrémente le compteur
                 indexSequence.incrementAndGet();

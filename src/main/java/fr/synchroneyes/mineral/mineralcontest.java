@@ -11,6 +11,7 @@ import fr.synchroneyes.mineral.Commands.*;
 import fr.synchroneyes.mineral.Core.Coffre.Event.ChestOpenEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
+import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
@@ -342,6 +343,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinTeamInventoryEvent(), this);
 
         // Drop
+        Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
 
         // AutomatedChest
         Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);

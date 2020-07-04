@@ -1,6 +1,9 @@
 package fr.synchroneyes.mineral.Core.Parachute;
 
 import fr.synchroneyes.file_manager.FileList;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
+import fr.synchroneyes.mineral.Utils.LocationRange;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -27,6 +30,9 @@ public class Parachute {
     // Santé du parachute
     private double health;
 
+    // Variable permettant de savoir si le parachute est au sol ou non
+    private boolean isParachuteOnGround = false;
+
     // Si vrai, alors le parachute tombe à grande vitesse
     private boolean isFalling = false;
 
@@ -49,13 +55,16 @@ public class Parachute {
     // ID du coffre dans la liste
     private String chestId;
 
+    private AutomatedChestAnimation coffre;
+
+    private ParachuteManager parachuteManager;
 
     /**
      * Constructeur, prend en paramètre la santé que doit avoir le parachute
      *
      * @param health - santé du parachute
      */
-    public Parachute(double health) {
+    public Parachute(double health, ParachuteManager manager) {
 
         // Initialisation des variables
         this.health = health;
@@ -63,6 +72,11 @@ public class Parachute {
 
         // On charge le parachute
         this.loadParachuteFromFile();
+
+        this.parachuteManager = manager;
+
+        this.coffre = new CoffreParachute();
+
     }
 
 
@@ -83,8 +97,10 @@ public class Parachute {
      * @return
      */
     public boolean isParachuteHit(Location loc) {
-        for (Map.Entry<String, ParachuteBlock> blockDeParachute : getParachute().entrySet())
-            if (blockDeParachute.getValue().getLocation().equals(loc)) return true;
+
+        for (Map.Entry<String, ParachuteBlock> blockDeParachute : getParachute().entrySet()) {
+            if (LocationRange.isLocationBetween(loc, blockDeParachute.getValue().getLocation(), 2, 2)) return true;
+        }
         return false;
     }
 
@@ -94,6 +110,7 @@ public class Parachute {
      * @param damage
      */
     public void receiveDamage(Double damage) {
+
         if (health <= damage) {
             this.setFalling(true);
             return;
@@ -274,7 +291,8 @@ public class Parachute {
                 blocksParachute.replace(chestId + "", new ParachuteBlock(nouvellePosition, coffre.getMaterial()));
 
             } else {
-
+                // Le parachute est au sol
+                isParachuteOnGround = true;
             }
 
         }
@@ -384,6 +402,26 @@ public class Parachute {
 
             @Override
             public void run() {
+
+                // Si le parachute est au sol
+                if (isParachuteOnGround) {
+
+                    // On arrète le timer
+                    this.cancel();
+
+                    // On supprime le coffre du parachute (le sans animation)
+                    getChest().remove();
+
+                    // On fait apparaitre le coffre d'animation
+                    coffre.spawn(getChest().getLocation());
+
+                    // Et on oublie pas d'enregistrer !
+                    parachuteManager.getGroupe().getAutomatedChestManager().replace(coffre.getClass(), coffre);
+
+
+                    return;
+                }
+
                 int tickActuel = ticks.incrementAndGet();
 
 

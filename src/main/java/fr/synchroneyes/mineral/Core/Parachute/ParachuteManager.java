@@ -29,13 +29,17 @@ public class ParachuteManager {
 
 
     public void spawnNewParachute(Location l) {
-        Parachute parachute = new Parachute(20);
+        Parachute parachute = new Parachute(6, this);
         parachute.spawnParachute(l);
         this.parachutes.add(parachute);
 
         // On averti les joueurs qu'un largage vient d'apparaitre
         for (Player joueur : groupe.getPlayers())
             joueur.sendTitle("Largage " + ChatColor.RED + "aérien", Lang.translate("Un %red%largage aérien%white% a été repéré en X: %red%" + (int) (l.getBlockX()) + "%white% Z: %red%" + l.getBlockZ()), 20, 20 * 5, 20);
+    }
+
+    public List<Parachute> getParachutes() {
+        return parachutes;
     }
 
 
