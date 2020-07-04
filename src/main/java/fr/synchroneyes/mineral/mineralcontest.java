@@ -8,6 +8,7 @@ import fr.synchroneyes.groups.GroupeExtension;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Commands.*;
+import fr.synchroneyes.mineral.Core.Coffre.Event.ChestOpenEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
@@ -40,6 +41,8 @@ import java.util.logging.Logger;
 public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
+
+    public static boolean testingChest = true;
 
     /**
      * Community version is a version ran by server that wants to have multiple games running at the same time.
@@ -339,6 +342,9 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinTeamInventoryEvent(), this);
 
         // Drop
+
+        // AutomatedChest
+        Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
 
 
 

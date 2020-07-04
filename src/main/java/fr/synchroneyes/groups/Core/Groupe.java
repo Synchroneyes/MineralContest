@@ -7,8 +7,10 @@
 package fr.synchroneyes.groups.Core;
 
 import fr.synchroneyes.groups.Utils.Etats;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Settings.GameSettings;
@@ -54,6 +56,12 @@ public class Groupe {
     private PlayerBaseItem playerBaseItem;
 
 
+    // Gestionnaire de parachute
+    private ParachuteManager parachuteManager;
+
+    private AutomatedChestManager automatedChestManager;
+
+
     // UUID, <NomEquipe, PositionDeco>
     //
     // private HashMap<UUID, Pair<String, Location>> disconnectedPlayers;
@@ -78,6 +86,16 @@ public class Groupe {
         genererIdentifiant();
 
         this.playerBaseItem = new PlayerBaseItem(this);
+        this.parachuteManager = new ParachuteManager(this);
+        this.automatedChestManager = new AutomatedChestManager();
+    }
+
+    public ParachuteManager getParachuteManager() {
+        return parachuteManager;
+    }
+
+    public AutomatedChestManager getAutomatedChestManager() {
+        return automatedChestManager;
     }
 
     /**

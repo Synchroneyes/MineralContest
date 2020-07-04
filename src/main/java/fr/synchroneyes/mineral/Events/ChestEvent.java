@@ -29,6 +29,8 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onChestClose(InventoryCloseEvent event) throws Exception {
 
+        if (mineralcontest.testingChest) return;
+
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Game partie = mineralcontest.getWorldGame(worldEvent);
@@ -100,6 +102,7 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestBreaked(ItemSpawnEvent event) throws Exception {
+        if (mineralcontest.testingChest) return;
         World world = event.getEntity().getWorld();
         if (mineralcontest.isAMineralContestWorld(world)) {
             Game partie = mineralcontest.getWorldGame(world);
@@ -125,6 +128,9 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
+
+        if (mineralcontest.testingChest) return;
+
         World world = event.getPlayer().getWorld();
         Game game = mineralcontest.getWorldGame(world);
         if (game == null) return;

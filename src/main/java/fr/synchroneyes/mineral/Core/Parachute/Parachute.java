@@ -1,13 +1,19 @@
 package fr.synchroneyes.mineral.Core.Parachute;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
+import fr.synchroneyes.file_manager.FileList;
+import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Classe permettant de définir un parachute
@@ -26,14 +32,22 @@ public class Parachute {
 
     private boolean isChestOpened = false;
 
+    private boolean isParachuteBroken = false;
+
     // Vitesse de chute de plannage (jsp si ça se dit comme ça)
     private int normalFallingSpeed = 20;
 
     // Vitesse en chute libre
-    private int freeFallingSpeed = 5;
+    private int freeFallingSpeed = 1;
 
     // Vitesse de chute du parachute
     private int currentFallingSpeed = normalFallingSpeed;
+
+    // Position du coffre du parachute
+    private Location chestLocation = null;
+
+    // ID du coffre dans la liste
+    private String chestId;
 
 
     /**
@@ -42,8 +56,13 @@ public class Parachute {
      * @param health - santé du parachute
      */
     public Parachute(double health) {
+
+        // Initialisation des variables
         this.health = health;
         this.blocksParachute = new LinkedHashMap<>();
+
+        // On charge le parachute
+        this.loadParachuteFromFile();
     }
 
 
@@ -111,9 +130,10 @@ public class Parachute {
             if (checkUnderBefore) {
 
                 // On regarde si le bloc en dessous de notre bloc actuel est de l'air ou non
-                if (block.getRelative(BlockFace.DOWN, 1).getType() != Material.AIR) {
+                if (block.getRelative(BlockFace.DOWN, 1).getType() != Material.AIR && !isThisBlockAParachute(block.getRelative(BlockFace.DOWN, 1))) {
                     // Le bloc n'est pas de l'air ... On arrête donc la tombée du parachute, et on casse le parachute
                     this.breakParachute();
+                    setFalling(true);
                     return;
                 }
             }
@@ -132,6 +152,12 @@ public class Parachute {
 
             // Et on le remplace
             blocksParachute.replace(blocks.getKey(), nouveauBlock);
+            nouvelleLocation.getBlock().setType(parachuteBlock.getMaterial());
+
+            // On update la position du coffre
+            if (nouveauBlock.getMaterial() == Material.CHEST)
+                this.chestLocation = nouvelleLocation;
+
 
         }
     }
@@ -175,23 +201,10 @@ public class Parachute {
 
         // Si on marque le parachute comme tombant
         if (falling) {
-
-            // On regarde chaque bloc du parachute; et ceux qui ne sont pas des coffres, on les laisse.
-            // Sinon, on les marque comme étant de l'air (donc on les supprime) et on les retire de la hashmap
-            for (Map.Entry<String, ParachuteBlock> blocks : blocksParachute.entrySet()) {
-
-                // On récupère le bloc
-                ParachuteBlock block = blocks.getValue();
-
-                // Si le bloc n'est pas le coffre, on le retire
-                if (block.getMaterial() != Material.CHEST) {
-                    block.remove();
-                    blocksParachute.remove(blocks.getKey());
-                    currentFallingSpeed = freeFallingSpeed;
-                }
-
-            }
+            currentFallingSpeed = freeFallingSpeed;
+            breakParachute();
         }
+
     }
 
 
@@ -200,10 +213,190 @@ public class Parachute {
      */
     private void breakParachute() {
         // Pour chaque bloc du parachute
+
+        isParachuteBroken = true;
+
         for (Map.Entry<String, ParachuteBlock> block : blocksParachute.entrySet())
             if (block.getValue().getLocation().getBlock().getType() != Material.CHEST) {
                 block.getValue().remove();
-                blocksParachute.remove(block.getKey());
             }
+    }
+
+    /**
+     * Retourne le coffre du parachute
+     *
+     * @return
+     */
+    private ParachuteBlock getChest() {
+        for (Map.Entry<String, ParachuteBlock> blocks : blocksParachute.entrySet())
+            if (blocks.getValue().getMaterial() == Material.CHEST) return blocks.getValue();
+        return null;
+    }
+
+    /**
+     * Méthode appelée lorsque le parachute est "cassé" et que le parachute peut encore tomber
+     */
+    private void makeChestGoDown() {
+
+        if (isParachuteBroken) {
+
+            // On récupère le coffre
+            ParachuteBlock coffre = getChest();
+
+            // On récupère le block du coffre
+            Block blockCoffre = coffre.getLocation().getBlock();
+
+
+            Block blockEnDessous = blockCoffre.getRelative(BlockFace.DOWN, 1);
+
+            // Si le block en dessous est de l'air, on descend
+            if (blockEnDessous.getType() == Material.AIR) {
+
+
+                Location positionActuelle = blockCoffre.getLocation();
+
+
+                // On met une particule de redstone pour symboliser la chute
+                positionActuelle.getWorld().spawnParticle(Particle.REDSTONE, positionActuelle, 10, 0.000, 0, 0, 0, new Particle.DustOptions(Color.GREEN, 10));
+
+                Location nouvellePosition = blockEnDessous.getLocation();
+
+
+                // On supprime le block actuel
+                coffre.remove();
+
+                // On applique le coffre en bas
+                nouvellePosition.getBlock().setType(coffre.getMaterial());
+
+
+                // On met à jour le block
+
+                blocksParachute.replace(chestId + "", new ParachuteBlock(nouvellePosition, coffre.getMaterial()));
+
+            } else {
+
+            }
+
+        }
+    }
+
+
+    /**
+     * Permet de charger le parachute depuis son fichier
+     */
+    private void loadParachuteFromFile() {
+
+        File fichierParachute = new File(mineralcontest.plugin.getDataFolder(), FileList.AirDrop_model.toString());
+
+        // Si le fichier n'existe pas, on affiche une erreur dans la console
+        if (!fichierParachute.exists()) {
+            Bukkit.getLogger().severe(mineralcontest.prefix + " Unable to load parachute file (" + fichierParachute.getAbsolutePath() + ")");
+            return;
+        }
+
+        // Le fichier existe, on le charge
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierParachute);
+
+        // On va maintenant lire le fichier contenant les infos sur les blocs du parachute
+        for (String id : yamlConfiguration.getKeys(false)) {
+
+            // On va récupérer les infos lié à l'id du bloc (=> id.x, id.y, id.z, id.material)
+            ConfigurationSection infos = yamlConfiguration.getConfigurationSection(id);
+            if (infos == null) continue;
+
+            // Variables par défaut
+            double posX, posY, posZ;
+            Material blockMaterial = null;
+
+            // Récupération des valeurs
+            posX = Double.parseDouble(infos.get("x").toString());
+            posY = Double.parseDouble(infos.get("y").toString());
+            posZ = Double.parseDouble(infos.get("z").toString());
+
+            blockMaterial = Material.valueOf(infos.get("material").toString());
+
+            // On connait maintenant les coordonnées par défaut du block
+            // On peut instancier la location
+            Location blockLocation = new Location(null, posX, posY, posZ);
+
+            if (blockMaterial == Material.CHEST) {
+                chestLocation = blockLocation;
+                chestId = id;
+            }
+
+            // Et on peut ajouter le block a la liste des blocs du parachute
+            this.blocksParachute.put(id, new ParachuteBlock(blockLocation, blockMaterial));
+
+        }
+
+
+    }
+
+
+    /**
+     * Permet de faire apparaitre un parachute à une position donnée
+     *
+     * @param spawnLocation - La position où doit apparaitre le parachute
+     */
+    public void spawnParachute(Location spawnLocation) {
+
+        // On doit changer la position de chaque bloc
+        // Pour chaque block du parachute
+        for (Map.Entry<String, ParachuteBlock> block : blocksParachute.entrySet()) {
+
+            // On récupère le block
+            ParachuteBlock parachuteBlock = block.getValue();
+
+            Location blockLocation = parachuteBlock.getLocation();
+
+            // On change le monde du block
+            blockLocation.setWorld(spawnLocation.getWorld());
+
+            // Ainsi que ses coordonnées
+            blockLocation.setX(blockLocation.getX() + spawnLocation.getX());
+            blockLocation.setY(blockLocation.getY() + spawnLocation.getY());
+            blockLocation.setZ(blockLocation.getZ() + spawnLocation.getZ());
+
+            // Et on le fait apparaitre
+            blockLocation.getBlock().setType(parachuteBlock.getMaterial());
+
+            // Puis, on remplace sa valeur dans notre liste
+            this.blocksParachute.replace(block.getKey(), new ParachuteBlock(blockLocation, parachuteBlock.getMaterial()));
+        }
+
+        handleParachute();
+
+    }
+
+    /**
+     * Boucle permettant de vérifier le parachute et de faire les actions requises
+     */
+    private void handleParachute() {
+
+        // On crée un timer s'executant chaque tick, comme ça on peut réguler la vitesse de chute du parachute
+
+        // On sauvegarde le tick actuel dans une variable afin de pouvoir gérer la vitesse de chute
+        // AtomicInteger serait thread-safe (https://stackoverflow.com/questions/4818699/practical-uses-for-atomicinteger)
+        AtomicInteger ticks = new AtomicInteger();
+
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                int tickActuel = ticks.incrementAndGet();
+
+
+                // Si on est sur un tick où il faut faire descendre le parachute
+                if (tickActuel % currentFallingSpeed == 0) {
+
+                    if (isParachuteBroken) {
+                        makeChestGoDown();
+                    } else makeParachuteGoDown(true);
+
+                }
+            }
+        }.runTaskTimer(mineralcontest.plugin, 0, 1);
+
     }
 }
