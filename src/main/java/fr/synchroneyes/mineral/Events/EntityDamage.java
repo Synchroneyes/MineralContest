@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -43,19 +44,46 @@ public class EntityDamage implements Listener {
 
             // On doit bloquer les dégats si ils sont causé par un autre joueur de la même équipe
             if (event instanceof EntityDamageByEntityEvent) {
+
                 EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
 
+                // On vérifie les dégats fait par un joueur
                 if (entityDamageByEntityEvent.getDamager() instanceof Player) {
                     Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
                     if (playerGroup.getPlayerTeam(joueur).equals(playerGroup.getPlayerTeam(attaquant))) {
                         // Si les deux sont de la même équipe et que les dégats entre coéquipier sont désactivé, on annule l'event
-                        if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() == 1) {
+                        if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() == 0) {
                             event.setCancelled(true);
                             return;
                         }
-
                     }
                 }
+
+
+                // On vérifie si le dégat a été causé par une flèche
+                if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
+                    Arrow fleche = (Arrow) entityDamageByEntityEvent.getDamager();
+
+                    // On vérifie si le tireur est un joueur et non un squelette par ex
+                    if (fleche.getShooter() instanceof Player) {
+
+                        Player tireur = (Player) fleche.getShooter();
+                        Equipe equipeTireur = playerGroup.getPlayerTeam(tireur);
+
+                        // Et on vérifie si l'équipe du tireur est la même que la victime
+                        if (equipeTireur != null && equipeTireur.equals(playerGroup.getPlayerTeam(joueur))) {
+
+                            // SI c'est le cas, on vérifie si le teamkill est activé ou non
+                            if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() == 0) {
+                                event.setCancelled(true);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+
+
 
                 // Si le joueur a été blessé par un autre joueur ...
                 if (entityDamageByEntityEvent.getDamager() instanceof Player || ((entityDamageByEntityEvent.getDamager() instanceof Arrow) && ((Arrow) entityDamageByEntityEvent.getDamager()).getShooter() instanceof Player)) {
@@ -155,11 +183,9 @@ public class EntityDamage implements Listener {
 
         }
 
+        // On tue le joueur
         PlayerUtils.killPlayer(dead);
 
-
-        // On ajoute le joueur à la deathzone
-        partie.getArene().getDeathZone().add(dead);
 
         mineralcontest.getPlayerGame(dead).killCounter++;
     }
@@ -180,10 +206,8 @@ public class EntityDamage implements Listener {
             partie.getStatsManager().register(KillStat.class, dead, dead);
         }
 
+        // On tue le joueur
         PlayerUtils.killPlayer(dead);
-
-        // On ajoute le joueur à la deathzone
-        partie.getArene().getDeathZone().add(dead);
     }
 
     /**
@@ -202,9 +226,8 @@ public class EntityDamage implements Listener {
             partie.getStatsManager().register(KillStat.class, dead, dead);
         }
 
-        // On ajoute le joueur à la deathzone
+        // On tue le joueur
         PlayerUtils.killPlayer(dead);
-        partie.getArene().getDeathZone().add(dead);
     }
 
 }

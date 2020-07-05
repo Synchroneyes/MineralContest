@@ -24,6 +24,9 @@ public class SpawnDrop extends CommandTemplate {
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
 
         if (args.length > 0) playerGroupe.getParachuteManager().spawnNewParachute(joueur.getLocation());
+        else {
+
+        }
         /*else {
             AutomatedChestAnimation test = playerGroupe.getAutomatedChestManager().getFromClass(TestAnimation.class);
             test.spawn(joueur.getLocation().getBlock().getLocation());
