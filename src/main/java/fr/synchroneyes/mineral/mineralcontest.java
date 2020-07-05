@@ -11,7 +11,6 @@ import fr.synchroneyes.mineral.Commands.*;
 import fr.synchroneyes.mineral.Core.Coffre.Event.ChestOpenEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
-import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
@@ -43,7 +42,7 @@ public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
 
-    public static boolean testingChest = true;
+    public static boolean testingChest = false;
 
     /**
      * Community version is a version ran by server that wants to have multiple games running at the same time.
@@ -343,7 +342,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinTeamInventoryEvent(), this);
 
         // Drop
-        Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
 
         // AutomatedChest
         Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
@@ -385,7 +384,7 @@ public final class mineralcontest extends JavaPlugin {
 
             //bukkitCommandMap.register("", new SpawnShop());
 
-            bukkitCommandMap.register("", new SpawnDrop());
+            //bukkitCommandMap.register("", new SpawnDrop());
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

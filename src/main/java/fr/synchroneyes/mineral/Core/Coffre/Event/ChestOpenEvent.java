@@ -44,11 +44,16 @@ public class ChestOpenEvent implements Listener {
                 if (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)) {
 
 
+
                     event.setCancelled(true);
                     // On récupère son instance
                     AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getChestAnomation(chest);
 
+
                     if (automatedChestAnimation == null) return;
+
+                    if (automatedChestAnimation.isBeingOpened()) return;
+
                     // Et on joue l'animation
                     automatedChestAnimation.setOpeningPlayer(joueur);
 

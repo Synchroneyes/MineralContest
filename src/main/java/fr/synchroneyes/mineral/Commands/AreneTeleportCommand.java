@@ -38,11 +38,13 @@ public class AreneTeleportCommand implements CommandExecutor {
                         return false;
                     }
 
+                    if (PlayerUtils.isPlayerInDeathZone(joueur)) return false;
+
                     if (partie.getArene().isTeleportAllowed()) {
                         Equipe team = partie.getPlayerTeam(joueur);
 
                         for (Player membre : team.getJoueurs()) {
-                            if (!partie.isReferee(membre))
+                            if (!partie.isReferee(membre) && !PlayerUtils.isPlayerInDeathZone(membre))
                                 teleportToArena(membre);
                         }
                     } else {

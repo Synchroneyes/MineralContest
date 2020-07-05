@@ -49,6 +49,13 @@ public abstract class AutomatedChestAnimation {
         return inventaireCoffre;
     }
 
+    public boolean isBeingOpened() {
+        return openingPlayer != null;
+    }
+
+    public boolean isAnimationOver() {
+        return isAnimationOver;
+    }
 
     /**
      * Fonction permettant d'afficher ou non les items d'attente
