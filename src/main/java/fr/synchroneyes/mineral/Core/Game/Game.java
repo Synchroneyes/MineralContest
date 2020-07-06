@@ -22,6 +22,7 @@ import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Entity;
@@ -688,6 +689,9 @@ public class Game implements Listener {
 
                                     PlayerUtils.clearPlayer(online);
                                     PlayerUtils.setMaxHealth(online);
+
+                                    if (groupe.getParametresPartie().getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1)
+                                        online.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
                                     //PlayerUtils.givePlayerBaseItems(online);
                                     try {
                                         groupe.getPlayerBaseItem().giveItemsToPlayer(online);

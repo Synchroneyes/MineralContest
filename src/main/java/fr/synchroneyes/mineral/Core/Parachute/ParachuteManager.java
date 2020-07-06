@@ -53,8 +53,6 @@ public class ParachuteManager {
             generateRandomLocation();
         }
 
-        stopDropsHandler();
-
 
         GameLogger.addLog(new Log("parachute_spawn", "Parachute spawned @ " + nextDropLocation.getX() + ", " + nextDropLocation.getY() + ", " + nextDropLocation.getZ(), "parachute_time_reached"));
 
@@ -104,7 +102,7 @@ public class ParachuteManager {
             if (timeleft_before_next_drop > 0) timeleft_before_next_drop--;
             else spawnNewParachute();
 
-        }, 0, 5);
+        }, 0, 20);
     }
 
 

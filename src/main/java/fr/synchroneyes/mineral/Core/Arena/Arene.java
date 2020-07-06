@@ -278,6 +278,8 @@ public class Arene {
     public void disableTeleport() {
         String separator = ChatColor.GOLD + "----------------";
 
+        TELEPORT_TIME_LEFT = TELEPORT_TIME_LEFT_VAR;
+
         if (allowTeleport) {
             for (Player online : groupe.getPlayers()) {
                 online.sendMessage(separator);
@@ -289,6 +291,7 @@ public class Arene {
         removePlayerTeleportBar();
 
         this.allowTeleport = false;
+
     }
 
 
