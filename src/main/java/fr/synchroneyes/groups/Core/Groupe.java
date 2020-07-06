@@ -288,11 +288,15 @@ public class Groupe {
             setEtat(Etats.EN_ATTENTE);
             setGroupLocked(false);
             sendToadmin(mineralcontest.prefixErreur + Lang.error_no_maps_downloaded_to_start_game.toString());
-            sendToadmin(mineralcontest.prefixErreur + Lang.error_no_maps_downloaded_to_start_game.toString());
         } else {
             setEtat(Etats.VOTE_EN_COURS);
             setGroupLocked(true);
             sendToEveryone(mineralcontest.prefixGroupe + Lang.vote_started.toString());
+
+            for (Player membreGroupe : getPlayers())
+                getMapVote().getMenuVote().openInventory(membreGroupe);
+
+
         }
     }
 

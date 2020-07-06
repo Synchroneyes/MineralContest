@@ -1,11 +1,15 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.groups.Core.MapVote;
+import fr.synchroneyes.groups.Menus.MenuVote;
+import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Coffre;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -39,6 +43,12 @@ public class ChestEvent implements Listener {
             // On vérifie si le joueur ferme un coffre animé
             try {
                 AnimatedChestInventoryCloseEvent(event);
+            } catch (EventAlreadyHandledException e) {
+                return;
+            }
+
+            try {
+                MapVoteMenuInventoryCloseEvent(event);
             } catch (EventAlreadyHandledException e) {
                 return;
             }
@@ -184,6 +194,15 @@ public class ChestEvent implements Listener {
             try {
                 AnimatedChestInventoryClickEvent(event);
             } catch (EventAlreadyHandledException e) {
+                return;
+            }
+
+            // Si on est dans l'inventaire de choix de map
+
+            try {
+                MapVoteClickOnItem(event);
+            } catch (EventAlreadyHandledException e) {
+                event.setCancelled(true);
                 return;
             }
 
@@ -345,6 +364,76 @@ public class ChestEvent implements Listener {
                 }
             }
 
+
+        }
+    }
+
+    /**
+     * Fonction qui gère les clics sur une map lors du vote !
+     *
+     * @param event
+     * @throws EventAlreadyHandledException
+     */
+    public void MapVoteClickOnItem(InventoryClickEvent event) throws EventAlreadyHandledException {
+        // On ne s'occupe que des joueurs sur plugin
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            // Le joueur doit avoir un groupe !
+            if (playerGroup == null) return;
+            // ON récupère l'inventaire en question
+            Inventory inventaire = event.getInventory();
+
+            // On regarde si le groupe est en train de voter
+            if (playerGroup.getEtatPartie() != Etats.VOTE_EN_COURS) return;
+
+            if (event.getCurrentItem() == null) return;
+
+            // On vérifie si c'est l'inventaire de vote
+            if (inventaire.equals(playerGroup.getMapVote().getMenuVote().getInventory())) {
+                // C'est l'inventaire en question
+                MenuVote menuVote = playerGroup.getMapVote().getMenuVote();
+                for (RefereeItemTemplate items : menuVote.getItems())
+                    if (items.toItemStack().equals(event.getCurrentItem())) {
+                        items.performClick(joueur);
+                        joueur.closeInventory();
+                        event.setCancelled(true);
+
+                        throw new EventAlreadyHandledException();
+                    }
+            }
+        }
+    }
+
+    /**
+     * Fonction appelée lors de la fermeture d'un évenement.
+     * On vérifie que le joueur a voté ou non, si c'est le cas on réouvre l'inventaire
+     *
+     * @param event
+     */
+    public void MapVoteMenuInventoryCloseEvent(InventoryCloseEvent event) throws EventAlreadyHandledException {
+        if (event.getPlayer() instanceof Player) {
+            Player joueur = (Player) event.getPlayer();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            if (playerGroup == null) return;
+            if (playerGroup.getEtatPartie() != Etats.VOTE_EN_COURS) return;
+
+            MapVote mapVote = playerGroup.getMapVote();
+
+            // On est dans l'inventaire du choix de map
+            if (event.getInventory().equals(mapVote.getMenuVote().getInventory())) {
+                // Si le joueur n'a pas voté
+                if (!mapVote.havePlayerVoted(joueur)) {
+                    // On réouvre l'inventaire
+
+                    Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> joueur.openInventory(event.getInventory()), 1);
+
+                    // Et on dit qu'on a traité l'event
+                    throw new EventAlreadyHandledException();
+                }
+            }
 
         }
     }

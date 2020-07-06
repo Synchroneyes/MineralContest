@@ -23,10 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class PlayerUtils {
 
@@ -179,7 +176,8 @@ public class PlayerUtils {
 
                         if (playerGroup.getEtatPartie().equals(Etats.EN_ATTENTE)) {
                             // Le joueur possède un groupe !
-                            elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
+                            if (mineralcontest.communityVersion)
+                                elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
                             elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "");
                             elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + playerGroup.getEtatPartie().getNom());
                             elementsADisplay.add("========= ");
@@ -199,12 +197,16 @@ public class PlayerUtils {
 
                             if (joueurSansVote.toString().length() > 0)
                                 elementsADisplay.add(Lang.non_voted_hud.toString() + joueurSansVote.toString());
-                            ArrayList<String> maps = playerGroup.getMapVote().getMaps();
-                            int index = 0;
-                            for (String map : maps) {
-                                elementsADisplay.add(index + " - " + map + " " + playerGroup.getMapVote().getMapVoteCount(map) + " " + Lang.vote_count.toString());
-                                index++;
+
+                            Map<String, Integer> maps_vote = playerGroup.getMapVote().getMapVotes(true);
+
+                            if (maps_vote.isEmpty()) {
+                                elementsADisplay.add(Lang.currently_no_vote.toString());
+                            } else {
+                                for (Map.Entry<String, Integer> vote : maps_vote.entrySet())
+                                    elementsADisplay.add(vote.getValue() + " - " + vote.getKey());
                             }
+
                         }
 
                         if (playerGroup.getEtatPartie().equals(Etats.ATTENTE_DEBUT_PARTIE) ||

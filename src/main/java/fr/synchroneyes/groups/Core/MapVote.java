@@ -1,5 +1,6 @@
 package fr.synchroneyes.groups.Core;
 
+import fr.synchroneyes.groups.Menus.MenuVote;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Player;
@@ -18,12 +19,68 @@ public class MapVote {
     private HashMap<Player, String> votes;
     protected boolean voteEnabled;
 
+    private MenuVote menuVote;
+
     public MapVote() {
         this.maps = new ArrayList<>();
         this.votes = new HashMap<>();
         chargerNomMaps();
         voteEnabled = true;
+        this.menuVote = new MenuVote();
     }
+
+    public MenuVote getMenuVote() {
+        return menuVote;
+    }
+
+    /**
+     * Retourne une hashmap avec les maps et leur nombre de vote!
+     *
+     * @return
+     */
+    public Map<String, Integer> getMapVotes(boolean orderByMostVoted) {
+        Map<String, Integer> mapsVote = new HashMap<>();
+
+        // On regarde pour chaque vote enregistré
+        for (Map.Entry<Player, String> infoVoteJoueur : votes.entrySet())
+            // Si cette map n'a pas encore de vote, on l'ajoute
+            if (!mapsVote.containsKey(infoVoteJoueur.getValue())) mapsVote.put(infoVoteJoueur.getValue(), 1);
+                // Sinon, on lui ajoute un vote
+            else mapsVote.replace(infoVoteJoueur.getValue(), mapsVote.get(infoVoteJoueur.getValue()) + 1);
+
+        if (orderByMostVoted) {
+            Map<String, Integer> mapsVoteOrdered = new HashMap<>();
+
+            // On récupère à chaque tour de boucle la meilleure map
+            int maxVotes = -1;
+            String nomMap = "";
+
+            HashMap<Player, String> _votes = (HashMap<Player, String>) votes.clone();
+            // Tant que la liste de vote n'est pas vide
+            while (!mapsVote.isEmpty()) {
+
+                // Pour chaque votes
+                for (Map.Entry<String, Integer> vote : mapsVote.entrySet()) {
+
+                    // On récupère la map avec le plus de vote
+                    if (vote.getValue() >= maxVotes) {
+                        maxVotes = vote.getValue();
+                        nomMap = vote.getKey();
+                    }
+                }
+
+                // Et on ajoute la plus grande valeur à notre liste ordonnée
+                mapsVoteOrdered.put(nomMap, maxVotes);
+                mapsVote.remove(nomMap);
+                maxVotes = Integer.MIN_VALUE;
+            }
+
+            // On retourne notre liste!
+            return mapsVoteOrdered;
+
+        } else return mapsVote;
+    }
+
 
     public void disableVote() {
         voteEnabled = false;
@@ -67,23 +124,19 @@ public class MapVote {
         return false;
     }
 
-    public void enregistrerVoteJoueur(int idMap, Player joueur) {
+    public void enregistrerVoteJoueur(String idMap, Player joueur) {
 
         if (!voteEnabled) {
             joueur.sendMessage(mineralcontest.prefixErreur + Lang.vote_not_enabled.toString());
             return;
         }
 
-        if (havePlayerVoted(joueur)) {
-            joueur.sendMessage(mineralcontest.prefixErreur + Lang.vote_already_voted.toString());
-            return;
-        }
-
-        String nom_map = getNomMapFromID(idMap);
+        if (havePlayerVoted(joueur)) this.votes.replace(joueur, idMap);
+        else this.votes.put(joueur, idMap);
 
 
-        this.votes.put(joueur, nom_map);
-        joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour la map " + nom_map);
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.vote_you_voted_for_map.toString().replace("%map%", idMap));
+        //joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour la map " + nom_map);
         // On veut vérifier si on a tout les votes
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
         if (votes.size() == playerGroupe.getPlayerCount()) {

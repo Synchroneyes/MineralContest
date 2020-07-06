@@ -11,7 +11,7 @@ public class Vote extends CommandTemplate {
 
     public Vote() {
         super();
-        addArgument("ID du biome", true);
+        //addArgument("ID du biome", true);
 
         this.accessCommande.add(PLAYER_COMMAND);
         this.accessCommande.add(GROUP_REQUIRED);
@@ -24,7 +24,10 @@ public class Vote extends CommandTemplate {
         Player joueur = (Player) commandSender;
         Groupe playerGroupe = null;
         int mapVoter = -1;
-        try {
+
+        playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+        playerGroupe.getMapVote().getMenuVote().openInventory(joueur);
+        /*try {
             mapVoter = Integer.parseInt(args[0]);
 
             if (mapVoter < 0) throw new NumberFormatException();
@@ -34,10 +37,10 @@ public class Vote extends CommandTemplate {
         } catch (NumberFormatException nfe) {
             commandSender.sendMessage(mineralcontest.prefixErreur + this.getUsage());
             return false;
-        }
+        }*/
 
         // On a plus qu'a enregistrer le vote
-        playerGroupe.getMapVote().enregistrerVoteJoueur(mapVoter, joueur);
+        //playerGroupe.getMapVote().enregistrerVoteJoueur(mapVoter, joueur);
         return false;
     }
 

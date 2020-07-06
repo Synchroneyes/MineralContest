@@ -261,6 +261,12 @@ airdrop_chest_title: "%red%Ouverture en cours..."
 airdrop_chest_opened_title: "%green%Le coffre a été ouvert!"
 referee_item_spawn_drop_chest: "Faire apparaitre un largage"
 arena_chest_title_being_opened: "%red%Ouverture du coffre"
+vote_you_voted_for_map: "Vous avez voté pour la carte: %map%"
+vote_map: "Voter pour la carte: %map%"
+currently_no_vote: "Personne n'a voté"
+
+
+
 
 
 
