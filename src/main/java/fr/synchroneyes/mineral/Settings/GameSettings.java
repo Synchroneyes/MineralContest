@@ -237,10 +237,24 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_count", "5", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_min_item_count", "1", "Permet de définir le nombre minimum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_item_count", "3", "Permet de définir le nombre maximum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
-            parametresParDefaut.add(new GameCVAR("protected_zone_area_radius", "300", "Permet de définir le rayon en bloc de la zone protégé, où les blocs ne peuvent pas être cassé", "settings", false, true));
+            parametresParDefaut.add(new GameCVAR("protected_zone_area_radius", "55", "Permet de définir le rayon en bloc de la zone protégé, où les blocs ne peuvent pas être cassé", "settings", false, true));
             parametresParDefaut.add(new GameCVAR("enable_monster_in_protected_zone", "1", "Permet d'activer ou non l'apparition de monstre dans la zone protégée", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("arena_safezone_radius", "5", "Permet de modifier le rayon de safezone de la zone de téléportation de l'arène", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("arena_warn_chest_time", "10", "Permet de définir le temps restant en seconde avant de mettre un message dans le chat annonçant l'arrivée du coffre d'arène", "arena", true, true));
+
+
+            // paramètres par défaut du système de largage
+            parametresParDefaut.add(new GameCVAR("max_time_between_drop", "25", "Permet de définir le temps maximum entre chaque largage", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("min_time_between_drop", "20", "Permet de définir le temps minimum entre chaque largage", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("max_distance_from_arena", "300", "Permet de définir la distance maximale entre la génération de position du largage et le centre de l'arène", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("min_distance_from_arena", "150", "Permet de définir la distance minimale entre la génération de position du largage et le centre de l'arène", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("normal_falling_speed", "40", "Permet de définir la vitesse de chute lorsque le parachute est présent (en nombre de ticks, 20 ticks environ égale à 1 sec)", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("free_falling_speed", "2", "Permet de définir la vitesse de chute lorsque le parachute est cassé (en nombre de ticks, 20 ticks environ égale à 1 sec)", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("max_item_in_drop", "100", "Permet de définir le nombre d'item minimum présent dans le coffre", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("min_item_in_drop", "30", "Permet de définir le nombre d'item minimum présent dans le coffre", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("drop_opening_time", "10", "Permet de définir le nombre définir le temps d'ouverture du coffre du largage", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("drop_display_time", "5", "Permet de définir combien de temps en seconde le message doit s'afficher", "airdrop", true, true));
+
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

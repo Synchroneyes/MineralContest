@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Core.Coffre;
 
+import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
@@ -10,16 +12,23 @@ import java.util.List;
 public class AutomatedChestManager {
 
     private List<AutomatedChestAnimation> coffresAvecAnimation;
+    private Groupe groupe;
 
-    public AutomatedChestManager() {
+    public AutomatedChestManager(Groupe groupe) {
         this.coffresAvecAnimation = new LinkedList<>();
+        this.groupe = groupe;
 
         registerCoffres();
     }
 
 
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
     private void registerCoffres() {
-        this.coffresAvecAnimation.add(new CoffreParachute());
+        this.coffresAvecAnimation.add(new CoffreParachute(this));
+        this.coffresAvecAnimation.add(new CoffreArene(this, null));
     }
 
     public AutomatedChestAnimation getFromClass(Class c) {
@@ -52,8 +61,10 @@ public class AutomatedChestManager {
     }
 
     public AutomatedChestAnimation getChestAnomation(Block b) {
-        for (AutomatedChestAnimation automatedChest : coffresAvecAnimation)
+        for (AutomatedChestAnimation automatedChest : coffresAvecAnimation) {
+            if (automatedChest.getLocation() == null) continue;
             if (automatedChest.getLocation().equals(b.getLocation())) return automatedChest;
+        }
         return null;
     }
 

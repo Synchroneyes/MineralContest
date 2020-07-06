@@ -14,7 +14,7 @@ public class MobKiller {
             for (World world : Bukkit.getServer().getWorlds()) {
                 for (Entity e : world.getEntities()) {
                     if (e instanceof Monster || e instanceof Mob)
-                        if (Radius.isBlockInRadius(partie.getArene().getCoffre().getPosition(), e.getLocation(), radius)) {
+                        if (Radius.isBlockInRadius(partie.getArene().getCoffre().getLocation(), e.getLocation(), radius)) {
                             entityCount++;
                             e.remove();
                         }

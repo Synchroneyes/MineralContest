@@ -31,7 +31,7 @@ public class ExplosionEvent implements Listener {
             Game partie = mineralcontest.getWorldGame(worldEvent);
             if (partie == null) return;
             // On récupère le centre de l'arène
-            Location centreArene = partie.getArene().getCoffre().getPosition();
+            Location centreArene = partie.getArene().getCoffre().getLocation();
             int rayonProtection = partie.groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
 
             if (partie != null && (partie.isGamePaused() || !partie.isGameStarted()) || Radius.isBlockInRadius(centreArene, e.getLocation(), rayonProtection))

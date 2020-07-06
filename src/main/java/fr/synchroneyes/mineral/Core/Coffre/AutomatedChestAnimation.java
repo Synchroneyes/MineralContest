@@ -34,15 +34,33 @@ public abstract class AutomatedChestAnimation {
 
     private BukkitTask tacheOuverture = null;
 
+
+    // Permet de vérifier si le coffre est apparu ou non
+    private boolean isChestSpawned = false;
+
+    // Utile afin de mettre à jour le coffre dans la liste
+    private AutomatedChestManager manager;
+
+
     /**
      * Constructeur, permet de donner en paramètre le nom de l'inventaire ainsi que la taille
      *
      * @param tailleInventaire - Taille de l'inventaire, doit-être un multiple de 7
      */
-    public AutomatedChestAnimation(int tailleInventaire) {
+    public AutomatedChestAnimation(int tailleInventaire, AutomatedChestManager manager) {
         this.tailleInventaire = tailleInventaire;
         this.inventaireCoffre = Bukkit.createInventory(null, tailleInventaire, getOpeningChestTitle());
+        this.manager = manager;
+    }
 
+
+    public void setChestLocation(Location chestLocation) {
+        this.chestLocation = chestLocation;
+        updateManager();
+    }
+
+    public Player getOpeningPlayer() {
+        return openingPlayer;
     }
 
     public Inventory getInventory() {
@@ -56,6 +74,17 @@ public abstract class AutomatedChestAnimation {
     public boolean isAnimationOver() {
         return isAnimationOver;
     }
+
+
+    /**
+     * Fonction appelée avant de faire apparaitre le coffre
+     */
+    public abstract void actionToPerformBeforeSpawn();
+
+    /**
+     * Fonction appelée lorsque le coffre a été ouvert
+     */
+    public abstract void actionToPerformAfterAnimationOver();
 
     /**
      * Fonction permettant d'afficher ou non les items d'attente
@@ -203,8 +232,12 @@ public abstract class AutomatedChestAnimation {
 
                     openInventoryToPlayer(openingPlayer);
 
+                    actionToPerformAfterAnimationOver();
+
+
                     // On ferme le coffre en question
                     closeInventory();
+
 
 
                     this.cancel();
@@ -243,12 +276,15 @@ public abstract class AutomatedChestAnimation {
         if (tacheOuverture != null) tacheOuverture.cancel();
     }
 
-    public void spawn(Location l) {
-        this.chestLocation = l;
+    public void spawn() {
+
+        actionToPerformBeforeSpawn();
+
+        isChestSpawned = true;
         isAnimationOver = false;
         isChestContentGenerated = false;
         inventaireCoffre = Bukkit.createInventory(null, tailleInventaire, getOpeningChestTitle());
-        l.getBlock().setType(getChestMaterial());
+        getLocation().getBlock().setType(getChestMaterial());
     }
 
     /**
@@ -265,6 +301,9 @@ public abstract class AutomatedChestAnimation {
                     if (item != null) p.getInventory().addItem(item);
 
                 inventaireCoffre.clear();
+                // On supprime le bloc
+                getLocation().getBlock().setType(Material.AIR);
+                openingPlayer.closeInventory();
 
             } else {
                 p.openInventory(inventaireCoffre);
@@ -272,4 +311,11 @@ public abstract class AutomatedChestAnimation {
         }
     }
 
+    public boolean isChestSpawned() {
+        return isChestSpawned;
+    }
+
+    public void updateManager() {
+        this.manager.replace(this.getClass(), this);
+    }
 }

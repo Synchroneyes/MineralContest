@@ -29,6 +29,7 @@ public abstract class CommandTemplate extends BukkitCommand {
     protected final int PLAYER_IN_HUB = 11;
     protected final int GAME_NOT_STARTED = 12;
     protected final int VOTE_NOT_DONE = 13;
+    protected final int GAME_STARTED = 14;
 
 
     public abstract String getCommand();
@@ -129,6 +130,11 @@ public abstract class CommandTemplate extends BukkitCommand {
             if (condition == GAME_NOT_STARTED) {
                 if (playerGroupe != null && playerGroupe.getGame() != null && (playerGroupe.getGame().isGameStarted() || playerGroupe.getGame().isPreGame()))
                     throw new Exception("command can only be used when no game");
+            }
+
+            if (condition == GAME_STARTED) {
+                if (playerGroupe == null || playerGroupe.getGame() == null || !playerGroupe.getGame().isGameStarted())
+                    throw new Exception(Lang.game_not_started.toString());
             }
 
 

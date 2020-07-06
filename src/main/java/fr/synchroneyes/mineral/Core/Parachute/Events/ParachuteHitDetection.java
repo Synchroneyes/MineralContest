@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Parachute.Events;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Parachute.Parachute;
 import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
+import fr.synchroneyes.mineral.Statistics.Class.MostParachuteHitStat;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -32,16 +33,20 @@ public class ParachuteHitDetection implements Listener {
                     Groupe playerGroup = mineralcontest.getPlayerGroupe(tireur);
 
                     // SI il n'a pas de groupe, on s'en fou et on arrête
-                    if (playerGroup == null) return;
+                    if (playerGroup == null || playerGroup.getGame() == null || !playerGroup.getGame().isGameStarted())
+                        return;
 
-                    ParachuteManager parachuteManager = playerGroup.getParachuteManager();
+                    ParachuteManager parachuteManager = playerGroup.getGame().getParachuteManager();
 
                     if (parachuteManager == null) return;
 
 
                     for (Parachute parachute : parachuteManager.getParachutes())
                         if (parachute.isParachuteHit(fleche)) {
-                            parachute.receiveDamage(fleche.getDamage());
+                            parachute.receiveDamage(fleche.getDamage(), fleche.getLocation());
+
+                            // On enregistre le hit
+                            playerGroup.getGame().getStatsManager().register(MostParachuteHitStat.class, tireur, null);
                             fleche.remove();
                         }
                 }

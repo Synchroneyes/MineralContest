@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Parachute;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Utils.LocationRange;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
@@ -33,18 +34,18 @@ public class Parachute {
     // Variable permettant de savoir si le parachute est au sol ou non
     private boolean isParachuteOnGround = false;
 
-    // Si vrai, alors le parachute tombe à grande vitesse
-    private boolean isFalling = false;
-
-    private boolean isChestOpened = false;
-
     private boolean isParachuteBroken = false;
 
     // Vitesse de chute de plannage (jsp si ça se dit comme ça)
-    private int normalFallingSpeed = 20;
+    private int normalFallingSpeed = 40;
 
     // Vitesse en chute libre
-    private int freeFallingSpeed = 1;
+    private int freeFallingSpeed = 2;
+
+    // Interval d'items présent dans le coffre de base
+    private int max_items_in_chest = 100;
+
+    private int min_items_in_chest = 35;
 
     // Vitesse de chute du parachute
     private int currentFallingSpeed = normalFallingSpeed;
@@ -58,6 +59,7 @@ public class Parachute {
     private AutomatedChestAnimation coffre;
 
     private ParachuteManager parachuteManager;
+
 
     /**
      * Constructeur, prend en paramètre la santé que doit avoir le parachute
@@ -75,7 +77,23 @@ public class Parachute {
 
         this.parachuteManager = manager;
 
-        this.coffre = new CoffreParachute();
+        this.coffre = new CoffreParachute(manager.getGroupe().getAutomatedChestManager());
+
+
+        GameSettings parametres = manager.getGroupe().getParametresPartie();
+
+        // ON récupère les valeurs présentes dans la config
+        if (parametres != null) {
+            this.normalFallingSpeed = manager.getGroupe().getParametresPartie().getCVAR("normal_falling_speed").getValeurNumerique();
+            this.freeFallingSpeed = manager.getGroupe().getParametresPartie().getCVAR("free_falling_speed").getValeurNumerique();
+
+            this.max_items_in_chest = manager.getGroupe().getParametresPartie().getCVAR("max_item_in_drop").getValeurNumerique();
+            this.min_items_in_chest = manager.getGroupe().getParametresPartie().getCVAR("min_item_in_drop").getValeurNumerique();
+
+            ((CoffreParachute) this.coffre).setMinItems(min_items_in_chest);
+            ((CoffreParachute) this.coffre).setMaxItems(max_items_in_chest);
+
+        }
 
     }
 
@@ -87,6 +105,7 @@ public class Parachute {
      * @return
      */
     public boolean isParachuteHit(Arrow fleche) {
+        if (isParachuteOnGround || isParachuteBroken) return false;
         return isParachuteHit(fleche.getLocation().getBlock().getLocation());
     }
 
@@ -97,6 +116,7 @@ public class Parachute {
      * @return
      */
     public boolean isParachuteHit(Location loc) {
+        if (isParachuteOnGround || isParachuteBroken) return false;
 
         for (Map.Entry<String, ParachuteBlock> blockDeParachute : getParachute().entrySet()) {
             if (LocationRange.isLocationBetween(loc, blockDeParachute.getValue().getLocation(), 2, 2)) return true;
@@ -106,10 +126,11 @@ public class Parachute {
 
     /**
      * Fonction appelée lorsque le parachute prend des dégats
+     * On joue également un effet à l'endroit où il y a eu le hit
      *
      * @param damage
      */
-    public void receiveDamage(Double damage) {
+    public void receiveDamage(Double damage, Location hitLocation) {
 
         if (health <= damage) {
             this.setFalling(true);
@@ -117,6 +138,19 @@ public class Parachute {
         }
 
         health -= damage;
+
+        if (hitLocation != null) {
+            World monde = hitLocation.getWorld();
+
+            if (monde != null) {
+                monde.playEffect(hitLocation, Effect.END_GATEWAY_SPAWN, 1);
+            }
+
+        } else {
+            playEffectOnChest(Effect.END_GATEWAY_SPAWN);
+
+        }
+        playSoundOnChest(Sound.ENTITY_GENERIC_EXPLODE);
     }
 
     /**
@@ -214,8 +248,6 @@ public class Parachute {
      */
     private void setFalling(boolean falling) {
 
-        this.isFalling = falling;
-
         // Si on marque le parachute comme tombant
         if (falling) {
             currentFallingSpeed = freeFallingSpeed;
@@ -293,6 +325,13 @@ public class Parachute {
             } else {
                 // Le parachute est au sol
                 isParachuteOnGround = true;
+                this.coffre.setChestLocation(blockCoffre.getLocation());
+                playEffectOnChest(Effect.END_GATEWAY_SPAWN);
+                playSoundOnChest(Sound.ENTITY_GENERIC_EXPLODE);
+
+
+
+
             }
 
         }
@@ -382,6 +421,8 @@ public class Parachute {
             this.blocksParachute.replace(block.getKey(), new ParachuteBlock(blockLocation, parachuteBlock.getMaterial()));
         }
 
+        this.coffre.setChestLocation(spawnLocation);
+
         handleParachute();
 
     }
@@ -413,7 +454,7 @@ public class Parachute {
                     getChest().remove();
 
                     // On fait apparaitre le coffre d'animation
-                    coffre.spawn(getChest().getLocation());
+                    coffre.spawn();
 
                     // Et on oublie pas d'enregistrer !
                     parachuteManager.getGroupe().getAutomatedChestManager().replace(coffre.getClass(), coffre);
@@ -436,5 +477,36 @@ public class Parachute {
             }
         }.runTaskTimer(mineralcontest.plugin, 0, 1);
 
+    }
+
+
+    /**
+     * Joue une animation sur le coffre
+     *
+     * @param effect
+     */
+    private void playEffectOnChest(Effect effect) {
+        ParachuteBlock coffre = getChest();
+        if (coffre != null) {
+            World monde = coffre.getLocation().getWorld();
+            if (monde != null) {
+                monde.playEffect(coffre.getLocation(), effect, 1);
+            }
+        }
+    }
+
+    /**
+     * Joue une animation sur le coffre
+     *
+     * @param effect
+     */
+    private void playSoundOnChest(Sound effect) {
+        ParachuteBlock coffre = getChest();
+        if (coffre != null) {
+            World monde = coffre.getLocation().getWorld();
+            if (monde != null) {
+                monde.playSound(coffre.getLocation(), effect, 1, 0);
+            }
+        }
     }
 }

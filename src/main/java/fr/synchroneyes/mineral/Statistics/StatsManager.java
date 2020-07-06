@@ -35,6 +35,7 @@ public class StatsManager {
         availableStats.add(new TalkStat());
         availableStats.add(new ChickenKillerStat());
         availableStats.add(new MonsterKillerStat());
+        availableStats.add(new MostParachuteHitStat());
     }
 
     public void register(Class event, Player joueur, Object valeur) {

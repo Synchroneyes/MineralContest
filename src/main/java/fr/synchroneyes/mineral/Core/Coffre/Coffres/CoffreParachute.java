@@ -1,8 +1,10 @@
 package fr.synchroneyes.mineral.Core.Coffre.Coffres;
 
+import fr.synchroneyes.mineral.Core.Arena.ArenaChestContent.ArenaChestContentGenerator;
 import fr.synchroneyes.mineral.Core.Coffre.Animations;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
-import org.bukkit.ChatColor;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,27 +14,67 @@ import java.util.List;
 
 public class CoffreParachute extends AutomatedChestAnimation {
 
+    private ArenaChestContentGenerator generator;
+
+    private AutomatedChestManager automatedChestManager;
+
+    // Variable contenant le nombre minimum & maximum d'items à générer
+    int minItems, maxItems;
+
     /**
      * Constructeur, permet de donner en paramètre le nom de l'inventaire ainsi que la taille
      */
-    public CoffreParachute() {
+    public CoffreParachute(AutomatedChestManager manager) {
         // On veut 5 lignes
-        super(5 * 9);
+        super(5 * 9, manager);
+        generator = new ArenaChestContentGenerator(null);
+        this.automatedChestManager = manager;
+    }
+
+
+    public void setGenerator(ArenaChestContentGenerator generator) {
+        this.generator = generator;
+    }
+
+    public int getMinItems() {
+        return minItems;
+    }
+
+    public void setMinItems(int minItems) {
+        this.minItems = minItems;
+    }
+
+    public int getMaxItems() {
+        return maxItems;
+    }
+
+    public void setMaxItems(int maxItems) {
+        this.maxItems = maxItems;
+    }
+
+    @Override
+    public void actionToPerformBeforeSpawn() {
+
+    }
+
+    @Override
+    public void actionToPerformAfterAnimationOver() {
+
     }
 
     @Override
     public boolean displayWaitingItems() {
-        return false;
+        return true;
     }
 
     @Override
     public String getOpeningChestTitle() {
-        return ChatColor.DARK_RED + "Ouverture du largage ...";
+        return Lang.airdrop_chest_opening_title.toString();
     }
 
     @Override
     public String getOpenedChestTitle() {
-        return ChatColor.DARK_GREEN + "Le coffre a été ouvert";
+        return Lang.airdrop_chest_opened_title.toString();
     }
 
     @Override
@@ -65,7 +107,7 @@ public class CoffreParachute extends AutomatedChestAnimation {
 
     @Override
     public int getAnimationTime() {
-        return 5;
+        return automatedChestManager.getGroupe().getParametresPartie().getCVAR("drop_opening_time").getValeurNumerique();
     }
 
     @Override
@@ -77,7 +119,12 @@ public class CoffreParachute extends AutomatedChestAnimation {
     public List<ItemStack> genererContenuCoffre() {
 
         LinkedList<ItemStack> items = new LinkedList<>();
-        items.add(new ItemStack(Material.EMERALD, 64));
+        try {
+            for (ItemStack item : generator.generateAirDropInventory(minItems, maxItems).getContents())
+                if (item != null) items.add(item);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return items;
     }
 

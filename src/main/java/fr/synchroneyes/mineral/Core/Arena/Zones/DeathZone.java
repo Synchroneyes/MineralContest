@@ -123,7 +123,7 @@ public class DeathZone {
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
 
-            PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getArene().getCoffre().getPosition());
+            PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getArene().getCoffre().getLocation());
             return;
         }
 
@@ -183,6 +183,9 @@ public class DeathZone {
                 joueur.removePotionEffect(PotionEffectType.INVISIBILITY);
                 joueur.removePotionEffect(PotionEffectType.BLINDNESS);
 
+                for (PotionEffect potion : joueur.getActivePotionEffects())
+                    joueur.removePotionEffect(potion.getType());
+
 
             }
 
@@ -202,4 +205,5 @@ public class DeathZone {
 
         }
     }
+
 }

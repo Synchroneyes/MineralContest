@@ -21,6 +21,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -194,7 +195,7 @@ public class PlayerUtils {
 
                             StringBuilder joueurSansVote = new StringBuilder();
                             for (Player joueur_sans_vote : playerGroup.getMapVote().joueurAyantNonVote())
-                                joueurSansVote.append(joueur_sans_vote.getDisplayName());
+                                joueurSansVote.append(joueur_sans_vote.getDisplayName() + " ");
 
                             if (joueurSansVote.toString().length() > 0)
                                 elementsADisplay.add(Lang.non_voted_hud.toString() + joueurSansVote.toString());
@@ -362,7 +363,9 @@ public class PlayerUtils {
 
     public static void clearPlayer(Player joueur) {
         joueur.getInventory().clear();
-        Bukkit.getLogger().info("Player " + joueur.getDisplayName() + " has been cleared");
+        for (PotionEffect potion : joueur.getActivePotionEffects())
+            joueur.removePotionEffect(potion.getType());
+
     }
 
 
@@ -464,4 +467,5 @@ public class PlayerUtils {
         p.setHealth(20);
         p.setFoodLevel(30);
     }
+
 }

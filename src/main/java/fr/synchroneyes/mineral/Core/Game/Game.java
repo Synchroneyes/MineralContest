@@ -6,12 +6,12 @@ import fr.synchroneyes.mineral.Core.Arena.Arene;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.InventoryInterface;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInventory;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
 import fr.synchroneyes.mineral.Statistics.StatsManager;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.ChatColorString;
-import fr.synchroneyes.mineral.Utils.Door.AutomaticDoors;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
@@ -66,7 +66,6 @@ public class Game implements Listener {
     private boolean GameForced = false;
     public boolean isGameInitialized = false;
     public int killCounter = 0;
-    private AutomaticDoors portes;
     private LinkedList<CouplePlayerTeam> disconnectedPlayers;
     // <username, allowed to login>
     private HashMap<String, Boolean> PlayerThatTriedToLogIn;
@@ -90,6 +89,9 @@ public class Game implements Listener {
     public LinkedList<BlockSaver> affectedBlocks;
     private LinkedList<Player> referees;
 
+    // Gestionnaire de largage
+    private ParachuteManager parachuteManager;
+
     public Game(Groupe g) {
 
         this.groupe = g;
@@ -103,8 +105,14 @@ public class Game implements Listener {
         this.addedChests = new LinkedList<>();
         this.arene = new Arene(groupe);
 
+        this.parachuteManager = new ParachuteManager(g);
         this.statsManager = new StatsManager(this);
         initGameSettings();
+    }
+
+
+    public ParachuteManager getParachuteManager() {
+        return parachuteManager;
     }
 
 
@@ -600,10 +608,6 @@ public class Game implements Listener {
                 disconnectedPlayers.remove(player);
     }
 
-    public AutomaticDoors getPortes() {
-        return portes;
-    }
-
     public void handleDoors() {
 
         int rayonPorte = 3;
@@ -678,9 +682,12 @@ public class Game implements Listener {
                                 // Début de partie
                                 if (tempsPartie == DUREE_PARTIE * 60) {
                                     GameStarted = true;
-                                    online.setHealth(20);
+
                                     online.setGameMode(GameMode.SURVIVAL);
                                     online.getInventory().clear();
+
+                                    PlayerUtils.clearPlayer(online);
+                                    PlayerUtils.setMaxHealth(online);
                                     //PlayerUtils.givePlayerBaseItems(online);
                                     try {
                                         groupe.getPlayerBaseItem().giveItemsToPlayer(online);
@@ -697,7 +704,7 @@ public class Game implements Listener {
                                         if (!isReferee(online))
                                             PlayerUtils.teleportPlayer(online, groupe.getMonde(), getPlayerHouse(online).getHouseLocation());
                                         else {
-                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getArene().getCoffre().getPosition());
+                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getArene().getCoffre().getLocation());
                                             online.setGameMode(GameMode.CREATIVE);
                                             PlayerUtils.equipReferee(online);
                                         }
@@ -1048,7 +1055,7 @@ public class Game implements Listener {
 
 
         // SPAWN COFFRE ARENE
-        if (this.arene.getCoffre().getPosition() == null) {
+        if (this.arene.getCoffre().getLocation() == null) {
             mineralcontest.broadcastMessage(mineralcontest.plugin.prefixGlobal + "[check] spawn coffre arene: " + ChatColor.RED + "X", groupe);
             return false;
         }
@@ -1108,6 +1115,8 @@ public class Game implements Listener {
         this.tempsPartie = 60 * DUREE_PARTIE;
         getArene().startArena();
         getArene().startAutoMobKill();
+
+        getParachuteManager().handleDrops();
 
         // On set le world border
         mineralcontest.plugin.setWorldBorder();

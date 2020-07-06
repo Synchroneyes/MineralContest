@@ -28,6 +28,7 @@ public enum Lang {
     global("global", "[Global]"),
     _private("private", "[Privé]"),
     admin("admin", " [Admin]"),
+    web("web", "[Web]"),
     group("group", "[Groupe]"),
     error_when_resume("error_when_resume", "Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine"),
     game_already_started("game_already_started", "La partie a déjà commencé !"),
@@ -105,6 +106,7 @@ public enum Lang {
     arena_teleport_disabled("arena_teleport_disabled", "La téléportation de l'arène n'est pas active"),
     arena_now_teleporting("arena_now_teleporting", "Téléportation vers l'arène ..."),
     arena_chest_title("arena_chest_title", "%gold%Coffre d'arène !"),
+    arena_chest_title_being_opened("arena_chest_title", "%red%Ouverture en cours!"),
     arena_chest_being_opened("arena_chest_being_opened", "Quelqu'un ouvre déjà le coffre"),
     arena_teleport_now_enabled("arena_teleport_now_enabled", "Vous pouvez vous téléporter vers l'arène avec la commande /arene"),
     arena_teleport_now_disabled("arena_teleport_now_disabled", "Il n'est plus possible de se téléporter vers l'arène"),
@@ -128,6 +130,7 @@ public enum Lang {
     referee_item_pause("referee_item_pause", "Mettre la partie en pause"),
     referee_item_leaderboard("referee_item_leaderboard", "Tableau des scores"),
     referee_item_spawn_arena_chest("referee_item_spawn_arena_chest", "Faire apparaître le coffre d'arène"),
+    referee_item_spawn_drop_chest("referee_item_spawn_drop_chest", "Faire apparaitre un largage"),
     referee_item_start_vote("referee_item_start_vote", "Démarrer le vote"),
     referee_item_force_biome("referee_item_force_biome", "Forcer le biome"),
     referee_will_now_select_biome("referee_will_now_select_biome", "l'arbitre va désormais choisir le biome à jouer"),
@@ -272,7 +275,14 @@ public enum Lang {
     stats_most_talking_subtitle("stats_most_talking_subtitle", "Avec %d message(s) envoyé(s)"),
     stats_menu_title("stats_menu_title", "Menu de stats de fin de partie"),
     non_ready_hud("non_ready_hud", "Non prêt: "),
-    non_voted_hud("non_voted_hud", "Sans vote: ");
+    non_voted_hud("non_voted_hud", "Sans vote: "),
+    stats_parachute_hit_title("stats_parachute_hit_title", "Tireur du ciel"),
+    stats_parachute_hit_subtitle("stats_parachute_hit_subtitle", "Avec %d tirs réussis!"),
+
+    airdrop_title("airdrop_title", "Largage %red%aérien"),
+    airdrop_subtitle("airdrop_subtitle", "Un %red%largage aérien%white% a été repéré en X: %red%%x %white%Z: %red%%z"),
+    airdrop_chest_opening_title("airdrop_chest_title", "%red%Ouverture en cours..."),
+    airdrop_chest_opened_title("airdrop_chest_opened_title", "%green%Le coffre a été ouvert!");
 
 
 
@@ -347,6 +357,8 @@ public enum Lang {
             mineralcontest.prefixAdmin = Lang.title.toString() + ChatColor.RED + Lang.admin.toString() + ChatColor.WHITE + " ";
             mineralcontest.prefixTeamChat = Lang.title.toString() + ChatColor.BLUE + Lang.teamChat.toString() + ChatColor.WHITE + " ";
             mineralcontest.prefixGroupe = Lang.title.toString() + ChatColor.GOLD + Lang.group.toString() + ChatColor.WHITE + " ";
+            mineralcontest.prefixWeb = Lang.title.toString() + ChatColor.AQUA + Lang.web.toString() + ChatColor.WHITE + " ";
+
 
         } catch (IOException ioe) {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");

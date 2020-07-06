@@ -32,7 +32,7 @@ public class BucketEvent implements Listener {
 
             GameSettings settings = partie.groupe.getParametresPartie();
 
-            if (Radius.isBlockInRadius(partie.getArene().getCoffre().getPosition(), event.getPlayer().getLocation(), partie.getArene().arenaRadius)) {
+            if (Radius.isBlockInRadius(partie.getArene().getCoffre().getLocation(), event.getPlayer().getLocation(), partie.getArene().arenaRadius)) {
                 if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                     BlockManager blockManager = BlockManager.getInstance();
                     if (blockManager.isBlockAllowedToBeAdded(event.getBucket())) {

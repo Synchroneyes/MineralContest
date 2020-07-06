@@ -116,9 +116,9 @@ public class mcbuild extends CommandTemplate {
         }
 
         try {
-            yamlConfiguration.set("arena.chest.x", monde.getArene().getCoffre().getPosition().getX());
-            yamlConfiguration.set("arena.chest.y", monde.getArene().getCoffre().getPosition().getY());
-            yamlConfiguration.set("arena.chest.z", monde.getArene().getCoffre().getPosition().getZ());
+            yamlConfiguration.set("arena.chest.x", monde.getArene().getCoffre().getLocation().getX());
+            yamlConfiguration.set("arena.chest.y", monde.getArene().getCoffre().getLocation().getY());
+            yamlConfiguration.set("arena.chest.z", monde.getArene().getCoffre().getLocation().getZ());
         } catch (Exception e) {
             Bukkit.getLogger().severe(e.getMessage());
             e.printStackTrace();

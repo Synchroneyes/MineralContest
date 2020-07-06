@@ -3,6 +3,7 @@ package fr.synchroneyes.groups.Core;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.groups.Utils.FileManager.FileCopy;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Settings.GameSettings;
@@ -281,7 +282,8 @@ public class WorldLoader {
             fichierConfigPartie = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_arena_chest.toString());
 
         try {
-            groupe.getGame().getArene().getCoffre().initializeChestContent(fichierConfigPartie);
+            CoffreArene coffreArene = (CoffreArene) groupe.getGame().getArene().getCoffre();
+            coffreArene.getArenaChestContentGenerator().initialize(fichierConfigPartie);
         } catch (Exception e) {
             Error.Report(e, groupe.getGame());
         }

@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Arena.ArenaChestContent;
 
+import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -97,6 +98,56 @@ public class ArenaChestContentGenerator {
         return inventaire;
     }
 
+
+    /**
+     * Retourne l'inventaire d'items généré pour les largages
+     *
+     * @param minItem Le nombre d'items minimum
+     * @param maxItem Le nombre d'item max
+     * @return
+     * @throws Exception
+     */
+    public Inventory generateAirDropInventory(int minItem, int maxItem) throws Exception {
+        if (!initialized) initializeFromDefaultFile();
+
+
+        // On génère un tableau de "range"
+        int tailleTableau = items.size();
+        int minProba = 0;
+        Range[] tableauProba = new Range[tailleTableau];
+
+        // On parcours notre liste d'item pour instancié chaque valeur du tableau "tableauProba"
+        for (int i = 0; i < tailleTableau; ++i) {
+            ArenaChestItem item = items.get(i);
+            tableauProba[i] = new Range(item.getItemMaterial(), minProba, minProba + item.getItemProbability());
+            minProba = minProba + item.getItemProbability();
+        }
+
+        // On instancie l'inventaire dans lequel stocker les items
+        Inventory inventaire = Bukkit.createInventory(null, 27, Lang.arena_chest_title.toString());
+
+        Random random = new Random();
+        // On génère un nombre entre maxItem et minItem
+        int numeroGenere = random.nextInt((maxItem - minItem) - 1) + minItem;
+
+        // Maintenant, on génère "numeroGenere" items
+        for (int i = 0; i < numeroGenere; ++i) {
+            // On génère un nombre entre 0 et la proba du dernier item instancié
+            int probabiliteGenere = random.nextInt(minProba - 1);
+            // On récupère un item correspondant à la proba générée
+            Material itemMaterial = Range.getInsideRange(tableauProba, probabiliteGenere);
+
+            // On crée l'item
+            ItemStack item = new ItemStack(itemMaterial, 1);
+
+            // On l'ajoute à l'inventaire
+            inventaire.addItem(item);
+        }
+
+        // et on retourne cet inventaire
+        return inventaire;
+    }
+
     /**
      * Initialisation des items d'un coffre à partir d'un fichier passé en paramètre
      *
@@ -142,7 +193,7 @@ public class ArenaChestContentGenerator {
      */
     private void initializeFromDefaultFile() throws Exception {
         // On charge le fichier
-        File fichier = new File(mineralcontest.plugin.getDataFolder(), "arena_chest_content.yml");
+        File fichier = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_arena_chest.toString());
 
 
         if (!fichier.exists()) {

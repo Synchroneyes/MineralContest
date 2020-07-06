@@ -109,7 +109,7 @@ public class BlockDestroyed implements Listener {
             // On doit vérifier si on se trouve autour de la zone protegée
             int rayonZoneProtege = playerGroupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
             Block blockDetruit = event.getBlock();
-            Location centreArene = playerGroupe.getGame().getArene().getCoffre().getPosition();
+            Location centreArene = playerGroupe.getGame().getArene().getCoffre().getLocation();
 
             // Si le block détruit est dans le rayon de la zone protegé, on annule l'event
             if (Radius.isBlockInRadius(centreArene, blockDetruit.getLocation(), rayonZoneProtege)) {

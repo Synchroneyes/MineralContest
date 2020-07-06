@@ -10,6 +10,7 @@ import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Commands.*;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
+import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
@@ -41,8 +42,6 @@ public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
 
-    public static boolean testingChest = false;
-
     /**
      * Community version is a version ran by server that wants to have multiple games running at the same time.
      * If set to true, then players will have to create a groupe, invite players, start the vote.
@@ -58,6 +57,8 @@ public final class mineralcontest extends JavaPlugin {
     public static String prefixAdmin;
     public static String prefixTeamChat;
     public static String prefixGroupe;
+    public static String prefixWeb;
+
     public static Logger log = Bukkit.getLogger();
     public static mineralcontest plugin;
     public World pluginWorld;
@@ -86,13 +87,13 @@ public final class mineralcontest extends JavaPlugin {
     public static void afficherMessageVersion() {
         // Pour chaque message
         for (String message : plugin.messagesFromWebsite) {
-            broadcastMessage(mineralcontest.prefixGlobal + message);
+            broadcastMessage(mineralcontest.prefixWeb + message);
         }
     }
 
     public static void afficherMessageVersionToPlayer(Player joueur) {
         for (String message : plugin.messagesFromWebsite) {
-            joueur.sendMessage(mineralcontest.prefixPrive + message);
+            joueur.sendMessage(mineralcontest.prefixWeb + message);
         }
 
     }
@@ -341,7 +342,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinTeamInventoryEvent(), this);
 
         // Drop
-        //Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
 
         // AutomatedChest
         //Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);

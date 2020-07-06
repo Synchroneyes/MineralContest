@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -99,10 +100,9 @@ public class EntityDamage implements Listener {
 
 
                     // Si la personne recevant des dégats ouvrait le coffre d'arène, on lui ferme
-                    if (joueur.equals(playerGroup.getGame().getArene().getCoffre().openingPlayer)) {
+                    if (joueur.equals(playerGroup.getGame().getArene().getCoffre().getOpeningPlayer())) {
                         // On ferme et on annule l'ouverture
-                        playerGroup.getGame().getArene().getCoffre().close();
-                        joueur.closeInventory();
+                        playerGroup.getGame().getArene().getCoffre().closeInventory();
                     }
 
                 }
@@ -185,6 +185,8 @@ public class EntityDamage implements Listener {
 
         // On tue le joueur
         PlayerUtils.killPlayer(dead);
+
+        attacker.playSound(attacker.getLocation(), Sound.ENTITY_CHICKEN_DEATH, 1, 1);
 
 
         mineralcontest.getPlayerGame(dead).killCounter++;

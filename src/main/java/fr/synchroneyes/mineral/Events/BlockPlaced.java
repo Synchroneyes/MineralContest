@@ -48,7 +48,7 @@ public class BlockPlaced implements Listener {
                 try {
 
                     GameSettings settings = game.groupe.getParametresPartie();
-                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getPosition(), settings.getCVAR("protected_zone_area_radius").getValeurNumerique())) {
+                    if (Radius.isBlockInRadius(event.getBlock().getLocation(), game.getArene().getCoffre().getLocation(), settings.getCVAR("protected_zone_area_radius").getValeurNumerique())) {
                         // We are in the radius of the arena
                         if (settings.getCVAR("mp_enable_block_adding").getValeurNumerique() == 1) {
                             BlockManager blockManager = BlockManager.getInstance();

@@ -98,7 +98,7 @@ public class ChickenWaves {
     public void apparitionPoulets() {
         this.monde = arene.groupe.getMonde();
         try {
-            this.spawnCoffre = arene.getCoffre().getPosition();
+            this.spawnCoffre = arene.getCoffre().getLocation();
         } catch (Exception e) {
             e.printStackTrace();
         }

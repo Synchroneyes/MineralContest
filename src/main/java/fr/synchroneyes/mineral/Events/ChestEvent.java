@@ -2,14 +2,17 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Arena.Coffre;
-import fr.synchroneyes.mineral.Core.Arena.CoffreAvecCooldown;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -29,10 +32,18 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onChestClose(InventoryCloseEvent event) throws Exception {
 
-        if (mineralcontest.testingChest) return;
-
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+
+
+            // On vérifie si le joueur ferme un coffre animé
+            try {
+                AnimatedChestInventoryCloseEvent(event);
+            } catch (EventAlreadyHandledException e) {
+                return;
+            }
+
+
             Game partie = mineralcontest.getWorldGame(worldEvent);
             // Si la game est démarrée
             if ((partie != null) && partie.isGameStarted() && !partie.isGamePaused() && !partie.isPreGame()) {
@@ -42,7 +53,7 @@ public class ChestEvent implements Listener {
                     return;
                 }
 
-                CoffreAvecCooldown coffreArene = partie.getArene().getCoffre();
+                AutomatedChestAnimation coffreArene = partie.getArene().getCoffre();
                 Player player = (Player) event.getPlayer();
 
 
@@ -51,8 +62,8 @@ public class ChestEvent implements Listener {
                     Block openedInventoryBlock = ((Chest) event.getInventory().getHolder()).getBlock();
                     Chest openedChest = ((Chest) event.getInventory().getHolder());
                     // Si le coffre fermé est le coffre d'arène
-                    if (openedInventoryBlock.getLocation().equals(coffreArene.getPosition())) {
-                        coffreArene.close();
+                    if (openedInventoryBlock.getLocation().equals(coffreArene.getLocation())) {
+                        coffreArene.closeInventory();
                         return;
                     }
 
@@ -102,7 +113,6 @@ public class ChestEvent implements Listener {
 
     @EventHandler
     public void onChestBreaked(ItemSpawnEvent event) throws Exception {
-        if (mineralcontest.testingChest) return;
         World world = event.getEntity().getWorld();
         if (mineralcontest.isAMineralContestWorld(world)) {
             Game partie = mineralcontest.getWorldGame(world);
@@ -113,10 +123,10 @@ public class ChestEvent implements Listener {
                     return;
                 }
 
-                CoffreAvecCooldown arenaChest = partie.getArene().getCoffre();
+                AutomatedChestAnimation arenaChest = partie.getArene().getCoffre();
                 if (arenaChest != null) {
                     if (event.getEntity().getItemStack().getType().equals(Material.CHEST))
-                        if (Radius.isBlockInRadius(arenaChest.getPosition(), event.getEntity().getLocation(), 2))
+                        if (Radius.isBlockInRadius(arenaChest.getLocation(), event.getEntity().getLocation(), 2))
                             event.setCancelled(true);
                 }
             }
@@ -129,7 +139,13 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onChestOpen(InventoryOpenEvent event) throws Exception {
 
-        if (mineralcontest.testingChest) return;
+
+        // On vérifie si c'est un event d'ouverture de coffre animé, si c'est le cas, on s'arrête
+        try {
+            AnimatedChestOpenInventoryEvent(event);
+        } catch (EventAlreadyHandledException e) {
+            return;
+        }
 
         World world = event.getPlayer().getWorld();
         Game game = mineralcontest.getWorldGame(world);
@@ -142,28 +158,17 @@ public class ChestEvent implements Listener {
             }
 
             Player player = (Player) event.getPlayer();
-            CoffreAvecCooldown arenaChest = game.getArene().getCoffre();
+            AutomatedChestAnimation arenaChest = game.getArene().getCoffre();
             if (event.getInventory().getHolder() instanceof Chest) {
 
                 Chest openedChest = (Chest) event.getInventory().getHolder();
                 Block openedChestBlock = openedChest.getBlock();
 
                 // the inventory opened comes from a chest.
-
                 if (!game.isThisBlockAGameChest(openedChestBlock)) {
                     openedChest.getInventory().clear();
                 }
 
-                if (arenaChest != null) {
-                    if (arenaChest.getPosition().equals(openedChest.getLocation()) && arenaChest.isChestSpawned()) {
-                        if (arenaChest.openingPlayer == null) {
-                            arenaChest.openChest(player);
-                        } else {
-                            player.sendMessage(mineralcontest.prefixErreur + Lang.arena_chest_being_opened.toString());
-                            event.setCancelled(true);
-                        }
-                    }
-                }
             }
         }
 
@@ -173,6 +178,15 @@ public class ChestEvent implements Listener {
     @EventHandler
     public void onItemClick(InventoryClickEvent event) throws Exception {
         if (event.getWhoClicked() instanceof Player) {
+
+
+            // Si on est dans un coffre animé
+            try {
+                AnimatedChestInventoryClickEvent(event);
+            } catch (EventAlreadyHandledException e) {
+                return;
+            }
+
             Player joueur = (Player) event.getWhoClicked();
             Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
             if (playerGroup == null) return;
@@ -182,8 +196,8 @@ public class ChestEvent implements Listener {
             Inventory clickedInventory = event.getInventory();
 
             if (partie.isGameStarted()) {
-                if (partie.getArene().getCoffre().getPosition().getBlock().getState() instanceof Chest) {
-                    Chest arenaChest = (Chest) (partie.getArene().getCoffre().getPosition().getBlock().getState());
+                if (partie.getArene().getCoffre().getLocation().getBlock().getState() instanceof Chest) {
+                    Chest arenaChest = (Chest) (partie.getArene().getCoffre().getLocation().getBlock().getState());
                     if (arenaChest.getInventory().equals(clickedInventory)) {
                         event.setCancelled(true);
                         return;
@@ -209,6 +223,129 @@ public class ChestEvent implements Listener {
                 }
 
             }
+        }
+    }
+
+
+    /**
+     * Evenement appelé lors de l'ouverture d'un coffre, cet évènement sert à gérer l'ouverture des coffres d'animations
+     *
+     * @param event
+     */
+    public void AnimatedChestOpenInventoryEvent(InventoryOpenEvent event) throws EventAlreadyHandledException {
+        if (event.getPlayer() instanceof Player) {
+            Player joueur = (Player) event.getPlayer();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            if (playerGroup == null) return;
+
+            // On applique cet évenement uniquement aux joueurs du plugin
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+
+
+                // On récupère la location du bloc contenant cet inventaire
+                Location chestLocation = event.getInventory().getLocation();
+                if (chestLocation == null) return;
+
+                Block chest = chestLocation.getBlock();
+
+
+                // Si le coffre ouvert fait parti des blocs d'animation
+                if (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)) {
+
+
+                    event.setCancelled(true);
+                    // On récupère son instance
+                    AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getChestAnomation(chest);
+
+
+                    if (automatedChestAnimation == null) return;
+
+                    if (automatedChestAnimation.isBeingOpened()) return;
+
+
+                    if (automatedChestAnimation.getClass().equals(CoffreArene.class))
+                        if (playerGroup.getGame().getArene().isChestSpawned())
+                            automatedChestAnimation.setOpeningPlayer(joueur);
+                        else return;
+                    else automatedChestAnimation.setOpeningPlayer(joueur);
+
+
+                    // Et on joue l'animation
+                    throw new EventAlreadyHandledException();
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Evenement appelé lors de la fermeture d'un coffre
+     *
+     * @param event
+     */
+    public void AnimatedChestInventoryCloseEvent(InventoryCloseEvent event) throws EventAlreadyHandledException {
+
+        if (event.getPlayer() instanceof Player) {
+            Player joueur = (Player) event.getPlayer();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            if (playerGroup == null) return;
+
+            // On applique cet évenement uniquement aux joueurs du plugin
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+
+                // ON récupère l'inventaire fermé
+                Inventory openedInventory = event.getInventory();
+                if (playerGroup.getAutomatedChestManager().isThisAnAnimatedInventory(openedInventory)) {
+                    // C'est un inventaire avec animation
+                    AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getFromInventory(openedInventory);
+                    if (automatedChestAnimation == null) return;
+
+                    // Et on ferme l'inventaire
+                    automatedChestAnimation.closeInventory();
+                    throw new EventAlreadyHandledException();
+                }
+            }
+
+
+        }
+    }
+
+
+    /**
+     * Fonction appelée lors du clic sur un item de l'inventaire
+     *
+     * @param event
+     * @throws EventAlreadyHandledException
+     */
+    public void AnimatedChestInventoryClickEvent(InventoryClickEvent event) throws EventAlreadyHandledException {
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            if (playerGroup == null) return;
+
+            // On applique cet évenement uniquement aux joueurs du plugin
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+
+                // ON récupère l'inventaire fermé
+                Inventory openedInventory = event.getInventory();
+                if (playerGroup.getAutomatedChestManager().isThisAnAnimatedInventory(openedInventory)) {
+                    // C'est un inventaire avec animation
+                    AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getFromInventory(openedInventory);
+                    if (automatedChestAnimation == null) return;
+
+                    if (!automatedChestAnimation.isAnimationOver()) {
+                        event.setCancelled(true);
+                        throw new EventAlreadyHandledException();
+
+                    }
+                }
+            }
+
+
         }
     }
 }

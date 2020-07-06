@@ -3,6 +3,7 @@ error: '[Erreur]'
 global: '[Global]'
 _private: '[Privé]'
 admin: '[Admin]'
+web: "[Web]"
 cvar_diamond_score: Le score du diamand est maintenant de
 cvar_iron_score: 'Le score du fer est maintenant de '
 cvar_emerald_score: 'Le score de l''émeraude est maintenant de '
@@ -252,6 +253,15 @@ stats_most_talking_subtitle: "Avec %d message(s) envoyé(s)"
 stats_menu_title: "Menu de stats de fin de partie"
 non_ready_hud: "Non prêt: "
 non_voted_hud: "Sans vote: "
+stats_parachute_hit_title: "Tireur du ciel"
+stats_parachute_hit_subtitle: "Avec %d tirs réussis!"
+airdrop_title: "Largage %red%aérien"
+airdrop_subtitle: "Un %red%largage aérien%white% a été repéré en X: %red%%x %white%Z: %red%%z"
+airdrop_chest_title: "%red%Ouverture en cours..."
+airdrop_chest_opened_title: "%green%Le coffre a été ouvert!"
+referee_item_spawn_drop_chest: "Faire apparaitre un largage"
+arena_chest_title_being_opened: "%red%Ouverture du coffre"
+
 
 
 

@@ -12,6 +12,8 @@ public class GestionPartieInventory extends InventoryTemplate {
         registerItem(new PauseGameItem(null, this));
         registerItem(new ResumeGameItem(null, this));
         registerItem(new SpawnChestItem(null, this));
+        registerItem(new SpawnDropItem(null, this));
+
         registerItem(new StartChickenItem(null, this));
         registerItem(new EnableDisableChickenItem(null, this));
 

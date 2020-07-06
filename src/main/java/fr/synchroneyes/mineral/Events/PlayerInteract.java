@@ -19,8 +19,6 @@ public class PlayerInteract implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (MapBuilder.getInstance().isBuilderModeEnabled) return;
 
-        if (mineralcontest.testingChest) return;
-
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = (Player) event.getPlayer();

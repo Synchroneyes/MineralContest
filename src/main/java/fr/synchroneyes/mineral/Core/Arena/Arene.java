@@ -2,6 +2,8 @@ package fr.synchroneyes.mineral.Core.Arena;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -10,6 +12,7 @@ import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -32,7 +35,11 @@ public class Arene {
      */
 
     private Location teleportSpawn;
-    private CoffreAvecCooldown coffre;
+    //private CoffreAvecCooldown coffre;
+
+    // Coffre de l'arène avec animation
+    private AutomatedChestAnimation coffreArene;
+
     private boolean allowTeleport;
     private DeathZone deathZone;
     private int MAX_TIME_BETWEEN_CHEST = 0; // mins
@@ -67,6 +74,9 @@ public class Arene {
         this.deathZone = new DeathZone(g);
         this.chickenWaves = new ChickenWaves(this);
 
+        // Coffre d'arène avec animations
+        this.coffreArene = new CoffreArene(groupe.getAutomatedChestManager(), this);
+
         try {
             MAX_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("max_time_between_chests").getValeurNumerique();
             MIN_TIME_BETWEEN_CHEST = g.getParametresPartie().getCVAR("min_time_between_chests").getValeurNumerique();
@@ -97,11 +107,9 @@ public class Arene {
         return this.deathZone;
     }
 
-
-
-
+    // ON vide le contenu du coffre
     public void clear() {
-        if (this.coffre != null) this.coffre.clear();
+        if (this.coffreArene != null) this.coffreArene.getInventory().clear();
         removePlayerTeleportBar();
     }
 
@@ -149,7 +157,7 @@ public class Arene {
                         for (Entity entite : groupe.getMonde().getEntities()) {
                             if (entite instanceof Monster) {
                                 try {
-                                    if (Radius.isBlockInRadius(coffre.getPosition(), entite.getLocation(), 100))
+                                    if (Radius.isBlockInRadius(coffreArene.getLocation(), entite.getLocation(), groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique()))
                                         entite.remove();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -187,7 +195,9 @@ public class Arene {
                                     groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.arena_chest_will_spawn_in.toString(), groupe));
                             } else {
                                 // LE coffre doit apparaitre !
-                                coffre.spawn();
+                                coffreArene.spawn();
+
+                                //coffre.spawn(coffre.getPosition());
                                 //enableTeleport();
                                 //generateTimeBetweenChest();
 
@@ -290,8 +300,11 @@ public class Arene {
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
-        this.coffre = new CoffreAvecCooldown(position, this);
-        if (mineralcontest.debug)
+        this.coffreArene.setChestLocation(position);
+        position.getBlock().setType(Material.AIR);
+
+        groupe.getAutomatedChestManager().replace(CoffreArene.class, coffreArene);
+        //if (mineralcontest.debug)
             mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.arena_chest_added.toString());
         try {
         } catch (Exception e) {
@@ -300,8 +313,8 @@ public class Arene {
 
     }
 
-    public CoffreAvecCooldown getCoffre() {
-        return this.coffre;
+    public AutomatedChestAnimation getCoffre() {
+        return this.coffreArene;
     }
 
 
