@@ -8,6 +8,7 @@ import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInv
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.StatsManager;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -90,6 +91,11 @@ public class Game implements Listener {
     @Getter
     private PlayerBonus playerBonusManager;
 
+    // Gestionnaire de la boutique de la partie
+    @Getter
+    private ShopManager shopManager;
+
+
 
     // Group of the game
     public Groupe groupe;
@@ -117,6 +123,7 @@ public class Game implements Listener {
         this.parachuteManager = new ParachuteManager(g);
         this.statsManager = new StatsManager(this);
         this.playerBonusManager = new PlayerBonus(this);
+        this.shopManager = new ShopManager(this);
         initGameSettings();
     }
 

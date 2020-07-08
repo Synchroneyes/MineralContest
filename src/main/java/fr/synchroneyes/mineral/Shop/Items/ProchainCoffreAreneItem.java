@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 
 public class ProchainCoffreAreneItem extends ConsumableItem {
@@ -37,18 +38,18 @@ public class ProchainCoffreAreneItem extends ConsumableItem {
 
     @Override
     public void onItemUse() {
-        this.joueur.sendMessage("coucou, vous venez d'acheter un objet");
+        this.joueur.sendMessage(mineralcontest.prefixPrive + "Le coffre apparaitra dans X minutes !");
     }
 
 
     @Override
     public int getPrice() {
-        return 0;
+        return 1;
     }
 
     @Override
     public Material getCurrency() {
-        return null;
+        return Material.DIAMOND;
     }
 
     @Override

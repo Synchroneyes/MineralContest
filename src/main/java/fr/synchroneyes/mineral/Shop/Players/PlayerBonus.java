@@ -57,7 +57,9 @@ public class PlayerBonus {
 
         List<ShopItem> liste_bonus_joueur = bonus_par_joueur.get(joueur);
 
-        // On regarde si le joueur possède déja ce bonus
+
+
+        /*// On regarde si le joueur possède déja ce bonus
         for (ShopItem bonus_joueur : liste_bonus_joueur) {
 
             // On regarde si ce sont les même bonus
@@ -81,17 +83,69 @@ public class PlayerBonus {
                     }
                     return;
                 }
+
+                // Si c'est un item consommable et qu'il s'active à l'achat
+                if(isConsummableBonus(bonus) && bonus.isEnabledOnPurchase()) {
+                    bonus.onItemUse();
+                }
+
                 return;
+            }
+        }*/
+
+
+        boolean doesPlayerAlreadyHaveBonus = false;
+        ShopItem currentBonus = null;
+        // On regarde si il possède déjà le bonus
+        for (ShopItem bonus_joueur : liste_bonus_joueur) {
+            if (bonus_joueur.getClass().equals(bonus.getClass())) {
+                doesPlayerAlreadyHaveBonus = true;
+                currentBonus = bonus_joueur;
+                break;
+            }
+        }
+
+        if (currentBonus != null) {
+            if (isConsummableBonus(currentBonus)) {
+                ConsumableItem currentBonus_consommable = (ConsumableItem) currentBonus;
+                if (currentBonus_consommable.getNombreUtilisationRestantes() == 0) {
+                    liste_bonus_joueur.remove(currentBonus);
+                    doesPlayerAlreadyHaveBonus = false;
+                }
             }
         }
 
         // Le joueur ne possède pas ce bonus !
-        liste_bonus_joueur.add(bonus);
+        if (!doesPlayerAlreadyHaveBonus)
+            liste_bonus_joueur.add(bonus);
+
+
+        // Si on est sur un bonus levelable, on a une vérif supplémentaire à faire
+        if (isLevelableBonus(bonus)) {
+
+            // On récupère la classe requise
+            Class classe_requise = ((LevelableItem) bonus).getRequiredLevel().getClass();
+
+            // Si le joueur ne possède pas la classe requise
+            if (!doesPlayerHaveThisBonus(classe_requise, joueur))
+                joueur.sendMessage("Vous n'avez pas le bonus " + classe_requise.getName());
+            else {
+                for (ShopItem shopItem : liste_bonus_joueur)
+                    if (shopItem.getClass().equals(classe_requise)) {
+                        liste_bonus_joueur.remove(shopItem);
+                        break;
+                    }
+            }
+        }
+
+        // Si c'est un item consommable et qu'il s'active à l'achat
+        if (isConsummableBonus(bonus) && bonus.isEnabledOnPurchase()) {
+            bonus.onItemUse();
+        }
 
         // On ajoute la modification
         bonus_par_joueur.replace(joueur, liste_bonus_joueur);
     }
-
 
     /**
      * Permet à un utilisateur d'acheter un item
@@ -112,11 +166,8 @@ public class PlayerBonus {
         item.setJoueur(joueur);
 
         // Logique permettant de savoir si l'utilisateur peut acheter l'item
-        if (canPlayerAffordItem(item, joueur)) {
-            ajouterBonusPourJoueur(item, joueur);
-        } else {
-            joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + item.getPrice() + " " + item.getCurrency().toString());
-        }
+        ajouterBonusPourJoueur(item, joueur);
+
     }
 
     /**

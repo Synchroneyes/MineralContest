@@ -16,6 +16,7 @@ import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Shop.Commands.OuvrirMenuShop;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -385,6 +386,8 @@ public final class mineralcontest extends JavaPlugin {
             //bukkitCommandMap.register("", new SpawnShop());
 
             //bukkitCommandMap.register("", new SpawnDrop());
+
+            bukkitCommandMap.register("", new OuvrirMenuShop());
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

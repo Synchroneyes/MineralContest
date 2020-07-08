@@ -74,16 +74,15 @@ public abstract class NPCTemplate {
 
 
     /**
-     * Permet de faire apparaitre le NPC à une position donnée
-     *
-     * @param loc
-     */
-    public void spawn(Location loc) {
-        if (loc.getWorld() == null) return;
+     * Permet de faire apparaitre le NPC à la position enregistrée
+     **/
+    public void spawn() {
+        if (this.emplacement == null) return;
+        if (this.emplacement.getWorld() == null) return;
 
         // On récupère le monde où faire spawn l'entité
-        World monde = loc.getWorld();
-        Villager entitySpawned = monde.spawn(loc, Villager.class);
+        World monde = emplacement.getWorld();
+        Villager entitySpawned = monde.spawn(emplacement, Villager.class);
 
 
         // On change les paramètres de l'entité

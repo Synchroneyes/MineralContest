@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Categories;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
+import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -59,6 +60,7 @@ public abstract class Category {
         ItemStack item = new ItemStack(getItemMaterial(), 1);
         if (item.getItemMeta() != null) {
             ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(getNomCategorie());
             List<String> description = new LinkedList<>();
 
             description.addAll(Arrays.asList(getDescription()));
@@ -123,6 +125,9 @@ public abstract class Category {
         Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
         if (playerGroup == null) return;
 
+        PlayerBonus playerBonusManager = playerGroup.getGame().getPlayerBonusManager();
+
+
         if (clickedItem == null) return;
 
         // Pour chaque item de la catégorie
@@ -131,8 +136,15 @@ public abstract class Category {
 
             // Si on a cliqué sur un item de la catégorie
 
+            // TODO: retirer la monnaie lors de l'achat
+
             if (clickedItem.equals(_inventoryItem)) {
-                playerGroup.getGame().getPlayerBonusManager().purchaseItem(joueur, item.getKey());
+                ShopItem _item = item.getKey();
+                if (playerBonusManager.canPlayerAffordItem(item.getKey(), joueur))
+                    playerBonusManager.purchaseItem(joueur, item.getKey());
+                else
+                    joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + _item.getPrice() + " " + _item.getCurrency().toString());
+
                 return;
             }
         }

@@ -11,6 +11,9 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
+import fr.synchroneyes.mineral.Shop.Categories.Category;
+import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
@@ -193,6 +196,8 @@ public class ChestEvent implements Listener {
             // Si on est dans un coffre animé
             try {
                 AnimatedChestInventoryClickEvent(event);
+
+                ShopInventoryOnItemClick(event);
             } catch (EventAlreadyHandledException e) {
                 return;
             }
@@ -435,6 +440,58 @@ public class ChestEvent implements Listener {
                 }
             }
 
+        }
+    }
+
+
+    /**
+     * Fonction appelé au clic sur un item
+     * On vérifie si l'item fait parti de la boutique ou non
+     *
+     * @param event
+     * @throws EventAlreadyHandledException
+     */
+    public void ShopInventoryOnItemClick(InventoryClickEvent event) throws EventAlreadyHandledException {
+        // On a besoin d'avoir un joueur
+        // Et le group doit appartenir au plugin
+
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+
+            // On vérifie si le joueur est dans le plugin
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+                Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+                ShopManager shopManager = playerGroup.getGame().getShopManager();
+
+                Inventory currentInventory = event.getInventory();
+
+                // On vérifie si l'inventaire est celui d'un pnj et/ou d'une catégorie
+                // On regarde pour chaque vendeur
+                for (BonusSeller vendeur : shopManager.getListe_pnj()) {
+
+                    // On commence par regardé si l'inventaire ouvert est celui d'un pnj
+                    if (vendeur.getInventory().equals(currentInventory)) {
+                        for (Category category : vendeur.getCategories_dispo()) {
+                            if (category.toItemStack().equals(event.getCurrentItem())) {
+                                category.openMenuToPlayer(joueur);
+                                event.setCancelled(true);
+                                throw new EventAlreadyHandledException();
+                            }
+                        }
+                    }
+
+                    // On regarde pour chaque vendeur leur catégories qu'on va comparer
+                    for (Category category : vendeur.getCategories_dispo()) {
+                        if (category.getInventory().equals(currentInventory)) {
+                            // On a cliqué sur un inventaire ! On annule l'event
+                            category.onCategoryItemClick(event);
+                            event.setCancelled(true);
+                            // on informe qu'on vient de traiter l'event
+                            throw new EventAlreadyHandledException();
+                        }
+                    }
+                }
+            }
         }
     }
 }

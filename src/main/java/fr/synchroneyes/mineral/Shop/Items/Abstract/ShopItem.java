@@ -59,8 +59,12 @@ public abstract class ShopItem {
         if (item.getItemMeta() != null) {
             List<String> description = new LinkedList<>();
             Collections.addAll(description, getDescriptionItem());
+
+            description.add("Price: " + getPrice() + " " + getCurrency().toString());
+
             ItemMeta itemMeta = item.getItemMeta();
             itemMeta.setLore(description);
+            itemMeta.setDisplayName(getNomItem());
 
             item.setItemMeta(itemMeta);
         }

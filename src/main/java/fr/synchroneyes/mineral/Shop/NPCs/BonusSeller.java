@@ -2,6 +2,8 @@ package fr.synchroneyes.mineral.Shop.NPCs;
 
 import fr.synchroneyes.mineral.Shop.Categories.*;
 import fr.synchroneyes.mineral.Shop.Items.ProchainCoffreAreneItem;
+import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
@@ -16,15 +18,16 @@ import java.util.List;
  */
 public class BonusSeller extends NPCTemplate {
 
-    public List<Category> categories_dispo;
+    @Getter
+    private List<Category> categories_dispo;
 
-    public BonusSeller() {
+    public BonusSeller(Location position) {
         categories_dispo = new LinkedList<>();
 
         // On crée les catégories ainsi que l'ajout d'item
 
         Informations categorieInfo = new Informations();
-        categorieInfo.addItemToInventory(new ProchainCoffreAreneItem(), 1);
+        categorieInfo.addItemToInventory(new ProchainCoffreAreneItem(), 0);
 
 
         categories_dispo.add(categorieInfo);
@@ -34,12 +37,14 @@ public class BonusSeller extends NPCTemplate {
         categories_dispo.add(new Nourriture());
         categories_dispo.add(new Potions());
 
+        this.setEmplacement(position);
+
 
     }
 
     @Override
     public String getNomAffichage() {
-        return "BONUS";
+        return "Boutique";
     }
 
     @Override
