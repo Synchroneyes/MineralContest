@@ -46,6 +46,7 @@ public class CoffreArene extends AutomatedChestAnimation {
     @Override
     public void actionToPerformBeforeSpawn() {
         this.arene.setChestSpawned(true);
+        this.arene.generateTimeBetweenChest();
         this.arene.enableTeleport();
 
     }
@@ -55,9 +56,8 @@ public class CoffreArene extends AutomatedChestAnimation {
         this.arene.setChestSpawned(false);
         this.arene.disableTeleport();
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.arena_chest_opened.toString(), arene.groupe);
-
-        arene.generateTimeBetweenChest();
         arene.groupe.getGame().getStatsManager().register(ArenaChestStat.class, openingPlayer, null);
+
 
         // Register chest opened
 

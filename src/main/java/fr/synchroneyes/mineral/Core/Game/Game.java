@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.InventoryInterface
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInventory;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
+import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Statistics.StatsManager;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -21,6 +22,8 @@ import fr.synchroneyes.mineral.Utils.Player.CouplePlayerTeam;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -57,6 +60,7 @@ public class Game implements Listener {
     private static int DUREE_PARTIE = 60;
 
     // Temps en minute
+    @Getter(AccessLevel.PUBLIC)
     private int tempsPartie = 60 * DUREE_PARTIE;
     public int PreGameTimeLeft = 10;
 
@@ -81,6 +85,10 @@ public class Game implements Listener {
 
     // Gestionnaire de stats
     private StatsManager statsManager;
+
+    // Gestionnaire des bonus par joueur
+    @Getter
+    private PlayerBonus playerBonusManager;
 
 
     // Group of the game
@@ -108,6 +116,7 @@ public class Game implements Listener {
 
         this.parachuteManager = new ParachuteManager(g);
         this.statsManager = new StatsManager(this);
+        this.playerBonusManager = new PlayerBonus(this);
         initGameSettings();
     }
 

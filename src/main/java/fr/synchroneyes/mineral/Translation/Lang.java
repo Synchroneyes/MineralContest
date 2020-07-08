@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
+import fr.synchroneyes.mineral.Utils.TimeConverter;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -514,7 +515,8 @@ public enum Lang {
     }
 
     public static String translate(String string, Game partie) {
-        if (string.contains("%timeLeft%")) string = string.replace("%timeLeft%", partie.getTempsRestant());
+        if (string.contains("%timeLeft%"))
+            string = string.replace("%timeLeft%", TimeConverter.intToString(partie.getTempsPartie()));
         if (string.contains("%preGameTime%")) string = string.replace("%preGameTime%", "" + partie.PreGameTimeLeft);
 
         //     "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !");

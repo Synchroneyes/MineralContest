@@ -73,6 +73,10 @@ public class ParachuteManager {
             joueur.playSound(joueur.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
         }
 
+        // On envoie les coordo aux arbitres
+        for (Player joueur : groupe.getGame().getReferees())
+            joueur.sendMessage(mineralcontest.prefixPrive + "Drop: " + nextDropLocation.getBlockX() + " Y: " + nextDropLocation.getBlockY() + " Z: " + nextDropLocation.getBlockZ());
+
         // On génère le prochain tour
         generateRandomLocation();
         generateTimeleftBeforeNextDrop();
@@ -98,6 +102,7 @@ public class ParachuteManager {
                 generateTimeleftBeforeNextDrop();
                 generateRandomLocation();
             }
+
 
             if (timeleft_before_next_drop > 0) timeleft_before_next_drop--;
             else spawnNewParachute();

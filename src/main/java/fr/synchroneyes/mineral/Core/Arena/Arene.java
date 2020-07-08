@@ -187,7 +187,7 @@ public class Arene {
                 if (groupe.getGame().isGameStarted() && !groupe.getGame().isGamePaused()) {
                     try {
                         // Si le coffre est initialisé et n'est pas encore apparu
-                        if (CHEST_INITIALIZED && !getCoffre().isChestSpawned()) {
+                        if (CHEST_INITIALIZED) {
                             // Le coffre n'est pas encore disponible
                             if (TIME_BEFORE_CHEST > 0) {
                                 TIME_BEFORE_CHEST--;
@@ -196,11 +196,6 @@ public class Arene {
                             } else {
                                 // LE coffre doit apparaitre !
                                 coffreArene.spawn();
-
-                                //coffre.spawn(coffre.getPosition());
-                                //enableTeleport();
-                                //generateTimeBetweenChest();
-
                             }
 
                         }
