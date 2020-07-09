@@ -26,8 +26,8 @@ public abstract class NPCTemplate {
     protected Inventory inventaire;
 
 
-    public NPCTemplate() {
-        this.inventaire = Bukkit.createInventory(null, 9 * 6, getNomAffichage());
+    public NPCTemplate(int nombreDeLigne) {
+        this.inventaire = Bukkit.createInventory(null, 9 * nombreDeLigne, getNomAffichage());
     }
 
 

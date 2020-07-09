@@ -48,6 +48,7 @@ public class CoffreArene extends AutomatedChestAnimation {
         this.arene.setChestSpawned(true);
         this.arene.generateTimeBetweenChest();
         this.arene.enableTeleport();
+        this.arene.automaticallyTeleportTeams();
 
     }
 

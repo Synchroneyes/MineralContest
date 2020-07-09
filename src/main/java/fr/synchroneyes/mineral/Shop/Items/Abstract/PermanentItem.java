@@ -23,5 +23,13 @@ public abstract class PermanentItem extends ShopItem {
         return true;
     }
 
+    @Override
+    public void onPlayerBonusAdded() {
+        onItemUse();
+    }
 
+    @Override
+    public String getPurchaseText() {
+        return "Vous avez acheté le bonus permanent: " + getNomItem();
+    }
 }

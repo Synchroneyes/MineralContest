@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,9 +27,11 @@ public class ParachuteManager {
     private List<Parachute> parachutes;
 
     // Variable contenant le temps restant avant le prochain drop
+    @Getter
     private int timeleft_before_next_drop = Integer.MIN_VALUE;
 
     // Variable contenant la position du prochain drop
+    @Getter
     private Location nextDropLocation = null;
 
     private BukkitTask dropsHandler = null;

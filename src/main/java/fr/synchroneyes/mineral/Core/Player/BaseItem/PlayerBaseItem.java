@@ -4,6 +4,7 @@ import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,6 +33,7 @@ public class PlayerBaseItem {
     private Player openingPlayer = null;
     private boolean beingEdited = false;
 
+    @Getter
     private ArrayList<ItemStack> items;
 
     public PlayerBaseItem(Groupe g) {

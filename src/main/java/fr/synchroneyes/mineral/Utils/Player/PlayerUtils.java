@@ -17,6 +17,7 @@ import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -368,6 +369,7 @@ public class PlayerUtils {
         for (PotionEffect potion : joueur.getActivePotionEffects())
             joueur.removePotionEffect(potion.getType());
 
+
     }
 
 
@@ -468,6 +470,9 @@ public class PlayerUtils {
     public static void setMaxHealth(Player p) {
         p.setHealth(20);
         p.setFoodLevel(30);
+
+        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.setHealth(20);
     }
 
 }

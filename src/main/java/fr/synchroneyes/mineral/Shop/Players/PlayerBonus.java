@@ -5,7 +5,7 @@ import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
-import fr.synchroneyes.mineral.Shop.Items.ProchainCoffreAreneItem;
+import fr.synchroneyes.mineral.Shop.Items.Informations.ProchainCoffreAreneItem;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,40 +59,6 @@ public class PlayerBonus {
 
 
 
-        /*// On regarde si le joueur possède déja ce bonus
-        for (ShopItem bonus_joueur : liste_bonus_joueur) {
-
-            // On regarde si ce sont les même bonus
-            if (bonus_joueur.getClass().equals(bonus.getClass())) {
-
-                // Si on est sur un bonus levelable, on a une vérif supplémentaire à faire
-                if (isLevelableBonus(bonus)) {
-
-                    // On récupère la classe requise
-                    Class classe_requise = ((LevelableItem) bonus_joueur).getRequiredLevel().getClass();
-
-                    // Si le joueur ne possède pas la classe requise
-                    if (!doesPlayerHaveThisBonus(classe_requise, joueur))
-                        joueur.sendMessage("Vous n'avez pas le bonus " + classe_requise.getName());
-                    else {
-                        for (ShopItem shopItem : liste_bonus_joueur)
-                            if (shopItem.getClass().equals(classe_requise)) {
-                                liste_bonus_joueur.remove(shopItem);
-                                break;
-                            }
-                    }
-                    return;
-                }
-
-                // Si c'est un item consommable et qu'il s'active à l'achat
-                if(isConsummableBonus(bonus) && bonus.isEnabledOnPurchase()) {
-                    bonus.onItemUse();
-                }
-
-                return;
-            }
-        }*/
-
 
         boolean doesPlayerAlreadyHaveBonus = false;
         ShopItem currentBonus = null;
@@ -138,8 +104,8 @@ public class PlayerBonus {
             }
         }
 
-        // Si c'est un item consommable et qu'il s'active à l'achat
-        if (isConsummableBonus(bonus) && bonus.isEnabledOnPurchase()) {
+        // Si c'est un item qui s'active à l'achat
+        if (bonus.isEnabledOnPurchase()) {
             bonus.onItemUse();
         }
 
@@ -155,43 +121,22 @@ public class PlayerBonus {
      */
     public void purchaseItem(Player joueur, ShopItem item) {
 
-        // Si c'est un item levelable
-        if (isLevelableBonus(item)) {
-            purchaseItem(joueur, item, ((LevelableItem) item).getRequiredLevel().getClass());
+        if (doesPlayerHaveThisBonus(item.getClass(), joueur) && isPermanentBonus(item)) {
+            joueur.sendMessage("Vous avez déjà ce bonus");
             return;
         }
 
-
         joueur.sendMessage(item.getPurchaseText());
         item.setJoueur(joueur);
+
+
+        takePlayerMoney(joueur, item);
+
+        joueur.closeInventory();
 
         // Logique permettant de savoir si l'utilisateur peut acheter l'item
         ajouterBonusPourJoueur(item, joueur);
 
-    }
-
-    /**
-     * Permet à un utilisateur d'acheter un item
-     *
-     * @param joueur
-     * @param item   TODO
-     */
-    private void purchaseItem(Player joueur, ShopItem item, Class old_required_level) {
-        joueur.sendMessage(item.getPurchaseText());
-        item.setJoueur(joueur);
-
-        // Logique permettant de savoir si l'utilisateur peut acheter l'item
-        if (canPlayerAffordItem(item, joueur)) {
-
-            if (doesPlayerHaveThisBonus(old_required_level, joueur)) {
-                ajouterBonusPourJoueur(item, joueur);
-            } else {
-                joueur.sendMessage("Vous devez d'abord acheter " + old_required_level.getName() + "");
-            }
-
-        } else {
-            joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + item.getPrice() + " " + item.getCurrency().toString());
-        }
     }
 
     /**
@@ -219,7 +164,67 @@ public class PlayerBonus {
         if (!liste_item_joueur.containsKey(bonus.getCurrency())) return false;
 
         // Si dans notre liste, le joueur possède le nombre requis ou plus d'item, on retourne vrai
-        return (liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
+
+        if (isLevelableBonus(bonus))
+            return (doesPlayerHaveThisBonus(((LevelableItem) bonus).getRequiredLevel().getClass(), joueur) && liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
+        else return (liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
+    }
+
+
+    /**
+     * Prend l'argent nécessaire au joueur en fonction de l'item passé en commentaire
+     *
+     * @param joueur
+     * @param shopItem
+     */
+    private void takePlayerMoney(Player joueur, ShopItem shopItem) {
+        int requiredItems = shopItem.getPrice();
+        Material requiredItemType = shopItem.getCurrency();
+
+        for (ItemStack item : joueur.getInventory().getContents()) {
+            if (item != null && item.getType() == requiredItemType) {
+
+                if (requiredItems <= 0) return;
+
+                if (item.getAmount() <= requiredItems) {
+                    requiredItems -= item.getAmount();
+                    joueur.getInventory().remove(item);
+                }
+
+                if (item.getAmount() > requiredItems) {
+                    item.setAmount(item.getAmount() - requiredItems);
+                    return;
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * Permet d'activer les bonus s'activant au respawn
+     */
+    public void triggerEnabledBonusOnRespawn(Player joueur) {
+        List<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
+
+        if (bonus_joueur == null) return;
+
+        // Pour chaque bonus du joueur
+        for (ShopItem bonus : bonus_joueur) {
+
+            if (isConsummableBonus(bonus) && bonus.isEnabledOnRespawn()) {
+                ConsumableItem bonus_consummable = (ConsumableItem) bonus;
+                if (bonus_consummable.getNombreUtilisationRestantes() > 0) {
+                    bonus_consummable.onItemUse();
+                    bonus_consummable.setNombreUtilisationRestantes(bonus_consummable.getNombreUtilisations() - 1);
+                    continue;
+                }
+            }
+
+            if (bonus.isEnabledOnRespawn()) bonus.onItemUse();
+        }
+
+
     }
 
 

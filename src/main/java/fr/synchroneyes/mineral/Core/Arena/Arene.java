@@ -7,8 +7,10 @@ import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
+import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,6 +22,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /*
     Classe représentant une arène
@@ -44,6 +49,8 @@ public class Arene {
     private DeathZone deathZone;
     private int MAX_TIME_BETWEEN_CHEST = 0; // mins
     private int MIN_TIME_BETWEEN_CHEST = 0;
+
+    @Getter
     private int TIME_BEFORE_CHEST = 0;
 
     // Temps restant necessaire avant d'annoncer l'arrivée du coffre
@@ -61,6 +68,15 @@ public class Arene {
 
     public ChickenWaves chickenWaves;
 
+    // Liste des équipes à notifier avant l'apparition du coffre
+    private List<Equipe> teamsToNotify;
+
+    // Liste des équipes à téléporter automatiquement à l'apparition du coffre
+    private List<Equipe> teamsToAutomaticallyTeleport;
+
+    // Liste des équipes où; il faudra seulement TP le joueur qui fait /arene
+    private List<Equipe> teamsToSingleTeleport;
+
     public boolean isChestSpawned() {
         return CHEST_SPAWNED;
     }
@@ -73,6 +89,11 @@ public class Arene {
         this.groupe = g;
         this.deathZone = new DeathZone(g);
         this.chickenWaves = new ChickenWaves(this);
+
+
+        this.teamsToNotify = new LinkedList<>();
+        this.teamsToAutomaticallyTeleport = new LinkedList<>();
+        this.teamsToSingleTeleport = new LinkedList<>();
 
         // Coffre d'arène avec animations
         this.coffreArene = new CoffreArene(groupe.getAutomatedChestManager(), this);
@@ -96,6 +117,42 @@ public class Arene {
             MAX_TIME_BETWEEN_CHEST = tmp;
         }
 
+    }
+
+    /**
+     * Fonction permettant d'ajouter une équipe à notifier avant l'apparition du coffre
+     *
+     * @param equipe
+     */
+    public void addTeamToNotify(Equipe equipe) {
+        if (!teamsToNotify.contains(equipe)) this.teamsToNotify.add(equipe);
+    }
+
+    /**
+     * Permet d'ajouter une équipe à téléporter de manière automatique
+     *
+     * @param equipe
+     */
+    public void addTeamToAutomatedTeleport(Equipe equipe) {
+        if (!teamsToAutomaticallyTeleport.contains(equipe)) teamsToAutomaticallyTeleport.add(equipe);
+    }
+
+    /**
+     * Permet d'ajouter une équipe où il faudra seulement téléporter le joueur qui fait /arene
+     *
+     * @param equipe
+     */
+    public void addTeamToSinglePlayerTeleport(Equipe equipe) {
+        if (!teamsToSingleTeleport.contains(equipe)) {
+            teamsToSingleTeleport.add(equipe);
+        }
+    }
+
+    /**
+     * Permet de vider la liste des équipes où il faut seulement TP un joueur
+     */
+    public void clearSingleTeleportTeams() {
+        this.teamsToSingleTeleport.clear();
     }
 
 
@@ -175,6 +232,29 @@ public class Arene {
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
     }
 
+    /**
+     * Permet d'informer les équipes que le coffre va arriver !
+     */
+    private void notifyTeams() {
+        for (Equipe equipe : teamsToNotify)
+            equipe.sendMessage(mineralcontest.prefixTeamChat + Lang.translate(Lang.arena_chest_will_spawn_in.toString(), groupe));
+
+        teamsToNotify.clear();
+    }
+
+    /**
+     * Permet de téléporter les équipes qui ont acheté le bonus de TP auto à l'arène
+     */
+    public void automaticallyTeleportTeams() {
+        // Pour chaque équipe
+        for (Equipe equipe : teamsToAutomaticallyTeleport)
+            // Pour chaque joueur de l'équipe
+            for (Player membre : equipe.getJoueurs())
+                PlayerUtils.teleportPlayer(membre, getTeleportSpawn().getWorld(), getTeleportSpawn());
+
+        teamsToAutomaticallyTeleport.clear();
+    }
+
 
     // Gère le coffre d'arene
     public void startArena() {
@@ -192,7 +272,7 @@ public class Arene {
                             if (TIME_BEFORE_CHEST > 0) {
                                 TIME_BEFORE_CHEST--;
                                 if (TIME_BEFORE_CHEST == TIMELEFT_REQUIRED_BEFORE_WARNING)
-                                    groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.arena_chest_will_spawn_in.toString(), groupe));
+                                    notifyTeams();
                             } else {
                                 // LE coffre doit apparaitre !
                                 coffreArene.spawn();
@@ -234,6 +314,17 @@ public class Arene {
 
     public boolean isTeleportAllowed() {
         return this.allowTeleport;
+    }
+
+
+    /**
+     * Permet de savoir si une équipe peut utiliser le single teleport ou non
+     *
+     * @param e
+     * @return
+     */
+    public boolean canTeamUseSingleTeleport(Equipe e) {
+        return teamsToSingleTeleport.contains(e);
     }
 
 
@@ -285,6 +376,7 @@ public class Arene {
         }
         removePlayerTeleportBar();
 
+        clearSingleTeleportTeams();
         this.allowTeleport = false;
 
     }

@@ -192,6 +192,11 @@ public class DeathZone {
             // On rend le stuff du joueur
             try {
                 groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
+
+                // On active les bonus au respawn
+                groupe.getGame().getPlayerBonusManager().triggerEnabledBonusOnRespawn(joueur);
+
+
             } catch (Exception e) {
                 mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), partie.groupe);
                 e.printStackTrace();

@@ -92,6 +92,11 @@ public class Equipe implements Comparable<Equipe> {
         }
     }
 
+    public void sendMessage(String message) {
+        for (Player member : joueurs)
+            member.sendMessage(message);
+    }
+
     public void addPenalty(int penalty) {
         this.penalty += penalty;
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this), groupe);

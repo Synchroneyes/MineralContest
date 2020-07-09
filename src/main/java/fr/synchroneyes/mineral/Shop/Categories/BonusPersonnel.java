@@ -2,19 +2,19 @@ package fr.synchroneyes.mineral.Shop.Categories;
 
 import org.bukkit.Material;
 
-public class Nourriture extends Category {
+public class BonusPersonnel extends Category {
     @Override
     public String getNomCategorie() {
-        return "Nourriture";
+        return "Bonus personnel";
     }
 
     @Override
     public Material getItemMaterial() {
-        return Material.APPLE;
+        return Material.RED_MUSHROOM;
     }
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Achetez de la nourriture"};
+        return new String[]{"Achetez des bonus personnel", "Ces bonus vous donneront un avantage conséquent!"};
     }
 }

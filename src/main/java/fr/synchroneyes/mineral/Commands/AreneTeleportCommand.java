@@ -43,10 +43,19 @@ public class AreneTeleportCommand implements CommandExecutor {
                     if (partie.getArene().isTeleportAllowed()) {
                         Equipe team = partie.getPlayerTeam(joueur);
 
-                        for (Player membre : team.getJoueurs()) {
-                            if (!partie.isReferee(membre) && !PlayerUtils.isPlayerInDeathZone(membre))
-                                teleportToArena(membre);
+                        // Si le joueur a acheté le bonus équipe permettant de seulement tp le joueur faisant /arene
+                        if (partie.getArene().canTeamUseSingleTeleport(team)) {
+                            // On téléport le joueur uniquement
+                            teleportToArena(joueur);
+                        } else {
+                            // On téléport toute l'équipe
+                            for (Player membre : team.getJoueurs()) {
+                                if (!partie.isReferee(membre) && !PlayerUtils.isPlayerInDeathZone(membre))
+                                    teleportToArena(membre);
+                            }
                         }
+
+
                     } else {
                         joueur.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.arena_teleport_disabled.toString()));
                     }
