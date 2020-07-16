@@ -27,7 +27,7 @@ public class PommeDoree extends GameItem {
 
     @Override
     public int getPrice() {
-        return 10;
+        return 200;
     }
 
 }

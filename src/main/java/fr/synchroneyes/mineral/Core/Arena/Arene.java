@@ -275,6 +275,7 @@ public class Arene {
                                     notifyTeams();
                             } else {
                                 // LE coffre doit apparaitre !
+                                coffreArene.getLocation().getBlock().setType(Material.AIR);
                                 coffreArene.spawn();
                             }
 

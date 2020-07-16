@@ -28,7 +28,7 @@ public class AutoLingot extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 3;
+        return 1500;
     }
 
 

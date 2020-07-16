@@ -142,7 +142,7 @@ public class EntityDamage implements Listener {
                         // Le joueur est mort d'une fleche
                         Projectile fleche = (Projectile) entityDamageByEntityEvent.getDamager();
 
-                        // Si la flèche a été tirée par un joueur ...
+                        // Si le projectile a été tirée par un joueur ...
                         if (fleche.getShooter() instanceof Player) {
                             Player attaquant = (Player) fleche.getShooter();
                             registerKill(joueur, attaquant);

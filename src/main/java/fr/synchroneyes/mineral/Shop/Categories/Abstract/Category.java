@@ -1,12 +1,15 @@
-package fr.synchroneyes.mineral.Shop.Categories;
+package fr.synchroneyes.mineral.Shop.Categories.Abstract;
 
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class Category {
@@ -31,6 +35,7 @@ public abstract class Category {
         this.inventory = Bukkit.createInventory(null, 9 * 6, getNomCategorie());
         this.npc = npc;
     }
+
 
     /**
      * Retourne le nom de la categorie
@@ -101,7 +106,7 @@ public abstract class Category {
 
         // On récupère les items de la catégorie
         for (Map.Entry<ShopItem, Integer> item : items.entrySet())
-            inventory.setItem(indexInventaire++, item.getKey().toItemStack());
+            inventory.setItem(indexInventaire++, item.getKey().toItemStack(joueur));
 
         joueur.openInventory(inventory);
     }
@@ -117,19 +122,6 @@ public abstract class Category {
         else items.put(item, position);
     }
 
-    /**
-     * Retourne si l'ItemStack passé en paramètre est un item de la catégorie
-     *
-     * @param item
-     * @return
-     */
-    public boolean isItemInInventory(ItemStack item) {
-        if (item == null) return false;
-
-        for (Map.Entry<ShopItem, Integer> infoItem : items.entrySet())
-            if (infoItem.getKey().toItemStack().equals(item)) return true;
-        return false;
-    }
 
     /**
      * Evenement appelé lors d'un click sur un item de la catégorie
@@ -157,7 +149,7 @@ public abstract class Category {
 
         // Pour chaque item de la catégorie
         for (Map.Entry<ShopItem, Integer> item : items.entrySet()) {
-            ItemStack _inventoryItem = item.getKey().toItemStack();
+            ItemStack _inventoryItem = item.getKey().toItemStack((Player) event.getWhoClicked());
 
             // Si on a cliqué sur un item de la catégorie
 
@@ -165,10 +157,48 @@ public abstract class Category {
 
             if (clickedItem.equals(_inventoryItem)) {
                 ShopItem _item = item.getKey();
-                if (playerBonusManager.canPlayerAffordItem(item.getKey(), joueur))
+                if (playerBonusManager.canPlayerAffordItem(item.getKey(), joueur)) {
                     playerBonusManager.purchaseItem(joueur, item.getKey());
-                else
+                    joueur.openInventory(this.npc.getInventory());
+                } else {
+
+                    // Le joueur ne peut pas acheter cet item... Il y a deux raisons!
+                    // Soit c'est un item "levelable" et il n'a pas le niveau requis
+                    // Soit il n'a pas assez de sous
+
+
+                    Equipe playerTeam = playerGroup.getPlayerTeam(joueur);
+                    if (playerTeam == null) {
+                        joueur.sendMessage("Vous n'avez pas d'équipe, vous ne pouvez pas acheter d'item");
+                        return;
+                    }
+
+                    int score = playerTeam.getScore();
+
+                    if (score < item.getKey().getPrice()) {
+                        joueur.sendMessage(mineralcontest.prefixPrive + ChatColor.RED + "Vous n'avez pas assez d'argent pour ce bonus");
+                        return;
+                    }
+
+                    // Si on arrive là, c'est que le joueur n'a pas le bonus requis
+
+
+                    // Si c'est un levelable
+                    if (item.getKey() instanceof LevelableItem) {
+
+                        // Source: https://stackoverflow.com/a/6094600
+                        try {
+                            LevelableItem lvl_item = LevelableItem.fromClass(((LevelableItem) item.getKey()).getRequiredLevel());
+                            joueur.sendMessage(mineralcontest.prefixPrive + "Vous devez d'abord acheter le bonus " + lvl_item.getNomItem());
+                            return;
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
                     joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + _item.getPrice());
+                }
 
                 return;
             }

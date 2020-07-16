@@ -5,20 +5,19 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-
 /**
- * Ce bonus offre une pioche en fer avec l'enchantement Fortune I
+ * Ce bonus offre une pioche en diamant avec l'enchantement Fortune I, Efficacité II
  */
-public class Pioche1 extends LevelableItem {
+public class Pioche3 extends LevelableItem {
     @Override
     public Class getRequiredLevel() {
-        return null;
+        return Pioche2.class;
     }
 
 
     @Override
     public String getNomItem() {
-        return "Pioche I";
+        return "Pioche III";
     }
 
     @Override
@@ -28,7 +27,7 @@ public class Pioche1 extends LevelableItem {
 
     @Override
     public Material getItemMaterial() {
-        return Material.WOODEN_PICKAXE;
+        return Material.DIAMOND_PICKAXE;
     }
 
     @Override
@@ -51,26 +50,33 @@ public class Pioche1 extends LevelableItem {
         return 1;
     }
 
+
     @Override
     public void onItemUse() {
 
 
+        ItemStack oldLevelPioche = new ItemStack(Material.DIAMOND_PICKAXE);
+        oldLevelPioche.addEnchantment(Enchantment.LOOT_BONUS_BLOCKS, 1);
+
+
         for (ItemStack item : joueur.getInventory().getContents())
-            if (item != null && item.getType().toString().toLowerCase().contains("pickaxe")) {
+            if (item != null && item.equals(oldLevelPioche)) {
                 item.setAmount(0);
                 break;
             }
 
-
-        ItemStack pioche = new ItemStack(Material.IRON_PICKAXE);
-
+        ItemStack pioche = new ItemStack(Material.DIAMOND_PICKAXE);
         pioche.addEnchantment(Enchantment.LOOT_BONUS_BLOCKS, 1);
+        pioche.addEnchantment(Enchantment.DIG_SPEED, 2);
 
         joueur.getInventory().addItem(pioche);
+
+
     }
+
 
     @Override
     public int getPrice() {
-        return 250;
+        return 1000;
     }
 }

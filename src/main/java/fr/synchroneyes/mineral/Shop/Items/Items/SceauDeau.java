@@ -9,12 +9,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SceauDeau extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "%white%Sceau d'%aqua%eau";
+        return "Seau d'eau";
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Achetez un sceau d'eau"};
+        return new String[]{"Achetez un seau d'eau"};
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SceauDeau extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 5;
+        return 50;
     }
 
 }

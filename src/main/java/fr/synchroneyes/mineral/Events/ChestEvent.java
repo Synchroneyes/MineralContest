@@ -11,7 +11,7 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
-import fr.synchroneyes.mineral.Shop.Categories.Category;
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -165,7 +165,7 @@ public class ChestEvent implements Listener {
         if (game == null) return;
         if (mineralcontest.isAMineralContestWorld(world)) {
 
-            if (!game.groupe.getMonde().equals(world)) {
+            if (game.groupe.getMonde() != null && !game.groupe.getMonde().equals(world)) {
                 Bukkit.getLogger().severe("InventoryOpenEvent L141");
                 return;
             }

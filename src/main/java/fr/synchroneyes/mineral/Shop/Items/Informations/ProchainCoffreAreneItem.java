@@ -52,7 +52,7 @@ public class ProchainCoffreAreneItem extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 1;
+        return 500;
     }
 
     @Override

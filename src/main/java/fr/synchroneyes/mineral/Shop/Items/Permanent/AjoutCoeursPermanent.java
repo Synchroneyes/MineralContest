@@ -35,7 +35,7 @@ public class AjoutCoeursPermanent extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 5;
+        return 1500;
     }
 
 

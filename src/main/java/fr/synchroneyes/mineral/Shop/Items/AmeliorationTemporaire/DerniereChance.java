@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.TNTPrimed;
@@ -50,14 +51,19 @@ public class DerniereChance extends ConsumableItem {
 
 
         for (int x = defaultX - rayon_block_tnt; x < defaultX + rayon_block_tnt; ++x)
-            for (int z = defaultZ - rayon_block_tnt; z < defaultZ + rayon_block_tnt; ++z)
-                playerDeathLocation.getWorld().spawn(new Location(playerDeathLocation.getWorld(), x, defaultY, z), TNTPrimed.class).setFuseTicks(20 * temps_avant_explosion);
+            for (int z = defaultZ - rayon_block_tnt; z < defaultZ + rayon_block_tnt; ++z) {
+                TNTPrimed primed = playerDeathLocation.getWorld().spawn(new Location(playerDeathLocation.getWorld(), x, defaultY, z), TNTPrimed.class);
+                primed.setFuseTicks(20 * temps_avant_explosion);
+            }
+
+
+        joueur.sendMessage(mineralcontest.prefixPrive + "Attention, ça va faire boom ...");
 
     }
 
     @Override
     public int getPrice() {
-        return 20;
+        return 700;
     }
 
 

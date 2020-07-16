@@ -46,7 +46,7 @@ public class EpeeDiamant extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 10;
+        return 1000;
     }
 
 }

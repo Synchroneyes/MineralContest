@@ -7,6 +7,8 @@ import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -89,7 +91,7 @@ public class WorldLoader {
             World createdWorld = Bukkit.getServer().createWorld(wc);
 
             lireFichierMonde(nomMondeDossier, createdWorld);
-            lireConfigurationPartie(nomMondeDossier, createdWorld);
+            //lireConfigurationPartie(nomMondeDossier, createdWorld);
             lireFichierConfigurationContenuCoffreArene(nomMondeDossier, createdWorld);
 
 
@@ -129,6 +131,8 @@ public class WorldLoader {
     private void lireFichierMonde(String nomDossier, World monde) throws Exception {
         String nomFichierConfig = "mc_world_settings.yml";
 
+        boolean loadNPC = true;
+
         // Variable utilisée pour vérifier les coffres présent dans un rayon de X bloc autour du spawn
         int rayonDeBloc = 20;
 
@@ -145,14 +149,25 @@ public class WorldLoader {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierConfigMonde);
 
 
-        ConfigurationSection arene, houses;
+        ConfigurationSection arene, houses, npcs, settings;
         arene = yamlConfiguration.getConfigurationSection("arena");
         houses = yamlConfiguration.getConfigurationSection("house");
+        npcs = yamlConfiguration.getConfigurationSection("npcs");
+        settings = yamlConfiguration.getConfigurationSection("settings");
+
+
 
         if (arene == null)
             throw new Exception("Unable to load \"arena\" section from " + nomFichierConfig + ". World file settings is not correct.");
         if (houses == null)
             throw new Exception("Unable to load \"house\" section from " + nomFichierConfig + ". World file settings is not correct.");
+
+        if (npcs == null)
+            loadNPC = false;
+
+        if (settings == null)
+            throw new Exception("Unable to load \"npcs\" section from " + nomFichierConfig + ". World file settings is not correct.");
+
 
         if (yamlConfiguration.getConfigurationSection("default_spawn") == null) {
             spawnLocation = null;
@@ -231,6 +246,36 @@ public class WorldLoader {
 
         if (!chestToAdd.isEmpty())
             Bukkit.getLogger().info(mineralcontest.prefix + " Allowed " + chestToAdd.size() + " chests to be opened");
+
+
+        ShopManager shopManager = groupe.getGame().getShopManager();
+        // On charge les NPCS
+
+        if (loadNPC) {
+            for (String idNpc : npcs.getKeys(false)) {
+                Bukkit.getLogger().info("LOADING NPC");
+                ConfigurationSection npc = npcs.getConfigurationSection(idNpc);
+                Location npcLocation = new Location(monde, 0, 0, 0);
+
+                npcLocation.setX(Float.parseFloat(npc.get("x").toString()));
+                npcLocation.setY(Float.parseFloat(npc.get("y").toString()));
+                npcLocation.setZ(Float.parseFloat(npc.get("z").toString()));
+
+                npcLocation.setYaw(Float.parseFloat(npc.get("yaw").toString()));
+                npcLocation.setPitch(Float.parseFloat(npc.get("pitch").toString()));
+
+                BonusSeller vendeur = ShopManager.creerVendeur(npcLocation);
+
+                shopManager.ajouterVendeur(vendeur);
+                vendeur.spawn();
+
+            }
+        }
+
+
+        // Chargement des paramètres de la carte
+        groupe.getParametresPartie().setCVARValeur("mp_set_playzone_radius", settings.get("mp_set_playzone_radius").toString());
+        groupe.getParametresPartie().setCVARValeur("protected_zone_area_radius", settings.get("protected_zone_area_radius").toString());
 
 
         groupe.getGame().isGameInitialized = true;

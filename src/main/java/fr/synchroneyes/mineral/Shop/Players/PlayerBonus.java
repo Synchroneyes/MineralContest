@@ -11,14 +11,12 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import org.bukkit.Instrument;
-import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Classe permettant de gérer les bonus du joueur
@@ -26,9 +24,9 @@ import java.util.Map;
 public class PlayerBonus {
 
     // Liste contenant tout les bonus actifs
-    public static List<ShopItem> listeBonusActif;
+    public static LinkedBlockingQueue<ShopItem> listeBonusActif;
 
-    public Map<Player, List<ShopItem>> bonus_par_joueur;
+    public Map<Player, LinkedBlockingQueue<ShopItem>> bonus_par_joueur;
 
     @Getter
     private Game partie;
@@ -44,7 +42,7 @@ public class PlayerBonus {
     }
 
     private void enregistrerBonus() {
-        if (listeBonusActif == null) listeBonusActif = new LinkedList<>();
+        if (listeBonusActif == null) listeBonusActif = new LinkedBlockingQueue<>();
 
         listeBonusActif.add(new ProchainCoffreAreneItem());
     }
@@ -56,7 +54,7 @@ public class PlayerBonus {
      * @param joueur
      * @return
      */
-    public List<ShopItem> getListeBonusJoueur(Player joueur) {
+    public LinkedBlockingQueue<ShopItem> getListeBonusJoueur(Player joueur) {
         return bonus_par_joueur.get(joueur);
     }
 
@@ -67,9 +65,9 @@ public class PlayerBonus {
      * @param joueur
      */
     public void ajouterBonusPourJoueur(ShopItem bonus, Player joueur) {
-        if (!bonus_par_joueur.containsKey(joueur)) bonus_par_joueur.put(joueur, new LinkedList<ShopItem>());
+        if (!bonus_par_joueur.containsKey(joueur)) bonus_par_joueur.put(joueur, new LinkedBlockingQueue<ShopItem>());
 
-        List<ShopItem> liste_bonus_joueur = bonus_par_joueur.get(joueur);
+        LinkedBlockingQueue<ShopItem> liste_bonus_joueur = bonus_par_joueur.get(joueur);
 
 
 
@@ -85,18 +83,17 @@ public class PlayerBonus {
             }
         }
 
+        // todo: fix achat consummable quand il reste 0 utilisations
+        // todo: en gros, l'achat ne fonctionne pas mais on perd les points
         if (currentBonus != null) {
             if (isConsummableBonus(currentBonus)) {
                 ConsumableItem currentBonus_consommable = (ConsumableItem) currentBonus;
-                if (currentBonus_consommable.getNombreUtilisationRestantes() == 0) {
+                int nb_use_actuel = currentBonus_consommable.getNombreUtilisationRestantes();
                     liste_bonus_joueur.remove(currentBonus);
-                    doesPlayerAlreadyHaveBonus = false;
-                } else {
-                    liste_bonus_joueur.remove(currentBonus);
-                    currentBonus_consommable.setNombreUtilisationRestantes(currentBonus_consommable.getNombreUtilisationRestantes() + 1);
+                currentBonus_consommable.setNombreUtilisationRestantes(nb_use_actuel + 1);
                     bonus = currentBonus_consommable;
                     doesPlayerAlreadyHaveBonus = false;
-                }
+
             }
         }
 
@@ -142,16 +139,18 @@ public class PlayerBonus {
      */
     public void purchaseItem(Player joueur, ShopItem item) {
 
-        if (doesPlayerHaveThisBonus(item.getClass(), joueur) && isPermanentBonus(item)) {
+        if (doesPlayerHaveThisBonus(item.getClass(), joueur) && (isPermanentBonus(item) || isLevelableBonus(item))) {
             joueur.sendMessage("Vous avez déjà ce bonus");
             return;
         }
+
 
         joueur.sendMessage(Lang.translate(item.getPurchaseText()));
         item.setJoueur(joueur);
 
 
         takePlayerMoney(joueur, item);
+
 
         // Logique permettant de savoir si l'utilisateur peut acheter l'item
         ajouterBonusPourJoueur(item, joueur);
@@ -167,22 +166,7 @@ public class PlayerBonus {
      * @return
      */
     public boolean canPlayerAffordItem(ShopItem bonus, Player joueur) {
-        // Table de hachage contenant la liste des items que le joueur possède ainsi que sa quantité
-        Map<Material, Integer> liste_item_joueur = new HashMap<>();
 
-        // Pour chaque item de l'inventaire du joueur
-        /*for (ItemStack item : joueur.getInventory().getContents())
-            // Si l'item n'est pas null
-            if (item != null)
-                // On regarde si la liste contient déjà l'item en question
-                if (!liste_item_joueur.containsKey(item.getType()))
-                    liste_item_joueur.put(item.getType(), item.getAmount());
-                    // Si elle la contient déjà, on ajoute le contenu de l'item
-                else
-                    liste_item_joueur.replace(item.getType(), liste_item_joueur.get(item.getType()) + item.getAmount());
-
-        // la boucle est terminé, on regarde si le joueur possède l'item et si il a assez d'item
-        if (!liste_item_joueur.containsKey(bonus.getCurrency())) return false;*/
 
         Game playerGame = mineralcontest.getPlayerGame(joueur);
         if (playerGame == null) return false;
@@ -196,8 +180,6 @@ public class PlayerBonus {
 
         if (isLevelableBonus(bonus)) {
             LevelableItem levelableItem = (LevelableItem) bonus;
-
-            if (levelableItem.getRequiredLevel() == null) joueur.sendMessage("NULL !");
 
             if (levelableItem.getRequiredLevel() == null) return scoreEquipe >= bonus.getPrice();
             else
@@ -223,8 +205,6 @@ public class PlayerBonus {
         int nouveauScoreEquipe = playerTeam.getScore() - shopItem.getPrice();
         playerTeam.setScore(nouveauScoreEquipe);
 
-        playerTeam.sendMessage(shopItem.getPurchaseText());
-
     }
 
 
@@ -232,7 +212,7 @@ public class PlayerBonus {
      * Permet d'activer les bonus s'activant au respawn
      */
     public void triggerEnabledBonusOnRespawn(Player joueur) {
-        List<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
+        LinkedBlockingQueue<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
 
         if (bonus_joueur == null) return;
 
@@ -258,7 +238,7 @@ public class PlayerBonus {
      * Permet d'activer les bonus s'activant a la mort d'un joueur par une autre personne
      */
     public void triggerEnabledBonusOnPlayerKillerKilled(Player joueur) {
-        List<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
+        LinkedBlockingQueue<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
 
 
         if (bonus_joueur == null) return;
@@ -269,20 +249,19 @@ public class PlayerBonus {
         for (ShopItem bonus : bonus_joueur) {
 
             index++;
-            joueur.sendMessage(bonus.getClass().getName());
 
             if (isConsummableBonus(bonus) && bonus.isEnabledOnDeathByAnotherPlayer()) {
 
                 ConsumableItem bonus_consummable = (ConsumableItem) bonus;
+                joueur.sendMessage(bonus_consummable.getNombreUtilisationRestantes() + " <");
 
                 if (bonus_consummable.getNombreUtilisationRestantes() > 0) {
                     int nombre_utilisation_restantes = bonus_consummable.getNombreUtilisationRestantes();
-
                     bonus_consummable.onItemUse();
                     bonus_consummable.setNombreUtilisationRestantes(nombre_utilisation_restantes - 1);
 
 
-                    bonus_joueur.set(index, bonus_consummable);
+
                     continue;
                 } else {
                     bonus_joueur.remove(bonus);
@@ -321,7 +300,7 @@ public class PlayerBonus {
      */
     public boolean doesPlayerHaveThisBonus(Class c, Player joueur) {
         if (!bonus_par_joueur.containsKey(joueur)) return false;
-        List<ShopItem> liste_bonus = bonus_par_joueur.get(joueur);
+        LinkedBlockingQueue<ShopItem> liste_bonus = bonus_par_joueur.get(joueur);
 
         if (liste_bonus == null) return false;
 
@@ -346,7 +325,7 @@ public class PlayerBonus {
 
         if (partie == null) return null;
 
-        List<ShopItem> bonus_joueur = partie.getPlayerBonusManager().getListeBonusJoueur(joueur);
+        LinkedBlockingQueue<ShopItem> bonus_joueur = partie.getPlayerBonusManager().getListeBonusJoueur(joueur);
 
         if (bonus_joueur == null || bonus_joueur.isEmpty()) return null;
 

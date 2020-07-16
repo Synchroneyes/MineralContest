@@ -1,6 +1,8 @@
 package fr.synchroneyes.mineral.Shop.Items.Abstract;
 
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.bukkit.ChatColor;
@@ -55,18 +57,43 @@ public abstract class ShopItem {
      *
      * @return
      */
-    public ItemStack toItemStack() {
+    public ItemStack toItemStack(Player joueur) {
         ItemStack item = new ItemStack(getItemMaterial(), 1);
         if (item.getItemMeta() != null) {
             List<String> description = new LinkedList<>();
-            for (String ligne : getDescriptionItem())
-                description.add(ChatColor.RESET + Lang.translate(ligne));
-
-            description.add(ChatColor.RESET + "" + getPrice() + " " + "points");
-
             ItemMeta itemMeta = item.getItemMeta();
+
+
+            if (mineralcontest.getPlayerGame(joueur) != null && mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur) != null) {
+
+                Equipe playerTeam = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
+
+                if (playerTeam.getScore() >= getPrice()) {
+
+                    itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GREEN + Lang.translate(getNomItem()));
+                    for (String ligne : getDescriptionItem())
+                        description.add(ChatColor.RESET + "" + ChatColor.GREEN + Lang.translate(ligne));
+
+                    description.add(ChatColor.RESET + "" + ChatColor.GREEN + "" + getPrice() + " " + "points");
+
+                } else {
+                    itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.RED + Lang.translate(getNomItem()));
+                    for (String ligne : getDescriptionItem())
+                        description.add(ChatColor.RESET + "" + ChatColor.RED + Lang.translate(ligne));
+
+                    description.add(ChatColor.RESET + "" + ChatColor.RED + "" + getPrice() + " " + "points");
+
+
+                }
+
+
+            } else {
+                for (String ligne : getDescriptionItem())
+                    description.add(ChatColor.RESET + "" + ChatColor.RED + Lang.translate(ligne));
+                description.add(ChatColor.RESET + "" + getPrice() + " " + "points");
+            }
+
             itemMeta.setLore(description);
-            itemMeta.setDisplayName(ChatColor.RESET + Lang.translate(getNomItem()));
 
             item.setItemMeta(itemMeta);
         }

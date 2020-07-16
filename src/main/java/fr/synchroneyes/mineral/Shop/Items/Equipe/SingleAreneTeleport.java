@@ -51,7 +51,7 @@ public class SingleAreneTeleport extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 1;
+        return 300;
     }
 
 }

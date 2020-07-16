@@ -1,9 +1,11 @@
 package fr.synchroneyes.mineral.Shop.Categories;
 
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
 public class Informations extends Category {
+
     public Informations(BonusSeller npc) {
         super(npc);
     }
@@ -20,6 +22,6 @@ public class Informations extends Category {
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Achetez une information", "et dominez la partie !"};
+        return new String[]{};
     }
 }

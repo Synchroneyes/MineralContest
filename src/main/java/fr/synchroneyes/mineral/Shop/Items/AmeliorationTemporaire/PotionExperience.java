@@ -44,7 +44,7 @@ public class PotionExperience extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 5;
+        return 50;
     }
 
 }

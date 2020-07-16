@@ -1,8 +1,8 @@
 package fr.synchroneyes.mineral.Shop.NPCs;
 
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.Categories.*;
 import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.AjouterVieSupplementaire;
-import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.BaseTeleporter;
 import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.DerniereChance;
 import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.PotionExperience;
 import fr.synchroneyes.mineral.Shop.Items.Equipe.ActiverAnnonceProchainCoffre;
@@ -12,6 +12,9 @@ import fr.synchroneyes.mineral.Shop.Items.Informations.ProchainCoffreAreneItem;
 import fr.synchroneyes.mineral.Shop.Items.Informations.ProchainLargageAerienPosition;
 import fr.synchroneyes.mineral.Shop.Items.Informations.ProchainLargageAerienTemps;
 import fr.synchroneyes.mineral.Shop.Items.Items.*;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche1;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche2;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche3;
 import fr.synchroneyes.mineral.Shop.Items.Permanent.AjoutCoeursPermanent;
 import fr.synchroneyes.mineral.Shop.Items.Permanent.AutoLingot;
 import fr.synchroneyes.mineral.Shop.Items.Permanent.EpeeDiamant;
@@ -44,63 +47,63 @@ public class BonusSeller extends NPCTemplate {
 
         categories_dispo = new LinkedList<>();
 
+        this.setEmplacement(position);
+
+
         // On crée les catégories ainsi que l'ajout d'item
 
-        Informations categorieInfo = new Informations(this);
-        categorieInfo.addItemToInventory(new ProchainCoffreAreneItem(), 0);
-        categorieInfo.addItemToInventory(new ProchainLargageAerienTemps(), 1);
-        categorieInfo.addItemToInventory(new ProchainLargageAerienPosition(), 2);
+        Informations informations = new Informations(this);
+        informations.addItemToInventory(new ProchainLargageAerienPosition(), 0);
+        informations.addItemToInventory(new ProchainLargageAerienTemps(), 1);
+        informations.addItemToInventory(new ProchainCoffreAreneItem(), 2);
 
 
-        BonusEquipe categorieBonusEquipe = new BonusEquipe(this);
-        categorieBonusEquipe.addItemToInventory(new ActiverAnnonceProchainCoffre(), 0);
-        categorieBonusEquipe.addItemToInventory(new TeleportEquipeAreneAuto(), 1);
-        categorieBonusEquipe.addItemToInventory(new SingleAreneTeleport(), 2);
+        Items items = new Items(this);
+        items.addItemToInventory(new BatonKnockback(), 0);
+        items.addItemToInventory(new BouleDeFeu(), 1);
+        items.addItemToInventory(new Boussole(), 2);
+        items.addItemToInventory(new Buche(), 3);
+        items.addItemToInventory(new PommeDoree(), 4);
+        items.addItemToInventory(new SceauDeau(), 5);
 
-        BonusPermanent categorieBonusPermanent = new BonusPermanent(this);
-        categorieBonusPermanent.addItemToInventory(new EpeeDiamant(), 0);
-        categorieBonusPermanent.addItemToInventory(new AjoutCoeursPermanent(), 1);
-        categorieBonusPermanent.addItemToInventory(new AutoLingot(), 2);
-        categorieBonusPermanent.addItemToInventory(new Boussole(), 3);
-
-
-        BonusPersonnel categorieBonusPersonnel = new BonusPersonnel(this);
-        categorieBonusPersonnel.addItemToInventory(new AjouterVieSupplementaire(), 0);
-        categorieBonusPersonnel.addItemToInventory(new PotionExperience(), 1);
-        categorieBonusPersonnel.addItemToInventory(new BaseTeleporter(), 2);
-        categorieBonusPersonnel.addItemToInventory(new DerniereChance(), 3);
-
-        Potions categoriePotion = new Potions(this);
-        categoriePotion.addItemToInventory(new PotionInvisibilite(), 0);
-        categoriePotion.addItemToInventory(new PotionSpeed1(), 1);
-        categoriePotion.addItemToInventory(new PotionSpeed2(), 2);
-        categoriePotion.addItemToInventory(new PotionHaste(), 3);
-
-        Items categorieNourriture = new Items(this);
-        categorieNourriture.addItemToInventory(new PommeDoree(), 0);
-        categorieNourriture.addItemToInventory(new Buche(), 1);
-        categorieNourriture.addItemToInventory(new BouleDeFeu(), 2);
-        categorieNourriture.addItemToInventory(new BatonKnockback(), 3);
-        categorieNourriture.addItemToInventory(new SceauDeau(), 4);
+        Potions potions = new Potions(this);
+        potions.addItemToInventory(new PotionHaste(), 0);
+        potions.addItemToInventory(new PotionInvisibilite(), 1);
+        potions.addItemToInventory(new PotionSpeed1(), 2);
+        potions.addItemToInventory(new PotionSpeed2(), 3);
 
 
-        BonusNiveaux categorieLevelable = new BonusNiveaux(this);
+        BonusPermanent bonusPermanent = new BonusPermanent(this);
+        bonusPermanent.addItemToInventory(new AjoutCoeursPermanent(), 0);
+        bonusPermanent.addItemToInventory(new AutoLingot(), 1);
+        bonusPermanent.addItemToInventory(new EpeeDiamant(), 2);
 
-        categories_dispo.add(categorieInfo);
+        BonusEquipe bonusEquipe = new BonusEquipe(this);
+        bonusEquipe.addItemToInventory(new ActiverAnnonceProchainCoffre(), 0);
+        bonusEquipe.addItemToInventory(new SingleAreneTeleport(), 1);
+        bonusEquipe.addItemToInventory(new TeleportEquipeAreneAuto(), 2);
+
+        BonusPersonnel bonusPersonnel = new BonusPersonnel(this);
+        bonusPersonnel.addItemToInventory(new AjouterVieSupplementaire(), 0);
+        bonusPersonnel.addItemToInventory(new DerniereChance(), 2);
+        bonusPersonnel.addItemToInventory(new PotionExperience(), 3);
 
 
-        categories_dispo.add(categorieBonusPermanent);
+        Ameliorations ameliorations = new Ameliorations(this);
+        ameliorations.addItemToInventory(new Pioche1(), 0);
+        ameliorations.addItemToInventory(new Pioche2(), 1);
+        ameliorations.addItemToInventory(new Pioche3(), 3);
 
-        categories_dispo.add(categorieBonusEquipe);
 
-        categories_dispo.add(categorieBonusPersonnel);
+        categories_dispo.add(informations);
+        categories_dispo.add(items);
+        categories_dispo.add(potions);
+        categories_dispo.add(bonusPermanent);
+        categories_dispo.add(bonusEquipe);
+        categories_dispo.add(bonusPersonnel);
+        categories_dispo.add(ameliorations);
 
-        categories_dispo.add(categorieNourriture);
-        categories_dispo.add(categoriePotion);
 
-        categories_dispo.add(categorieLevelable);
-
-        this.setEmplacement(position);
 
 
     }
@@ -112,7 +115,7 @@ public class BonusSeller extends NPCTemplate {
 
     @Override
     public Villager.Profession getNPCType() {
-        return Villager.Profession.ARMORER;
+        return null;
     }
 
     @Override

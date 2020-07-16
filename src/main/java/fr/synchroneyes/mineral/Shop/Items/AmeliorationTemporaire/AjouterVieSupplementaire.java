@@ -17,7 +17,7 @@ public class AjouterVieSupplementaire extends ConsumableItem {
 
     @Override
     public Material getItemMaterial() {
-        return Material.DRAGON_BREATH;
+        return Material.RED_MUSHROOM;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AjouterVieSupplementaire extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 3;
+        return 500;
     }
 
 }

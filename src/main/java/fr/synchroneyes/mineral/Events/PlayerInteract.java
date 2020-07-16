@@ -3,8 +3,8 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
-import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.BaseTeleporter;
 import fr.synchroneyes.mineral.Shop.Items.Items.BouleDeFeu;
+import fr.synchroneyes.mineral.Shop.NPCs.Event.NPCPlayerInteract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Setup;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -23,7 +23,6 @@ public class PlayerInteract implements Listener {
         if (MapBuilder.getInstance().isBuilderModeEnabled) return;
 
         try {
-            BaseTeleporter.TeleportItemUseEvent(event);
             BouleDeFeu.FireballPlayerInteractEvent(event);
         } catch (EventAlreadyHandledException e) {
             return;
@@ -61,6 +60,12 @@ public class PlayerInteract implements Listener {
         World current_world = entityEvent.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(current_world)) {
             Player p = entityEvent.getPlayer();
+
+            try {
+                NPCPlayerInteract.OnPlayerRightClick(entityEvent);
+            } catch (EventAlreadyHandledException e) {
+                return;
+            }
 
             if (entityEvent.getRightClicked() instanceof Villager ||
                     entityEvent.getRightClicked() instanceof Witch ||

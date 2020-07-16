@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Categories;
 
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
@@ -16,11 +17,11 @@ public class Items extends Category {
 
     @Override
     public Material getItemMaterial() {
-        return Material.BRICKS;
+        return Material.GOLDEN_APPLE;
     }
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Achetes items"};
+        return new String[0];
     }
 }

@@ -31,7 +31,7 @@ public class PotionHaste extends PotionItem {
 
     @Override
     public int getPrice() {
-        return 1;
+        return 450;
     }
 
 

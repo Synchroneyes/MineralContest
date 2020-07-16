@@ -16,13 +16,13 @@ public class Buche extends GameItem {
 
     @Override
     public Material getItemMaterial() {
-        return Material.ACACIA_WOOD;
+        return Material.OAK_LOG;
     }
 
 
     @Override
     public int getPrice() {
-        return 1;
+        return 5;
     }
 
 }

@@ -6,7 +6,8 @@ import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Classe représentant un item avec level et donc différents bonus
@@ -25,26 +26,14 @@ public abstract class LevelableItem extends ShopItem {
      */
     public abstract Class getRequiredLevel();
 
-    /**
-     * Permet de récupérer l'event où ce bonus doit s'activer, peut-être nul
-     *
-     * @return
-     */
-    public abstract Class triggerOnEvent();
+    public static LevelableItem fromClass(Class c) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return (LevelableItem) c.getConstructor().newInstance();
+    }
 
 
-    /**
-     * PErmet de définir le pourcentage du bonus, non requis, utile pour les events comme par ex: vitesse de cuissont
-     * @return
-     */
-    public abstract int getBonusPercentage();
 
     public boolean isEnabledOnPurchase() {
         return true;
-    }
-
-    public boolean isEnabledOnRespawn() {
-        return false;
     }
 
     public String getPurchaseText() {
@@ -72,7 +61,7 @@ public abstract class LevelableItem extends ShopItem {
         // On vérifie si le joueur a le niveau requis
         if (playerBonusManager.doesPlayerHaveThisBonus(getRequiredLevel(), joueur)) {
             // On regarde si le bonus est actif
-            List<ShopItem> bonus_joueur = playerBonusManager.getListeBonusJoueur(joueur);
+            LinkedBlockingQueue<ShopItem> bonus_joueur = playerBonusManager.getListeBonusJoueur(joueur);
 
             if (bonus_joueur == null) return;
 
@@ -112,7 +101,7 @@ public abstract class LevelableItem extends ShopItem {
 
         PlayerBonus bonusManager = playerGame.getPlayerBonusManager();
 
-        List<ShopItem> bonus_joueur = bonusManager.getListeBonusJoueur(joueur);
+        LinkedBlockingQueue<ShopItem> bonus_joueur = bonusManager.getListeBonusJoueur(joueur);
 
         // Si le joueur n'a pas d'item, on ne peut pas utiliser cet item
         if (bonus_joueur.isEmpty()) return false;

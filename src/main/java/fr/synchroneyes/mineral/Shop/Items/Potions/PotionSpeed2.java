@@ -17,7 +17,7 @@ public class PotionSpeed2 extends PotionItem {
 
     @Override
     public int getPrice() {
-        return 15;
+        return 350;
     }
 
 

@@ -71,7 +71,7 @@ public class BouleDeFeu extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 10;
+        return 250;
     }
 
 

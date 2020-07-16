@@ -20,7 +20,7 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
 
     @Override
     public Material getItemMaterial() {
-        return Material.MAP;
+        return Material.CARTOGRAPHY_TABLE;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 2;
+        return 1000;
     }
 
 }

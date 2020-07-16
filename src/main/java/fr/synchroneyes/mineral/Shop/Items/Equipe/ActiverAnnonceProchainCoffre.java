@@ -53,7 +53,7 @@ public class ActiverAnnonceProchainCoffre extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 30;
+        return 350;
     }
 
 }

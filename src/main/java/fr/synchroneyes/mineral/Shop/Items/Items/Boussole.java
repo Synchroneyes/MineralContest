@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Boussole extends PermanentItem {
     @Override
     public String getNomItem() {
-        return "Boussole %gold%Maison";
+        return "Boussole Maison";
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Boussole extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 10;
+        return 200;
     }
 
 }

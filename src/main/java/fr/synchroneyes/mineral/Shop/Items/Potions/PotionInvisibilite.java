@@ -34,7 +34,7 @@ public class PotionInvisibilite extends PotionItem {
 
     @Override
     public int getPrice() {
-        return 15;
+        return 500;
     }
 
 }

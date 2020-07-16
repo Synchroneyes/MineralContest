@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class BatonKnockback extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "%red%Matraque";
+        return "Matraque";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class BatonKnockback extends ConsumableItem {
 
     @Override
     public Material getItemMaterial() {
-        return Material.STICK;
+        return Material.BLAZE_ROD;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class BatonKnockback extends ConsumableItem {
 
     @Override
     public void onItemUse() {
-        ItemStack baton = new ItemStack(Material.STICK);
+        ItemStack baton = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = baton.getItemMeta();
 
         meta.setDisplayName(Lang.translate(getNomItem()));
@@ -53,7 +53,7 @@ public class BatonKnockback extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 10;
+        return 350;
     }
 
 

@@ -1,23 +1,23 @@
 package fr.synchroneyes.mineral.Shop.Categories;
 
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
-public class BonusNiveaux extends Category {
+public class Ameliorations extends Category {
 
-
-    public BonusNiveaux(BonusSeller npc) {
+    public Ameliorations(BonusSeller npc) {
         super(npc);
     }
 
     @Override
     public String getNomCategorie() {
-        return "Amélioration avec niveau";
+        return "Améliorations";
     }
 
     @Override
     public Material getItemMaterial() {
-        return Material.EMERALD;
+        return Material.FIREWORK_ROCKET;
     }
 
     @Override

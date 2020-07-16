@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Categories;
 
+import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
@@ -16,11 +17,11 @@ public class Potions extends Category {
 
     @Override
     public Material getItemMaterial() {
-        return Material.POTION;
+        return Material.DRAGON_BREATH;
     }
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Achetez des potions vous donnant un avantage personnel"};
+        return new String[0];
     }
 }

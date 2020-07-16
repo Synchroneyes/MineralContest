@@ -1,11 +1,10 @@
-package fr.synchroneyes.mineral.Shop.Categories;
+package fr.synchroneyes.mineral.Shop.Categories.old;
 
 import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
 public class BonusEquipe extends Category {
-
     public BonusEquipe(BonusSeller npc) {
         super(npc);
     }
@@ -17,11 +16,11 @@ public class BonusEquipe extends Category {
 
     @Override
     public Material getItemMaterial() {
-        return Material.ENDER_CHEST;
+        return Material.SHIELD;
     }
 
     @Override
     public String[] getDescription() {
-        return new String[0];
+        return new String[]{"Achetez un bonus qui donnera un avantage", "à toute votre équipe !"};
     }
 }

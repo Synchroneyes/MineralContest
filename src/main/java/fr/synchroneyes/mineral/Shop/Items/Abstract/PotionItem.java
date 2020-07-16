@@ -1,9 +1,13 @@
 package fr.synchroneyes.mineral.Shop.Items.Abstract;
 
+import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Potion;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -14,22 +18,58 @@ import java.util.List;
 public abstract class PotionItem extends ShopItem {
 
     @Override
-    public ItemStack toItemStack() {
+    public ItemStack toItemStack(Player joueur) {
 
-        ItemStack potion = Potion.createPotion(getPotionType(), getPotionLevel(), getPotionDuration(), getNomItem());
-        ItemMeta potionMeta = potion.getItemMeta();
+        Game partie = mineralcontest.getPlayerGame(joueur);
 
-        List<String> description = new LinkedList<>();
+        if (partie != null) {
+            Equipe playerTeam = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
 
-        for (String ligne : getDescriptionItem())
-            description.add(ChatColor.RESET + Lang.translate(ligne));
+            String nomItem = "";
+            if (playerTeam == null) nomItem = getNomItem();
+            else if (playerTeam.getScore() >= getPrice())
+                nomItem = ChatColor.RESET + "" + ChatColor.GREEN + getNomItem();
+            else nomItem = ChatColor.RESET + "" + ChatColor.RED + getNomItem();
 
-        description.add("Price: " + getPrice() + " " + "points");
-        potionMeta.setLore(description);
 
-        potion.setItemMeta(potionMeta);
+            ItemStack potion = Potion.createPotion(getPotionType(), getPotionLevel(), getPotionDuration(), nomItem);
+            ItemMeta potionMeta = potion.getItemMeta();
 
-        return potion;
+            List<String> description = new LinkedList<>();
+
+
+            for (String ligne : getDescriptionItem())
+                if (playerTeam == null) description.add(ChatColor.RESET + Lang.translate(ligne));
+                else if (playerTeam.getScore() >= getPrice())
+                    description.add(ChatColor.RESET + "" + ChatColor.GREEN + Lang.translate(ligne));
+                else description.add(ChatColor.RESET + "" + ChatColor.RED + Lang.translate(ligne));
+
+            if (playerTeam == null) description.add("Price: " + getPrice() + " " + "points");
+            else if (playerTeam.getScore() >= getPrice())
+                description.add(ChatColor.RESET + "" + ChatColor.GREEN + "Price: " + getPrice() + " " + "points");
+            else description.add(ChatColor.RESET + "" + ChatColor.RED + "Price: " + getPrice() + " " + "points");
+            potionMeta.setLore(description);
+
+            potion.setItemMeta(potionMeta);
+
+            return potion;
+        } else {
+            ItemStack potion = Potion.createPotion(getPotionType(), getPotionLevel(), getPotionDuration(), getNomItem());
+            ItemMeta potionMeta = potion.getItemMeta();
+
+            List<String> description = new LinkedList<>();
+
+            for (String ligne : getDescriptionItem())
+                description.add(ChatColor.RESET + Lang.translate(ligne));
+
+            description.add("Price: " + getPrice() + " " + "points");
+            potionMeta.setLore(description);
+
+            potion.setItemMeta(potionMeta);
+
+            return potion;
+        }
+
     }
 
     @Override
@@ -82,7 +122,7 @@ public abstract class PotionItem extends ShopItem {
     @Override
     public void onItemUse() {
 
-        ItemStack potion = toItemStack();
+        ItemStack potion = toItemStack(joueur);
 
         ItemMeta meta = potion.getItemMeta();
         meta.setLore(null);

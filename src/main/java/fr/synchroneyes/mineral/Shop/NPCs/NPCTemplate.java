@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
  */
 public abstract class NPCTemplate {
 
+    public static int id = 0;
 
     // Permet d'avoir la NPC sur une map
     @Getter
@@ -88,7 +89,7 @@ public abstract class NPCTemplate {
         // On change les paramètres de l'entité
         entitySpawned.setAI(false);
         entitySpawned.setAdult();
-        entitySpawned.setProfession(getNPCType());
+        if (getNPCType() != null) entitySpawned.setProfession(getNPCType());
         entitySpawned.setInvulnerable(true);
         entitySpawned.setCustomNameVisible(true);
         entitySpawned.setCustomName(getNomAffichage());
