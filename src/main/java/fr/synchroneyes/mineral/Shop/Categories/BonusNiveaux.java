@@ -3,23 +3,25 @@ package fr.synchroneyes.mineral.Shop.Categories;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import org.bukkit.Material;
 
-public class Informations extends Category {
-    public Informations(BonusSeller npc) {
+public class BonusNiveaux extends Category {
+
+
+    public BonusNiveaux(BonusSeller npc) {
         super(npc);
     }
 
     @Override
     public String getNomCategorie() {
-        return "Informations";
+        return "Amélioration avec niveau";
     }
 
     @Override
     public Material getItemMaterial() {
-        return Material.BOOK;
+        return Material.EMERALD;
     }
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Achetez une information", "et dominez la partie !"};
+        return new String[0];
     }
 }

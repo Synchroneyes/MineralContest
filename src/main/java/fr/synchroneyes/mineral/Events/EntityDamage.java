@@ -10,6 +10,7 @@ import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -51,6 +52,12 @@ public class EntityDamage implements Listener {
                 // On vérifie les dégats fait par un joueur
                 if (entityDamageByEntityEvent.getDamager() instanceof Player) {
                     Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
+
+                    if (playerGroup.getPlayerTeam(attaquant) == null) {
+                        event.setCancelled(true);
+                        return;
+                    }
+
                     if (playerGroup.getPlayerTeam(joueur).equals(playerGroup.getPlayerTeam(attaquant))) {
                         // Si les deux sont de la même équipe et que les dégats entre coéquipier sont désactivé, on annule l'event
                         if (playerGroup.getParametresPartie().getCVAR("mp_enable_friendly_fire").getValeurNumerique() == 0) {
@@ -131,9 +138,9 @@ public class EntityDamage implements Listener {
                     }
 
                     // On peut également vérifier si le joueur est morte d'une flèche ...
-                    if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
+                    if (entityDamageByEntityEvent.getDamager() instanceof Projectile) {
                         // Le joueur est mort d'une fleche
-                        Arrow fleche = (Arrow) entityDamageByEntityEvent.getDamager();
+                        Projectile fleche = (Projectile) entityDamageByEntityEvent.getDamager();
 
                         // Si la flèche a été tirée par un joueur ...
                         if (fleche.getShooter() instanceof Player) {
@@ -182,6 +189,9 @@ public class EntityDamage implements Listener {
             partie.getStatsManager().register(KillStat.class, attacker, dead);
 
         }
+
+
+        if (partie != null) partie.getPlayerBonusManager().triggerEnabledBonusOnPlayerKillerKilled(dead);
 
         // On tue le joueur
         PlayerUtils.killPlayer(dead);

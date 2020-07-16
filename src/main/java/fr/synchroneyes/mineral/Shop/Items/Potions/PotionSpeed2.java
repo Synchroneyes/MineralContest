@@ -1,7 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
-import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionSpeed2 extends PotionItem {
@@ -21,10 +20,6 @@ public class PotionSpeed2 extends PotionItem {
         return 15;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.GOLD_INGOT;
-    }
 
     @Override
     public PotionEffectType getPotionType() {

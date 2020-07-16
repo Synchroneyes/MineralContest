@@ -32,4 +32,14 @@ public abstract class PermanentItem extends ShopItem {
     public String getPurchaseText() {
         return "Vous avez acheté le bonus permanent: " + getNomItem();
     }
+
+    @Override
+    public boolean isEnabledOnDeathByAnotherPlayer() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabledOnDeath() {
+        return false;
+    }
 }

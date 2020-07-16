@@ -55,8 +55,4 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
         return 2;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.EMERALD;
-    }
 }

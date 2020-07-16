@@ -30,8 +30,4 @@ public class PommeDoree extends GameItem {
         return 10;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.GOLD_INGOT;
-    }
 }

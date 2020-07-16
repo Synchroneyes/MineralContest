@@ -323,7 +323,7 @@ public class Game implements Listener {
         playerVelocity.setY(0.05);
 
         player.setVelocity(playerVelocity);
-        PlayerUtils.teleportPlayer(player, spawnLocation);
+        PlayerUtils.teleportPlayer(player, spawnLocation.getWorld(), spawnLocation);
 
 
     }

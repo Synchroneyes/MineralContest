@@ -25,8 +25,4 @@ public class Buche extends GameItem {
         return 1;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.IRON_INGOT;
-    }
 }

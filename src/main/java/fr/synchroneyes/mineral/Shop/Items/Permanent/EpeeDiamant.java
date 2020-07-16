@@ -49,8 +49,4 @@ public class EpeeDiamant extends PermanentItem {
         return 10;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.DIAMOND;
-    }
 }

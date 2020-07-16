@@ -56,8 +56,4 @@ public class ActiverAnnonceProchainCoffre extends ConsumableItem {
         return 30;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.IRON_INGOT;
-    }
 }

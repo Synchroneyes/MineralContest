@@ -54,8 +54,4 @@ public class TeleportEquipeAreneAuto extends ConsumableItem {
         return 20;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.IRON_INGOT;
-    }
 }

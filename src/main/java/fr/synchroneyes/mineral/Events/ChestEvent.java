@@ -198,6 +198,9 @@ public class ChestEvent implements Listener {
                 AnimatedChestInventoryClickEvent(event);
 
                 ShopInventoryOnItemClick(event);
+
+                //Cuisson1.onItemPlacedInFurnace(event);
+
             } catch (EventAlreadyHandledException e) {
                 return;
             }

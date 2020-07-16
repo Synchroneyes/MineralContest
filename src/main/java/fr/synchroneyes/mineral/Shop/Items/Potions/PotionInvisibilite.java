@@ -1,7 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
-import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionInvisibilite extends PotionItem {
@@ -38,8 +37,4 @@ public class PotionInvisibilite extends PotionItem {
         return 15;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.GOLD_INGOT;
-    }
 }

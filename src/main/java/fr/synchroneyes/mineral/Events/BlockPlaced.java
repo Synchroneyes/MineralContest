@@ -44,6 +44,9 @@ public class BlockPlaced implements Listener {
 
             if (game == null) return;
 
+            // Si le joueur est un arbitre, on l'autorise à poser le bloc
+            if (game.isReferee(event.getPlayer())) return;
+
             if (game.isGameStarted() && !game.isGamePaused()) {
                 try {
 

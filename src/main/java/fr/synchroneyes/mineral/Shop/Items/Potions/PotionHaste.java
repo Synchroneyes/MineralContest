@@ -1,7 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
-import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionHaste extends PotionItem {
@@ -35,8 +34,5 @@ public class PotionHaste extends PotionItem {
         return 1;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.DIAMOND;
-    }
+
 }

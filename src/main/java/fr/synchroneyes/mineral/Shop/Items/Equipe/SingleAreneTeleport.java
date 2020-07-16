@@ -54,8 +54,4 @@ public class SingleAreneTeleport extends ConsumableItem {
         return 1;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.DIAMOND;
-    }
 }

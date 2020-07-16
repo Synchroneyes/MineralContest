@@ -21,5 +21,13 @@ public abstract class ConsumableItem extends ShopItem {
         onItemUse();
     }
 
+    @Override
+    public boolean isEnabledOnDeath() {
+        return false;
+    }
 
+    @Override
+    public boolean isEnabledOnDeathByAnotherPlayer() {
+        return false;
+    }
 }

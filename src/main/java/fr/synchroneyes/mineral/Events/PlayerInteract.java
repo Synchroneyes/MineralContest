@@ -2,6 +2,9 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
+import fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire.BaseTeleporter;
+import fr.synchroneyes.mineral.Shop.Items.Items.BouleDeFeu;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Setup;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -18,6 +21,13 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (MapBuilder.getInstance().isBuilderModeEnabled) return;
+
+        try {
+            BaseTeleporter.TeleportItemUseEvent(event);
+            BouleDeFeu.FireballPlayerInteractEvent(event);
+        } catch (EventAlreadyHandledException e) {
+            return;
+        }
 
         World worldEvent = event.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {

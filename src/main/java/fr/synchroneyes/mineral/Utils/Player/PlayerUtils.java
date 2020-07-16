@@ -56,13 +56,6 @@ public class PlayerUtils {
 
     }
 
-    public static void teleportPlayer(Player p, Location loc) {
-        World world = getPluginWorld();
-        Location new_loc = new Location(world, loc.getX(), loc.getY(), loc.getZ());
-        p.teleport(new_loc);
-
-    }
-
     public static void teleportPlayer(Player p, World w, Location loc) {
         Location new_loc = new Location(w, loc.getX(), loc.getY(), loc.getZ());
         p.teleport(new_loc);
@@ -423,6 +416,9 @@ public class PlayerUtils {
             item_a_drop.add(Material.GOLD_ORE);
             item_a_drop.add(Material.EMERALD_ORE);
             item_a_drop.add(Material.DIAMOND_ORE);
+
+            item_a_drop.add(Material.POTION);
+            item_a_drop.add(Material.REDSTONE);
 
             Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
             GameSettings settings = playerGroup.getParametresPartie();

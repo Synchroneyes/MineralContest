@@ -56,11 +56,6 @@ public class ProchainCoffreAreneItem extends ConsumableItem {
     }
 
     @Override
-    public Material getCurrency() {
-        return Material.DIAMOND;
-    }
-
-    @Override
     public void onPlayerBonusAdded() {
         onItemUse();
     }

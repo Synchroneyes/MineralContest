@@ -208,7 +208,7 @@ public final class mineralcontest extends JavaPlugin {
         if (!debug)
             if (pluginWorld != null)
                 for (Player online : pluginWorld.getPlayers())
-                    PlayerUtils.teleportPlayer(online, defaultSpawn);
+                    PlayerUtils.teleportPlayer(online, defaultSpawn.getWorld(), defaultSpawn);
 
         PlayerUtils.runScoreboardManager();
         GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
@@ -484,10 +484,13 @@ public final class mineralcontest extends JavaPlugin {
 
     @Nullable
     public static Game getWorldGame(World world) {
-        for (Groupe groupe : plugin.groupes)
-            if (groupe.getMonde() == null) return null;
+        for (Groupe groupe : plugin.groupes) {
+            if (groupe.getMonde() == null && world != mineralcontest.plugin.pluginWorld) return null;
+            if (groupe.getMonde() == null && world == mineralcontest.plugin.pluginWorld) return groupe.getGame();
+
             else if (groupe.getMonde().equals(world))
                 return groupe.getGame();
+        }
         return null;
     }
 

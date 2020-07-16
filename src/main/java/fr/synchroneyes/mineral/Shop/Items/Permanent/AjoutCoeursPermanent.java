@@ -38,8 +38,5 @@ public class AjoutCoeursPermanent extends PermanentItem {
         return 5;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.EMERALD;
-    }
+
 }

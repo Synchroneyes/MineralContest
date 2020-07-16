@@ -15,7 +15,7 @@ public class PlayerSpawn implements Listener {
 
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent e) throws Exception {
+    public void onRespawn(PlayerRespawnEvent e) {
 
         World worldEvent = e.getPlayer().getWorld();
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {

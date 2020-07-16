@@ -22,6 +22,7 @@ public class StartGameCommand implements CommandExecutor {
         if (mineralcontest.isInAMineralContestWorld(player) && !mineralcontest.plugin.pluginWorld.equals(player.getWorld())) {
             Game partie = mineralcontest.getPlayerGame(player);
             if (partie == null) {
+
                 sender.sendMessage(mineralcontest.prefixErreur + Lang.error_command_can_only_be_used_in_game.toString());
                 return false;
             }
@@ -32,9 +33,9 @@ public class StartGameCommand implements CommandExecutor {
             } else {
 
                 try {
-                    if (args.length == 1 && args[0].equals("force"))
+                    if (args.length == 1 && args[0].equals("force")) {
                         partie.demarrerPartie(true);
-                    else partie.demarrerPartie(false);
+                    } else partie.demarrerPartie(false);
 
                 } catch (Exception e) {
                     sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
@@ -44,6 +45,15 @@ public class StartGameCommand implements CommandExecutor {
             }
             return false;
         } else {
+
+            Game partie = mineralcontest.getPlayerGame(player);
+            partie.groupe.chargerMonde("mc_4_teams_map");
+
+            try {
+                partie.demarrerPartie(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             sender.sendMessage("Only available on mineral contest map");
             return false;
         }

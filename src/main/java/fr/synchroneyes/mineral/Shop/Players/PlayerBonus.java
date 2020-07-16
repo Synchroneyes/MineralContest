@@ -6,10 +6,14 @@ import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
 import fr.synchroneyes.mineral.Shop.Items.Informations.ProchainCoffreAreneItem;
+import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,6 +51,16 @@ public class PlayerBonus {
 
 
     /**
+     * Retourne la liste des bonus pour un joueur donné
+     *
+     * @param joueur
+     * @return
+     */
+    public List<ShopItem> getListeBonusJoueur(Player joueur) {
+        return bonus_par_joueur.get(joueur);
+    }
+
+    /**
      * Fonction permettant de traiter la logique d'ajout d'un bonus à un joueur
      *
      * @param bonus
@@ -77,6 +91,11 @@ public class PlayerBonus {
                 if (currentBonus_consommable.getNombreUtilisationRestantes() == 0) {
                     liste_bonus_joueur.remove(currentBonus);
                     doesPlayerAlreadyHaveBonus = false;
+                } else {
+                    liste_bonus_joueur.remove(currentBonus);
+                    currentBonus_consommable.setNombreUtilisationRestantes(currentBonus_consommable.getNombreUtilisationRestantes() + 1);
+                    bonus = currentBonus_consommable;
+                    doesPlayerAlreadyHaveBonus = false;
                 }
             }
         }
@@ -90,15 +109,17 @@ public class PlayerBonus {
         if (isLevelableBonus(bonus)) {
 
             // On récupère la classe requise
-            Class classe_requise = ((LevelableItem) bonus).getRequiredLevel().getClass();
+
+            Class classe_requise = ((LevelableItem) bonus).getRequiredLevel();
 
             // Si le joueur ne possède pas la classe requise
-            if (!doesPlayerHaveThisBonus(classe_requise, joueur))
+            if (classe_requise != null && !doesPlayerHaveThisBonus(classe_requise, joueur))
                 joueur.sendMessage("Vous n'avez pas le bonus " + classe_requise.getName());
             else {
                 for (ShopItem shopItem : liste_bonus_joueur)
                     if (shopItem.getClass().equals(classe_requise)) {
-                        liste_bonus_joueur.remove(shopItem);
+                        LevelableItem item = (LevelableItem) shopItem;
+                        item.setPlayerBonusEnabled(false);
                         break;
                     }
             }
@@ -126,16 +147,16 @@ public class PlayerBonus {
             return;
         }
 
-        joueur.sendMessage(item.getPurchaseText());
+        joueur.sendMessage(Lang.translate(item.getPurchaseText()));
         item.setJoueur(joueur);
 
 
         takePlayerMoney(joueur, item);
 
-        joueur.closeInventory();
-
         // Logique permettant de savoir si l'utilisateur peut acheter l'item
         ajouterBonusPourJoueur(item, joueur);
+
+        joueur.playNote(joueur.getLocation(), Instrument.PIANO, new Note(24));
 
     }
 
@@ -150,7 +171,7 @@ public class PlayerBonus {
         Map<Material, Integer> liste_item_joueur = new HashMap<>();
 
         // Pour chaque item de l'inventaire du joueur
-        for (ItemStack item : joueur.getInventory().getContents())
+        /*for (ItemStack item : joueur.getInventory().getContents())
             // Si l'item n'est pas null
             if (item != null)
                 // On regarde si la liste contient déjà l'item en question
@@ -161,13 +182,31 @@ public class PlayerBonus {
                     liste_item_joueur.replace(item.getType(), liste_item_joueur.get(item.getType()) + item.getAmount());
 
         // la boucle est terminé, on regarde si le joueur possède l'item et si il a assez d'item
-        if (!liste_item_joueur.containsKey(bonus.getCurrency())) return false;
+        if (!liste_item_joueur.containsKey(bonus.getCurrency())) return false;*/
+
+        Game playerGame = mineralcontest.getPlayerGame(joueur);
+        if (playerGame == null) return false;
+
+        Equipe playerTeam = playerGame.getPlayerTeam(joueur);
+        if (playerTeam == null) return false;
+        int scoreEquipe = playerTeam.getScore();
+
 
         // Si dans notre liste, le joueur possède le nombre requis ou plus d'item, on retourne vrai
 
-        if (isLevelableBonus(bonus))
-            return (doesPlayerHaveThisBonus(((LevelableItem) bonus).getRequiredLevel().getClass(), joueur) && liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
-        else return (liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
+        if (isLevelableBonus(bonus)) {
+            LevelableItem levelableItem = (LevelableItem) bonus;
+
+            if (levelableItem.getRequiredLevel() == null) joueur.sendMessage("NULL !");
+
+            if (levelableItem.getRequiredLevel() == null) return scoreEquipe >= bonus.getPrice();
+            else
+                return ((doesPlayerHaveThisBonus(levelableItem.getRequiredLevel(), joueur) && scoreEquipe >= bonus.getPrice()));
+
+            //if(levelableItem.getRequiredLevel() == null) return (liste_item_joueur.get(scoreEquipe >= bonus.getPrice());
+            //else return (doesPlayerHaveThisBonus(levelableItem.getRequiredLevel(), joueur) && liste_item_joueur.get(bonus.getCurrency()) >= bonus.getPrice());
+
+        } else return (scoreEquipe >= bonus.getPrice());
     }
 
 
@@ -178,25 +217,13 @@ public class PlayerBonus {
      * @param shopItem
      */
     private void takePlayerMoney(Player joueur, ShopItem shopItem) {
-        int requiredItems = shopItem.getPrice();
-        Material requiredItemType = shopItem.getCurrency();
 
-        for (ItemStack item : joueur.getInventory().getContents()) {
-            if (item != null && item.getType() == requiredItemType) {
+        Equipe playerTeam = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
 
-                if (requiredItems <= 0) return;
+        int nouveauScoreEquipe = playerTeam.getScore() - shopItem.getPrice();
+        playerTeam.setScore(nouveauScoreEquipe);
 
-                if (item.getAmount() <= requiredItems) {
-                    requiredItems -= item.getAmount();
-                    joueur.getInventory().remove(item);
-                }
-
-                if (item.getAmount() > requiredItems) {
-                    item.setAmount(item.getAmount() - requiredItems);
-                    return;
-                }
-            }
-        }
+        playerTeam.sendMessage(shopItem.getPurchaseText());
 
     }
 
@@ -227,16 +254,62 @@ public class PlayerBonus {
 
     }
 
+    /**
+     * Permet d'activer les bonus s'activant a la mort d'un joueur par une autre personne
+     */
+    public void triggerEnabledBonusOnPlayerKillerKilled(Player joueur) {
+        List<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
 
-    private boolean isConsummableBonus(ShopItem c) {
+
+        if (bonus_joueur == null) return;
+
+
+        // Pour chaque bonus du joueur
+        int index = -1;
+        for (ShopItem bonus : bonus_joueur) {
+
+            index++;
+            joueur.sendMessage(bonus.getClass().getName());
+
+            if (isConsummableBonus(bonus) && bonus.isEnabledOnDeathByAnotherPlayer()) {
+
+                ConsumableItem bonus_consummable = (ConsumableItem) bonus;
+
+                if (bonus_consummable.getNombreUtilisationRestantes() > 0) {
+                    int nombre_utilisation_restantes = bonus_consummable.getNombreUtilisationRestantes();
+
+                    bonus_consummable.onItemUse();
+                    bonus_consummable.setNombreUtilisationRestantes(nombre_utilisation_restantes - 1);
+
+
+                    bonus_joueur.set(index, bonus_consummable);
+                    continue;
+                } else {
+                    bonus_joueur.remove(bonus);
+                    continue;
+                }
+            }
+
+            if (bonus.isEnabledOnDeathByAnotherPlayer()) {
+                bonus.onItemUse();
+            }
+        }
+
+        bonus_par_joueur.replace(joueur, bonus_joueur);
+
+
+    }
+
+
+    public static boolean isConsummableBonus(ShopItem c) {
         return c instanceof ConsumableItem;
     }
 
-    private boolean isPermanentBonus(ShopItem c) {
+    public static boolean isPermanentBonus(ShopItem c) {
         return c instanceof PermanentItem;
     }
 
-    private boolean isLevelableBonus(ShopItem c) {
+    public static boolean isLevelableBonus(ShopItem c) {
         return c instanceof LevelableItem;
     }
 
@@ -246,9 +319,11 @@ public class PlayerBonus {
      * @param c
      * @return
      */
-    private boolean doesPlayerHaveThisBonus(Class c, Player joueur) {
+    public boolean doesPlayerHaveThisBonus(Class c, Player joueur) {
         if (!bonus_par_joueur.containsKey(joueur)) return false;
         List<ShopItem> liste_bonus = bonus_par_joueur.get(joueur);
+
+        if (liste_bonus == null) return false;
 
         // On regarde pour chaque bonus si le joueur possède le bonus passé en paramètre
         for (ShopItem bonus : liste_bonus)
@@ -257,5 +332,26 @@ public class PlayerBonus {
             if (bonus.getClass().equals(c)) return true;
 
         return false;
+    }
+
+    /**
+     * Permet de retourner le bonus d'un joueur donné en paramètre, retourne null si l'utilisateur ne le possède pas
+     *
+     * @param bonusClass
+     * @param joueur
+     * @return
+     */
+    public static ShopItem getPlayerBonus(Class bonusClass, Player joueur) {
+        Game partie = mineralcontest.getPlayerGame(joueur);
+
+        if (partie == null) return null;
+
+        List<ShopItem> bonus_joueur = partie.getPlayerBonusManager().getListeBonusJoueur(joueur);
+
+        if (bonus_joueur == null || bonus_joueur.isEmpty()) return null;
+
+        for (ShopItem bonus : bonus_joueur)
+            if (bonus.getClass().equals(bonusClass)) return bonus;
+        return null;
     }
 }

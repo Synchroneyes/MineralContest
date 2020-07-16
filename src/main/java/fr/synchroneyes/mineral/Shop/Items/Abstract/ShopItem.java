@@ -1,13 +1,14 @@
 package fr.synchroneyes.mineral.Shop.Items.Abstract;
 
+import fr.synchroneyes.mineral.Translation.Lang;
 import lombok.AccessLevel;
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,13 +59,14 @@ public abstract class ShopItem {
         ItemStack item = new ItemStack(getItemMaterial(), 1);
         if (item.getItemMeta() != null) {
             List<String> description = new LinkedList<>();
-            Collections.addAll(description, getDescriptionItem());
+            for (String ligne : getDescriptionItem())
+                description.add(ChatColor.RESET + Lang.translate(ligne));
 
-            description.add("Price: " + getPrice() + " " + getCurrency().toString());
+            description.add(ChatColor.RESET + "" + getPrice() + " " + "points");
 
             ItemMeta itemMeta = item.getItemMeta();
             itemMeta.setLore(description);
-            itemMeta.setDisplayName(getNomItem());
+            itemMeta.setDisplayName(ChatColor.RESET + Lang.translate(getNomItem()));
 
             item.setItemMeta(itemMeta);
         }
@@ -79,6 +81,10 @@ public abstract class ShopItem {
     public abstract boolean isEnabledOnRespawn();
 
     public abstract boolean isEnabledOnPurchase();
+
+    public abstract boolean isEnabledOnDeathByAnotherPlayer();
+
+    public abstract boolean isEnabledOnDeath();
 
     /**
      * Récupère le nombre d'utilisation d'un item
@@ -108,11 +114,5 @@ public abstract class ShopItem {
      */
     public abstract int getPrice();
 
-    /**
-     * Retourne le type d'item demandé
-     *
-     * @return
-     */
-    public abstract Material getCurrency();
 
 }

@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Categories;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
+import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
@@ -18,14 +19,17 @@ import java.util.*;
 public abstract class Category {
 
     // Table de hachage, contenant l'item ainsi que sa position dans l'inventaire
-    private HashMap<ShopItem, Integer> items;
+    private LinkedHashMap<ShopItem, Integer> items;
 
     @Getter
     private Inventory inventory;
 
-    public Category() {
-        this.items = new HashMap<>();
+    private BonusSeller npc;
+
+    public Category(BonusSeller npc) {
+        this.items = new LinkedHashMap<>();
         this.inventory = Bukkit.createInventory(null, 9 * 6, getNomCategorie());
+        this.npc = npc;
     }
 
     /**
@@ -80,11 +84,25 @@ public abstract class Category {
     public void openMenuToPlayer(Player joueur) {
         this.inventory.clear();
 
+        // On récupère les catégories d'item
+        for (Category categorie : npc.getCategories_dispo())
+            inventory.addItem(categorie.toItemStack());
+
+
+        int dernierePositionCategorie = npc.getCategories_dispo().size();
+
+        int ligneActuelle = (int) Math.ceil(dernierePositionCategorie / 9f);
+
+        int indexInventaire = 0;
+        for (indexInventaire = (ligneActuelle * 9); indexInventaire < ((ligneActuelle + 1) * 9); ++indexInventaire)
+            inventory.setItem(indexInventaire, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+
+
+
         // On récupère les items de la catégorie
         for (Map.Entry<ShopItem, Integer> item : items.entrySet())
-            inventory.setItem(item.getValue(), item.getKey().toItemStack());
+            inventory.setItem(indexInventaire++, item.getKey().toItemStack());
 
-        joueur.closeInventory();
         joueur.openInventory(inventory);
     }
 
@@ -130,20 +148,27 @@ public abstract class Category {
 
         if (clickedItem == null) return;
 
+        // Pour chaque catégorie dispo
+        for (Category category : npc.getCategories_dispo())
+            if (clickedItem.equals(category.toItemStack())) {
+                category.openMenuToPlayer(joueur);
+                return;
+            }
+
         // Pour chaque item de la catégorie
         for (Map.Entry<ShopItem, Integer> item : items.entrySet()) {
             ItemStack _inventoryItem = item.getKey().toItemStack();
 
             // Si on a cliqué sur un item de la catégorie
 
-            // TODO: retirer la monnaie lors de l'achat
+
 
             if (clickedItem.equals(_inventoryItem)) {
                 ShopItem _item = item.getKey();
                 if (playerBonusManager.canPlayerAffordItem(item.getKey(), joueur))
                     playerBonusManager.purchaseItem(joueur, item.getKey());
                 else
-                    joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + _item.getPrice() + " " + _item.getCurrency().toString());
+                    joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + _item.getPrice());
 
                 return;
             }

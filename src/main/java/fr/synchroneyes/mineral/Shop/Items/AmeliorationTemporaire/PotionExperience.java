@@ -2,22 +2,23 @@ package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 
-public class AjouterVieSupplementaire extends ConsumableItem {
+public class PotionExperience extends ConsumableItem {
+
+
     @Override
     public String getNomItem() {
-        return "Vie supplémentaire";
+        return "Experience";
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Permet d'ajouter 5 coeurs jusqu'à votre mort"};
+        return new String[]{"Vous permet d'acheter un %gold%niveau d'expérience"};
     }
 
     @Override
     public Material getItemMaterial() {
-        return Material.DRAGON_BREATH;
+        return Material.EXPERIENCE_BOTTLE;
     }
 
     @Override
@@ -37,21 +38,13 @@ public class AjouterVieSupplementaire extends ConsumableItem {
 
     @Override
     public void onItemUse() {
-
-        int nombreDeCoeur = 3;
-
-        double currentMaxHealth = this.joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-        currentMaxHealth += nombreDeCoeur * 2;
-
-        if (currentMaxHealth >= 2048) currentMaxHealth = 2048;
-
-        this.joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(currentMaxHealth);
-        this.joueur.setHealth(currentMaxHealth);
+        int nombre_level = 1;
+        joueur.setLevel(joueur.getLevel() + nombre_level);
     }
 
     @Override
     public int getPrice() {
-        return 3;
+        return 5;
     }
 
 }

@@ -59,8 +59,4 @@ public class ProchainLargageAerienTemps extends ConsumableItem {
         return 1;
     }
 
-    @Override
-    public Material getCurrency() {
-        return Material.EMERALD;
-    }
 }

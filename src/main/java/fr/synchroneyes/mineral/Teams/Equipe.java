@@ -55,7 +55,7 @@ public class Equipe implements Comparable<Equipe> {
 
     public void updateScore() throws Exception {
 
-        int _score = 0;
+        int score_gagne = 0;
         Block block_coffre = maison.getCoffreEquipeLocation().getBlock();
         Chest openedChest = ((Chest) block_coffre.getState());
 
@@ -63,25 +63,28 @@ public class Equipe implements Comparable<Equipe> {
         for (ItemStack item : items) {
 
             if (item != null) {
+
+
                 if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
-                    _score += groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
-                }
-
-                if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
-                    _score += groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
-                }
-
-                if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
-                    _score += groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
-                }
-
-                if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
-                    _score += groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
+                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
+                } else if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
+                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
+                } else if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
+                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
+                } else if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
+                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
+                } else {
+                    block_coffre.getWorld().dropItemNaturally(block_coffre.getLocation(), item);
                 }
             }
         }
 
-        setScore(_score);
+        score_gagne += getScore();
+
+        setScore(score_gagne);
+        openedChest.getInventory().clear();
+
+
     }
 
     public void sendMessage(String message, Player sender) {

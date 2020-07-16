@@ -2,11 +2,15 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mapbuilder.MapBuilder;
+import fr.synchroneyes.mineral.Core.Game.BlockManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Shop.Items.Permanent.AutoLingot;
+import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Statistics.Class.MinerStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.Radius;
+import fr.synchroneyes.mineral.Utils.RawToCooked;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,16 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class BlockDestroyed implements Listener {
 
-    public static LinkedHashMap<Location, Material> blocks = new LinkedHashMap<>();
-    public static Location positionCoffre = null;
-    public static int index = 0;
     /**
      * Evenement appelé lors de la destruction d'un bloc
      *
@@ -35,35 +36,6 @@ public class BlockDestroyed implements Listener {
 
         // Si on est en mode création de map, on ignore l'event
         if (MapBuilder.getInstance().isBuilderModeEnabled) {
-            /*if(index == 0) positionCoffre = event.getBlock().getLocation();
-            Location substractedLocation = null;
-
-            Location blockLocation = event.getBlock().getLocation();
-
-            substractedLocation = new Location(positionCoffre.getWorld(),
-                    blockLocation.getX() - positionCoffre.getX(),
-                    blockLocation.getY() - positionCoffre.getY(),
-                    blockLocation.getZ() - positionCoffre.getZ()
-            );
-
-
-            try {
-                File fichierConfig = new File(mineralcontest.plugin.getDataFolder(), "airdrop.yml");
-                YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierConfig);
-                yamlConfiguration.set(index + ".x", substractedLocation.getX());
-                yamlConfiguration.set(index + ".y", substractedLocation.getY());
-                yamlConfiguration.set(index + ".z", substractedLocation.getZ());
-                yamlConfiguration.set(index + ".material", event.getBlock().getType().toString());
-
-                yamlConfiguration.save(fichierConfig);
-
-                ++index;
-            }catch (IOException ioe){
-                ioe.printStackTrace();
-            }
-*/
-
-
             return;
         }
 
@@ -89,6 +61,9 @@ public class BlockDestroyed implements Listener {
         // on récupère la partie du joueur
         Game partie = playerGroupe.getGame();
 
+        // Si le joueur est un arbitre, on l'autorise à poser le bloc
+        if (partie.isReferee(joueur)) return;
+
         // Si la partie est non démarrée, on annule l'event, on ne veut pas casser de bloc
         if (!partie.isGameStarted() || partie.isPreGame() || partie.isGamePaused()) {
             joueur.sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
@@ -113,9 +88,28 @@ public class BlockDestroyed implements Listener {
 
             // Si le block détruit est dans le rayon de la zone protegé, on annule l'event
             if (Radius.isBlockInRadius(centreArene, blockDetruit.getLocation(), rayonZoneProtege)) {
-                event.setCancelled(true);
-                joueur.sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
-                return;
+
+                // Si le block est un bloc ajouté par un joueur, on ne fait rien
+                BlockManager blockManager = BlockManager.getInstance();
+
+                if (!blockManager.wasBlockAdded(blockDetruit)) {
+                    event.setCancelled(true);
+                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.cant_break_block_here.toString());
+                    return;
+                }
+
+
+            }
+
+            // Si c'est un block
+            if (PlayerBonus.getPlayerBonus(AutoLingot.class, joueur) != null && event.isDropItems()) {
+                Material materialToDrop = RawToCooked.toCooked(blockDetruit.getType());
+
+                if (materialToDrop != null) {
+                    blockDetruit.setType(Material.AIR);
+                    blockDetruit.getWorld().dropItemNaturally(blockDetruit.getLocation(), new ItemStack(materialToDrop));
+                }
+
             }
 
             // Sinon, le block détruit n'est pas dans la zone protégé, on autorise la destruction
