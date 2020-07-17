@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Categories;
 
 import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
 public class Items extends Category {
@@ -12,7 +13,7 @@ public class Items extends Category {
 
     @Override
     public String getNomCategorie() {
-        return "Items";
+        return Lang.items_category_title.toString();
     }
 
     @Override

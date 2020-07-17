@@ -1,18 +1,19 @@
 package fr.synchroneyes.mineral.Shop.Items.Items;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.GameItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class PommeDoree extends GameItem {
     @Override
     public String getNomItem() {
-        return "Pomme doré";
+        return Lang.shopitem_goldenapple_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous donne une pomme doré"};
+        return new String[]{Lang.shopitem_goldenapple_desc.toString()};
     }
 
     @Override

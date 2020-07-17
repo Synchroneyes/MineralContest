@@ -10,12 +10,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class BatonKnockback extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Matraque";
+        return Lang.shopitem_knockback_item_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous vous sentez aggressé et vous souhaitez vous défendre ?", "Ce baton est fait pour vous !"};
+        return new String[]{Lang.shopitem_knockback_item_desc1.toString(), Lang.shopitem_knockback_item_desc2.toString()};
     }
 
     @Override

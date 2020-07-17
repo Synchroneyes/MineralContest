@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionHaste extends PotionItem {
@@ -21,12 +22,12 @@ public class PotionHaste extends PotionItem {
 
     @Override
     public String getNomItem() {
-        return "Effet de haste";
+        return Lang.shopitem_haste_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Améliore votre vitesse de minagne"};
+        return new String[]{Lang.shopitem_haste_desc.toString()};
     }
 
     @Override

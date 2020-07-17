@@ -9,12 +9,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SceauDeau extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Seau d'eau";
+        return Lang.shopitem_waterbucket_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Achetez un seau d'eau"};
+        return new String[]{Lang.shopitem_waterbucket_desc.toString()};
     }
 
     @Override

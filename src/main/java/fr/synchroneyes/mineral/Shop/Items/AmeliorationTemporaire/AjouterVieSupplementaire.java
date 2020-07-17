@@ -1,18 +1,19 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 
 public class AjouterVieSupplementaire extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Vie supplémentaire";
+        return Lang.shopitem_temp_max_health_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Permet d'ajouter 5 coeurs jusqu'à votre mort"};
+        return new String[]{Lang.shopitem_temp_max_health_desc.toString()};
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AjouterVieSupplementaire extends ConsumableItem {
         double currentMaxHealth = this.joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         currentMaxHealth += nombreDeCoeur * 2;
 
-        if (currentMaxHealth >= 2048) currentMaxHealth = 2048;
+        if (currentMaxHealth >= 40) currentMaxHealth = 40;
 
         this.joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(currentMaxHealth);
         this.joueur.setHealth(currentMaxHealth);

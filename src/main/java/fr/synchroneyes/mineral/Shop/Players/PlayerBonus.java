@@ -110,9 +110,11 @@ public class PlayerBonus {
             Class classe_requise = ((LevelableItem) bonus).getRequiredLevel();
 
             // Si le joueur ne possède pas la classe requise
-            if (classe_requise != null && !doesPlayerHaveThisBonus(classe_requise, joueur))
-                joueur.sendMessage("Vous n'avez pas le bonus " + classe_requise.getName());
-            else {
+            if (classe_requise != null && !doesPlayerHaveThisBonus(classe_requise, joueur)) {
+                String bonus_required_text = Lang.shopitem_bonus_required.toString();
+                bonus_required_text = bonus_required_text.replace("%bonus", classe_requise.getName());
+                joueur.sendMessage(mineralcontest.prefixErreur + bonus_required_text);
+            } else {
                 for (ShopItem shopItem : liste_bonus_joueur)
                     if (shopItem.getClass().equals(classe_requise)) {
                         LevelableItem item = (LevelableItem) shopItem;
@@ -140,7 +142,7 @@ public class PlayerBonus {
     public void purchaseItem(Player joueur, ShopItem item) {
 
         if (doesPlayerHaveThisBonus(item.getClass(), joueur) && (isPermanentBonus(item) || isLevelableBonus(item))) {
-            joueur.sendMessage("Vous avez déjà ce bonus");
+            joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_bonus_already_purchased.toString());
             return;
         }
 
@@ -150,6 +152,13 @@ public class PlayerBonus {
 
 
         takePlayerMoney(joueur, item);
+
+        Equipe playerTeam = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
+        String purchaseMessage = Lang.shopitem_player_purchased.toString();
+        purchaseMessage = purchaseMessage.replace("%p", joueur.getDisplayName());
+        purchaseMessage = purchaseMessage.replace("%bonus", item.getNomItem());
+
+        playerTeam.sendMessage(mineralcontest.prefixTeamChat + purchaseMessage);
 
 
         // Logique permettant de savoir si l'utilisateur peut acheter l'item

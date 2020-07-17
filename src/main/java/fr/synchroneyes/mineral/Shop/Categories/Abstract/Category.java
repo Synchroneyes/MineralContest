@@ -6,10 +6,10 @@ import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -169,14 +169,14 @@ public abstract class Category {
 
                     Equipe playerTeam = playerGroup.getPlayerTeam(joueur);
                     if (playerTeam == null) {
-                        joueur.sendMessage("Vous n'avez pas d'équipe, vous ne pouvez pas acheter d'item");
+                        joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_player_with_no_team_cant_buy.toString());
                         return;
                     }
 
                     int score = playerTeam.getScore();
 
                     if (score < item.getKey().getPrice()) {
-                        joueur.sendMessage(mineralcontest.prefixPrive + ChatColor.RED + "Vous n'avez pas assez d'argent pour ce bonus");
+                        joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_not_enought_credit.toString());
                         return;
                     }
 
@@ -189,7 +189,11 @@ public abstract class Category {
                         // Source: https://stackoverflow.com/a/6094600
                         try {
                             LevelableItem lvl_item = LevelableItem.fromClass(((LevelableItem) item.getKey()).getRequiredLevel());
-                            joueur.sendMessage(mineralcontest.prefixPrive + "Vous devez d'abord acheter le bonus " + lvl_item.getNomItem());
+
+                            String bonus_to_buy_before = Lang.shopitem_bonus_required.toString();
+                            bonus_to_buy_before = bonus_to_buy_before.replace("%bonus", lvl_item.getNomItem());
+
+                            joueur.sendMessage(mineralcontest.prefixErreur + bonus_to_buy_before);
                             return;
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             e.printStackTrace();
@@ -197,7 +201,7 @@ public abstract class Category {
 
                     }
 
-                    joueur.sendMessage("Vous n'avez pas assez de sous, requis: " + _item.getPrice());
+                    joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_not_enought_credit.toString());
                 }
 
                 return;

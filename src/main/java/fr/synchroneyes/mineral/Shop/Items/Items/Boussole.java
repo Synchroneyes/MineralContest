@@ -13,12 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Boussole extends PermanentItem {
     @Override
     public String getNomItem() {
-        return "Boussole Maison";
+        return Lang.shopitem_compass_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous indique la direction vers votre maison"};
+        return new String[]{Lang.shopitem_compass_desc.toString()};
     }
 
     @Override

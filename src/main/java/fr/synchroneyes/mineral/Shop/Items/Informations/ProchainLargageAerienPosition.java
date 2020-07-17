@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Informations;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,12 +11,12 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
 
     @Override
     public String getNomItem() {
-        return "Position du prochain largage";
+        return Lang.shopitem_next_airdrop_location_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous voulez vous préparer pour le prochain largage?", "Ce bonus est fait pour vous.", "Vous aurez la position du prochain largage !"};
+        return new String[]{Lang.shopitem_next_airdrop_description_1.toString(), Lang.shopitem_next_airdrop_description_2.toString(), Lang.shopitem_next_airdrop_description_3.toString()};
     }
 
     @Override
@@ -46,7 +47,12 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
 
         Location positionDrop = playerGroup.getGame().getParachuteManager().getNextDropLocation();
 
-        joueur.sendMessage(mineralcontest.prefixPrive + " Le prochain largage va apparaitre en X: " + positionDrop.getBlockX() + " Z: " + positionDrop.getBlockZ());
+        String prochainLargageTexte = Lang.shopitem_next_airdrop_onitemuse_location.toString();
+
+        prochainLargageTexte = prochainLargageTexte.replace("%x", positionDrop.getBlockX() + "");
+        prochainLargageTexte = prochainLargageTexte.replace("%z", positionDrop.getBlockZ() + "");
+
+        joueur.sendMessage(mineralcontest.prefixPrive + prochainLargageTexte);
 
     }
 

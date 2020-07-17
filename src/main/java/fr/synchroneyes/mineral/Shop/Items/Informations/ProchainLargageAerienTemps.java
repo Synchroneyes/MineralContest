@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Informations;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.TimeConverter;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -14,12 +15,12 @@ public class ProchainLargageAerienTemps extends ConsumableItem {
 
     @Override
     public String getNomItem() {
-        return "Temps restant avant largage";
+        return Lang.shopitem_next_airdrop_time_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous voulez vous préparer pour le prochain largage?", "Ce bonus est fait pour vous.", "Vous aurez le temps restant avant le prochain largage !"};
+        return new String[]{Lang.shopitem_next_airdrop_description_1.toString(), Lang.shopitem_next_airdrop_description_2.toString(), Lang.shopitem_next_airdrop_time_desc.toString()};
     }
 
     @Override
@@ -50,7 +51,9 @@ public class ProchainLargageAerienTemps extends ConsumableItem {
 
         int tempsRestant = playerGroup.getGame().getParachuteManager().getTimeleft_before_next_drop();
 
-        joueur.sendMessage(mineralcontest.prefixPrive + " Le prochain largage va apparaitre dans " + (TimeConverter.intToString(tempsRestant).replace(":", " minutes ")));
+        String tempsRestantText = Lang.shopitem_next_airdrop_onitemuse_timeleft.toString();
+        tempsRestantText = tempsRestantText.replace("%time", TimeConverter.intToString(tempsRestant));
+        joueur.sendMessage(mineralcontest.prefixPrive + tempsRestantText);
 
     }
 

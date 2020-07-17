@@ -22,6 +22,7 @@ import fr.synchroneyes.mineral.Shop.Items.Potions.PotionHaste;
 import fr.synchroneyes.mineral.Shop.Items.Potions.PotionInvisibilite;
 import fr.synchroneyes.mineral.Shop.Items.Potions.PotionSpeed1;
 import fr.synchroneyes.mineral.Shop.Items.Potions.PotionSpeed2;
+import fr.synchroneyes.mineral.Translation.Lang;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -110,7 +111,7 @@ public class BonusSeller extends NPCTemplate {
 
     @Override
     public String getNomAffichage() {
-        return "Boutique";
+        return Lang.shopitem_npc_title.toString();
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Categories;
 
 import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
 public class BonusPermanent extends Category {
@@ -11,7 +12,7 @@ public class BonusPermanent extends Category {
 
     @Override
     public String getNomCategorie() {
-        return "Bonus Permanent";
+        return Lang.permanent_category_title.toString();
     }
 
     @Override

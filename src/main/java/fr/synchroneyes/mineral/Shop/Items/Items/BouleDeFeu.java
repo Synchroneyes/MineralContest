@@ -34,12 +34,12 @@ public class BouleDeFeu extends ConsumableItem {
 
     @Override
     public String getNomItem() {
-        return "%gold%Boule de feu";
+        return Lang.shopitem_fireball_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Cet item vous permet de lancer une boule de feu!"};
+        return new String[]{Lang.shopitem_fireball_desc.toString()};
     }
 
     @Override

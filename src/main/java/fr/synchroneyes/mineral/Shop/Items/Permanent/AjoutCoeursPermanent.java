@@ -1,18 +1,19 @@
 package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 
 public class AjoutCoeursPermanent extends PermanentItem {
     @Override
     public String getNomItem() {
-        return "Immortalité";
+        return Lang.shopitem_more_health_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous ajoute 5 coeurs à chaque réapparition"};
+        return new String[]{Lang.shopitem_more_health_desc.toString()};
     }
 
     @Override

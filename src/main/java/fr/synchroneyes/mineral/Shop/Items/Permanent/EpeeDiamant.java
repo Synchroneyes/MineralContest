@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,12 +13,12 @@ public class EpeeDiamant extends PermanentItem {
 
     @Override
     public String getNomItem() {
-        return "Epée en diamant";
+        return Lang.shopitem_diamond_sword_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous octroie une épée en diamant à chaque respawn"};
+        return new String[]{Lang.shopitem_diamond_sword_desc.toString()};
     }
 
     @Override

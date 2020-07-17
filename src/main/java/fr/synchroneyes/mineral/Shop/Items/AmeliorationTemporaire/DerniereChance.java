@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,12 +10,12 @@ import org.bukkit.entity.TNTPrimed;
 public class DerniereChance extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "%red%Dernière chance";
+        return Lang.shopitem_martyr_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Fait apparaitre de la tnt autour de votre mort", "Ce bonus s'active lors que vous êtes tué par un autre joueur"};
+        return new String[]{Lang.shopitem_martyr_desc1.toString(), Lang.shopitem_martyr_desc2.toString()};
     }
 
     @Override
@@ -57,7 +58,7 @@ public class DerniereChance extends ConsumableItem {
             }
 
 
-        joueur.sendMessage(mineralcontest.prefixPrive + "Attention, ça va faire boom ...");
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.shopitem_martyr_onitemuse.toString());
 
     }
 

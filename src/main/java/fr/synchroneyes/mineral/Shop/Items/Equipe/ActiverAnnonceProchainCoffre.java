@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Shop.Items.Equipe;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 
@@ -11,12 +12,12 @@ public class ActiverAnnonceProchainCoffre extends ConsumableItem {
 
     @Override
     public String getNomItem() {
-        return "Annonce prochain coffre";
+        return Lang.shopitem_enable_next_arenachest_announce_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Permet de donner un avantage à son équipe !", "Cet objet affichera à votre équipe un message avant que le coffre arrive"};
+        return new String[]{Lang.shopitem_enable_next_arenachest_announce_desc1.toString(), Lang.shopitem_enable_next_arenachest_announce_desc2.toString()};
     }
 
     @Override

@@ -3,18 +3,19 @@ package fr.synchroneyes.mineral.Shop.Items.Equipe;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 
 public class TeleportEquipeAreneAuto extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Auto /arene";
+        return Lang.shopitem_auto_arena_teleport_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Ce bonus permet de téléporter toute l'équipe à l'arène", "automatiquement dès que le coffre apparait"};
+        return new String[]{Lang.shopitem_auto_arena_teleport_desc1.toString(), Lang.shopitem_auto_arena_teleport_desc2.toString()};
     }
 
     @Override

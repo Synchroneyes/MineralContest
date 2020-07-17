@@ -1,17 +1,18 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionSpeed1 extends PotionItem {
     @Override
     public String getNomItem() {
-        return "Speed I";
+        return Lang.shopitem_speed1_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous donne la potion Vitesse I"};
+        return new String[]{Lang.shopitem_speed1_desc.toString()};
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Informations;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.TimeConverter;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -9,12 +10,12 @@ import org.bukkit.Material;
 public class ProchainCoffreAreneItem extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Prochaine apparition coffre arène";
+        return Lang.shopitem_next_arenachest_time_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous affiche à quel moment le coffre d'arène va apparaitre"};
+        return new String[]{Lang.shopitem_next_arenachest_time_desc.toString()};
     }
 
     @Override
@@ -46,7 +47,10 @@ public class ProchainCoffreAreneItem extends ConsumableItem {
 
         int tempsRestant = playerGroup.getGame().getArene().getTIME_BEFORE_CHEST();
 
-        joueur.sendMessage(mineralcontest.prefixPrive + " Le coffre d'arène va apparaitre dans " + (TimeConverter.intToString(tempsRestant).replace(":", " minutes ")));
+        String tempsRestantText = Lang.shopitem_next_arenachest_onitemuse.toString();
+        tempsRestantText = tempsRestantText.replace("%time", TimeConverter.intToString(tempsRestant));
+
+        joueur.sendMessage(mineralcontest.prefixPrive + tempsRestantText);
     }
 
 

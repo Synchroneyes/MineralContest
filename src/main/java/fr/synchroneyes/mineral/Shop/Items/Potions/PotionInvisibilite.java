@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionInvisibilite extends PotionItem {
@@ -23,12 +24,12 @@ public class PotionInvisibilite extends PotionItem {
 
     @Override
     public String getNomItem() {
-        return "Potion d'invisiblité";
+        return Lang.shopitem_invisibility_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous donne une potion d'invisiblité pendant 2 minutes"};
+        return new String[]{Lang.shopitem_invisibility_desc.toString()};
     }
 
 

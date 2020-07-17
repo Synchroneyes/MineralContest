@@ -3,18 +3,19 @@ package fr.synchroneyes.mineral.Shop.Items.Equipe;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 
 public class SingleAreneTeleport extends ConsumableItem {
     @Override
     public String getNomItem() {
-        return "Téléportation solitaire";
+        return Lang.shopitem_singleteleport_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Permet de seulement téléporter le joueur faisant /arene", "Fonctionne pour le prochain coffre"};
+        return new String[]{Lang.shopitem_singleteleport_desc1.toString(), Lang.shopitem_singleteleport_desc2.toString()};
     }
 
     @Override

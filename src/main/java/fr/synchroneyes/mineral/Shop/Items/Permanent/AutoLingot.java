@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
 public class AutoLingot extends PermanentItem {
@@ -8,12 +9,12 @@ public class AutoLingot extends PermanentItem {
 
     @Override
     public String getNomItem() {
-        return "Auto Fourneau";
+        return Lang.shopitem_auto_ingots_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Permet de dropper des items cuits instantanément"};
+        return new String[]{Lang.shopitem_auto_ingots_desc.toString()};
     }
 
     @Override

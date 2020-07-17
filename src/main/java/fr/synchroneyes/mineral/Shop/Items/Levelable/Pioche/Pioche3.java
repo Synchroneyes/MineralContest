@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -17,13 +18,14 @@ public class Pioche3 extends LevelableItem {
 
     @Override
     public String getNomItem() {
-        return "Pioche III";
+        return Lang.shopitem_pickaxelvl3_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"super"};
+        return new String[]{Lang.shopitem_pickaxelvl3_desc.toString()};
     }
+
 
     @Override
     public Material getItemMaterial() {

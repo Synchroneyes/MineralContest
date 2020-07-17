@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
 public class PotionExperience extends ConsumableItem {
@@ -8,12 +9,12 @@ public class PotionExperience extends ConsumableItem {
 
     @Override
     public String getNomItem() {
-        return "Experience";
+        return Lang.shopitem_experience_title.toString();
     }
 
     @Override
     public String[] getDescriptionItem() {
-        return new String[]{"Vous permet d'acheter un %gold%niveau d'expérience"};
+        return new String[]{Lang.shopitem_experience_desc.toString()};
     }
 
     @Override
