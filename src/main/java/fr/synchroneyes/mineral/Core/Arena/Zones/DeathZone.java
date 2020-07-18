@@ -98,9 +98,14 @@ public class DeathZone {
         return 0;
     }
 
+    /**
+     * Ajoute un joueur à la deathzone
+     *
+     * @param joueur
+     */
     public synchronized void add(Player joueur) {
         timeInDeathzone = groupe.getParametresPartie().getCVAR("death_time").getValeurNumerique();
-        this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
+        if (!isPlayerDead(joueur)) this.joueurs.add(new CouplePlayer(joueur, timeInDeathzone));
         applyDeathEffectToPlayer(joueur);
 
     }
