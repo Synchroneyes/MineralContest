@@ -45,8 +45,10 @@ public abstract class LevelableItem extends ShopItem {
         onItemUse();
     }
 
-
-
+    @Override
+    public boolean isEnabledOnReconnect() {
+        return false;
+    }
 
     /**
      * Fonction permettant d'effectuer une action lorsqu'un niveau est ajouté

@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Door.AutomaticDoors;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +24,8 @@ public class House {
     private Location spawnLocation;
     private String teamName;
     private ChatColor color;
+
+    @Getter
     private Groupe groupe;
 
 

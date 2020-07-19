@@ -41,6 +41,7 @@ public class GameCVAR {
     public void setValeur(String valeur) {
         this.valeur = valeur;
         if (isNumber) valeurNumerique = Integer.parseInt(valeur);
+
     }
 
     public String getType() {

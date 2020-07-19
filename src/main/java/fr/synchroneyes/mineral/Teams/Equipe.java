@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral.Teams;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Statistics.Class.MeilleurJoueurStat;
+import fr.synchroneyes.mineral.Statistics.Class.VilainJoueurStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -29,6 +31,8 @@ public class Equipe implements Comparable<Equipe> {
 
     private Groupe groupe;
 
+    private Game partie;
+
 
     public Equipe(String nom, ChatColor c, Groupe g, House maison) {
         this.joueurs = new LinkedList<Player>();
@@ -36,6 +40,8 @@ public class Equipe implements Comparable<Equipe> {
         this.couleur = c;
         this.groupe = g;
         this.maison = maison;
+
+        this.partie = groupe.getGame();
     }
 
 
@@ -53,9 +59,15 @@ public class Equipe implements Comparable<Equipe> {
         return this.penalty;
     }
 
-    public void updateScore() throws Exception {
+    public void updateScore(Player JoueurAyantAjouteLesPoints) throws Exception {
 
         int score_gagne = 0;
+
+        // Variable permettant de vérifier si un minerai déposé doit faire perdre des points aux autres
+        boolean hasNegativePointItemBeenAdded = false;
+        int score_perdu_equipes = 0;
+
+
         Block block_coffre = maison.getCoffreEquipeLocation().getBlock();
         Chest openedChest = ((Chest) block_coffre.getState());
 
@@ -64,27 +76,102 @@ public class Equipe implements Comparable<Equipe> {
 
             if (item != null) {
 
+                int current_item_score = 0;
 
                 if (item.isSimilar(new ItemStack(Material.IRON_INGOT, 1))) {
-                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique() * item.getAmount();
+                    current_item_score = groupe.getParametresPartie().getCVAR("SCORE_IRON").getValeurNumerique();
+
+                    if (current_item_score >= 0) score_gagne += current_item_score * item.getAmount();
+                    else {
+                        hasNegativePointItemBeenAdded = true;
+                        score_perdu_equipes += Math.abs(current_item_score) * item.getAmount();
+                    }
+
+                    score_gagne += current_item_score * item.getAmount();
                 } else if (item.isSimilar(new ItemStack(Material.GOLD_INGOT, 1))) {
-                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique() * item.getAmount();
+
+                    current_item_score = groupe.getParametresPartie().getCVAR("SCORE_GOLD").getValeurNumerique();
+
+                    if (current_item_score >= 0) score_gagne += current_item_score * item.getAmount();
+                    else {
+                        hasNegativePointItemBeenAdded = true;
+                        score_perdu_equipes += Math.abs(current_item_score) * item.getAmount();
+                    }
+
                 } else if (item.isSimilar(new ItemStack(Material.DIAMOND, 1))) {
-                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique() * item.getAmount();
+
+                    current_item_score = groupe.getParametresPartie().getCVAR("SCORE_DIAMOND").getValeurNumerique();
+                    if (current_item_score >= 0) score_gagne += current_item_score * item.getAmount();
+                    else {
+                        hasNegativePointItemBeenAdded = true;
+                        score_perdu_equipes += Math.abs(current_item_score) * item.getAmount();
+                    }
+
                 } else if (item.isSimilar(new ItemStack(Material.EMERALD, 1))) {
-                    score_gagne += groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique() * item.getAmount();
+
+                    current_item_score = groupe.getParametresPartie().getCVAR("SCORE_EMERALD").getValeurNumerique();
+
+                    if (current_item_score >= 0) score_gagne += current_item_score * item.getAmount();
+                    else {
+                        hasNegativePointItemBeenAdded = true;
+                        score_perdu_equipes += Math.abs(current_item_score) * item.getAmount();
+                    }
+
+                } else if (item.isSimilar(new ItemStack(Material.REDSTONE))) {
+
+                    current_item_score = groupe.getParametresPartie().getCVAR("SCORE_REDSTONE").getValeurNumerique();
+                    if (current_item_score >= 0) score_gagne += current_item_score * item.getAmount();
+                    else {
+                        hasNegativePointItemBeenAdded = true;
+                        score_perdu_equipes += Math.abs(current_item_score) * item.getAmount();
+                    }
+
                 } else {
                     block_coffre.getWorld().dropItemNaturally(block_coffre.getLocation(), item);
                 }
             }
         }
 
-        score_gagne += getScore();
 
+        boolean scoreWasUpdated = false;
+        if (score_gagne > 0) scoreWasUpdated = true;
+
+        groupe.getGame().getStatsManager().register(MeilleurJoueurStat.class, JoueurAyantAjouteLesPoints, score_gagne);
+        groupe.getGame().getStatsManager().register(VilainJoueurStat.class, JoueurAyantAjouteLesPoints, score_perdu_equipes);
+
+        score_gagne += getScore();
         setScore(score_gagne);
+
+        // Si le score gagné est différend du score, ça veut dire qu'on a déposé des blocs dans le coffre, on averti l'équipe
+        if (scoreWasUpdated) for (Player online : joueurs)
+            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
+
+
         openedChest.getInventory().clear();
 
 
+        // Si on a déposé de la redstone
+        if (hasNegativePointItemBeenAdded) {
+            // On averti les autres joueurs qu'on leur a fait perdre des points
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + this.getCouleur() + JoueurAyantAjouteLesPoints.getDisplayName() + ChatColor.WHITE + " a fait perdre " + ChatColor.RED + score_perdu_equipes + " points" + ChatColor.WHITE + " aux autres équipes!");
+
+            // On retire des points aux autres équipes!
+            for (House maison : partie.getHouses())
+                // Si ce n'est pas NOTRE équipe, on retire des points
+                if (maison.getTeam() != this)
+                    maison.getTeam().retirerPoints(score_perdu_equipes);
+        }
+
+
+    }
+
+    /**
+     * Permet de retirer des points à l'équipe
+     *
+     * @param score - le nombre de points à perdre
+     */
+    public void retirerPoints(int score) {
+        this.score -= score;
     }
 
     public void sendMessage(String message, Player sender) {
@@ -121,9 +208,6 @@ public class Equipe implements Comparable<Equipe> {
     public void setScore(int score) {
         this.score = score;
         GameLogger.addLog(new Log("TeamChestScoreUpdated", "The team " + getNomEquipe() + " score got updated to " + score + "", "ChestEvent"));
-
-        for (Player online : joueurs)
-            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
     }
 
 

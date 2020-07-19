@@ -48,6 +48,18 @@ public class PlayerBonus {
     }
 
 
+    public void setPlayerBonusList(Player joueur, LinkedBlockingQueue liste) {
+
+        if (liste == null) return;
+        for (Object bonus_achete : liste)
+            ((ShopItem) bonus_achete).setJoueur(joueur);
+
+        if (bonus_par_joueur.containsKey(joueur)) bonus_par_joueur.replace(joueur, liste);
+        else bonus_par_joueur.put(joueur, liste);
+
+
+    }
+
     /**
      * Retourne la liste des bonus pour un joueur donné
      *
@@ -65,6 +77,8 @@ public class PlayerBonus {
      * @param joueur
      */
     public void ajouterBonusPourJoueur(ShopItem bonus, Player joueur) {
+
+
         if (!bonus_par_joueur.containsKey(joueur)) bonus_par_joueur.put(joueur, new LinkedBlockingQueue<ShopItem>());
 
         LinkedBlockingQueue<ShopItem> liste_bonus_joueur = bonus_par_joueur.get(joueur);
@@ -77,29 +91,38 @@ public class PlayerBonus {
         // On regarde si il possède déjà le bonus
         for (ShopItem bonus_joueur : liste_bonus_joueur) {
             if (bonus_joueur.getClass().equals(bonus.getClass())) {
+
                 doesPlayerAlreadyHaveBonus = true;
                 currentBonus = bonus_joueur;
                 break;
             }
         }
 
-        // todo: fix achat consummable quand il reste 0 utilisations
-        // todo: en gros, l'achat ne fonctionne pas mais on perd les points
         if (currentBonus != null) {
             if (isConsummableBonus(currentBonus)) {
                 ConsumableItem currentBonus_consommable = (ConsumableItem) currentBonus;
+
                 int nb_use_actuel = currentBonus_consommable.getNombreUtilisationRestantes();
-                    liste_bonus_joueur.remove(currentBonus);
+                liste_bonus_joueur.remove(currentBonus);
+
                 currentBonus_consommable.setNombreUtilisationRestantes(nb_use_actuel + 1);
-                    bonus = currentBonus_consommable;
-                    doesPlayerAlreadyHaveBonus = false;
+                bonus = currentBonus_consommable;
+                doesPlayerAlreadyHaveBonus = false;
 
             }
         }
 
         // Le joueur ne possède pas ce bonus !
-        if (!doesPlayerAlreadyHaveBonus)
+        if (!doesPlayerAlreadyHaveBonus) {
+
+
+            if (isConsummableBonus(bonus) && currentBonus == null) {
+                ((ConsumableItem) bonus).setNombreUtilisationRestantes(bonus.getNombreUtilisations());
+            }
+
+
             liste_bonus_joueur.add(bonus);
+        }
 
 
         // Si on est sur un bonus levelable, on a une vérif supplémentaire à faire
@@ -141,6 +164,7 @@ public class PlayerBonus {
      */
     public void purchaseItem(Player joueur, ShopItem item) {
 
+        // Si le joueur possède déjà ce bonus
         if (doesPlayerHaveThisBonus(item.getClass(), joueur) && (isPermanentBonus(item) || isLevelableBonus(item))) {
             joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_bonus_already_purchased.toString());
             return;
@@ -241,6 +265,32 @@ public class PlayerBonus {
         }
 
 
+    }
+
+    /**
+     * Permet d'activer les bonus à la reconnexion
+     *
+     * @param joueur
+     */
+    public void triggerEnabledBonusOnReconnect(Player joueur) {
+        LinkedBlockingQueue<ShopItem> bonus_joueur = bonus_par_joueur.get(joueur);
+
+        if (bonus_joueur == null) return;
+
+        // Pour chaque bonus du joueur
+        for (ShopItem bonus : bonus_joueur) {
+
+            if (isConsummableBonus(bonus) && bonus.isEnabledOnReconnect()) {
+                ConsumableItem bonus_consummable = (ConsumableItem) bonus;
+                if (bonus_consummable.getNombreUtilisationRestantes() > 0) {
+                    bonus_consummable.onItemUse();
+                    bonus_consummable.setNombreUtilisationRestantes(bonus_consummable.getNombreUtilisations() - 1);
+                    continue;
+                }
+            }
+
+            if (bonus.isEnabledOnReconnect()) bonus.onItemUse();
+        }
     }
 
     /**

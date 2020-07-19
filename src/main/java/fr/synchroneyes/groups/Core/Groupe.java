@@ -13,6 +13,7 @@ import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Settings.GameSettings;
+import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
@@ -473,7 +474,10 @@ public class Groupe {
         Equipe oldPlayerTeam = getPlayerTeam(p);
         CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
 
-        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p);
+        getMapVote().removePlayerVote(p);
+        getGame().removePlayerReady(p);
+
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p));
         if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
         retirerJoueur(p);
     }
@@ -524,6 +528,11 @@ public class Groupe {
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
 
+                    PlayerBonus playerBonusManager = getGame().getPlayerBonusManager();
+                    playerBonusManager.setPlayerBonusList(p, infoJoueur.getBonus());
+
+                    playerBonusManager.triggerEnabledBonusOnReconnect(p);
+
                     // On le supprime de la liste des déco
                     disconnectedPlayers.remove(infoJoueur);
 
@@ -532,7 +541,7 @@ public class Groupe {
 
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
 

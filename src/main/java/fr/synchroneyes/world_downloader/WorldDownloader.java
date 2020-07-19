@@ -12,13 +12,12 @@ import fr.synchroneyes.world_downloader.Inventories.InventoryInterface;
 import fr.synchroneyes.world_downloader.Inventories.MapListInventory;
 import fr.synchroneyes.world_downloader.Items.ItemInterface;
 import fr.synchroneyes.world_downloader.Items.MapDownloadItem;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -31,8 +30,13 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Enumeration;
@@ -213,6 +217,38 @@ public class WorldDownloader {
     }
 
     private static synchronized void doDownload(MapDownloadItem map, Player joueur) {
+        joueur.closeInventory();
+        WorldDownloader worldDownloader = getInstance();
+        Thread thread = new Thread(() -> {
+            try {
+
+                // On crée la progress bar de téléchargement
+                //instance.createProgressBar(map, joueur);
+
+                // On marque qu'on est en train de télécharger
+                worldDownloader.downloading = true;
+
+                // On prépare le fichier qu'on télécharge
+                File dossierTelechargement = new File(mineralcontest.plugin.getDataFolder() + File.separator + "map_download");
+                if (!dossierTelechargement.exists()) dossierTelechargement.mkdir();
+
+                File fichierTelecharge = new File(dossierTelechargement, map.getMapFileName());
+
+                FileUtils.copyURLToFile(new URL(map.getMapUrl()), fichierTelecharge);
+                joueur.sendMessage(mineralcontest.prefixPrive + Lang.downloading_map_done_now_extracting.toString());
+                extraireMapTelechargee(map, fichierTelecharge, joueur);
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        thread.start();
+    }
+
+    /*private static synchronized void doDownload(MapDownloadItem map, Player joueur) {
         WorldDownloader worldDownloader = getInstance();
         Thread thread = new Thread(() -> {
             try {
@@ -268,7 +304,7 @@ public class WorldDownloader {
             }
         });
         thread.start();
-    }
+    }*/
 
     private static void extraireMapTelechargee(MapDownloadItem map, File fichierTelecharge, Player joueur) throws IOException {
         ZipFile fichierZip = new ZipFile(fichierTelecharge.getAbsoluteFile());
@@ -311,6 +347,7 @@ public class WorldDownloader {
         fichierZip.close();
         instance.downloading = false;
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.downloading_map_extracted.toString());
+        fichierTelecharge.delete();
 
     }
 

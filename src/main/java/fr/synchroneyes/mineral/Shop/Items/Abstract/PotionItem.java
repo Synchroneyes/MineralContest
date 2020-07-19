@@ -115,6 +115,11 @@ public abstract class PotionItem extends ShopItem {
     }
 
     @Override
+    public boolean isEnabledOnReconnect() {
+        return false;
+    }
+
+    @Override
     public int getNombreUtilisations() {
         return 1;
     }

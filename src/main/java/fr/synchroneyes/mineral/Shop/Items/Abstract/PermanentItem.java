@@ -37,6 +37,11 @@ public abstract class PermanentItem extends ShopItem {
     }
 
     @Override
+    public boolean isEnabledOnReconnect() {
+        return true;
+    }
+
+    @Override
     public void onPlayerBonusAdded() {
         onItemUse();
     }

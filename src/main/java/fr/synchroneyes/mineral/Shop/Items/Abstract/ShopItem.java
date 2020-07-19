@@ -113,6 +113,9 @@ public abstract class ShopItem {
 
     public abstract boolean isEnabledOnDeath();
 
+    public abstract boolean isEnabledOnReconnect();
+
+
     /**
      * Récupère le nombre d'utilisation d'un item
      *

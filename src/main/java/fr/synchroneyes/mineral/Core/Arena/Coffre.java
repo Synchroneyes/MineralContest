@@ -18,9 +18,7 @@ public class Coffre {
         this.position = p;
     }
 
-    public Location getPosition() throws Exception {
-        if (this.position == null)
-            throw new Exception("chestNotDefined");
+    public Location getPosition() {
         return this.position;
     }
 

@@ -48,6 +48,25 @@ public class PlayerUtils {
         firework.setFireworkMeta(fireworkMeta);
     }
 
+    /**
+     * Permet d'appliquer ou non l'ancien système de pvp
+     *
+     * @param joueur
+     */
+    public static void applyPVPtoPlayer(Player joueur) {
+        Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+        if (playerGroup == null) {
+            joueur.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
+            return;
+        }
+
+        if (playerGroup.getParametresPartie().getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1)
+            joueur.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
+        else joueur.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+
+    }
+
     public static void teleportPlayer(Player p, double x, double y, double z) {
         World world = getPluginWorld();
 
@@ -244,6 +263,10 @@ public class PlayerUtils {
         Game playerGame = playerGroup.getGame();
         ArrayList<String> elementsADisplay = new ArrayList<>();
 
+        elementsADisplay.add(ChatColor.GREEN + "v" + mineralcontest.plugin.getDescription().getVersion());
+        elementsADisplay.add("                ");
+
+
 
         //elementsADisplay.add(Lang.translate(Lang.hud_map_name.toString(), playerGroup));
         //elementsADisplay.add("                      ");
@@ -252,11 +275,22 @@ public class PlayerUtils {
             elementsADisplay.add(Lang.translate(Lang.hud_game_starting.toString(), playerGame));
             getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
         } else if (playerGame.isGameStarted()) {
-            elementsADisplay.add(Lang.translate(Lang.hud_time_left.toString(), playerGame));
-            elementsADisplay.add("                  ");
 
-            // Player team null = arbitre
-            getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
+            ChatColor couleur = null;
+            if (playerTeam == null) couleur = ChatColor.GOLD;
+            else couleur = playerTeam.getCouleur();
+
+
+            elementsADisplay.add(couleur + Lang.translate(Lang.hud_timeleft_text.toString(), playerGame));
+            elementsADisplay.add(Lang.translate(Lang.hud_timeleft_value.toString(), playerGame));
+
+            // Si le joueur n'est pas spectateur de la partie
+            if (player.getGameMode() != GameMode.SPECTATOR) {
+                // Player team null = arbitre
+                getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
+            }
+
+
 
 
         } else if (playerGame.isGamePaused()) {
@@ -288,7 +322,10 @@ public class PlayerUtils {
             index++;
         }
 
-        elements[0] = Lang.title.toString() + " - " + ChatColor.GREEN + mineralcontest.plugin.getDescription().getVersion();
+        if (playerGame.isGameStarted() && playerTeam != null)
+            elements[0] = playerTeam.getCouleur() + Lang.hud_title_text1.toString() + ChatColor.WHITE + Lang.hud_title_text2.toString();
+        else
+            elements[0] = Lang.title.toString() + " - " + ChatColor.GREEN + mineralcontest.plugin.getDescription().getVersion();
 
         ScoreboardUtil.unrankedSidebarDisplay(player, elements);
 
@@ -316,8 +353,17 @@ public class PlayerUtils {
                 return true;
             }
         } else {
+
             // Joueur dans une équipe
-            elementsADisplay.add(Lang.translate(Lang.hud_team_name_score.toString(), playerTeam));
+            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F");
+            elementsADisplay.add(" ");
+            elementsADisplay.add(playerTeam.getCouleur() + Lang.translate(Lang.hud_team_text.toString()));
+            elementsADisplay.add(playerTeam.getNomEquipe());
+            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F ");
+            elementsADisplay.add("  ");
+            elementsADisplay.add(playerTeam.getCouleur() + Lang.translate(Lang.hud_score_text.toString()));
+            if (playerTeam.getScore() >= 0) elementsADisplay.add("" + ChatColor.GREEN + playerTeam.getScore() + "");
+            else elementsADisplay.add("" + ChatColor.RED + playerTeam.getScore() + "");
         }
         return false;
     }

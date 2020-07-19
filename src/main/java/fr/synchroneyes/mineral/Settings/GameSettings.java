@@ -171,6 +171,33 @@ public class GameSettings {
 
     }
 
+    /**
+     * Permet d'écrire la configuration actuelle du plugin dans le fichier de config
+     * Permet en gros de sauvegarder la configuration actuelle
+     */
+    public void saveCVAR(GameCVAR cvar) {
+        File fichierConfig = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
+        Bukkit.getLogger().warning("fichier exist; " + fichierConfig.exists());
+        if (!fichierConfig.exists()) return;
+
+        // On charge la configuration
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fichierConfig);
+
+        // On regarde si le cvar existe ou non
+        String file_cvar = "config." + cvar.getType() + "." + cvar.getCommand();
+        yamlConfiguration.set(file_cvar, cvar.getValeur());
+        Bukkit.getLogger().warning(file_cvar + " => " + cvar.getValeur());
+
+        try {
+            yamlConfiguration.save(fichierConfig);
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+
+    }
+
 
     /**
      * Permet de charger la configuration de la partie à partir d'un fichier
@@ -218,6 +245,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("SCORE_GOLD", "50", "Permet de définir le score pour un lingot d'or", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("SCORE_DIAMOND", "150", "Permet de définir le score pour un diamant", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("SCORE_EMERALD", "300", "Permet de définir le score pour un émeraude", "cvar", true, true));
+            parametresParDefaut.add(new GameCVAR("SCORE_REDSTONE", "-3", "Permet de définir le score pour une redstone", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_set_playzone_radius", "1000", "Permet de définir le rayon de la zone jouable en nombre de bloc", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_friendly_fire", "1", "Permet d'activer ou non les dégats entre alliés", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_old_pvp", "1", "Permet d'activer ou non l'ancien système de pvp", "cvar", true, true));
@@ -255,6 +283,8 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("drop_opening_time", "10", "Permet de définir le nombre définir le temps d'ouverture du coffre du largage", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("drop_display_time", "5", "Permet de définir combien de temps en seconde le message doit s'afficher", "airdrop", true, true));
 
+
+            parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, true));
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

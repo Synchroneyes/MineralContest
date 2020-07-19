@@ -4,7 +4,7 @@ import fr.synchroneyes.groups.Commands.CommandTemplate;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Settings.GameCVAR;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
@@ -48,11 +48,17 @@ public class MCCvarCommand extends CommandTemplate {
         if (args.length == 2) {
             for (GameCVAR cvar : playerGroup.getParametresPartie().getParametres())
                 if (cvar.getCommand().equalsIgnoreCase(args[0])) {
-                    if (cvar.isNumber() && !StringUtils.isNumeric(args[1])) {
+                    if (cvar.isNumber() && !NumberUtils.isNumber(args[1])) {
                         joueur.sendMessage(mineralcontest.prefixErreur + cvar.getCommand() + " attend un nombre en paramètre");
                         return false;
                     }
+
                     cvar.setValeur(args[1]);
+
+
+                    // Si on est pas sur la version communautaire, on peut sauvegarder le fichier
+                    playerGroup.getParametresPartie().saveCVAR(cvar);
+
                     joueur.sendMessage(mineralcontest.prefixPrive + "Valeur mise à jour, " + cvar.getCommand() + " => " + cvar.getValeur());
 
                     if (cvar.getCommand().equalsIgnoreCase("enable_monster_in_protected_zone") && cvar.getValeurNumerique() == 0) {

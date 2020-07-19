@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Arena.Zones;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -176,11 +177,18 @@ public class DeathZone {
             House teamHouse = mineralcontest.getPlayerGame(joueur).getPlayerHouse(joueur);
             if (team == null) {
                 // On le téléporte vers l'arene
-                // On le téléporte vers l'arene
-                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a été TP au centre de l'arène car il n'a pas d'équipe et vient de réapparaitre suite à une mort", partie.groupe);
-                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a également été mis spectateur. Vous devez changer son gamemode", partie.groupe);
-                mineralcontest.getPlayerGame(joueur).teleportToLobby(joueur);
-                joueur.setGameMode(GameMode.SPECTATOR);
+                PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getArene().getCoffre().getLocation());
+
+                if (partie.isReferee(joueur)) {
+                    joueur.getInventory().clear();
+                    joueur.getInventory().setItemInMainHand(Referee.getRefereeItem());
+                    joueur.setGameMode(GameMode.CREATIVE);
+
+                } else {
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a été TP au centre de l'arène car il n'a pas d'équipe et vient de réapparaitre suite à une mort", partie.groupe);
+                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + "Le joueur " + joueur.getDisplayName() + " a également été mis spectateur. Vous devez changer son gamemode", partie.groupe);
+                    joueur.setGameMode(GameMode.SPECTATOR);
+                }
 
             } else {
                 // ON le TP vers son spawn equipe
@@ -196,7 +204,9 @@ public class DeathZone {
 
             // On rend le stuff du joueur
             try {
-                groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
+                if (!partie.isReferee(joueur)) {
+                    groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
+                }
 
                 // On active les bonus au respawn
                 groupe.getGame().getPlayerBonusManager().triggerEnabledBonusOnRespawn(joueur);

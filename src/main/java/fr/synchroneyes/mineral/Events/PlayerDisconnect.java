@@ -23,11 +23,14 @@ public class PlayerDisconnect implements Listener {
             Player joueur = event.getPlayer();
             Game partie = mineralcontest.getWorldGame(worldEvent);
 
+
             GameLogger.addLog(new Log("PlayerDisconnect", "Player " + joueur.getDisplayName() + " disconnected", "player_disconnect"));
 
             if (partie == null && mineralcontest.communityVersion) return;
 
             if (!mineralcontest.communityVersion) {
+
+                if (partie == null) return;
                 partie.groupe.addDisconnectedPlayer(joueur);
 
                 mineralcontest.plugin.getNonCommunityGroup().retirerJoueur(joueur);

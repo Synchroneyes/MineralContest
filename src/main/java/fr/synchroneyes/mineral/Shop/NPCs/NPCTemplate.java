@@ -96,6 +96,7 @@ public abstract class NPCTemplate {
         entitySpawned.setCollidable(false);
         entitySpawned.setRemoveWhenFarAway(false);
         entitySpawned.setAgeLock(true);
+        entitySpawned.setSilent(true);
 
 
     }

@@ -90,8 +90,8 @@ public class WorldLoader {
 
             World createdWorld = Bukkit.getServer().createWorld(wc);
 
+            lireConfigurationPartie();
             lireFichierMonde(nomMondeDossier, createdWorld);
-            //lireConfigurationPartie(nomMondeDossier, createdWorld);
             lireFichierConfigurationContenuCoffreArene(nomMondeDossier, createdWorld);
 
 
@@ -253,7 +253,6 @@ public class WorldLoader {
 
         if (loadNPC) {
             for (String idNpc : npcs.getKeys(false)) {
-                Bukkit.getLogger().info("LOADING NPC");
                 ConfigurationSection npc = npcs.getConfigurationSection(idNpc);
                 Location npcLocation = new Location(monde, 0, 0, 0);
 
@@ -283,10 +282,11 @@ public class WorldLoader {
 
     }
 
-    private void lireConfigurationPartie(String nomDossier, World monde) {
+    private void lireConfigurationPartie() {
         GameSettings parametres = groupe.getParametresPartie();
         String nomFichierConfig = "mc_game_settings.yml";
-        File fichierConfigPartie = new File(nomDossier + File.separator + nomFichierConfig);
+        //File fichierConfigPartie = new File(nomDossier + File.separator + nomFichierConfig);
+        File fichierConfigPartie = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
 
         // Si le fichier de la map n'existe pas, on charge le fichier par défaut
         if (!fichierConfigPartie.exists()) {

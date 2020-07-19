@@ -546,8 +546,6 @@ public class Game implements Listener {
                 block.applyMethod();
             }
             removeAllDroppedItems();
-
-            mineralcontest.broadcastMessage(Lang.map_has_been_restored.toString(), groupe);
         }
 
         mineralcontest.plugin.setDefaultWorldBorder();
@@ -819,7 +817,8 @@ public class Game implements Listener {
      */
     private void afficherScores() {
         for (House house : equipes)
-            mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), house.getTeam()), groupe);
+            if (!house.getTeam().getJoueurs().isEmpty())
+                mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_score.toString(), house.getTeam()), groupe);
     }
 
 
@@ -873,14 +872,18 @@ public class Game implements Listener {
     public void terminerPartie() throws Exception {
 
 
+        this.GameEnded = true;
+
+
         SendInformation.sendGameData(SendInformation.ended, this);
         if (groupe.getPlayers().size() == 0) return;
-        /* Teleport everyone to the hub */
 
+
+        // On téléport tout le monde au centre de l'arène
         for (Player player : groupe.getPlayers()) {
-            teleportToLobby(player);
+            PlayerUtils.teleportPlayer(player, groupe.getMonde(), getArene().getCoffre().getLocation());
             PlayerUtils.clearPlayer(player);
-
+            if (!isReferee(player)) player.setGameMode(GameMode.SPECTATOR);
         }
 
 
@@ -893,13 +896,15 @@ public class Game implements Listener {
         Equipe gagnant = this.afficherGagnant();
 
 
-        for (Player online : groupe.getPlayers()) {
-            if (online == null) continue;
-            if (referees != null)
-                if (!isReferee(online))
-                    if (getPlayerTeam(online) != null && getPlayerTeam(online).equals(gagnant))
-                        PlayerUtils.setFirework(online, gagnant.toColor());
-        }
+        arene.chickenWaves.setEnabled(false);
+
+        for (Entity entity : groupe.getMonde().getEntities())
+            if (!(entity instanceof Player)) entity.remove();
+
+
+
+
+
 
         if (mineralcontest.communityVersion) {
             Bukkit.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.group_finished_their_game_winner_display.toString(), this));
@@ -910,23 +915,44 @@ public class Game implements Listener {
             Inventory inventaireStat = getMenuStatistiques();
             for (Player joueur : groupe.getPlayers())
                 joueur.openInventory(inventaireStat);
+
+            for (Player online : groupe.getPlayers()) {
+                if (online == null) continue;
+                if (referees != null)
+                    if (!isReferee(online))
+                        if (getPlayerTeam(online) != null && getPlayerTeam(online).equals(gagnant))
+                            PlayerUtils.setFirework(online, gagnant.toColor());
+            }
+
         }, 20);
 
 
-        this.resetMap();
-        this.clear();
-        this.GamePaused = false;
-        this.GameStarted = false;
-        this.GameEnded = true;
+        int delaiAvantFinPartie = 60;
 
-        this.groupe.setEtat(Etats.EN_ATTENTE);
-        this.groupe.setGroupLocked(false);
-        this.groupe.enableVote();
-        this.groupe.resetGame();
+
+        groupe.sendToEveryone(mineralcontest.prefixGlobal + "Vous serez téléporté au HUB dans " + delaiAvantFinPartie + " secondes.");
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+
+            for (Player joueur : groupe.getPlayers())
+                joueur.setGameMode(GameMode.SURVIVAL);
+
+            this.resetMap();
+            this.clear();
+            this.GamePaused = false;
+            this.GameStarted = false;
+
+            this.groupe.setEtat(Etats.EN_ATTENTE);
+            this.groupe.setGroupLocked(false);
+            this.groupe.enableVote();
+            this.groupe.resetGame();
+        }, 20 * delaiAvantFinPartie);
+
+
+
 
     }
 
-    private Inventory getMenuStatistiques() {
+    public Inventory getMenuStatistiques() {
         Inventory inventaireStats = Bukkit.createInventory(null, 27, Lang.stats_menu_title.getDefault());
 
         for (ItemStack item : getStatsManager().getAllStatsAsItemStack())
@@ -1172,6 +1198,13 @@ public class Game implements Listener {
 
         for (int index = 0; index < joueursEnAttente.size(); ++index) {
             equipesDispo.add(equipes.get(index % equipes.size()));
+        }
+
+        // On mélange la liste 10x pour plus de randomness
+        int nb_melange = 10;
+        for (int i = 0; i < nb_melange; ++i) {
+            Collections.shuffle(equipesDispo);
+            Collections.shuffle(joueursEnAttente);
         }
 
         Random randomisateur = new Random();

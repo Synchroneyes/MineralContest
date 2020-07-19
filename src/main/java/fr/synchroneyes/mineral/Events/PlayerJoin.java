@@ -1,16 +1,11 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.groups.Core.Groupe;
-import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Settings.GameSettings;
-import fr.synchroneyes.mineral.Teams.Equipe;
-import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,48 +15,114 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
 
-    private boolean isPlayerFirstJoinAttempt = false;
-    private boolean isPlayerAllowedToJoin = false;
-    private boolean havePlayerDisconnectedEarlier = false;
-    private boolean thereIsAnAdminLoggedIn = false;
-
-
-    private Game game;
-    private String playerName;
-
-    private Player player;
-    private Equipe oldPlayerTeam;
-
 
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
 
+        // On vérifie si c'est un monde du plugin
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
 
             Player joueur = event.getPlayer();
-            Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
 
-            if (playerGroupe == null) {
-                if (!mineralcontest.communityVersion) {
-                    if (joueur.isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(joueur);
-                    else mineralcontest.plugin.getNonCommunityGroup().addJoueur(joueur);
-                    playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+            // On applique le système de pvp au joueur
+            PlayerUtils.applyPVPtoPlayer(joueur);
 
-                    if (playerGroupe.havePlayerDisconnected(joueur)) playerGroupe.playerHaveReconnected(joueur);
+            // On est dans un monde mineral contest
+            // On doit d'abord vérifier si le joueur s'est déconnecté plus tot
+            for (Groupe groupe : mineralcontest.plugin.getGroupes()) {
+
+                // Si le joueur s'était déconnecté avant
+                if (groupe.havePlayerDisconnected(joueur)) {
+                    // On le reconnecte, tout va bien
+                    groupe.playerHaveReconnected(joueur);
                     return;
-
-                } else {
-                    for (Groupe groupe : mineralcontest.plugin.groupes)
-                        if (groupe.havePlayerDisconnected(joueur))
-                            groupe.playerHaveReconnected(joueur);
                 }
             }
+
+            // On arrive ici, le joueur n'avait pas de groupe, c'est sa première reconnexion
+            // On vérifie si c'est la version communautaire ou non
+            if (!mineralcontest.communityVersion) {
+                // On est dans la version non communautaire, la version publique quoi :)
+                // On récupère le groupe de base du plugin
+                Groupe defaultGroupe = mineralcontest.plugin.getNonCommunityGroup();
+
+
+                // On le met comme spectateur
+                // Et on averti les admins
+                // Si le joueur est OP, on le met comme arbitre
+
+                if (joueur.isOp()) {
+                    defaultGroupe.addAdmin(joueur);
+                    defaultGroupe.getGame().addReferee(joueur);
+                } else {
+                    // Sinon, il devient spectateur
+                    defaultGroupe.addJoueur(joueur);
+                    // On le TP au centre de l'arène si la partie est chargé
+                    if (defaultGroupe.getMonde() != null)
+                        PlayerUtils.teleportPlayer(joueur, defaultGroupe.getMonde(), defaultGroupe.getGame().getArene().getCoffre().getLocation());
+
+                    joueur.setGameMode(GameMode.SPECTATOR);
+
+                    // Et on rend les autres joueurs visible par ce spectateur 5 secondes après sa connexion
+                    Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                        for (Player membre_groupe : defaultGroupe.getPlayers())
+                            joueur.showPlayer(mineralcontest.plugin, membre_groupe);
+                    }, 5 * 20);
+
+                    defaultGroupe.sendToadmin(mineralcontest.prefixAdmin + "Le joueur " + joueur.getDisplayName() + " s'est connecté et a été mis en spectateur");
+                }
+
+
+            }
+
+        }
+
+        /*if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+
+            Player joueur = event.getPlayer();
+            Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+            game = playerGroupe.getGame();
+
+            if(playerGroupe == null) Bukkit.broadcastMessage("NULL GROUP");
+
+            if (!mineralcontest.communityVersion) {
+
+                // Si on est pas sur la version communautaire
+                GameSettings settings = game.groupe.getParametresPartie();
+                if (settings.getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1) {
+                    player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
+                } else {
+                    player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+                }
+
+                if (joueur.isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(joueur);
+                else mineralcontest.plugin.getNonCommunityGroup().addJoueur(joueur);
+                playerGroupe = mineralcontest.getPlayerGroupe(joueur);
+
+                if (playerGroupe.havePlayerDisconnected(joueur)) playerGroupe.playerHaveReconnected(joueur);
+                else {
+
+                    // Le joueur se connecte pour la première fois ... On le en spectateur
+                    // Et on averti les admins
+                    joueur.setGameMode(GameMode.SPECTATOR);
+                    playerGroupe.sendToadmin(mineralcontest.prefixAdmin + joueur.getDisplayName() + " s'est connecté, il a été mis spectateur");
+
+                }
+                return;
+
+            } else {
+                for (Groupe groupe : mineralcontest.plugin.groupes)
+                    if (groupe.havePlayerDisconnected(joueur))
+                        groupe.playerHaveReconnected(joueur);
+            }
+
 
 
             if (game == null) return;
 
+            Bukkit.broadcastMessage("game is not null!");
 
             GameSettings settings = game.groupe.getParametresPartie();
             // We need to apply the pvp system
@@ -69,9 +130,9 @@ public class PlayerJoin implements Listener {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
             } else {
                 player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
-
             }
 
+            Bukkit.broadcastMessage("pvp applied!");
 
             // If the game is started
             if (game.isGameStarted()) {
@@ -186,7 +247,7 @@ public class PlayerJoin implements Listener {
             if (player.isOp()) mineralcontest.afficherMessageVersionToPlayer(player);
 
 
-        }
+        }*/
     }
 
 

@@ -39,5 +39,8 @@ public class AjoutCoeursPermanent extends PermanentItem {
         return 1500;
     }
 
-
+    @Override
+    public boolean isEnabledOnReconnect() {
+        return false;
+    }
 }

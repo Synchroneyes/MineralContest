@@ -46,14 +46,7 @@ public class StartGameCommand implements CommandExecutor {
             return false;
         } else {
 
-            Game partie = mineralcontest.getPlayerGame(player);
-            partie.groupe.chargerMonde("mc_4_teams_map");
 
-            try {
-                partie.demarrerPartie(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             sender.sendMessage("Only available on mineral contest map");
             return false;
         }

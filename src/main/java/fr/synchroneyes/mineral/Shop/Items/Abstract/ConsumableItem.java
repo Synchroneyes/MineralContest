@@ -27,6 +27,11 @@ public abstract class ConsumableItem extends ShopItem {
     }
 
     @Override
+    public boolean isEnabledOnReconnect() {
+        return true;
+    }
+
+    @Override
     public boolean isEnabledOnDeathByAnotherPlayer() {
         return false;
     }

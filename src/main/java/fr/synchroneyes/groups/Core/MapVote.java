@@ -33,6 +33,16 @@ public class MapVote {
         return menuVote;
     }
 
+
+    /**
+     * Permet de retirer un joueur des votes
+     *
+     * @param p
+     */
+    public void removePlayerVote(Player p) {
+        if (votes.containsKey(p)) votes.remove(p);
+    }
+
     /**
      * Retourne une hashmap avec les maps et leur nombre de vote!
      *

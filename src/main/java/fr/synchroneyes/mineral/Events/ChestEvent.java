@@ -13,6 +13,7 @@ import fr.synchroneyes.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
 import fr.synchroneyes.mineral.Shop.Categories.Abstract.Category;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
+import fr.synchroneyes.mineral.Shop.NPCs.Event.NPCPlayerInteract;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
@@ -95,7 +96,7 @@ public class ChestEvent implements Listener {
                             if (!(blockCoffreMaison.getState() instanceof Chest)) return;
                             Chest coffre = ((Chest) blockCoffreMaison.getState());
                             if (inventaireFerme.equals(coffre.getInventory())) {
-                                maison.getTeam().updateScore();
+                                maison.getTeam().updateScore(player);
                                 return;
                             }
                         }
@@ -108,7 +109,7 @@ public class ChestEvent implements Listener {
                     if (openedInventoryBlock.getLocation().equals(teamChest.getPosition())) {
                         // Team Chest
                         try {
-                            playerHouse.getTeam().updateScore();
+                            playerHouse.getTeam().updateScore(player);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Error.Report(e, partie);
@@ -199,6 +200,9 @@ public class ChestEvent implements Listener {
 
                 ShopInventoryOnItemClick(event);
 
+                NPCPlayerInteract.OnInventoryClickEvent(event);
+
+
                 //Cuisson1.onItemPlacedInFurnace(event);
 
             } catch (EventAlreadyHandledException e) {
@@ -275,6 +279,23 @@ public class ChestEvent implements Listener {
                 if (chestLocation == null) return;
 
                 Block chest = chestLocation.getBlock();
+
+
+                // Si la partie est démarré
+                // On vérifie si c'est un coffre d'équipe ou non
+
+                if (playerGroup.getGame().isGameStarted()) {
+                    if (playerGroup.getGame().getPlayerTeam(joueur) != null) {
+                        if (playerGroup.getGame().getPlayerTeam(joueur).getMaison().getCoffre().getPosition().equals(chestLocation)) {
+                            // Le joueur a ouvert l'inventaire de son équipe
+                            if (event.getInventory().getViewers().size() > 1) {
+                                event.setCancelled(true);
+                                joueur.closeInventory();
+                            }
+                        }
+                    }
+                }
+
 
 
                 // Si le coffre ouvert fait parti des blocs d'animation

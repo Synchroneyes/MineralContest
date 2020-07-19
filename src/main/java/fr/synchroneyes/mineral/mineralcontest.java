@@ -25,6 +25,7 @@ import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import jdk.internal.jline.internal.Nullable;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -73,6 +74,8 @@ public final class mineralcontest extends JavaPlugin {
      */
     private ArrayList<String> messagesFromWebsite;
     public GroupeExtension groupeExtension;
+
+    @Getter
     public LinkedList<Groupe> groupes;
     public WorldDownloader worldDownloader;
 
@@ -386,6 +389,7 @@ public final class mineralcontest extends JavaPlugin {
             //bukkitCommandMap.register("", new SpawnShop());
 
             //bukkitCommandMap.register("", new SpawnDrop());
+            bukkitCommandMap.register("", new McStats());
 
             bukkitCommandMap.register("", new OuvrirMenuShop());
 

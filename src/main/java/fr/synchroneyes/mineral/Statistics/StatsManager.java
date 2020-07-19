@@ -2,7 +2,6 @@ package fr.synchroneyes.mineral.Statistics;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Statistics.Class.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,6 +35,8 @@ public class StatsManager {
         availableStats.add(new ChickenKillerStat());
         availableStats.add(new MonsterKillerStat());
         availableStats.add(new MostParachuteHitStat());
+        availableStats.add(new MeilleurJoueurStat());
+        availableStats.add(new VilainJoueurStat());
     }
 
     public void register(Class event, Player joueur, Object valeur) {
@@ -49,7 +50,6 @@ public class StatsManager {
     public List<ItemStack> getAllStatsAsItemStack() {
         List<ItemStack> items = new LinkedList<>();
         for (Statistic stat : availableStats) {
-            Bukkit.getLogger().info("Adding " + stat.getClass().toString() + " items ...");
             items.addAll(stat.toItemStack());
         }
         return items;

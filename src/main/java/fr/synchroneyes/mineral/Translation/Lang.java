@@ -371,7 +371,21 @@ public enum Lang {
     shopitem_player_purchased("shopitem_player_purchased", "Le joueur %p a acheté le bonus %bonus"),
     shopitem_bonus_already_purchased("shopitem_bonus_already_purchased", "Vous avez déjà ce bonus"),
     shopitem_npc_title("shopitem_npc_title", "Boutique"),
-    shopitem_player_with_no_team_cant_buy("shopitem_player_with_no_team_cant_buy", "Les joueurs sans équipe ne peuvent pas acheter dans la boutique");
+    shopitem_player_with_no_team_cant_buy("shopitem_player_with_no_team_cant_buy", "Les joueurs sans équipe ne peuvent pas acheter dans la boutique"),
+
+    // new hud vars
+    hud_timeleft_text("hud_timeleft_text", "Temps restant"),
+    hud_timeleft_value("hud_timeleft_value", "%timeLeft%"),
+    hud_team_text("hud_team_text", "Equipe:"),
+    hud_score_text("hud_score_text", "Score:"),
+    hud_title_text1("hud_title_text1", "Mineral"),
+    hud_title_text2("hud_title_text2", "Contest"),
+
+    stats_mostpoints_title("stats_mostpoints_title", "Meilleur joueur"),
+    stats_mostpoints_subtitle("stats_mostpoints_subtitle", "Avec %d points rapporté"),
+
+    stats_mostpoints_taken_title("stats_mostpoints_taken_title", "Petit coquin"),
+    stats_mostpoints_taken_subtitle("stats_mostpoints_taken_subtitle", "Avec %d points retirés aux autres équipes");
 
 
 

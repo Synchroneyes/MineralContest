@@ -8,6 +8,7 @@ import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public class NPCPlayerInteract {
@@ -25,6 +26,8 @@ public class NPCPlayerInteract {
 
             if (playerGroup == null) return;
             Game partie = playerGroup.getGame();
+
+
             ShopManager shopManager = partie.getShopManager();
 
             if (entityEvent.getRightClicked() instanceof Villager) {
@@ -32,6 +35,12 @@ public class NPCPlayerInteract {
 
                 for (NPCTemplate npc : shopManager.getListe_pnj()) {
                     if (npc.getEmplacement().equals(clickedEntity.getLocation())) {
+
+                        if (playerGroup.getParametresPartie().getCVAR("enable_shop").getValeurNumerique() != 1) {
+                            entityEvent.setCancelled(true);
+                            throw new EventAlreadyHandledException();
+                        }
+
                         entityEvent.setCancelled(true);
                         joueur.closeInventory();
                         npc.onNPCRightClick(joueur);
@@ -40,6 +49,34 @@ public class NPCPlayerInteract {
                     }
                 }
             }
+
+
+        }
+    }
+
+
+    /**
+     * Event appelé lors de l'ajout d'item dans un inventaire de pnj
+     *
+     * @param event
+     * @throws EventAlreadyHandledException
+     */
+    public static void OnInventoryClickEvent(InventoryClickEvent event) throws EventAlreadyHandledException {
+        Player joueur = (Player) event.getWhoClicked();
+        if (mineralcontest.isInAMineralContestWorld(joueur)) {
+
+            Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+
+            if (playerGroup == null) return;
+
+
+            ShopManager shopManager = playerGroup.getGame().getShopManager();
+
+            for (NPCTemplate npc : shopManager.getListe_pnj())
+                if (event.getInventory().equals(npc.getInventory())) {
+                    event.setCancelled(true);
+                    throw new EventAlreadyHandledException();
+                }
 
 
         }
