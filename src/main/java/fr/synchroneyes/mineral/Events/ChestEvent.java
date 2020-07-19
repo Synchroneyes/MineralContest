@@ -78,6 +78,7 @@ public class ChestEvent implements Listener {
                     // Si le coffre fermé est le coffre d'arène
                     if (openedInventoryBlock.getLocation().equals(coffreArene.getLocation())) {
                         coffreArene.closeInventory();
+                        player.closeInventory();
                         return;
                     }
 
@@ -353,6 +354,7 @@ public class ChestEvent implements Listener {
 
                     // Et on ferme l'inventaire
                     automatedChestAnimation.closeInventory();
+                    joueur.closeInventory();
                     throw new EventAlreadyHandledException();
                 }
             }

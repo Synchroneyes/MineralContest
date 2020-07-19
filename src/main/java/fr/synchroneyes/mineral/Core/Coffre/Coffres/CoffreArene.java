@@ -45,6 +45,8 @@ public class CoffreArene extends AutomatedChestAnimation {
 
     @Override
     public void actionToPerformBeforeSpawn() {
+        this.arene.getCoffre().remove();
+
         this.arene.setChestSpawned(true);
         this.arene.generateTimeBetweenChest();
         this.arene.enableTeleport();

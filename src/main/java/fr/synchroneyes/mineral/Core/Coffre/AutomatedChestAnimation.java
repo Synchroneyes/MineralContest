@@ -59,6 +59,14 @@ public abstract class AutomatedChestAnimation {
         updateManager();
     }
 
+    /**
+     * Permet de supprimer un coffre
+     */
+    public void remove() {
+        this.chestLocation.getBlock().setType(Material.AIR);
+        closeInventory();
+    }
+
     public Player getOpeningPlayer() {
         return openingPlayer;
     }

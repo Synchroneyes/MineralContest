@@ -137,7 +137,7 @@ public class Equipe implements Comparable<Equipe> {
         if (score_gagne > 0) scoreWasUpdated = true;
 
         groupe.getGame().getStatsManager().register(MeilleurJoueurStat.class, JoueurAyantAjouteLesPoints, score_gagne);
-        groupe.getGame().getStatsManager().register(VilainJoueurStat.class, JoueurAyantAjouteLesPoints, score_perdu_equipes);
+
 
         score_gagne += getScore();
         setScore(score_gagne);
@@ -152,6 +152,10 @@ public class Equipe implements Comparable<Equipe> {
 
         // Si on a déposé de la redstone
         if (hasNegativePointItemBeenAdded) {
+
+            // On enregistre le score perdu
+            groupe.getGame().getStatsManager().register(VilainJoueurStat.class, JoueurAyantAjouteLesPoints, score_perdu_equipes);
+
             // On averti les autres joueurs qu'on leur a fait perdre des points
             groupe.sendToEveryone(mineralcontest.prefixGlobal + this.getCouleur() + JoueurAyantAjouteLesPoints.getDisplayName() + ChatColor.WHITE + " a fait perdre " + ChatColor.RED + score_perdu_equipes + " points" + ChatColor.WHITE + " aux autres équipes!");
 
