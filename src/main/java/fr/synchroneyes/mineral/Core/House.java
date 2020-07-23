@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class House {
     private Equipe team;
@@ -38,15 +37,6 @@ public class House {
         this.groupe = g;
     }
 
-    public void clearHouse() {
-
-
-        this.doors.clear();
-        this.blocks.clear();
-        this.team.clear();
-        if (this.coffre != null) this.coffre.clear();
-    }
-
     public Coffre getCoffre() {
         return this.coffre;
     }
@@ -59,41 +49,6 @@ public class House {
         return this.team;
     }
 
-    public void addBlock(Location location) throws Exception {
-        MaterialData materialData;
-        Block block = location.getBlock();
-
-        if (block.getType().equals(Material.AIR)) {
-            throw new Exception("Impossible d'ajouter de l'air comme block");
-        }
-        materialData = block.getState().getData();
-        this.blocks.put(block, materialData);
-        mineralcontest.log.info(mineralcontest.prefix + ChatColor.GOLD + "Block " + block.getType().toString() + " successfully added");
-    }
-
-
-    public void removeBlock(Location location) throws Exception {
-        MaterialData materialData;
-        Block block = location.getBlock();
-
-        if (block.getType().equals(Material.AIR)) {
-            throw new Exception("Impossible d'ajouter de l'air comme block");
-        }
-        materialData = block.getState().getData();
-        /* For each "value<block, materialdata> in saved blocks*/
-        for (Map.Entry<Block, MaterialData> data : blocks.entrySet()) {
-            Block foreachBlock;
-            MaterialData foreachMaterialData;
-            foreachBlock = data.getKey();
-            foreachMaterialData = data.getValue();
-
-            if (foreachBlock.getLocation().equals(location) && foreachMaterialData.equals(location.getBlock().getState().getData())) {
-                this.blocks.remove(foreachBlock, foreachMaterialData);
-                mineralcontest.log.info(mineralcontest.prefix + ChatColor.RED + "Block " + foreachBlock.getType().toString() + " successfully removed");
-                return;
-            }
-        }
-    }
 
     /*
     -------------------------------------------
@@ -101,7 +56,7 @@ public class House {
 
 
     public void setCoffreEquipe(Location loc) {
-        this.coffre = new Coffre(groupe);
+        this.coffre = new Coffre();
         this.coffre.setPosition(loc);
         if (mineralcontest.debug)
             mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_chest_added.toString(), team), groupe);

@@ -30,27 +30,6 @@ public enum ChatColorString {
         this.valeurEN = valeurEN;
     }
 
-    public String getValeur() {
-        return valeur;
-    }
-
-    public String getValeurAnglais() {
-        return valeurEN;
-    }
-
-    public void setValeur(String valeur) {
-        this.valeur = valeur;
-    }
-
-    public ChatColor getCouleur() {
-        return couleur;
-    }
-
-    public void setCouleur(ChatColor couleur) {
-        this.couleur = couleur;
-    }
-
-
     public static String toString(ChatColor c) {
         for (ChatColorString colorString : ChatColorString.values())
             if (colorString.couleur.equals(c)) return colorString.valeur;

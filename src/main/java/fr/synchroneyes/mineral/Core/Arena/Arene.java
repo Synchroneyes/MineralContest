@@ -206,7 +206,6 @@ public class Arene {
 
     // Supprime les mobs autour de l'arène
     public void startAutoMobKill() {
-        Arene instance = this;
         new BukkitRunnable() {
             public void run() {
                 try {
@@ -408,26 +407,5 @@ public class Arene {
         return this.coffreArene;
     }
 
-
-    public void teleportPlayerToArena(Player joueur) throws Exception {
-        if (this.getTeleportSpawn() == null) {
-            throw new Exception("ArenaTeleportZoneNotAdded");
-        }
-
-        Equipe team = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
-
-        if (team == null) {
-            throw new Exception(Lang.cant_teleport_player_without_team.toString());
-        }
-
-        for (Player membre : team.getJoueurs()) {
-            if (allowTeleport) {
-                membre.sendMessage(mineralcontest.prefixPrive + Lang.arena_now_teleporting.toString());
-                membre.teleport(getTeleportSpawn());
-            } else {
-                membre.sendMessage(mineralcontest.prefixPrive + Lang.arena_teleport_disabled.toString());
-            }
-        }
-    }
 
 }

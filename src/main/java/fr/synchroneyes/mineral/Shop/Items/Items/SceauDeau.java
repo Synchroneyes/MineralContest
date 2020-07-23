@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Items;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -51,7 +52,7 @@ public class SceauDeau extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 50;
+        return ShopManager.getBonusPriceFromName("water_bucket");
     }
 
 }

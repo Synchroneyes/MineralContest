@@ -40,15 +40,7 @@ public class BlockSaver {
 
     }
 
-    public Block getBlock() {
-        Location l = new Location(world, posX, posY, posZ);
-        return l.getBlock();
-    }
 
-
-    public void setBlockType(Material m) {
-        this.material = m;
-    }
 
     public void applyMethod() {
         Location blockLocation = new Location(this.world, this.posX, this.posY, this.posZ);
@@ -85,67 +77,4 @@ public class BlockSaver {
     }
 
 
-    public Type getMethod() {
-        return method;
-    }
-
-    public void setMethod(Type method) {
-        this.method = method;
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
-
-    public int getPosZ() {
-        return posZ;
-    }
-
-    public void setPosZ(int posZ) {
-        this.posZ = posZ;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
-
-    public Byte getBlockByte() {
-        return blockByte;
-    }
-
-    public void setBlockByte(Byte blockByte) {
-        this.blockByte = blockByte;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    public BlockData getBlockData() {
-        return blockData;
-    }
-
-    public void setBlockData(BlockData blockData) {
-        this.blockData = blockData;
-    }
 }

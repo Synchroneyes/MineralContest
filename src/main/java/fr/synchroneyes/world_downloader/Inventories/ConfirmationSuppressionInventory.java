@@ -3,12 +3,9 @@ package fr.synchroneyes.world_downloader.Inventories;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.world_downloader.Items.CancelMapDeletionItem;
 import fr.synchroneyes.world_downloader.Items.ConfirmMapDeletionItem;
-import fr.synchroneyes.world_downloader.MapInfo;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import java.util.LinkedList;
 
 public class ConfirmationSuppressionInventory extends InventoryInterface {
 
@@ -26,9 +23,9 @@ public class ConfirmationSuppressionInventory extends InventoryInterface {
 
     @Override
     public void setInventoryItems(Player arbitre) {
-        LinkedList<MapInfo> maps = WorldDownloader.getMaps(false);
+        WorldDownloader.getMaps(false);
         registerItem(new ConfirmMapDeletionItem(nom_dossier));
-        registerItem(new CancelMapDeletionItem(nom_dossier));
+        registerItem(new CancelMapDeletionItem());
     }
 
     @Override

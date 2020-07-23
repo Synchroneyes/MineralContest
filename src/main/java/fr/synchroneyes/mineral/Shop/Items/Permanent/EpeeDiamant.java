@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -47,7 +48,7 @@ public class EpeeDiamant extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 1000;
+        return ShopManager.getBonusPriceFromName("permanent_diamond_sword");
     }
 
 }

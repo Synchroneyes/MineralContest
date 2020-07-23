@@ -1,7 +1,5 @@
 package fr.synchroneyes.mineral.Utils.Log;
 
-import org.json.JSONObject;
-
 import java.util.Stack;
 
 public class GameLogger {
@@ -14,10 +12,6 @@ public class GameLogger {
         logs = new Stack<>();
     }
 
-    public static GameLogger getInstance() {
-        if (instance == null) return new GameLogger();
-        return instance;
-    }
 
 
     public static void addLog(Log log) {
@@ -27,13 +21,5 @@ public class GameLogger {
         //Bukkit.getLogger().info(log.toJson());
     }
 
-    public static String toJson() {
-        JSONObject object = new JSONObject();
-        for (Log log : logs) {
-            object.put("" + log.getId(), log.toJsonObject());
-        }
-
-        return object.toString();
-    }
 
 }

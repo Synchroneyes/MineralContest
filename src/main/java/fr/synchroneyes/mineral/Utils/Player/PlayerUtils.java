@@ -364,6 +364,12 @@ public class PlayerUtils {
             elementsADisplay.add(playerTeam.getCouleur() + Lang.translate(Lang.hud_score_text.toString()));
             if (playerTeam.getScore() >= 0) elementsADisplay.add("" + ChatColor.GREEN + playerTeam.getScore() + "");
             else elementsADisplay.add("" + ChatColor.RED + playerTeam.getScore() + "");
+
+            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F ");
+            elementsADisplay.add("   ");
+            elementsADisplay.add(playerTeam.getCouleur() + "X: " + ChatColor.WHITE + player.getLocation().getBlockX() + playerTeam.getCouleur() + " Y: " + ChatColor.WHITE + player.getLocation().getBlockY() + playerTeam.getCouleur() + " Z: " + ChatColor.WHITE + player.getLocation().getBlockZ());
+
+
         }
         return false;
     }
@@ -407,6 +413,15 @@ public class PlayerUtils {
         joueur.getInventory().clear();
         for (PotionEffect potion : joueur.getActivePotionEffects())
             joueur.removePotionEffect(potion.getType());
+
+        // On remet la vitesse de base
+        joueur.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1d);
+
+        // On remet les dégats de base
+        joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1.0);
+
+        // On remet la vie de base
+        joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 
 
     }

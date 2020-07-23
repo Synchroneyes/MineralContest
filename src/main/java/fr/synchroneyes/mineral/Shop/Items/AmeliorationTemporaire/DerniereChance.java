@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -64,7 +65,8 @@ public class DerniereChance extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 700;
+        return ShopManager.getBonusPriceFromName("self_martyr");
+
     }
 
 

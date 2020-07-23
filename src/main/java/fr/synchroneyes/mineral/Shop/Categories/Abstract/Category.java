@@ -156,7 +156,6 @@ public abstract class Category {
 
 
             if (clickedItem.equals(_inventoryItem)) {
-                ShopItem _item = item.getKey();
                 if (playerBonusManager.canPlayerAffordItem(item.getKey(), joueur)) {
                     playerBonusManager.purchaseItem(joueur, item.getKey());
                     joueur.openInventory(this.npc.getInventory());

@@ -43,21 +43,12 @@ public class BlockManager {
         return this.placedBlocks.contains(b);
     }
 
-    public void removeBlock(Block b) {
-        // If the block was added before, we remove it,
-        if (!wasBlockAdded(b)) return;
-        this.placedBlocks.remove(b);
-    }
 
     public static BlockManager getInstance() {
         if (instance == null) return new BlockManager();
         return instance;
     }
 
-    public void removeAllAddedBlocks() {
-        for (Block block : placedBlocks)
-            block.breakNaturally();
-    }
 
     public boolean isBlockAllowedToBeAdded(Block b) {
         for (Material blockedType : blockedMaterials)

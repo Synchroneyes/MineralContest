@@ -26,12 +26,12 @@ public class BlockPlaced implements Listener {
         if (itemName.contains(ColoredHouseItem.itemPrefix)) {
             placedItem.setType(Material.AIR);
             Location spawnItemLocation = event.getBlock().getLocation();
-            House.spawn(spawnItemLocation, BlocksDataColor.fromItemName(itemName), player);
+            House.spawn(BlocksDataColor.fromItemName(itemName), player);
             event.setCancelled(true);
         }
 
         if (itemName.equalsIgnoreCase(AreneItem.itemPrefix)) {
-            Arene.spawn(event.getBlock().getLocation(), player);
+            Arene.spawn(player);
             event.setCancelled(true);
         }
 

@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -36,7 +37,8 @@ public class AjoutCoeursPermanent extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 1500;
+        return ShopManager.getBonusPriceFromName("permanent_more_health");
+
     }
 
     @Override

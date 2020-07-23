@@ -6,11 +6,7 @@ import org.bukkit.entity.Player;
 
 public class CancelMapDeletionItem extends ItemInterface {
 
-    private String map;
 
-    public CancelMapDeletionItem(String mapItem) {
-        this.map = mapItem;
-    }
 
     @Override
     public Material getItemMaterial() {

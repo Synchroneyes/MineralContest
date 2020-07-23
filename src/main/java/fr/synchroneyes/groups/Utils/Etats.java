@@ -19,9 +19,5 @@ public enum Etats {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
 
 }

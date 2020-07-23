@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Items;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.GameItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
@@ -23,7 +24,7 @@ public class Buche extends GameItem {
 
     @Override
     public int getPrice() {
-        return 5;
+        return ShopManager.getBonusPriceFromName("oak");
     }
 
 }

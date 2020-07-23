@@ -27,7 +27,7 @@ public class RefereeCommand implements CommandExecutor {
                     } else {
 
                         try {
-                            game.removeReferee(player);
+                            game.removeReferee(player, true);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

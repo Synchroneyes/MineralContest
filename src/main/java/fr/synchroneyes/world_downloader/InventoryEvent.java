@@ -14,7 +14,6 @@ public class InventoryEvent implements Listener {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent event) {
-        Inventory clickedInventory = event.getInventory();
         Player joueur = (Player) event.getWhoClicked();
         if (!mineralcontest.isInAMineralContestWorld(joueur)) return;
         if (mineralcontest.getPlayerGame(joueur) != null) {

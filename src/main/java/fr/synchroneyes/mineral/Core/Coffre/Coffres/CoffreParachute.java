@@ -32,21 +32,10 @@ public class CoffreParachute extends AutomatedChestAnimation {
     }
 
 
-    public void setGenerator(ArenaChestContentGenerator generator) {
-        this.generator = generator;
-    }
-
-    public int getMinItems() {
-        return minItems;
-    }
-
     public void setMinItems(int minItems) {
         this.minItems = minItems;
     }
 
-    public int getMaxItems() {
-        return maxItems;
-    }
 
     public void setMaxItems(int maxItems) {
         this.maxItems = maxItems;

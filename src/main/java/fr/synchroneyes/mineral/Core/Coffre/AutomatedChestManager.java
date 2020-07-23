@@ -31,11 +31,6 @@ public class AutomatedChestManager {
         this.coffresAvecAnimation.add(new CoffreArene(this, null));
     }
 
-    public AutomatedChestAnimation getFromClass(Class c) {
-        for (AutomatedChestAnimation automatedChestAnimation : coffresAvecAnimation)
-            if (automatedChestAnimation.getClass().equals(c)) return automatedChestAnimation;
-        return null;
-    }
 
     public AutomatedChestAnimation getFromInventory(Inventory v) {
         for (AutomatedChestAnimation automatedChestAnimation : coffresAvecAnimation)

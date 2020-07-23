@@ -45,12 +45,4 @@ public class ActionMapItem extends ItemInterface {
         }
     }
 
-
-    public String getNom_dossier_map() {
-        return nom_dossier_map;
-    }
-
-    public void setNom_dossier_map(String nom_dossier_map) {
-        this.nom_dossier_map = nom_dossier_map;
-    }
 }

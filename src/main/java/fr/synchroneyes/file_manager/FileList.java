@@ -15,7 +15,8 @@ public enum FileList {
     CustomMap_south_house_scheme("models/custom-maps-models", "south-house.yml"),
     CustomMap_east_house_scheme("models/custom-maps-models", "east-house.yml"),
     CustomMap_west_house_scheme("models/custom-maps-models", "west-house.yml"),
-    AirDrop_model("models/airdrop", "airdrop.yml");
+    AirDrop_model("models/airdrop", "airdrop.yml"),
+    ShopItem_PriceList("config/shop", "items_price.yml");
 
     private String path;
     private String fileName;

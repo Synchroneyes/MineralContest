@@ -20,7 +20,6 @@ import java.util.List;
 public class CoffreArene extends AutomatedChestAnimation {
 
     // Variable utilisée pour pouvoir récupérer le groupe du coffre
-    private AutomatedChestManager manager;
 
     // Variable utilisée pour pouvoir générer le contenu du coffre
     private ArenaChestContentGenerator arenaChestContentGenerator;
@@ -31,7 +30,6 @@ public class CoffreArene extends AutomatedChestAnimation {
 
     public CoffreArene(AutomatedChestManager manager, Arene arene) {
         super(3 * 9, manager);
-        this.manager = manager;
         this.arenaChestContentGenerator = new ArenaChestContentGenerator(manager.getGroupe());
         this.arene = arene;
 

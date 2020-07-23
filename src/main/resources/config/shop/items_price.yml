@@ -1,0 +1,38 @@
+# Informations
+next_airdrop_location: 1000
+next_airdrop_time: 1000
+next_arenachest_time: 500
+
+# items
+knockback_stick: 350
+fireball: 250
+compass: 200
+oak: 5
+golden_apple: 200
+water_bucket: 50
+
+# potions
+haste_potion: 450
+invisibility_potion: 500
+speed1_potion: 250
+speed2_potion: 350
+
+# Bonus permanent
+permanent_more_health: 1500
+permanent_auto_cook_ore: 1500
+permanent_diamond_sword: 1000
+
+# Team bonus
+team_enable_chest_announcement: 350
+team_single_teleport: 300
+team_auto_teleport: 200
+
+# Self bonus
+self_more_health: 500
+self_martyr: 700
+self_experience: 50
+
+# Upgrades
+upgrade_pickaxe1: 250
+upgrade_pickaxe2: 500
+upgrade_pickaxe3: 1000

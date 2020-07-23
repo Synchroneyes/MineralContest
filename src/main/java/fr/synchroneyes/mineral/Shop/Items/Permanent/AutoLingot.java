@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Permanent;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
@@ -29,7 +30,8 @@ public class AutoLingot extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 1500;
+        return ShopManager.getBonusPriceFromName("permanent_auto_cook_ore");
+
     }
 
 

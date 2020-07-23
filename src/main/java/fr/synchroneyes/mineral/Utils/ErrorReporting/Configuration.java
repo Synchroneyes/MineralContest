@@ -4,7 +4,6 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameCVAR;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,8 +13,6 @@ import java.io.File;
 public class Configuration {
     public static JSONObject export(Game partie) {
         File configFile = new File(mineralcontest.plugin.getDataFolder() + File.separator + "config.yml");
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
-        JSONObject cvar = new JSONObject();
         JSONObject settings = new JSONObject();
         JSONObject arena = new JSONObject();
         JSONObject _chest_content = new JSONObject();

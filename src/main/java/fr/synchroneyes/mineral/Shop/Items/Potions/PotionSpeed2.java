@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,7 +19,7 @@ public class PotionSpeed2 extends PotionItem {
 
     @Override
     public int getPrice() {
-        return 350;
+        return ShopManager.getBonusPriceFromName("speed2_potion");
     }
 
 

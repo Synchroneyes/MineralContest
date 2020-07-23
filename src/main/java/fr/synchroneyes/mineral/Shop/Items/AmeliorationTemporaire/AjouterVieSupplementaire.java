@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -52,7 +53,8 @@ public class AjouterVieSupplementaire extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 500;
+        return ShopManager.getBonusPriceFromName("self_more_health");
+
     }
 
 }

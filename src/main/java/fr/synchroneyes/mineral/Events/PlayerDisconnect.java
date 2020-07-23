@@ -48,7 +48,7 @@ public class PlayerDisconnect implements Listener {
             if (partie.isPlayerReady(joueur)) partie.removePlayerReady(joueur);
 
             if (joueur.isOp())
-                if (partie.isReferee(joueur)) partie.removeReferee(joueur);
+                if (partie.isReferee(joueur)) partie.removeReferee(joueur, false);
 
 
             if ((partie.isGameStarted() || partie.isPreGame())) {

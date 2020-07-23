@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.AmeliorationTemporaire;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
@@ -45,7 +46,8 @@ public class PotionExperience extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 50;
+        return ShopManager.getBonusPriceFromName("self_experience");
+
     }
 
 }

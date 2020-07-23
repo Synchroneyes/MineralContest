@@ -1,6 +1,5 @@
 package fr.synchroneyes.mapbuilder.Blocks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,20 +38,6 @@ public enum BlocksDataColor {
     }
 
 
-    public static BlocksDataColor fromItemStack(ItemStack item) {
-        if (item != null) {
-            if (item.getItemMeta() == null) {
-                Bukkit.getLogger().info("ItemMetaNull = " + item.getType().toString());
-                return black;
-            }
-            String itemName = item.getItemMeta().getDisplayName();
-            for (BlocksDataColor couleur : values()) {
-                if (itemName.contains(couleur.color))
-                    return couleur;
-            }
-        }
-        return black;
-    }
     public static BlocksDataColor fromItemName(String itemName) {
 
         for (BlocksDataColor couleur : values()) {

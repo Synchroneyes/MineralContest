@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -79,6 +80,7 @@ public class Pioche3 extends LevelableItem {
 
     @Override
     public int getPrice() {
-        return 1000;
+        return ShopManager.getBonusPriceFromName("upgrade_pickaxe3");
+
     }
 }

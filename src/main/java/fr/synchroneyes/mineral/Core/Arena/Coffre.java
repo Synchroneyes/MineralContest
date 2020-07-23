@@ -1,6 +1,5 @@
 package fr.synchroneyes.mineral.Core.Arena;
 
-import fr.synchroneyes.groups.Core.Groupe;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,10 +7,8 @@ import org.bukkit.block.Chest;
 
 public class Coffre {
     private Location position;
-    private Groupe groupe;
 
-    public Coffre(Groupe g) {
-        this.groupe = g;
+    public Coffre() {
     }
 
     public void setPosition(Location p) {

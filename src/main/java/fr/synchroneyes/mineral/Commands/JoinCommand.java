@@ -69,7 +69,7 @@ public class JoinCommand implements CommandExecutor {
 
                             try {
                                 if (partie.isReferee((Player) sender)) {
-                                    partie.removeReferee((Player) sender);
+                                    partie.removeReferee((Player) sender, false);
                                 }
 
                                 selectedHouse.getTeam().addPlayerToTeam(player, false, !(partie.isGameStarted() || partie.isGamePaused()));

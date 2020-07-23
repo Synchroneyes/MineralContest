@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Informations;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -58,7 +59,7 @@ public class ProchainLargageAerienPosition extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 1000;
+        return ShopManager.getBonusPriceFromName("next_airdrop_location");
     }
 
 }

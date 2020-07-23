@@ -47,10 +47,6 @@ public class GameSettings {
     }
 
 
-    public YamlConfiguration getYamlConfiguration() {
-        return YamlConfiguration.loadConfiguration(fichierConfiguration);
-    }
-
     /**
      * Retourne si un parametre passé en argument doit être exclu
      *

@@ -29,9 +29,8 @@ public class Arene {
         if (!blocksModified.contains(blockToAdd)) blocksModified.add(blockToAdd);
     }
 
-    public static void spawn(Location location, Player player) {
+    public static void spawn(Player player) {
 
-        String houseToLoad = "arene.yml";
         String path = FileList.CustomMap_arena_scheme.toString();
         File houseFileToLoad = new File(plugin.getDataFolder(), path);
 

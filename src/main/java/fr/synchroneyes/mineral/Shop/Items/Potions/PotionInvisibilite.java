@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Potions;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PotionItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.potion.PotionEffectType;
 
@@ -35,7 +36,7 @@ public class PotionInvisibilite extends PotionItem {
 
     @Override
     public int getPrice() {
-        return 500;
+        return ShopManager.getBonusPriceFromName("invisibility_potion");
     }
 
 }

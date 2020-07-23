@@ -74,7 +74,6 @@ public class ChestEvent implements Listener {
                 // si l'inventaire provient d'un coffre
                 if (event.getInventory().getHolder() instanceof Chest) {
                     Block openedInventoryBlock = ((Chest) event.getInventory().getHolder()).getBlock();
-                    Chest openedChest = ((Chest) event.getInventory().getHolder());
                     // Si le coffre fermé est le coffre d'arène
                     if (openedInventoryBlock.getLocation().equals(coffreArene.getLocation())) {
                         coffreArene.closeInventory();
@@ -172,8 +171,6 @@ public class ChestEvent implements Listener {
                 return;
             }
 
-            Player player = (Player) event.getPlayer();
-            AutomatedChestAnimation arenaChest = game.getArene().getCoffre();
             if (event.getInventory().getHolder() instanceof Chest) {
 
                 Chest openedChest = (Chest) event.getInventory().getHolder();
@@ -487,6 +484,8 @@ public class ChestEvent implements Listener {
             // On vérifie si le joueur est dans le plugin
             if (mineralcontest.isInAMineralContestWorld(joueur)) {
                 Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
+                if (playerGroup == null || playerGroup.getGame() == null) return;
+
                 ShopManager shopManager = playerGroup.getGame().getShopManager();
 
                 Inventory currentInventory = event.getInventory();

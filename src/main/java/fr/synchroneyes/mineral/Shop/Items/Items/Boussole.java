@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Shop.Items.Items;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.ChatColor;
@@ -62,7 +63,7 @@ public class Boussole extends PermanentItem {
 
     @Override
     public int getPrice() {
-        return 200;
+        return ShopManager.getBonusPriceFromName("compass");
     }
 
 }

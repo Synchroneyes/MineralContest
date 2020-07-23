@@ -114,9 +114,6 @@ public abstract class InventoryInterface {
         return i.equals(inventaire);
     }
 
-    public LinkedList<ItemInterface> getObjets() {
-        return items;
-    }
 
 
 }

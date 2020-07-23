@@ -30,9 +30,6 @@ public class GameCVAR {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getValeur() {
         return valeur;
@@ -48,17 +45,11 @@ public class GameCVAR {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public boolean canBeReloaded() {
         return canBeReloaded;
     }
 
-    public void setCanBeReloaded(boolean canBeReloaded) {
-        this.canBeReloaded = canBeReloaded;
-    }
 
     public boolean isNumber() {
         return isNumber;

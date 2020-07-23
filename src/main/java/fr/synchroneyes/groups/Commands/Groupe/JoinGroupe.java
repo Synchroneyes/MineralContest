@@ -26,7 +26,6 @@ public class JoinGroupe extends CommandTemplate {
     @Override
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
         Player joueur = (Player) commandSender;
-        Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
 
         for (Groupe groupe : mineralcontest.plugin.groupes)
             if (groupe.getNom().equalsIgnoreCase(args[0])) {

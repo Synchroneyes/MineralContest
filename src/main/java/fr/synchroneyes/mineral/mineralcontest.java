@@ -220,7 +220,7 @@ public final class mineralcontest extends JavaPlugin {
             public void run() {
                 PlayerUtils.drawPlayersHUD();
             }
-        }.runTaskTimer(this, 0, 20);
+        }.runTaskTimer(this, 0, 10);
         initCommunityVersion();
 
 
@@ -390,6 +390,9 @@ public final class mineralcontest extends JavaPlugin {
 
             //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
+
+            bukkitCommandMap.register("", new Debug_SetKit());
+
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());
 

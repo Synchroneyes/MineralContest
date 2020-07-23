@@ -191,21 +191,6 @@ public class Equipe implements Comparable<Equipe> {
             member.sendMessage(message);
     }
 
-    public void addPenalty(int penalty) {
-        this.penalty += penalty;
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality.toString(), this), groupe);
-    }
-
-    public void resetPenalty() {
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_got_penality_reseted.toString(), this), groupe);
-
-        this.penalty = 0;
-    }
-
-    public void setNomEquipe(String n) {
-        this.nomEquipe = n;
-    }
-
     public int getScore() {
         return this.score - this.penalty;
     }
@@ -223,7 +208,7 @@ public class Equipe implements Comparable<Equipe> {
         if (partie != null) {
             Equipe team = mineralcontest.getPlayerGame(p).getPlayerTeam(p);
             if (team != null) team.removePlayer(p);
-            if (mineralcontest.getPlayerGame(p).isReferee(p)) mineralcontest.getPlayerGame(p).removeReferee(p);
+            if (mineralcontest.getPlayerGame(p).isReferee(p)) mineralcontest.getPlayerGame(p).removeReferee(p, false);
         }
 
 

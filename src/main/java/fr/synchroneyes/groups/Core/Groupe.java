@@ -12,6 +12,7 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
+import fr.synchroneyes.mineral.Kits.KitManager;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -19,7 +20,7 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.ChatColor;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -35,7 +36,7 @@ import java.util.Random;
 public class Groupe {
     private int tailleIdentifiant = 10;
     private String identifiant;
-    private LinkedList<Equipe> equipes;
+
     private LinkedList<Player> admins;
     private LinkedList<Player> joueurs;
     private LinkedList<Player> joueursInvites;
@@ -57,6 +58,9 @@ public class Groupe {
 
     private AutomatedChestManager automatedChestManager;
 
+    @Getter
+    private KitManager kitManager;
+
 
     // UUID, <NomEquipe, PositionDeco>
     //
@@ -64,7 +68,7 @@ public class Groupe {
     private LinkedList<DisconnectedPlayer> disconnectedPlayers;
 
     public Groupe() {
-        this.equipes = new LinkedList<>();
+
         this.admins = new LinkedList<>();
         this.joueurs = new LinkedList<>();
         this.joueursInvites = new LinkedList<>();
@@ -82,6 +86,8 @@ public class Groupe {
 
         this.etat = Etats.EN_ATTENTE;
         this.worldLoader = new WorldLoader(this);
+
+        this.kitManager = new KitManager(this);
         genererIdentifiant();
 
 
@@ -157,10 +163,6 @@ public class Groupe {
         return joueurs;
     }
 
-    public boolean isPlayerIngroupe(Player p) {
-        return (this.joueurs.contains(p));
-    }
-
     public String getIdentifiant() {
         return identifiant;
     }
@@ -169,12 +171,6 @@ public class Groupe {
         return gameWorld;
     }
 
-    public House getPlayerHouse(Player p) {
-        for (House maison : getGame().getHouses())
-            if (maison.getTeam().isPlayerInTeam(p)) return maison;
-        return null;
-
-    }
 
     public Equipe getPlayerTeam(Player p) {
         for (House maison : getGame().getHouses())
@@ -393,22 +389,7 @@ public class Groupe {
         }
     }
 
-    /**
-     * Permet de créer une équipe
-     * @param nom - Nom de l'équipe
-     * @param couleur - Couleur de l'équipe
-     */
-    public void addEquipe(String nom, ChatColor couleur) {
 
-    }
-
-    /**
-     * Permet de supprimer une équipe
-     * @param nom
-     */
-    public void removeEquipe(String nom) {
-
-    }
 
 
     public void addJoueur(Player p) {

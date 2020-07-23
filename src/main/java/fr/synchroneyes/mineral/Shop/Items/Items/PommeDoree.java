@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Shop.Items.Items;
 
 import fr.synchroneyes.mineral.Shop.Items.Abstract.GameItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class PommeDoree extends GameItem {
 
     @Override
     public int getPrice() {
-        return 200;
+        return ShopManager.getBonusPriceFromName("golden_apple");
     }
 
 }

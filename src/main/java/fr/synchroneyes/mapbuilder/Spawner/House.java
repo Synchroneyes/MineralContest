@@ -28,11 +28,8 @@ public class House {
         if (!blocksModified.contains(blockToAdd)) blocksModified.add(blockToAdd);
     }
 
-    public static void spawnHouseFromPlayer(Player player) {
-        // First, we
-    }
 
-    public static void spawn(Location location, BlocksDataColor color, Player player) {
+    public static void spawn(BlocksDataColor color, Player player) {
         String houseName = getHouseDirectionBasedOnPlayer(player);
 
         String houseToLoad = houseName;

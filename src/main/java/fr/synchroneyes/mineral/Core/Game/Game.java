@@ -225,15 +225,6 @@ public class Game implements Listener {
     }
 
     /**
-     * Récupère le nombre de joueur déconnecté
-     *
-     * @return int
-     */
-    public int getDisconnectedPlayersCount() {
-        return disconnectedPlayers.size();
-    }
-
-    /**
      * Est-ce que le bloc donné est un coffre, retourne vrai si oui
      * @param b
      * @return boolean
@@ -301,14 +292,6 @@ public class Game implements Listener {
         return addedChests.contains(b);
     }
 
-    /**
-     * Supprime un coffre enregistré
-     * @param block
-     */
-    public void remove(Block block) {
-        if (!this.addedChests.contains(block)) this.addedChests.remove(block);
-    }
-
 
     /**
      * Téléporte un joueur au lobby
@@ -329,10 +312,6 @@ public class Game implements Listener {
     }
 
 
-    public void addPlayerTriedToLogin(String playerDisplayName) {
-        if (!havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.put(playerDisplayName, false);
-    }
-
     public boolean havePlayerTriedToLogin(String playerDisplayName) {
         for (Map.Entry<String, Boolean> entry : PlayerThatTriedToLogIn.entrySet()) {
             if (entry.getKey().toLowerCase().equals(playerDisplayName.toLowerCase())) return true;
@@ -349,14 +328,6 @@ public class Game implements Listener {
         return false;
     }
 
-    public void removePlayerLoginAttempt(String playerDisplayName) {
-        if (havePlayerTriedToLogin(playerDisplayName)) this.PlayerThatTriedToLogIn.remove(playerDisplayName);
-    }
-
-    public boolean isPlayerAllowedToLogIn(String playerName) {
-        if (havePlayerTriedToLogin(playerName)) return this.PlayerThatTriedToLogIn.get(playerName);
-        return false;
-    }
 
     public boolean areAllPlayersReady() {
         return (playersReady.size() == groupe.getPlayers().size());
@@ -497,7 +468,7 @@ public class Game implements Listener {
         }
     }
 
-    public void removeReferee(Player player) throws Exception {
+    public void removeReferee(Player player, boolean switchToTeam) throws Exception {
         if (isReferee(player)) {
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);
@@ -505,8 +476,7 @@ public class Game implements Listener {
             //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
 
 
-
-            if (isGameStarted() || isPreGame()) setPlayerRandomTeam(player);
+            if (isGameStarted() || isPreGame() && switchToTeam) setPlayerRandomTeam(player);
         }
 
     }
@@ -528,10 +498,6 @@ public class Game implements Listener {
 
     }
 
-    public int getRefereeCount() {
-        return this.referees.size();
-    }
-
     public LinkedList<Player> getReferees() {
         return this.referees;
     }
@@ -550,18 +516,6 @@ public class Game implements Listener {
 
         mineralcontest.plugin.setDefaultWorldBorder();
         clear();
-    }
-
-    public void cancelPreGame() {
-        if (!isPreGame()) return;
-        this.PreGame = false;
-        try {
-            this.PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Error.Report(e, this);
-        }
-        mineralcontest.broadcastMessage("Pregame cancelled", groupe);
     }
 
 
@@ -586,42 +540,6 @@ public class Game implements Listener {
         }
     }
 
-    public void addDisconnectedPlayer(String joueur, Equipe team) {
-        // Si le joueur est déjà marqué comme déconnecté, on le supprime et on le réajoute
-        disconnectedPlayers.add(new CouplePlayerTeam(joueur, team));
-    }
-
-
-    public Equipe getDisconnectedPlayerTeam(String joueur) {
-        for (CouplePlayerTeam player : disconnectedPlayers)
-            if (player.getJoueur().equals(joueur))
-                return player.getTeam();
-        return null;
-    }
-
-    public CouplePlayerTeam getDisconnectedPlayerInfo(String joueur) {
-        for (CouplePlayerTeam player : disconnectedPlayers)
-            if (player.getJoueur().equals(joueur))
-                return player;
-
-        // Le joueur n'est pas dans la liste
-        return null;
-    }
-
-
-    public boolean havePlayerDisconnected(String joueur) {
-        for (CouplePlayerTeam player : disconnectedPlayers)
-            if (player.getJoueur().equals(joueur))
-                return true;
-
-        return false;
-    }
-
-    public void removePlayerFromDisconnected(Player joueur) {
-        for (CouplePlayerTeam player : disconnectedPlayers)
-            if (player.getJoueur().equals(joueur))
-                disconnectedPlayers.remove(player);
-    }
 
     public void handleDoors() {
 
@@ -634,15 +552,24 @@ public class Game implements Listener {
                 if (isGameStarted() && !isPreGame() && !isGamePaused()) {
 
 
-                    for (House maisons : equipes) {
-                        Equipe team = maisons.getTeam();
-
-                    }
-
                     for (Player online : groupe.getPlayers()) {
-                        for (House maison : equipes) {
-                            Equipe equipe = maison.getTeam();
-                            if ((isReferee(online) || equipe.isPlayerInTeam(online)) && !getArene().getDeathZone().isPlayerDead(online)) {
+
+                        // Si le joueur est un arbitre, on doit vérifier chaque maison
+                        if (isReferee(online)) {
+
+                            for (House maison : equipes) {
+                                Equipe equipe = maison.getTeam();
+
+                                Location firestDoorBlock = equipe.getMaison().getPorte().getPorte().getFirst().getPosition();
+                                Location playerLocation = online.getLocation();
+
+                                // On regarde si le joueur n'est pas trop loin ...
+                                double x = Math.pow(firestDoorBlock.getX() - playerLocation.getX(), 2.0);
+                                double y = Math.pow(firestDoorBlock.getZ() - playerLocation.getZ(), 2.0);
+
+                                // Le joueur est trop loin de la maison en question
+                                if (Math.sqrt(x + y) > 5) continue;
+
                                 for (DisplayBlock blockDePorte : maison.getPorte().getPorte()) {
                                     if (Radius.isBlockInRadius(blockDePorte.getPosition(), online.getLocation(), rayonPorte)) {
                                         maison.getPorte().playerIsNearDoor(online);
@@ -652,8 +579,42 @@ public class Game implements Listener {
                                         maison.getPorte().playerIsNotNearDoor(online);
                                     }
                                 }
+
                             }
+
+
+                        } else {
+                            // Le jouuer n'est pas arbitre
+                            House maison = getPlayerHouse(online);
+                            if (maison == null) continue;
+
+                            // Si le joueur est mort, on s'arrête
+                            if (getArene().getDeathZone().isPlayerDead(online)) continue;
+
+                            // On récupère la première position
+                            Location firstDoorBlock = maison.getPorte().getPorte().getFirst().getPosition();
+                            Location playerLocation = online.getLocation();
+
+                            // On regarde si le joueur n'est pas trop loin ...
+                            double x = Math.pow(firstDoorBlock.getX() - playerLocation.getX(), 2.0);
+                            double y = Math.pow(firstDoorBlock.getZ() - playerLocation.getZ(), 2.0);
+
+                            // Le joueur est trop loin de sa maison ...
+                            if (Math.sqrt(x + y) > 5) continue;
+
+                            // Le joueur est proche, on vérifie si il peut ouvrir la porte ou non
+                            for (DisplayBlock blockDePorte : maison.getPorte().getPorte()) {
+                                if (Radius.isBlockInRadius(blockDePorte.getPosition(), online.getLocation(), rayonPorte)) {
+                                    maison.getPorte().playerIsNearDoor(online);
+                                    break;
+                                } else {
+                                    //blockDePorte.display();
+                                    maison.getPorte().playerIsNotNearDoor(online);
+                                }
+                            }
+
                         }
+
                     }
 
                 }

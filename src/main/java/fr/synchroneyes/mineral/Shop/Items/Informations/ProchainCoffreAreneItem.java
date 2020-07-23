@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Shop.Items.Informations;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.TimeConverter;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -56,7 +57,7 @@ public class ProchainCoffreAreneItem extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 500;
+        return ShopManager.getBonusPriceFromName("next_arenachest_time");
     }
 
     @Override

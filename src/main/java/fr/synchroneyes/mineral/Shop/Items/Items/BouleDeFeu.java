@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Shop.Items.Items;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Exception.EventAlreadyHandledException;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -71,7 +72,7 @@ public class BouleDeFeu extends ConsumableItem {
 
     @Override
     public int getPrice() {
-        return 250;
+        return ShopManager.getBonusPriceFromName("fireball");
     }
 
 

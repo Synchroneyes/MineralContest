@@ -4,7 +4,6 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -20,9 +19,6 @@ public class AutomaticDoors {
 
     // Le bloc du centre
 
-    // Une porte contient 9 blocs
-    public static final int maxDoorSize = 9;
-    Equipe proprietaire;
 
     private Groupe groupe;
 
@@ -37,7 +33,6 @@ public class AutomaticDoors {
     // Prend un bloc, et un rayon
     public AutomaticDoors(Equipe equipe, Groupe g) {
         this.porte = new LinkedList<DisplayBlock>();
-        this.proprietaire = equipe;
         this.playerNearDoor = new LinkedList<Player>();
         this.groupe = g;
     }
@@ -63,14 +58,7 @@ public class AutomaticDoors {
                     if (mineralcontest.debug)
                         mineralcontest.broadcastMessage(ChatColor.YELLOW + "- Le bloc selectionné a été supprimé", groupe);
                 } else {
-                    if (porte.size() >= maxDoorSize) {
-                        if (mineralcontest.debug)
-                            mineralcontest.broadcastMessage(ChatColor.RED + "# - Porte pleine", groupe);
-                        return false;
-                    } else {
-                        ajouter = true;
-                    }
-
+                    ajouter = true;
                 }
             }
             if (ajouter) {
@@ -125,18 +113,6 @@ public class AutomaticDoors {
         return porte;
     }
 
-    public Location getMiddleBlockLocation() {
-        return this.porte.get(4).getBlock().getLocation();
-    }
-
-    public boolean isOpened() {
-        return estOuvert;
-    }
-
-
-    public boolean isSet() {
-        return (porte.size() == maxDoorSize);
-    }
 
     public void playerIsNearDoor(Player joueur) {
         if (!this.playerNearDoor.contains(joueur) && !mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().isPlayerDead(joueur)) {

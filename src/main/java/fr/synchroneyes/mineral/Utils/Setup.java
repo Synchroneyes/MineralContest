@@ -93,7 +93,6 @@ public class Setup {
                 break;
 
             case 10:
-                mineralcontest.getPlayerGame(joueur).getArene().getDeathZone().setSpawnLocation(getEmplacementTemporaire());
                 joueur.sendMessage(mineralcontest.prefixPrive + "Le setup est  presque terminé !");
                 joueur.sendMessage(mineralcontest.prefixPrive + "Veuillez cliquer sur les blocs de la porte bleu");
                 addDoors = true;

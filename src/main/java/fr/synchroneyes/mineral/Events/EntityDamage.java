@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
@@ -7,6 +8,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -95,16 +97,6 @@ public class EntityDamage implements Listener {
 
                 // Si le joueur a été blessé par un autre joueur ...
                 if (entityDamageByEntityEvent.getDamager() instanceof Player || ((entityDamageByEntityEvent.getDamager() instanceof Arrow) && ((Arrow) entityDamageByEntityEvent.getDamager()).getShooter() instanceof Player)) {
-                    Player damager = null;
-
-
-                    if (entityDamageByEntityEvent.getDamager() instanceof Player)
-                        damager = (Player) entityDamageByEntityEvent.getDamager();
-                    if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
-                        Arrow fleche = (Arrow) entityDamageByEntityEvent.getDamager();
-                        damager = (Player) fleche.getShooter();
-                    }
-
 
                     // Si la personne recevant des dégats ouvrait le coffre d'arène, on lui ferme
                     if (joueur.equals(playerGroup.getGame().getArene().getCoffre().getOpeningPlayer())) {
@@ -132,6 +124,8 @@ public class EntityDamage implements Listener {
                         // On annule l'event, on enregistre le kill, et on ajoute la personne venant de mourir à la deathzone, elle sera donc automatiquement
                         // TP dans sa base avec les effets de mort
                         Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
+                        PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant);
+                        Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
                         registerKill(joueur, attaquant);
                         event.setCancelled(true);
                         return;
@@ -145,6 +139,10 @@ public class EntityDamage implements Listener {
                         // Si le projectile a été tirée par un joueur ...
                         if (fleche.getShooter() instanceof Player) {
                             Player attaquant = (Player) fleche.getShooter();
+
+                            PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant);
+                            Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
+
                             registerKill(joueur, attaquant);
                             event.setCancelled(true);
                             return;

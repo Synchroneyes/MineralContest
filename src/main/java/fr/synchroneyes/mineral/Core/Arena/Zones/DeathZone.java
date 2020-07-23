@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Arena.Zones;
 
+import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
@@ -10,9 +11,10 @@ import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -32,7 +34,6 @@ public class DeathZone {
 
     // Temps en seconde
     private int timeInDeathzone = 0;
-    private Location spawnLocation;
     private Groupe groupe;
 
     public DeathZone(Groupe g) {
@@ -50,10 +51,6 @@ public class DeathZone {
         return this.joueurs;
     }
 
-    public void setSpawnLocation(Location pos) {
-        mineralcontest.plugin.getLogger().info(mineralcontest.prefixGlobal + Lang.translate(Lang.deathzone_spawn_location_added.toString()));
-        this.spawnLocation = pos;
-    }
 
     public CouplePlayer getPlayerInfo(Player p) {
         for (CouplePlayer playerInfo : getPlayers())
@@ -199,8 +196,26 @@ public class DeathZone {
                 for (PotionEffect potion : joueur.getActivePotionEffects())
                     joueur.removePotionEffect(potion.getType());
 
+                // On remet la vitesse de base
+                joueur.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1d);
+
+                // On remet les dégats de base
+                joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1.0);
+
+                // On remet la vie de base
+                joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 
             }
+
+
+            // On appelle l'evenement de respawn
+            try {
+                MCPlayerRespawnEvent respawnEvent = new MCPlayerRespawnEvent(joueur);
+                Bukkit.getPluginManager().callEvent(respawnEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
             // On rend le stuff du joueur
             try {
