@@ -102,6 +102,7 @@ public class EntityDamage implements Listener {
                     if (joueur.equals(playerGroup.getGame().getArene().getCoffre().getOpeningPlayer())) {
                         // On ferme et on annule l'ouverture
                         playerGroup.getGame().getArene().getCoffre().closeInventory();
+                        joueur.closeInventory();
                     }
 
                 }

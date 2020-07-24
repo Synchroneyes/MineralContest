@@ -43,6 +43,9 @@ public class GroupeExtension {
 
         registerCommands();
         supprimerMapsExistantes();
+
+        Bukkit.getLogger().info("GroupeExtension loaded");
+
     }
 
     /**

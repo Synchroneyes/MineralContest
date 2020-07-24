@@ -15,7 +15,7 @@ public class Debug_SetKit extends CommandTemplate {
         accessCommande.add(GAME_STARTED);
 
 
-        addArgument("Classe", true);
+        addArgument("Classe", false);
     }
 
     @Override
@@ -39,37 +39,45 @@ public class Debug_SetKit extends CommandTemplate {
         Player joueur = (Player) commandSender;
         Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
 
-        joueur.sendMessage("Vous allez devenir: " + args[0]);
 
-        switch (args[0]) {
-            case "mineur":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Mineur());
-                break;
-            case "guerrier":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Guerrier());
-                break;
-            case "agile":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Agile());
-                break;
-            case "enchanteur":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Enchanteur());
-                break;
+        if (args.length > 0) {
+            joueur.sendMessage("Vous allez devenir: " + args[0]);
 
-            case "robuste":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Robuste());
-                break;
+            switch (args[0]) {
+                case "mineur":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Mineur());
+                    break;
+                case "guerrier":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Guerrier());
+                    break;
+                case "agile":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Agile());
+                    break;
+                case "enchanteur":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Enchanteur());
+                    break;
 
-            case "soutien":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Soutien());
-                break;
+                case "robuste":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Robuste());
+                    break;
 
-            case "parieur":
-                playerGroup.getKitManager().setPlayerKit(joueur, new Parieur());
-                break;
-            default:
-                joueur.sendMessage("Ce kit n'est pas reconnu...");
-                break;
+                case "soutien":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Soutien());
+                    break;
+
+                case "parieur":
+                    playerGroup.getKitManager().setPlayerKit(joueur, new Parieur());
+                    break;
+                default:
+                    joueur.sendMessage("Ce kit n'est pas reconnu...");
+                    break;
+            }
+
+        } else {
+            playerGroup.getKitManager().openInventoryToPlayer(joueur);
         }
+
+
 
 
         return false;

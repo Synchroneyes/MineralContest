@@ -179,6 +179,11 @@ public abstract class Category {
                         return;
                     }
 
+                    if (!item.getKey().isBonusCompatibleWithKits() && playerGroup.getKitManager().isKitsEnabled()) {
+                        joueur.sendMessage("Non compatible avec le système de kits");
+                        return;
+                    }
+
                     // Si on arrive là, c'est que le joueur n'a pas le bonus requis
 
 

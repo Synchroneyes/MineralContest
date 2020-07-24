@@ -16,7 +16,7 @@ public class Guerrier extends KitAbstract {
 
 
     private double bonusPercentage = 25d;
-    private double vieEnMoins = 5d;
+    private double vieEnMoins = 2.5;
 
 
     @Override
@@ -37,12 +37,16 @@ public class Guerrier extends KitAbstract {
      */
     @EventHandler
     public void onRespawn(MCPlayerRespawnEvent event) {
+
+        if (!isPlayerUsingThisKit(event.getJoueur())) return;
+
         Player joueur = event.getJoueur();
         Groupe groupe = mineralcontest.getPlayerGroupe(joueur);
 
         setPlayerBonus(joueur);
 
-        joueur.sendMessage("Vous êtes " + getNom() + " et vous avez respawn!");
+        new Exception().printStackTrace();
+
 
     }
 
@@ -65,7 +69,7 @@ public class Guerrier extends KitAbstract {
         double valeurDegatsParDefaut = 1.0;
         double vieParDefaut = 20d;
 
-        double nouvelleVie = vieParDefaut - vieEnMoins;
+        double nouvelleVie = vieParDefaut - (vieEnMoins * 2);
         double nouvelleValeur = valeurDegatsParDefaut + (valeurDegatsParDefaut * bonusPercentage / 100);
 
 

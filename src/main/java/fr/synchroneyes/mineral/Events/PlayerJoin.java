@@ -60,7 +60,7 @@ public class PlayerJoin implements Listener {
                     // Sinon, il devient spectateur
                     defaultGroupe.addJoueur(joueur);
                     // On le TP au centre de l'arène si la partie est chargé
-                    if (defaultGroupe.getMonde() != null)
+                    if (defaultGroupe.getMonde() != null && defaultGroupe.getGame() != null && defaultGroupe.getGame().getArene() != null && defaultGroupe.getGame().getArene().getCoffre() != null && defaultGroupe.getGame().getArene().getCoffre().getLocation() != null)
                         PlayerUtils.teleportPlayer(joueur, defaultGroupe.getMonde(), defaultGroupe.getGame().getArene().getCoffre().getLocation());
 
                     joueur.setGameMode(GameMode.SPECTATOR);

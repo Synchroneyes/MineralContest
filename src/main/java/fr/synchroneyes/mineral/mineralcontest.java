@@ -15,7 +15,6 @@ import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
-import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
@@ -185,10 +184,12 @@ public final class mineralcontest extends JavaPlugin {
         // On charge le fichier de langue
         Lang.loadLang(getPluginConfigValue("language").toString());
 
+        this.groupes = new LinkedList<>();
+        this.groupeExtension = GroupeExtension.getInstance();
+
+        initCommunityVersion();
 
         // Initialisation des variables du plugin
-        this.groupeExtension = GroupeExtension.getInstance();
-        this.groupes = new LinkedList<>();
         this.mapBuilderInstance = MapBuilder.getInstance();
         this.messagesFromWebsite = new ArrayList<>();
         this.worldDownloader = WorldDownloader.getInstance();
@@ -221,7 +222,7 @@ public final class mineralcontest extends JavaPlugin {
                 PlayerUtils.drawPlayersHUD();
             }
         }.runTaskTimer(this, 0, 10);
-        initCommunityVersion();
+
 
 
         /*
@@ -409,19 +410,16 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     // Called when the game start
-    public void setWorldBorder() throws Exception {
-        if (pluginWorld == null) return;
-        int playZoneRadius = GameSettings.getValeurParDefaut("mp_set_playzone_radius").getValeurNumerique();
+    public void setWorldBorder(Groupe groupe) throws Exception {
+        int playZoneRadius = groupe.getParametresPartie().getCVAR("mp_set_playzone_radius").getValeurNumerique();
         int marge = 100; // Use to prevent server.properties spawn protection
 
-        WorldBorder world = pluginWorld.getWorldBorder();
+        WorldBorder world = groupe.getMonde().getWorldBorder();
+        world.setCenter(groupe.getGame().getArene().getCoffre().getLocation());
+        world.setSize(playZoneRadius * 2);
 
-        // TODO getGame
-        //Location arenaCenterLocation = getGame().getArene().getCoffre().getPosition().clone();
 
-        //arenaCenterLocation.setX(arenaCenterLocation.getX()-marge);
-        //world.setCenter(arenaCenterLocation);
-        //world.setSize(playZoneRadius + marge);
+
     }
 
     public void setDefaultWorldBorder() {

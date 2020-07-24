@@ -45,7 +45,7 @@ public class MapBuilder {
 
         menuManager = new MenuManager();
 
-        monde = new Monde();
+
 
         try {
             getPluginCommandMap();
@@ -69,6 +69,7 @@ public class MapBuilder {
     public static void enableMapBuilder() {
         instance.isBuilderModeEnabled = true;
         instance.enableMapBuilding();
+        monde = new Monde();
         Bukkit.broadcastMessage("MapBuilder mode enabled!");
     }
 

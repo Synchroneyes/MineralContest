@@ -208,6 +208,8 @@ public class PlayerBonus {
         if (playerTeam == null) return false;
         int scoreEquipe = playerTeam.getScore();
 
+        if (playerGame.groupe.getKitManager().isKitsEnabled() && !bonus.isBonusCompatibleWithKits()) return false;
+
 
         // Si dans notre liste, le joueur possède le nombre requis ou plus d'item, on retourne vrai
 

@@ -34,5 +34,8 @@ public class AutoLingot extends PermanentItem {
 
     }
 
-
+    @Override
+    public boolean isBonusCompatibleWithKits() {
+        return false;
+    }
 }

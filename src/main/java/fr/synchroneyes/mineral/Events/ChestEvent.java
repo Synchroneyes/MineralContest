@@ -349,9 +349,8 @@ public class ChestEvent implements Listener {
                     AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getFromInventory(openedInventory);
                     if (automatedChestAnimation == null) return;
 
-                    // Et on ferme l'inventaire
+
                     automatedChestAnimation.closeInventory();
-                    joueur.closeInventory();
                     throw new EventAlreadyHandledException();
                 }
             }

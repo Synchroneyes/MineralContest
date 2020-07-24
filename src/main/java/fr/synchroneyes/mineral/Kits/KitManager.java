@@ -3,10 +3,22 @@ package fr.synchroneyes.mineral.Kits;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Kits.Classes.Soutien;
+import fr.synchroneyes.mineral.Kits.Classes.*;
+import fr.synchroneyes.mineral.Utils.TextUtils;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -16,8 +28,9 @@ import java.util.Map;
 
 /**
  * Classe permettant de gérer les kits!
+ * On utilise l'interface Listener afin de pouvoir gérer le menu de selection de kit
  */
-public class KitManager {
+public class KitManager implements Listener {
 
     // Liste des kits disponible
     private List<KitAbstract> kitsDisponible;
@@ -25,7 +38,12 @@ public class KitManager {
     // Liste des joueurs avec leurs kits
     private Map<Player, KitAbstract> kits_joueurs;
 
-    private boolean areKitsEnabled = false;
+    @Getter
+    private boolean kitsEnabled = true;
+
+    @Getter
+    @Setter
+    private boolean kitSelectionOver = false;
 
     // Groupe où les kits doivent être gérés
     private Groupe groupe;
@@ -33,7 +51,14 @@ public class KitManager {
     // Partie où les kits doivent être gérés
     private Game partie;
 
+    // Boucle gérant la boucle pour les action des kits (ex soutien auto heal)
     private BukkitTask boucleGestionKits;
+
+    private String kitSelectionTitle = "Selectionnez votre kit.";
+
+    // Variable contenant le selecteur de kit
+    private Inventory kitSelection = null;
+
 
 
     /**
@@ -48,8 +73,17 @@ public class KitManager {
         this.groupe = groupe;
         this.partie = groupe.getGame();
 
+        // On enregistre les events de cette classe
+        Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
+
         // On y ajoute les classes disponibles
-        //this.kitsDisponible.add(new Guerrier());
+        this.kitsDisponible.add(new Agile());
+        this.kitsDisponible.add(new Enchanteur());
+        this.kitsDisponible.add(new Guerrier());
+        this.kitsDisponible.add(new Mineur());
+        this.kitsDisponible.add(new Parieur());
+        this.kitsDisponible.add(new Robuste());
+        this.kitsDisponible.add(new Soutien());
     }
 
 
@@ -60,6 +94,8 @@ public class KitManager {
      * @param kit
      */
     public void setPlayerKit(Player joueur, KitAbstract kit) {
+
+        joueur.sendMessage("Type: " + kit.getClass().getName());
         if (kits_joueurs.containsKey(joueur)) kits_joueurs.replace(joueur, kit);
         else kits_joueurs.put(joueur, kit);
 
@@ -67,6 +103,7 @@ public class KitManager {
         Bukkit.getPluginManager().callEvent(event);
 
         joueur.sendMessage("Vous êtes maintenant: " + kit.getNom());
+        Bukkit.getLogger().info(joueur.getDisplayName() + " -> " + kit.getNom() + " -> " + kit);
     }
 
     /**
@@ -75,9 +112,9 @@ public class KitManager {
      * @param joueur
      * @return
      */
-    public Class<? extends KitAbstract> getPlayerKit(Player joueur) {
+    public KitAbstract getPlayerKit(Player joueur) {
         if (!kits_joueurs.containsKey(joueur)) return null;
-        return kits_joueurs.get(joueur).getClass();
+        return kits_joueurs.get(joueur);
     }
 
     /**
@@ -109,6 +146,147 @@ public class KitManager {
     public void startKitLoop(int delay) {
         if (boucleGestionKits == null) {
             boucleGestionKits = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::kitLoop, 0, delay);
+        }
+    }
+
+    /**
+     * Permet de récuperer l'instance d'une classe par le biais d'une classe
+     *
+     * @param classe
+     * @return
+     */
+    public KitAbstract getKitFromClass(Class classe) {
+        for (KitAbstract kit : kitsDisponible)
+            if (kit.getClass().equals(classe)) return kit;
+        return null;
+    }
+
+    public KitAbstract getKitFromString(String nomClasse) {
+        for (KitAbstract kit : kitsDisponible)
+            if (kit.getNom().contains(nomClasse)) return kit;
+        return null;
+    }
+
+
+    /**
+     * Permet de récuperer le menu de selection de kit
+     *
+     * @return menu selection de kit
+     */
+    public Inventory getKitSelectionInventory() {
+
+        // On crée un inventaire d'une ligne
+        if (kitSelection == null) {
+            this.kitSelection = Bukkit.createInventory(null, 9, kitSelectionTitle);
+
+            // On veut ne veut pas de stack d'item
+            this.kitSelection.setMaxStackSize(1);
+
+            // On ajoute les kits disponibles
+            for (KitAbstract kit : kitsDisponible) {
+                ItemStack itemKit = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+                ItemMeta kitMeta = itemKit.getItemMeta();
+
+                kitMeta.setDisplayName(kit.getNom());
+
+                kitMeta.setLore(TextUtils.textToLore(kit.getDescription()));
+                Bukkit.getLogger().info(WordUtils.wrap(kit.getDescription(), 70));
+
+                itemKit.setItemMeta(kitMeta);
+
+                // ON ajoute le kit
+                this.kitSelection.addItem(itemKit);
+            }
+        }
+
+        // ON retourne le kit
+        return this.kitSelection;
+    }
+
+    /**
+     * Ouvre l'inventaire pour un joueur
+     *
+     * @param joueur
+     */
+    public void openInventoryToPlayer(Player joueur) {
+        joueur.openInventory(getKitSelectionInventory());
+    }
+
+
+    /**
+     * Méthode appelé lors de la fermeture du menu par un joueur
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onKitSelectionMenuClosed(InventoryCloseEvent event) {
+
+        if (kitSelectionOver) return;
+
+        // On récupère l'inventaire fermé
+        Inventory menu = event.getInventory();
+
+        // On vérifie que ça provient d'un joueur
+        if (event.getPlayer() instanceof Player) {
+            Player joueur = (Player) event.getPlayer();
+
+            // On vérifie que c'est un joueur du plugin
+            if (mineralcontest.isInAMineralContestWorld(joueur)) {
+
+                // On vérifie que c'est l'inventaire de selection de kit
+                if (menu.equals(getKitSelectionInventory())) {
+
+                    // Si le joueur n'a pas selectionner de kit, on réouvre l'inventaire
+                    if (!kits_joueurs.containsKey(joueur)) {
+                        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> joueur.openInventory(getKitSelectionInventory()), 1);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Méthode appelé lors de la selection d'un kit
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onKitSelected(InventoryClickEvent event) {
+
+
+        if (kitSelectionOver) return;
+
+        // On récupère l'inventaire
+        Inventory inventory = event.getClickedInventory();
+        if (inventory == null) return;
+
+        // On récupère le joueur
+        if (event.getWhoClicked() instanceof Player) {
+            Player joueur = (Player) event.getWhoClicked();
+
+            // On regarde si c'est l'inventaire de selection de kit
+            if (inventory.equals(getKitSelectionInventory())) {
+                // On récupère l'item cliqué
+
+
+                ItemStack clickedItem = event.getCurrentItem();
+                if (clickedItem == null || clickedItem.getItemMeta() == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                // On récupère le kit
+                KitAbstract selectedKit = getKitFromString(clickedItem.getItemMeta().getDisplayName());
+                if (selectedKit == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                // On possède le kit du joueur
+                setPlayerKit(joueur, selectedKit);
+                event.setCancelled(true);
+                joueur.closeInventory();
+            }
         }
 
     }

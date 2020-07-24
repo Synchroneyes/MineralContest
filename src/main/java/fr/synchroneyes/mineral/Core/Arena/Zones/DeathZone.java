@@ -158,6 +158,7 @@ public class DeathZone {
         if (DeathZonePlayer.getValeur() <= 0) {
 
             Player joueur = DeathZonePlayer.getJoueur();
+            joueur.sendMessage("liberer");
 
             if (!joueur.isOnline()) {
                 this.joueurs.remove(DeathZonePlayer);
@@ -166,7 +167,7 @@ public class DeathZone {
 
             joueur.setGameMode(GameMode.SURVIVAL);
             joueur.setFireTicks(0);
-            joueur.setHealth(20f);
+
 
             Game partie = mineralcontest.getPlayerGame(joueur);
 
@@ -208,6 +209,10 @@ public class DeathZone {
             }
 
 
+            // ON le supprime de la liste
+            this.joueurs.remove(DeathZonePlayer);
+
+            PlayerUtils.setMaxHealth(joueur);
             // On appelle l'evenement de respawn
             try {
                 MCPlayerRespawnEvent respawnEvent = new MCPlayerRespawnEvent(joueur);
@@ -220,6 +225,7 @@ public class DeathZone {
             // On rend le stuff du joueur
             try {
                 if (!partie.isReferee(joueur)) {
+
                     groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
                 }
 
@@ -233,9 +239,6 @@ public class DeathZone {
                 Error.Report(e, partie);
             }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2 * 20, 1);
-
-            // ON le supprime de la liste
-            this.joueurs.remove(DeathZonePlayer);
 
 
         }

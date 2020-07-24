@@ -51,6 +51,15 @@ public abstract class ShopItem {
      */
     public abstract Material getItemMaterial();
 
+    /**
+     * Retourne si le bonus est compatible avec le système de kits ou non?
+     *
+     * @return
+     */
+    public boolean isBonusCompatibleWithKits() {
+        return true;
+    }
+
 
     /**
      * Permet de convertir un item en ItemStack

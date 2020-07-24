@@ -31,6 +31,7 @@ public abstract class KitAbstract implements Listener {
         // Afin de pouvoir gérer les évènements
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
 
+
     }
 
 
@@ -49,9 +50,10 @@ public abstract class KitAbstract implements Listener {
         // Si la partie n'est pas démarré, il n'a pas de kit non plus, ou alors il ne faut pas les activer
         if (!groupe.getGame().isGameStarted()) return false;
 
+        if (groupe.getKitManager().getPlayerKit(joueur) == null) return false;
+
         // On vérifie maintenant si l'utilisateur possède ce kit
-        Bukkit.broadcastMessage("is player using this kit: " + this.getNom() + " > " + (groupe.getKitManager().getPlayerKit(joueur).equals(this.getClass())));
-        return groupe.getKitManager().getPlayerKit(joueur).equals(this.getClass());
+        return groupe.getKitManager().getPlayerKit(joueur).equals(groupe.getKitManager().getKitFromClass(this.getClass()));
 
     }
 

@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
+import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -372,19 +373,22 @@ public class PlayerUtils {
             }
         } else {
 
+            elementsADisplay.add("            ");
             // Joueur dans une équipe
-            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F");
-            elementsADisplay.add(" ");
             elementsADisplay.add(playerTeam.getCouleur() + Lang.translate(Lang.hud_team_text.toString()));
             elementsADisplay.add(playerTeam.getNomEquipe());
-            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F ");
+
             elementsADisplay.add("  ");
             elementsADisplay.add(playerTeam.getCouleur() + Lang.translate(Lang.hud_score_text.toString()));
             if (playerTeam.getScore() >= 0) elementsADisplay.add("" + ChatColor.GREEN + playerTeam.getScore() + "");
             else elementsADisplay.add("" + ChatColor.RED + playerTeam.getScore() + "");
 
-            elementsADisplay.add("\u005F\u005F\u005F\u005F\u005F\u005F\u005F\u005F ");
-            elementsADisplay.add("   ");
+            KitAbstract playerKit = playerGame.groupe.getKitManager().getPlayerKit(player);
+            if (playerKit != null) elementsADisplay.add("       ");
+            if (playerKit != null)
+                elementsADisplay.add(playerTeam.getCouleur() + "Kit: " + ChatColor.WHITE + playerKit.getNom());
+
+            elementsADisplay.add("    ");
             elementsADisplay.add(playerTeam.getCouleur() + "X: " + ChatColor.WHITE + player.getLocation().getBlockX() + playerTeam.getCouleur() + " Y: " + ChatColor.WHITE + player.getLocation().getBlockY() + playerTeam.getCouleur() + " Z: " + ChatColor.WHITE + player.getLocation().getBlockZ());
 
 
@@ -544,11 +548,10 @@ public class PlayerUtils {
 
 
     public static void setMaxHealth(Player p) {
-        p.setHealth(20);
+        p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         p.setFoodLevel(30);
 
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        p.setHealth(20);
     }
 
 }

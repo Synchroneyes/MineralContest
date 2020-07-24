@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -45,8 +46,10 @@ public class Enchanteur extends KitAbstract {
      */
     @EventHandler
     public void onKitSelected(PlayerKitSelectedEvent event) {
+
         if (!isPlayerUsingThisKit(event.getPlayer())) return;
         applyKitEffectToPlayer(event.getPlayer());
+
     }
 
 
@@ -57,6 +60,8 @@ public class Enchanteur extends KitAbstract {
      */
     @EventHandler
     public void onPlayerRespawn(MCPlayerRespawnEvent event) {
+
+        Bukkit.getLogger().info("Called MCPlayerRespawnEvent");
         if (!isPlayerUsingThisKit(event.getJoueur())) return;
         applyKitEffectToPlayer(event.getJoueur());
     }
@@ -96,5 +101,7 @@ public class Enchanteur extends KitAbstract {
 
         joueur.setLevel(niveauxExpRespawn);
         joueur.getInventory().addItem(new ItemStack(Material.LAPIS_LAZULI, nombreLapisRespawn));
+
+        joueur.sendMessage("APPLIED");
     }
 }

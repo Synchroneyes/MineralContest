@@ -1128,7 +1128,7 @@ public class Game implements Listener {
         getParachuteManager().handleDrops();
 
         // On set le world border
-        mineralcontest.plugin.setWorldBorder();
+        mineralcontest.plugin.setWorldBorder(groupe);
 
         // On démarre les portes
         handleDoors();

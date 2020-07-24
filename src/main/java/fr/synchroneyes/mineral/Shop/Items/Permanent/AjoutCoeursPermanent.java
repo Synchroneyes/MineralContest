@@ -45,4 +45,9 @@ public class AjoutCoeursPermanent extends PermanentItem {
     public boolean isEnabledOnReconnect() {
         return false;
     }
+
+    @Override
+    public boolean isBonusCompatibleWithKits() {
+        return false;
+    }
 }

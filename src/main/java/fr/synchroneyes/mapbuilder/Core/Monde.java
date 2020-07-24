@@ -19,7 +19,9 @@ public class Monde {
     private Groupe groupe;
 
     public Monde() {
-        this.groupe = new Groupe();
+        if (mineralcontest.communityVersion) this.groupe = new Groupe();
+        else this.groupe = mineralcontest.plugin.getNonCommunityGroup();
+
         equipes = new LinkedList<>();
         arene = new Arene(groupe);
     }
