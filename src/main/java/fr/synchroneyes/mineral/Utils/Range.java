@@ -19,7 +19,7 @@ public class Range {
         this.max = max;
     }
 
-    public Range() {
+    public Range(int i, double goodLuckPercentage) {
     }
 
     public boolean isFilled() {

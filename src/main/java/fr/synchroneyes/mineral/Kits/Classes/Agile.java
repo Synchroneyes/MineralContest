@@ -3,7 +3,6 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -81,10 +80,10 @@ public class Agile extends KitAbstract {
      * @param joueur
      */
     private void addPlayerBonus(Player joueur) {
-        double defaultSpeed = 0.1;
+        float defaultSpeed = 0.2f;
 
         double nouvelleValeur = (defaultSpeed + (defaultSpeed * vitesseSupplementairePourcentage / 100));
 
-        joueur.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(nouvelleValeur);
+        joueur.setWalkSpeed((float) nouvelleValeur);
     }
 }

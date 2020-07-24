@@ -48,6 +48,24 @@ public class PlayerUtils {
         firework.setFireworkMeta(fireworkMeta);
     }
 
+    public static void setFirework(Player joueur, Color couleur, int puissance) {
+        Firework firework = (Firework) joueur.getWorld().spawn(joueur.getLocation(), Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+        // On ajoute un effet
+        fireworkMeta.addEffect(FireworkEffect.builder()
+                .flicker(true)
+                .trail(true)
+                .withColor(couleur)
+                .withFade(Color.WHITE)
+                .build()
+
+        );
+
+        fireworkMeta.setPower(puissance);
+        firework.setFireworkMeta(fireworkMeta);
+    }
+
     /**
      * Permet d'appliquer ou non l'ancien système de pvp
      *
@@ -416,6 +434,7 @@ public class PlayerUtils {
 
         // On remet la vitesse de base
         joueur.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1d);
+        joueur.setWalkSpeed(0.2f);
 
         // On remet les dégats de base
         joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1.0);

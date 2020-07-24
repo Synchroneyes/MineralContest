@@ -678,6 +678,8 @@ public class Game implements Listener {
 
                                     online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20 * 5, 0);
 
+                                    groupe.getKitManager().startKitLoop(20);
+
                                     // On TP le joueur dans sa maison
                                     try {
                                         if (!isReferee(online))

@@ -455,7 +455,7 @@ public class Groupe {
         Equipe oldPlayerTeam = getPlayerTeam(p);
         CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
 
-        getMapVote().removePlayerVote(p);
+        if (mapVote != null) getMapVote().removePlayerVote(p);
         getGame().removePlayerReady(p);
 
         DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p));

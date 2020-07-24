@@ -3,8 +3,11 @@ package fr.synchroneyes.mineral.Kits;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Kits.Classes.Soutien;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +32,8 @@ public class KitManager {
 
     // Partie où les kits doivent être gérés
     private Game partie;
+
+    private BukkitTask boucleGestionKits;
 
 
     /**
@@ -73,5 +78,38 @@ public class KitManager {
     public Class<? extends KitAbstract> getPlayerKit(Player joueur) {
         if (!kits_joueurs.containsKey(joueur)) return null;
         return kits_joueurs.get(joueur).getClass();
+    }
+
+    /**
+     * Fonction permettant d'effectuer un tour de boucle, de gestion des kits
+     * Exemple, pour le kit soutien, on utilisera la fonction de heal
+     */
+    private void kitLoop() {
+
+        // On regarde le kit de chaque joueur
+        for (Player joueur : groupe.getPlayers()) {
+
+            // On regarde si le joueur possède un kit
+            if (kits_joueurs.containsKey(joueur)) {
+
+                // Si le joueur possède le kit soutien
+                KitAbstract kit_joueur = kits_joueurs.get(joueur);
+                if (kit_joueur instanceof Soutien) ((Soutien) kit_joueur).healAroundPlayer(joueur);
+
+            }
+
+        }
+    }
+
+    /**
+     * FOnction permettant de démarrer la boucle de gestion des kits
+     *
+     * @param delay
+     */
+    public void startKitLoop(int delay) {
+        if (boucleGestionKits == null) {
+            boucleGestionKits = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::kitLoop, 0, delay);
+        }
+
     }
 }
