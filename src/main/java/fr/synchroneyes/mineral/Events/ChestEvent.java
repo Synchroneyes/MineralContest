@@ -33,6 +33,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class ChestEvent implements Listener {
 
@@ -225,6 +226,28 @@ public class ChestEvent implements Listener {
             Inventory clickedInventory = event.getInventory();
 
             if (partie.isGameStarted()) {
+
+
+                // On vérifie si c'est un item de bonus
+                Inventory inventory = event.getInventory();
+
+
+                // On vérifie que ce n'est pas un inventaire de joueur et que c'est bien un inventaire non null
+                if (inventory.getHolder() instanceof Chest) {
+                    // On récupère l'item
+                    ItemStack clickedItem = event.getCurrentItem();
+
+                    // Si l'item n'est pas null
+                    if (clickedItem != null) {
+                        // On vérifie maintenant que c'est un item de bonus!
+                        if (ShopManager.isAnShopItem(clickedItem)) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                    }
+                }
+
+
                 if (partie.getArene().getCoffre().getLocation().getBlock().getState() instanceof Chest) {
                     Chest arenaChest = (Chest) (partie.getArene().getCoffre().getLocation().getBlock().getState());
                     if (arenaChest.getInventory().equals(clickedInventory)) {

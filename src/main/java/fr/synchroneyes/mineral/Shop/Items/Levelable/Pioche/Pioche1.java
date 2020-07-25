@@ -3,15 +3,20 @@ package fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 
 /**
  * Ce bonus offre une pioche en fer avec l'enchantement Fortune I
  */
 public class Pioche1 extends LevelableItem {
+
+    public static String coloredItemName = ChatColor.GOLD + Lang.shopitem_pickaxelvl1_title.toString();
+
     @Override
     public Class getRequiredLevel() {
         return null;
@@ -65,6 +70,10 @@ public class Pioche1 extends LevelableItem {
 
 
         ItemStack pioche = new ItemStack(Material.IRON_PICKAXE);
+        ItemMeta meta = pioche.getItemMeta();
+
+        if (meta != null) meta.setDisplayName(coloredItemName);
+        pioche.setItemMeta(meta);
 
         pioche.addEnchantment(Enchantment.LOOT_BONUS_BLOCKS, 1);
 

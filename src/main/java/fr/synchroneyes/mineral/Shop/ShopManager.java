@@ -2,11 +2,17 @@ package fr.synchroneyes.mineral.Shop;
 
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche1;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche2;
+import fr.synchroneyes.mineral.Shop.Items.Levelable.Pioche.Pioche3;
+import fr.synchroneyes.mineral.Shop.Items.Permanent.EpeeDiamant;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -69,6 +75,50 @@ public class ShopManager {
 
         return YamlConfiguration.loadConfiguration(fichierPrix).getInt(bonusName);
 
+    }
+
+
+    /**
+     * Retourne vrai si l'item passé en paramètre est un item obtenu depuis un bonus
+     *
+     * @param item
+     * @return
+     */
+    public static boolean isAnShopItem(ItemStack item) {
+        if (item == null) return false;
+
+        // Si c'est une épée en diams (bonus epée diams)
+        if (item.getType() == Material.DIAMOND_SWORD) {
+            // On regarde si il y a un nom, et si c'est le même que celui du bonus épée diams
+            if (item.getItemMeta() != null && item.getItemMeta().getDisplayName().equals(EpeeDiamant.itemNameColored))
+                return true;
+            return false;
+        }
+
+        // On regarde si c'est un item levelable pioche
+        if (item.getType() == Material.IRON_PICKAXE) {
+            // ON regarde si c'est le lvl 1
+            if (item.getItemMeta() != null) {
+                // On check LVL 1
+                String itemName = item.getItemMeta().getDisplayName();
+                if (itemName.equals(Pioche1.coloredItemName)) return true;
+                return false;
+            }
+        }
+
+        if (item.getType() == Material.DIAMOND_PICKAXE) {
+            // ON regarde si c'est le lvl 1
+            if (item.getItemMeta() != null) {
+                // On check LVL 1
+                String itemName = item.getItemMeta().getDisplayName();
+                if (itemName.equals(Pioche2.coloredItemName)) return true;
+                if (itemName.equals(Pioche3.coloredItemName)) return true;
+
+                return false;
+            }
+        }
+
+        return false;
     }
 
 

@@ -25,7 +25,7 @@ public class WorldLoaded implements Listener {
             if (event.getWorld().getName().equalsIgnoreCase(world_name)) {
                 mineralcontest.plugin.pluginWorld = PlayerUtils.getPluginWorld();
                 mineralcontest.plugin.defaultSpawn = event.getWorld().getSpawnLocation();
-                mineralcontest.plugin.setDefaultWorldBorder();
+                //mineralcontest.plugin.setDefaultWorldBorder();
                 Bukkit.getLogger().info("[MINERALC] Default spawn location set");
                 Bukkit.getLogger().info("[MINERALC] Plugin enabled for world: " + world_name);
             }

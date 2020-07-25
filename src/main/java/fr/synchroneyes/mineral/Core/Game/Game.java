@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Game;
 
+import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
@@ -350,20 +351,30 @@ public class Game implements Listener {
             playersReady.add(p);
             groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p));
 
+
+            // Si tous les joueurs sont prêt
             if (areAllPlayersReady()) {
 
+                // SI on a pas encoré démarrer le vote, on le lance
                 if (groupe.getEtatPartie().equals(Etats.EN_ATTENTE)) {
-                    Bukkit.getLogger().severe("initVoteMap");
+                    Bukkit.getLogger().info(mineralcontest.prefix + " Starting vote for group " + groupe.getNom());
                     groupe.initVoteMap();
                     playersReady.clear();
                 } else {
+
+                    // Sinon, on va pouvoir démarrer la partie
+
+                    // Si tous les joueurs n'ont pas d'équipe
                     if (!allPlayerHaveTeam()) {
 
+                        // Si l'option de random est active, on génère les équipes aléatoirement
                         if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
                             randomizeTeam(true);
                             demarrerPartie(false);
                             return;
                         } else {
+
+                            // Sinon, on averti les joueurs sans équipe
                             //warnPlayerWithNoTeam();
                             startAllPlayerHaveTeamTimer();
                             return;
@@ -371,8 +382,15 @@ public class Game implements Listener {
 
                     }
 
+                    // Si la game était en pause, on redémarre la partie
                     if (isGamePaused()) resumeGame();
-                    else demarrerPartie(false);
+
+                        // Sinon, la game peut démarrer
+                    else {
+                        // On va ouvrir le menu de selection de kit à tous les joueurs, sauf les arbitres
+                        groupe.getKitManager().openMenuToEveryone(false);
+
+                    }
                 }
 
 
@@ -390,7 +408,9 @@ public class Game implements Listener {
             public void run() {
                 if (allPlayerHaveTeam()) {
                     try {
-                        demarrerPartie(false);
+
+                        groupe.getKitManager().openMenuToEveryone(false);
+                        //demarrerPartie(false);
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -514,7 +534,7 @@ public class Game implements Listener {
             removeAllDroppedItems();
         }
 
-        mineralcontest.plugin.setDefaultWorldBorder();
+        //mineralcontest.plugin.setDefaultWorldBorder();
         clear();
     }
 
@@ -644,6 +664,7 @@ public class Game implements Listener {
                             // METRIC
                             // On envoie les informations de la partie
                             SendInformation.sendGameData(SendInformation.start, instance);
+
                         }
 
 
@@ -664,6 +685,11 @@ public class Game implements Listener {
 
                                     PlayerUtils.clearPlayer(online);
                                     PlayerUtils.setMaxHealth(online);
+
+
+                                    // On appelle l'evenement de respawn
+                                    MCPlayerRespawnEvent respawnEvent = new MCPlayerRespawnEvent(online);
+                                    Bukkit.getPluginManager().callEvent(respawnEvent);
 
                                     if (groupe.getParametresPartie().getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1)
                                         online.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);

@@ -2,9 +2,7 @@ package fr.synchroneyes.mineral.Kits.Classes;
 
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
-import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
-import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,10 +38,7 @@ public class Guerrier extends KitAbstract {
 
         if (!isPlayerUsingThisKit(event.getJoueur())) return;
 
-        Player joueur = event.getJoueur();
-        Groupe groupe = mineralcontest.getPlayerGroupe(joueur);
-
-        setPlayerBonus(joueur);
+        setPlayerBonus(event.getJoueur());
 
         new Exception().printStackTrace();
 

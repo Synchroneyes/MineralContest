@@ -13,7 +13,7 @@ public class PlayerWorldChange implements Listener {
     public void onPlayerchangeWorld(PlayerChangedWorldEvent event) {
 
 
-        if (mineralcontest.isAMineralContestWorld(event.getFrom())) {
+        if (mineralcontest.isAMineralContestWorld(event.getFrom()) && !mineralcontest.isInAMineralContestWorld(event.getPlayer())) {
             ScoreboardUtil.unrankedSidebarDisplay(event.getPlayer(), "");
         }
 

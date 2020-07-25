@@ -320,10 +320,13 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
 
-
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new ItemDropped(), this);
+
+
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDisconnect(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
+
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerMove(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerSpawn(), this);
 

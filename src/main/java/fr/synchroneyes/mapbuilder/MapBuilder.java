@@ -147,6 +147,9 @@ public class MapBuilder {
     }
 
     public void sendPlayersHUD() {
+
+        if (!isBuilderModeEnabled) return;
+
         ArrayList<String> playerHudContents = new ArrayList<>();
         playerHudContents.add("MapBuiler mode enabled");
         playerHudContents.add(" ");

@@ -49,30 +49,48 @@ public class PlayerJoin implements Listener {
                 Groupe defaultGroupe = mineralcontest.plugin.getNonCommunityGroup();
 
 
+                // Si la game est démarré
                 // On le met comme spectateur
                 // Et on averti les admins
                 // Si le joueur est OP, on le met comme arbitre
 
-                if (joueur.isOp()) {
-                    defaultGroupe.addAdmin(joueur);
-                    defaultGroupe.getGame().addReferee(joueur);
+
+                // Si la game est démarrée
+                if (defaultGroupe.getGame().isGameStarted()) {
+                    if (joueur.isOp()) {
+                        defaultGroupe.addAdmin(joueur);
+                        defaultGroupe.getGame().addReferee(joueur);
+                    } else {
+                        // Sinon, il devient spectateur
+                        defaultGroupe.addJoueur(joueur);
+                        // On le TP au centre de l'arène si la partie est chargé
+                        if (defaultGroupe.getMonde() != null && defaultGroupe.getGame() != null && defaultGroupe.getGame().getArene() != null && defaultGroupe.getGame().getArene().getCoffre() != null && defaultGroupe.getGame().getArene().getCoffre().getLocation() != null)
+                            PlayerUtils.teleportPlayer(joueur, defaultGroupe.getMonde(), defaultGroupe.getGame().getArene().getCoffre().getLocation());
+
+                        joueur.setGameMode(GameMode.SPECTATOR);
+
+                        // Et on rend les autres joueurs visible par ce spectateur 5 secondes après sa connexion
+                        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                            for (Player membre_groupe : defaultGroupe.getPlayers())
+                                joueur.showPlayer(mineralcontest.plugin, membre_groupe);
+                        }, 5 * 20);
+
+                        defaultGroupe.sendToadmin(mineralcontest.prefixAdmin + "Le joueur " + joueur.getDisplayName() + " s'est connecté et a été mis en spectateur");
+                    }
                 } else {
-                    // Sinon, il devient spectateur
-                    defaultGroupe.addJoueur(joueur);
-                    // On le TP au centre de l'arène si la partie est chargé
-                    if (defaultGroupe.getMonde() != null && defaultGroupe.getGame() != null && defaultGroupe.getGame().getArene() != null && defaultGroupe.getGame().getArene().getCoffre() != null && defaultGroupe.getGame().getArene().getCoffre().getLocation() != null)
-                        PlayerUtils.teleportPlayer(joueur, defaultGroupe.getMonde(), defaultGroupe.getGame().getArene().getCoffre().getLocation());
+                    // La partie n'est pas encore démarré
+                    if (joueur.isOp()) {
 
-                    joueur.setGameMode(GameMode.SPECTATOR);
-
-                    // Et on rend les autres joueurs visible par ce spectateur 5 secondes après sa connexion
-                    Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-                        for (Player membre_groupe : defaultGroupe.getPlayers())
-                            joueur.showPlayer(mineralcontest.plugin, membre_groupe);
-                    }, 5 * 20);
-
-                    defaultGroupe.sendToadmin(mineralcontest.prefixAdmin + "Le joueur " + joueur.getDisplayName() + " s'est connecté et a été mis en spectateur");
+                        // Le jouuer est OP
+                        defaultGroupe.addAdmin(joueur);
+                        defaultGroupe.getGame().addReferee(joueur);
+                    } else {
+                        // Le joueur n'est pas OP
+                        defaultGroupe.addJoueur(joueur);
+                    }
                 }
+
+
 
 
             }

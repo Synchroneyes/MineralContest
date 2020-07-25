@@ -4,12 +4,14 @@ import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.Classes.*;
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.TextUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -95,15 +97,55 @@ public class KitManager implements Listener {
      */
     public void setPlayerKit(Player joueur, KitAbstract kit) {
 
-        joueur.sendMessage("Type: " + kit.getClass().getName());
         if (kits_joueurs.containsKey(joueur)) kits_joueurs.replace(joueur, kit);
         else kits_joueurs.put(joueur, kit);
 
         PlayerKitSelectedEvent event = new PlayerKitSelectedEvent(joueur, kit);
         Bukkit.getPluginManager().callEvent(event);
 
-        joueur.sendMessage("Vous êtes maintenant: " + kit.getNom());
-        Bukkit.getLogger().info(joueur.getDisplayName() + " -> " + kit.getNom() + " -> " + kit);
+        Bukkit.getLogger().info(joueur.getDisplayName() + " -> " + kit.getNom());
+
+
+        Equipe playerTeam = groupe.getPlayerTeam(joueur);
+
+        // On averti le serveur que le joueur a sélectionner un kit
+        if (playerTeam != null)
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + "Le joueur " + playerTeam.getCouleur() + joueur.getDisplayName() + ChatColor.WHITE + " a choisit son kit!");
+        if (playerTeam != null)
+            playerTeam.sendMessage(mineralcontest.prefixTeamChat + "Le joueur " + playerTeam.getCouleur() + joueur.getDisplayName() + ChatColor.WHITE + " a choisit le kit: " + kit.getNom());
+
+
+        String separateur = ChatColor.GOLD + "----------";
+        StringBuilder liste_pseudo_sans_team = new StringBuilder();
+
+        List<Player> liste_joueur_sans_kits = getPlayerWithoutKits(false);
+
+        // Si on a des joueurs sans kits
+        if (!liste_joueur_sans_kits.isEmpty()) {
+
+            // Pour chaque joueur sans kit
+            for (Player joueur_sans_kit : liste_joueur_sans_kits)
+                liste_pseudo_sans_team.append(joueur_sans_kit.getDisplayName()).append(", ");
+
+            String liste_joueur = liste_pseudo_sans_team.toString();
+            // ON retire la dernière virgule
+            liste_joueur = liste_joueur.substring(0, liste_joueur.length() - 2);
+
+            // On informe le chat
+            groupe.sendToEveryone(separateur);
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + "Joueurs sans kits: " + liste_joueur);
+            groupe.sendToEveryone(separateur);
+        }
+
+
+        // On regarde si on peut démarrer la partie
+        if (doesAllPlayerHaveAKit(false)) {
+            try {
+                groupe.getGame().demarrerPartie(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -289,5 +331,89 @@ public class KitManager implements Listener {
             }
         }
 
+    }
+
+
+    /**
+     * Permet d'ouvrir le mnu à tous les joueurs
+     *
+     * @param openToReferee - Si vrai, on ouvrira également le menu aux arbitres
+     */
+    public void openMenuToEveryone(boolean openToReferee) {
+
+        // Pour chaque jouuer de la partie
+        for (Player joueur : groupe.getPlayers()) {
+
+            if (groupe.getGame().isReferee(joueur)) {
+                if (openToReferee) {
+                    joueur.openInventory(getKitSelectionInventory());
+                }
+                continue;
+            }
+
+            // Le jouuer n'est pas arbitre
+            joueur.openInventory(getKitSelectionInventory());
+
+        }
+    }
+
+
+    /**
+     * Fonction retournant vrai si tous les joueurs ont un kit
+     *
+     * @param includeReferee - Inclure ou non les arbitre dans les joueurs qui ont besoin d'avoir un kit
+     * @return boolean
+     */
+    public boolean doesAllPlayerHaveAKit(boolean includeReferee) {
+
+        // On regarde pour tous les joueurs du groupe
+        for (Player joueur : groupe.getPlayers()) {
+
+            if (groupe.getGame().isReferee(joueur)) {
+                if (includeReferee) {
+                    // Si on ne contient pas le joueur dans la liste d'association de kit <-> joueur, on retourne faux
+                    if (!kits_joueurs.containsKey(joueur)) return false;
+                }
+                continue;
+            }
+
+
+            // Si on ne contient pas le joueur dans la liste d'association de kit <-> joueur, on retourne faux
+            if (!kits_joueurs.containsKey(joueur)) return false;
+
+        }
+
+        // Tous les joueurs ont un kit, on retourne vrai
+        return true;
+    }
+
+
+    /**
+     * Récupère une liste de joueurs sans kit
+     *
+     * @param includeReferee - Inclure ou non les arbitre dans les joueurs qui ont besoin d'avoir un kit
+     * @return
+     */
+    public List<Player> getPlayerWithoutKits(boolean includeReferee) {
+        List<Player> joueurs_sans_kits = new ArrayList<>();
+
+        // On regarde pour tous les joueurs du groupe
+        for (Player joueur : groupe.getPlayers()) {
+
+            if (groupe.getGame().isReferee(joueur)) {
+                if (includeReferee) {
+                    // Si on ne contient pas le joueur dans la liste d'association de kit <-> joueur, on retourne faux
+                    if (!kits_joueurs.containsKey(joueur)) joueurs_sans_kits.add(joueur);
+                }
+                continue;
+            }
+
+
+            // Si on ne contient pas le joueur dans la liste d'association de kit <-> joueur, on retourne faux
+            if (!kits_joueurs.containsKey(joueur)) joueurs_sans_kits.add(joueur);
+
+        }
+
+        return joueurs_sans_kits;
     }
 }

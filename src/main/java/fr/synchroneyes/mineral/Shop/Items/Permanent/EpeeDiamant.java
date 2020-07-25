@@ -5,12 +5,19 @@ import fr.synchroneyes.mineral.Shop.Items.Abstract.PermanentItem;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
 public class EpeeDiamant extends PermanentItem {
+
+
+    // Nom de l'item
+    public static String itemNameColored = ChatColor.AQUA + Lang.shopitem_diamond_sword_title.toString();
+
 
     @Override
     public String getNomItem() {
@@ -42,7 +49,16 @@ public class EpeeDiamant extends PermanentItem {
                 joueur.getInventory().remove(item);
 
 
-        joueur.getInventory().addItem(new ItemStack(Material.DIAMOND_SWORD, 1));
+        // On prépare l'item
+        ItemStack epee_diamant = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta meta = epee_diamant.getItemMeta();
+
+        if (meta != null) meta.setDisplayName(itemNameColored);
+
+        epee_diamant.setItemMeta(meta);
+
+
+        joueur.getInventory().addItem(epee_diamant);
     }
 
 
