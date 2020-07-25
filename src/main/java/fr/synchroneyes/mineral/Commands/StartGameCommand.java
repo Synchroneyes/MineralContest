@@ -35,7 +35,12 @@ public class StartGameCommand implements CommandExecutor {
                 try {
                     if (args.length == 1 && args[0].equals("force")) {
                         partie.demarrerPartie(true);
-                    } else partie.demarrerPartie(false);
+                    } else {
+                        if (!partie.groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                            partie.groupe.getKitManager().openMenuToEveryone(false);
+                        else partie.demarrerPartie(false);
+
+                    }
 
                 } catch (Exception e) {
                     sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());

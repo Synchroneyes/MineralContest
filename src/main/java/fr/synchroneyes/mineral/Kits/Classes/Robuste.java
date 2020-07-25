@@ -90,6 +90,8 @@ public class Robuste extends KitAbstract {
         joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(newDamage);
 
         joueur.setWalkSpeed((float) newSpeed);
+
+        joueur.setHealth(joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
     }
 
 }
