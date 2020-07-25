@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Kits;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -30,9 +31,15 @@ public abstract class KitAbstract implements Listener {
     public KitAbstract() {
         // Afin de pouvoir gérer les évènements
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
-
-
     }
+
+
+    /**
+     * Définir l'item qu'il faut afficher dans le menu
+     *
+     * @return
+     */
+    public abstract Material getRepresentationMaterialForSelectionMenu();
 
 
     /**

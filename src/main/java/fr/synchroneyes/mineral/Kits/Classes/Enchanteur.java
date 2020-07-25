@@ -3,7 +3,7 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
-import org.bukkit.Bukkit;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -30,12 +30,17 @@ public class Enchanteur extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Enchanteur";
+        return Lang.kit_wizard_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Vous réapparaissez avec 15 niveaux d'experience, 32 lapis lazuli, et 3 livres d'enchantement";
+        return Lang.kit_wizard_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.ENCHANTING_TABLE;
     }
 
 
@@ -60,8 +65,6 @@ public class Enchanteur extends KitAbstract {
      */
     @EventHandler
     public void onPlayerRespawn(MCPlayerRespawnEvent event) {
-
-        Bukkit.getLogger().info("Called MCPlayerRespawnEvent");
         if (!isPlayerUsingThisKit(event.getJoueur())) return;
         applyKitEffectToPlayer(event.getJoueur());
     }
@@ -101,7 +104,5 @@ public class Enchanteur extends KitAbstract {
 
         joueur.setLevel(niveauxExpRespawn);
         joueur.getInventory().addItem(new ItemStack(Material.LAPIS_LAZULI, nombreLapisRespawn));
-
-        joueur.sendMessage("APPLIED");
     }
 }

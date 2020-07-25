@@ -79,6 +79,14 @@ public class MCCvarCommand extends CommandTemplate {
 
                     }
 
+                    if (cvar.getCommand().equalsIgnoreCase("enable_kits")) {
+                        if (cvar.getValeurNumerique() == 1) {
+                            playerGroup.getKitManager().setKitsEnabled(true);
+                        } else {
+                            playerGroup.getKitManager().setKitsEnabled(false);
+                        }
+                    }
+
                     return false;
                 }
 

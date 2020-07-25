@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,12 +26,17 @@ public class Robuste extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Robuste";
+        return Lang.kit_toughguy_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Vous avez 15 coeurs, 15% de dégats en moins, et 15% de vitesse en moins";
+        return Lang.kit_toughguy_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.GOLDEN_CHESTPLATE;
     }
 
 

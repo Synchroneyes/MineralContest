@@ -83,7 +83,6 @@ public class PlayerJoin implements Listener {
 
                         // Le jouuer est OP
                         defaultGroupe.addAdmin(joueur);
-                        defaultGroupe.getGame().addReferee(joueur);
                     } else {
                         // Le joueur n'est pas OP
                         defaultGroupe.addJoueur(joueur);

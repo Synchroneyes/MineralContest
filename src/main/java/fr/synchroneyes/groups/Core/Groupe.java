@@ -11,7 +11,6 @@ import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
-import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Kits.KitManager;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
@@ -20,8 +19,9 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.bukkit.Location;
+import lombok.Setter;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -40,6 +40,9 @@ public class Groupe {
     private LinkedList<Player> admins;
     private LinkedList<Player> joueurs;
     private LinkedList<Player> joueursInvites;
+
+
+    @Setter(AccessLevel.PROTECTED)
     private World gameWorld;
     private MapVote mapVote;
 
@@ -202,21 +205,22 @@ public class Groupe {
         try {
 
             sendToEveryone(mineralcontest.prefixGroupe + "Chargement de la map \"" + nomMonde + "\" en cours ...");
-            this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
-            this.gameWorld.setAutoSave(false);
+            //this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
+            //this.gameWorld.setAutoSave(false);
+
+            worldLoader.chargerMondeThreade(nomMonde, this);
+
+
         } catch (Exception e) {
             sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde. Erreur: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
 
-        if (gameWorld == null) {
-            sendToadmin(mineralcontest.prefixErreur + " Impossible de charger le monde.");
-            return false;
-        }
 
 
-        Location worldSpawnLocation = gameWorld.getSpawnLocation();
+
+        /*Location worldSpawnLocation = gameWorld.getSpawnLocation();
 
         try {
             if (worldSpawnLocation.getX() == WorldLoader.defaultX && worldSpawnLocation.getY() == WorldLoader.defaultY && worldSpawnLocation.getZ() == WorldLoader.defaultZ)
@@ -241,9 +245,10 @@ public class Groupe {
         setMapName(nomMonde);
 
 
-        if (this.mapVote != null) this.mapVote.clearVotes();
+        if (this.mapVote != null) this.mapVote.clearVotes();*/
         return true;
     }
+
 
     /**
      * Décharge un monde
@@ -490,7 +495,7 @@ public class Groupe {
 
                     // On remet le joueur dans son équipe
                     if (infoJoueur.getOldPlayerTeam() != null)
-                        infoJoueur.getOldPlayerTeam().addPlayerToTeam(p, true, false);
+                        infoJoueur.getOldPlayerTeam().addPlayerToTeam(p, false);
 
                     // Si le joueur était mort, on le remets
                     if (infoJoueur.wasPlayerDead()) {

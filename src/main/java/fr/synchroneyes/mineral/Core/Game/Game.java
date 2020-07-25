@@ -370,7 +370,9 @@ public class Game implements Listener {
                         // Si l'option de random est active, on génère les équipes aléatoirement
                         if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
                             randomizeTeam(true);
-                            demarrerPartie(false);
+                            if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                                groupe.getKitManager().openMenuToEveryone(false);
+
                             return;
                         } else {
 
@@ -388,7 +390,8 @@ public class Game implements Listener {
                         // Sinon, la game peut démarrer
                     else {
                         // On va ouvrir le menu de selection de kit à tous les joueurs, sauf les arbitres
-                        groupe.getKitManager().openMenuToEveryone(false);
+                        if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                            groupe.getKitManager().openMenuToEveryone(false);
 
                     }
                 }
@@ -496,7 +499,7 @@ public class Game implements Listener {
             //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
 
 
-            if (isGameStarted() || isPreGame() && switchToTeam) setPlayerRandomTeam(player);
+            if ((isGameStarted() || isPreGame()) && switchToTeam) setPlayerRandomTeam(player);
         }
 
     }
@@ -511,7 +514,7 @@ public class Game implements Listener {
 
         if (getPlayerTeam(p) != null) getPlayerTeam(p).removePlayer(p);
         try {
-            equipes.get(nombreAleatoire).getTeam().addPlayerToTeam(p, true, true);
+            equipes.get(nombreAleatoire).getTeam().addPlayerToTeam(p, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -620,13 +623,15 @@ public class Game implements Listener {
                             double y = Math.pow(firstDoorBlock.getZ() - playerLocation.getZ(), 2.0);
 
                             // Le joueur est trop loin de sa maison ...
-                            if (Math.sqrt(x + y) > 5) continue;
+                            if (Math.sqrt(x + y) > 5) {
+                                maison.getPorte().playerIsNotNearDoor(online);
+                                continue;
+                            }
 
                             // Le joueur est proche, on vérifie si il peut ouvrir la porte ou non
                             for (DisplayBlock blockDePorte : maison.getPorte().getPorte()) {
                                 if (Radius.isBlockInRadius(blockDePorte.getPosition(), online.getLocation(), rayonPorte)) {
                                     maison.getPorte().playerIsNearDoor(online);
-                                    break;
                                 } else {
                                     //blockDePorte.display();
                                     maison.getPorte().playerIsNotNearDoor(online);
@@ -1061,6 +1066,15 @@ public class Game implements Listener {
             PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
 
             if (!allPlayerHaveTeam()) randomizeTeam(forceGameStart);
+
+            // Si les kits sont actif, on met tout le monde ready, et on ouvre le menu
+            if (groupe.getKitManager().isKitsEnabled()) {
+
+                // Pour chaque joueur
+                for (Player joueur : groupe.getPlayers())
+                    setPlayerReady(joueur);
+                return true;
+            }
         }
 
 
@@ -1206,7 +1220,7 @@ public class Game implements Listener {
 
             Player joueuraAttribuer = joueursEnAttente.get(numeroJoueurRandom);
             House equipeAAttribuer = equipesDispo.get(numeroEquipeRandom);
-            equipeAAttribuer.getTeam().addPlayerToTeam(joueuraAttribuer, false, true);
+            equipeAAttribuer.getTeam().addPlayerToTeam(joueuraAttribuer, true);
 
             equipesDispo.remove(numeroEquipeRandom);
             joueursEnAttente.remove(numeroJoueurRandom);
@@ -1222,7 +1236,7 @@ public class Game implements Listener {
         for (House house : equipes) {
             if (ChatColorString.toString(house.getTeam().getCouleur()).equalsIgnoreCase(teamName)) {
                 if (team != null) team.removePlayer(joueur);
-                house.getTeam().addPlayerToTeam(joueur, true, false);
+                house.getTeam().addPlayerToTeam(joueur, false);
                 return;
             }
 

@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Kits.Classes;
 
 import fr.synchroneyes.mineral.Exception.MaterialNotInRangeException;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Range;
 import org.bukkit.Color;
@@ -46,12 +47,17 @@ public class Parieur extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Parieur Fou";
+        return Lang.kit_crazy_bet_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Lorsque vous minez un minerai d'émeraude, vous avez " + goodLuckPercentage + "% de chance d'avoir " + goodLuckMultiplier + " émeraude(s), ou alors " + badLuckPercentage + "% de chance d'avoir " + badLuckMultiplier + " de terre.";
+        return Lang.kit_crazy_bet_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.EMERALD_ORE;
     }
 
 

@@ -106,6 +106,14 @@ public class GameSettings {
                     }
 
                 }
+
+                if (parametre.getCommand().equalsIgnoreCase("enable_kits")) {
+                    if (parametre.getValeurNumerique() == 1) {
+                        groupe.getKitManager().setKitsEnabled(true);
+                    } else {
+                        groupe.getKitManager().setKitsEnabled(false);
+                    }
+                }
                 break;
             }
         }
@@ -281,6 +289,7 @@ public class GameSettings {
 
 
             parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, true));
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

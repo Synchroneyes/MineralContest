@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -19,12 +21,17 @@ public class Agile extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Agile";
+        return Lang.kit_agile_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Vous permet de vous déplacer 25% plus vite, et retire vos dégats de chute";
+        return Lang.kit_agile_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.GOLDEN_BOOTS;
     }
 
     /**

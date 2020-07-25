@@ -3,8 +3,10 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -32,12 +34,17 @@ public class Soutien extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Soutien";
+        return Lang.kit_support_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "heal ses amis proche de lui, possède -5 coeurs et -15% de speed";
+        return Lang.kit_support_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.GOLDEN_APPLE;
     }
 
 

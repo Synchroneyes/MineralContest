@@ -503,6 +503,8 @@ public class PlayerUtils {
 
             item_a_drop.add(Material.POTION);
             item_a_drop.add(Material.REDSTONE);
+            item_a_drop.add(Material.ENCHANTED_BOOK);
+
 
             Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
             GameSettings settings = playerGroup.getParametresPartie();

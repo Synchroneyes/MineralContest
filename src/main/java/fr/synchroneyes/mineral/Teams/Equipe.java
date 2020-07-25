@@ -200,7 +200,7 @@ public class Equipe implements Comparable<Equipe> {
     }
 
 
-    public boolean addPlayerToTeam(Player p, boolean switched, boolean teleportToBase) throws Exception {
+    public boolean addPlayerToTeam(Player p, boolean teleportToBase) throws Exception {
 
 
         Game partie = mineralcontest.getPlayerGame(p);

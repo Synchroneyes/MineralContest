@@ -395,8 +395,6 @@ public final class mineralcontest extends JavaPlugin {
             //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
 
-            bukkitCommandMap.register("", new Debug_SetKit());
-
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());
 

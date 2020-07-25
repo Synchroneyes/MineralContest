@@ -5,14 +5,13 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.Classes.*;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.TextUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,6 +40,7 @@ public class KitManager implements Listener {
     private Map<Player, KitAbstract> kits_joueurs;
 
     @Getter
+    @Setter
     private boolean kitsEnabled = true;
 
     @Getter
@@ -55,8 +55,6 @@ public class KitManager implements Listener {
 
     // Boucle gérant la boucle pour les action des kits (ex soutien auto heal)
     private BukkitTask boucleGestionKits;
-
-    private String kitSelectionTitle = "Selectionnez votre kit.";
 
     // Variable contenant le selecteur de kit
     private Inventory kitSelection = null;
@@ -110,9 +108,9 @@ public class KitManager implements Listener {
 
         // On averti le serveur que le joueur a sélectionner un kit
         if (playerTeam != null)
-            groupe.sendToEveryone(mineralcontest.prefixGlobal + "Le joueur " + playerTeam.getCouleur() + joueur.getDisplayName() + ChatColor.WHITE + " a choisit son kit!");
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.kitmanager_player_selected_kit.toString(), joueur));
         if (playerTeam != null)
-            playerTeam.sendMessage(mineralcontest.prefixTeamChat + "Le joueur " + playerTeam.getCouleur() + joueur.getDisplayName() + ChatColor.WHITE + " a choisit le kit: " + kit.getNom());
+            playerTeam.sendMessage(mineralcontest.prefixTeamChat + Lang.translate(Lang.kitmanager_player_selected_kit_team.toString(), joueur).replace("%k", kit.getNom()));
 
 
         String separateur = ChatColor.GOLD + "----------";
@@ -133,7 +131,7 @@ public class KitManager implements Listener {
 
             // On informe le chat
             groupe.sendToEveryone(separateur);
-            groupe.sendToEveryone(mineralcontest.prefixGlobal + "Joueurs sans kits: " + liste_joueur);
+            groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.kitmanager_player_list_without_kits.toString() + liste_joueur);
             groupe.sendToEveryone(separateur);
         }
 
@@ -219,20 +217,19 @@ public class KitManager implements Listener {
 
         // On crée un inventaire d'une ligne
         if (kitSelection == null) {
-            this.kitSelection = Bukkit.createInventory(null, 9, kitSelectionTitle);
+            this.kitSelection = Bukkit.createInventory(null, 9, Lang.kitmanager_inventory_kitSelectionTitle.toString());
 
             // On veut ne veut pas de stack d'item
             this.kitSelection.setMaxStackSize(1);
 
             // On ajoute les kits disponibles
             for (KitAbstract kit : kitsDisponible) {
-                ItemStack itemKit = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+                ItemStack itemKit = new ItemStack(kit.getRepresentationMaterialForSelectionMenu());
                 ItemMeta kitMeta = itemKit.getItemMeta();
 
                 kitMeta.setDisplayName(kit.getNom());
 
-                kitMeta.setLore(TextUtils.textToLore(kit.getDescription()));
-                Bukkit.getLogger().info(WordUtils.wrap(kit.getDescription(), 70));
+                kitMeta.setLore(TextUtils.textToLore(kit.getDescription(), 50));
 
                 itemKit.setItemMeta(kitMeta);
 

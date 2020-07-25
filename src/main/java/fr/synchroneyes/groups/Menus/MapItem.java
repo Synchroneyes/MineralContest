@@ -20,6 +20,7 @@ public class MapItem extends RefereeItemTemplate {
     public void performClick(Player joueur) {
 
         groupe.getMapVote().enregistrerVoteJoueur(customName, joueur);
+        joueur.closeInventory();
     }
 
     @Override

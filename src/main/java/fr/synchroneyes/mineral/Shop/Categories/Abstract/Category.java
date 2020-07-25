@@ -180,7 +180,7 @@ public abstract class Category {
                     }
 
                     if (!item.getKey().isBonusCompatibleWithKits() && playerGroup.getKitManager().isKitsEnabled()) {
-                        joueur.sendMessage("Non compatible avec le système de kits");
+                        joueur.sendMessage(mineralcontest.prefixErreur + Lang.shopitem_not_compatible_with_kits.toString());
                         return;
                     }
 

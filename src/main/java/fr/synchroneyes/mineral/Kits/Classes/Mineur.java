@@ -4,6 +4,7 @@ import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.RawToCooked;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -21,12 +22,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Mineur extends KitAbstract {
     @Override
     public String getNom() {
-        return "Mineur";
+        return Lang.kit_miner_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Cuit instantanément vos minerais, mais vous retire une ligne dans votre inventaire";
+        return Lang.kit_miner_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.GOLDEN_PICKAXE;
     }
 
 
@@ -134,7 +140,7 @@ public class Mineur extends KitAbstract {
         ItemStack barriere = new ItemStack(Material.BARRIER);
 
         ItemMeta meta = barriere.getItemMeta();
-        meta.setDisplayName("Accès interdit");
+        meta.setDisplayName(Lang.kit_miner_item_denied.toString());
 
         barriere.setItemMeta(meta);
         return barriere;

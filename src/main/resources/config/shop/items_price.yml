@@ -18,9 +18,9 @@ speed1_potion: 250
 speed2_potion: 350
 
 # Bonus permanent
-permanent_more_health: 1500
-permanent_auto_cook_ore: 1500
-permanent_diamond_sword: 1000
+permanent_more_health: 2500
+permanent_auto_cook_ore: 2500
+permanent_diamond_sword: 2000
 
 # Team bonus
 team_enable_chest_announcement: 350

@@ -68,7 +68,7 @@ public class JoinTeamItem extends ItemInterface {
 
         try {
 
-            this.team.addPlayerToTeam(joueur, true, !playerGroup.getGame().isGameStarted());
+            this.team.addPlayerToTeam(joueur, !playerGroup.getGame().isGameStarted());
 
         } catch (Exception e) {
             e.printStackTrace();

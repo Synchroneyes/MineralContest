@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral.Kits.Classes;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,12 +21,17 @@ public class Guerrier extends KitAbstract {
 
     @Override
     public String getNom() {
-        return "Guerrier";
+        return Lang.kit_warrior_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Vous faites 25% de dégats en plus, mais vous avez 5 coeurs en moins";
+        return Lang.kit_warrior_description.toString();
+    }
+
+    @Override
+    public Material getRepresentationMaterialForSelectionMenu() {
+        return Material.GOLDEN_SWORD;
     }
 
 

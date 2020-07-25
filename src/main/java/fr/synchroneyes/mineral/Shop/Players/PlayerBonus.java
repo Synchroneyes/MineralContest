@@ -171,7 +171,7 @@ public class PlayerBonus {
         }
 
 
-        joueur.sendMessage(Lang.translate(item.getPurchaseText()));
+        joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(item.getPurchaseText()));
         item.setJoueur(joueur);
 
 

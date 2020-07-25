@@ -26,6 +26,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -172,15 +173,26 @@ public class ChestEvent implements Listener {
                 return;
             }
 
-            if (event.getInventory().getHolder() instanceof Chest) {
+            if (event.getInventory().getHolder() instanceof Chest || event.getInventory().getHolder() instanceof StorageMinecart) {
 
-                Chest openedChest = (Chest) event.getInventory().getHolder();
-                Block openedChestBlock = openedChest.getBlock();
 
-                // the inventory opened comes from a chest.
-                if (!game.isThisBlockAGameChest(openedChestBlock)) {
-                    openedChest.getInventory().clear();
+                if (event.getInventory().getHolder() instanceof Chest) {
+                    Chest openedChest = (Chest) event.getInventory().getHolder();
+                    Block openedChestBlock = openedChest.getBlock();
+
+                    // the inventory opened comes from a chest.
+                    if (!game.isThisBlockAGameChest(openedChestBlock)) {
+                        openedChest.getInventory().clear();
+                        return;
+                    }
                 }
+
+                if (event.getInventory().getHolder() instanceof StorageMinecart) {
+                    StorageMinecart storageMinecart = (StorageMinecart) event.getInventory().getHolder();
+                    storageMinecart.getInventory().clear();
+                    return;
+                }
+
 
             }
         }

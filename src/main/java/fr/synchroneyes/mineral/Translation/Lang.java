@@ -385,7 +385,31 @@ public enum Lang {
     stats_mostpoints_subtitle("stats_mostpoints_subtitle", "Avec %d points rapporté"),
 
     stats_mostpoints_taken_title("stats_mostpoints_taken_title", "Petit coquin"),
-    stats_mostpoints_taken_subtitle("stats_mostpoints_taken_subtitle", "Avec %d points retirés aux autres équipes");
+    stats_mostpoints_taken_subtitle("stats_mostpoints_taken_subtitle", "Avec %d points retirés aux autres équipes"),
+
+    kitmanager_player_selected_kit("kitmanager_player_selected_kit", "Le joueur %playerName% a choisit son kit."),
+    kitmanager_player_selected_kit_team("kitmanager_player_selected_kit_team", "Le joueur %playerName% a choisit le kit: %k"),
+    kitmanager_player_list_without_kits("kitmanager_player_list_without_kits", "Liste des joueurs n'ayant pas encore de kit: "),
+    kitmanager_inventory_kitSelectionTitle("kitmanager_inventory_kitSelectionTitle", "Selectionnez votre kit"),
+
+    kit_agile_title("kit_agile_title", "Agile"),
+    kit_agile_description("kit_agile_description", "Vous permet de vous déplacer 25% plus vite, et retire vos dégats de chute (sauf chute mortelle!)"),
+    kit_wizard_title("kit_wizard_title", "Enchanteur"),
+    kit_wizard_description("kit_wizard_description", "Vous réapparaissez avec 15 niveaux d'experience, 32 lapis lazuli, et 3 livres d'enchantement"),
+    kit_warrior_title("kit_warrior_title", "Guerrier"),
+    kit_warrior_description("kit_warrior_description", "Vous faites 25% de dégats en plus, mais vous avez 5 coeurs en moins"),
+    kit_miner_title("kit_miner_title", "Mineur"),
+    kit_miner_description("kit_miner_description", "Cuit instantanément vos minerais, mais vous retire une ligne dans votre inventaire"),
+    kit_miner_item_denied("kit_miner_item_denied", "Bloqué"),
+    kit_crazy_bet_title("kit_crazy_bet_title", "Parieur fou"),
+    kit_crazy_bet_description("kit_crazy_bet_description", "Lorsque vous minez de l'émeraude, vous avez 20% de chance d'avoir 2 émeraudes, et 20% d'avoir 2 blocs de terre."),
+    kit_toughguy_title("kit_toughguy_title", "Robuste"),
+    kit_toughguy_description("kit_toughguy_description", "Vous avez 15 coeurs, 15% de dégats en moins, et 15% de vitesse en moins"),
+    kit_support_title("kit_support_title", "Soutien"),
+    kit_support_description("kit_support_description", "Vous donnez de la vie à vos alliés proche de vous, vous avez 5 coeurs en moins et 15% de vitesse en moins"),
+
+    shopitem_not_compatible_with_kits("shopitem_not_compatible_with_kits", "Désactivé lorsque les kits sont actifs");
+
 
 
 

@@ -4,6 +4,7 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
+import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
@@ -29,8 +30,28 @@ public class PlayerMove implements Listener {
                 House playerTeam = game.getPlayerHouse(event.getPlayer());
                 if (playerTeam != null && !game.isReferee(event.getPlayer())) {
                     for (House house : game.getHouses()) {
-                        if (playerTeam != house) {
+
+                        // Pour optimiser, on va regarder si le joueur est proche ou non de la maison
+                        // Si le joueur est trop loin, pas besoin de faire toutes les verifs
+
+
+                        // On récupère la première position
+                        Location firstDoorBlock = house.getPorte().getPorte().getFirst().getPosition();
+                        Location playerLocation = event.getPlayer().getLocation();
+
+                        // On regarde si le joueur n'est pas trop loin ...
+                        double x = Math.pow(firstDoorBlock.getX() - playerLocation.getX(), 2.0);
+                        double y = Math.pow(firstDoorBlock.getZ() - playerLocation.getZ(), 2.0);
+
+                        // Le joueur est trop loin de la maison ...
+                        if (Math.sqrt(x + y) >= (houseRadius + 3)) {
+                            continue;
+                        }
+
+
+                        if (playerTeam != house || PlayerUtils.isPlayerInDeathZone(event.getPlayer())) {
                             try {
+
 
                                 for (DisplayBlock blockDePorte : house.getPorte().getPorte()) {
                                     Location locationblock = blockDePorte.getBlock().getLocation();

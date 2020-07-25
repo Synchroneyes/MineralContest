@@ -12,8 +12,7 @@ public class TextUtils {
      *
      * @param text
      */
-    public static List<String> textToLore(String text) {
-        int nbCaractereAvantNouvelleLigne = 70;
+    public static List<String> textToLore(String text, int nbCaractereAvantNouvelleLigne) {
         String wrapped = WordUtils.wrap(text, nbCaractereAvantNouvelleLigne);
         wrapped = wrapped.replace("\r", "");
         return Arrays.asList(wrapped.split("\n"));

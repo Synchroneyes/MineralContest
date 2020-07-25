@@ -6,6 +6,7 @@ import fr.synchroneyes.groups.Utils.FileManager.FileCopy;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.ShopManager;
@@ -17,6 +18,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,6 +117,75 @@ public class WorldLoader {
 
         return null;
 
+    }
+
+
+    /**
+     * Permet de charger un monde dans un thread séparé
+     *
+     * @param nomMap - nom de la map à charger
+     * @param groupe - groupe jouant cette carte
+     */
+    protected void chargerMondeThreade(String nomMap, Groupe groupe) {
+
+        BukkitRunnable chargementMap = new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    World mondeCharge = doChargerMonde(nomMap, groupe.getIdentifiant());
+
+                    mondeCharge.setAutoSave(false);
+                    groupe.setGameWorld(mondeCharge);
+
+                    Location worldSpawnLocation = mondeCharge.getSpawnLocation();
+
+                    try {
+                        if (worldSpawnLocation.getX() == WorldLoader.defaultX && worldSpawnLocation.getY() == WorldLoader.defaultY && worldSpawnLocation.getZ() == WorldLoader.defaultZ)
+                            worldSpawnLocation = groupe.getGame().getArene().getCoffre().getLocation();
+                    } catch (Exception e) {
+                        worldSpawnLocation = mondeCharge.getSpawnLocation();
+                    }
+
+
+                    for (Player joueur : groupe.getPlayers()) {
+                        joueur.getInventory().clear();
+
+                        // Si le joueur est un arbitre, on lui donne le livre
+                        if (groupe.getGame().isReferee(joueur))
+                            joueur.getInventory().setItemInMainHand(Referee.getRefereeItem());
+
+                            // Sinon, on lui donne le livre de selection d'équipe!
+                        else if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 0) {
+                            joueur.getInventory().setItemInMainHand(Game.getTeamSelectionItem());
+                            joueur.sendMessage(groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() + "");
+                        }
+                        joueur.teleport(worldSpawnLocation);
+                        joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
+                    }
+
+                    groupe.setMapName(nomMonde);
+
+
+                    if (groupe.getMapVote() != null) groupe.getMapVote().clearVotes();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+
+        File dossierMaps = new File(folder_name);
+
+        File[] maps = dossierMaps.listFiles();
+
+        for (File map : maps)
+            if (map.isDirectory())
+                if (nomMap.equalsIgnoreCase(map.getName())) {
+                    chargementMap.runTask(mineralcontest.plugin);
+                    break;
+                }
     }
 
     public void supprimerMonde(World world) {
