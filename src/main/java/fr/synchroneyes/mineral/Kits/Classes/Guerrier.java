@@ -47,9 +47,6 @@ public class Guerrier extends KitAbstract {
 
         setPlayerBonus(event.getJoueur());
 
-        new Exception().printStackTrace();
-
-
     }
 
     /**

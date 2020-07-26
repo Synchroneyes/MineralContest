@@ -463,7 +463,7 @@ public class Groupe {
         if (mapVote != null) getMapVote().removePlayerVote(p);
         getGame().removePlayerReady(p);
 
-        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p));
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
         if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
         retirerJoueur(p);
     }
@@ -513,6 +513,8 @@ public class Groupe {
                         p.getInventory().addItem(item);
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
+
+                    if (infoJoueur.getKit() != null) getKitManager().setPlayerKit(p, infoJoueur.getKit());
 
                     PlayerBonus playerBonusManager = getGame().getPlayerBonusManager();
                     playerBonusManager.setPlayerBonusList(p, infoJoueur.getBonus());

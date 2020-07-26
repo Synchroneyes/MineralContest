@@ -6,6 +6,7 @@ import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,20 +17,21 @@ import java.util.List;
 public class mcarena extends CommandTemplate {
 
     private LinkedList<String> actionsPossible;
-    public static Monde monde = MapBuilder.monde;
 
 
     public mcarena() {
 
+
         this.actionsPossible = new LinkedList<>();
         actionsPossible.add("setCoffreLocation");
         actionsPossible.add("setTeleportLocation");
+        actionsPossible.add("setSafezoneRadius");
 
 
         addArgument("action", true);
+        addArgument("taille", false);
 
 
-        if (monde == null) monde = new Monde();
 
         accessCommande.add(PLAYER_COMMAND);
         constructArguments();
@@ -37,6 +39,7 @@ public class mcarena extends CommandTemplate {
 
     @Override
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+        Monde monde = MapBuilder.monde;
         Player joueur = (Player) commandSender;
         if (args[0].equalsIgnoreCase("setCoffreLocation")) {
             Location coffreLocation = joueur.getLocation().getBlock().getLocation();
@@ -51,6 +54,14 @@ public class mcarena extends CommandTemplate {
             joueur.sendMessage(mineralcontest.prefixPrive + "La position de téléportation de /arene a bien été ajoutée en " + coffreLocation.toVector().toString());
 
             return false;
+        }
+
+        if (args[0].equalsIgnoreCase("setSafezoneRadius")) {
+            Location teleportLocation = monde.getArene().getTeleportSpawn();
+            World _monde = teleportLocation.getWorld();
+            _monde.getWorldBorder().setCenter(teleportLocation);
+            _monde.getWorldBorder().setSize(Integer.parseInt(args[1]) * 2);
+            monde.setArena_safezone_radius(Integer.parseInt(args[1]));
         }
 
         return false;

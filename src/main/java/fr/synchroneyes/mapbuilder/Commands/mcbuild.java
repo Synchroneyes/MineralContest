@@ -4,13 +4,17 @@ import fr.synchroneyes.groups.Commands.CommandTemplate;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,11 +24,11 @@ import java.util.List;
 public class mcbuild extends CommandTemplate {
 
     private LinkedList<String> actionsPossible;
-    public static Monde monde = MapBuilder.monde;
 
 
 
     public mcbuild() {
+
 
         this.actionsPossible = new LinkedList<>();
         actionsPossible.add("save");
@@ -32,7 +36,7 @@ public class mcbuild extends CommandTemplate {
         actionsPossible.add("setSpawn");
         actionsPossible.add("enable");
         actionsPossible.add("disable");
-
+        actionsPossible.add("playzone_radius");
 
         addArgument("action", true);
         addArgument("nom de la map", false);
@@ -47,7 +51,16 @@ public class mcbuild extends CommandTemplate {
 
     @Override
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+        Monde monde = MapBuilder.monde;
+
         Player joueur = (Player) commandSender;
+
+        Bukkit.getLogger().info("x: " + joueur.getLocation().getX() + "");
+        Bukkit.getLogger().info("y: " + joueur.getLocation().getY() + "");
+        Bukkit.getLogger().info("z: " + joueur.getLocation().getZ() + "");
+        Bukkit.getLogger().info("pitch: " + joueur.getLocation().getPitch() + "");
+        Bukkit.getLogger().info("yaw: " + joueur.getLocation().getYaw() + "");
+
         if (args[0].equalsIgnoreCase("save")) {
             if (args.length == 2) {
                 String nomMap = args[1];
@@ -69,13 +82,22 @@ public class mcbuild extends CommandTemplate {
             AreneItem item = new AreneItem();
             item.giveItemToPlayer((Player) commandSender);
             commandSender.sendMessage(mineralcontest.prefixPrive + "Vous avez reçu le bloc de création d'arène Vous n'avez plus qu'a le poser");*/
-            MapBuilder.getInstance().getMenuManager().openInventory(joueur);
+            //MapBuilder.getInstance().getMenuManager().openInventory(joueur);
             return false;
         }
 
         if (args[0].equalsIgnoreCase("setSpawn")) {
             monde.setSpawnDepart(joueur.getLocation());
             joueur.sendMessage(mineralcontest.prefixPrive + "Le spawn de départ pour ce monde a bien été enregistré !");
+            return false;
+        }
+
+        if (args[0].equalsIgnoreCase("playzone_radius")) {
+            int taille = Integer.parseInt(args[1]);
+            World _monde = joueur.getWorld();
+            _monde.getWorldBorder().setCenter(monde.getArene().getCoffre().getLocation());
+            _monde.getWorldBorder().setSize(taille * 2);
+            monde.setHouses_playzone_radius(taille);
             return false;
         }
 
@@ -105,6 +127,7 @@ public class mcbuild extends CommandTemplate {
         yamlConfiguration.set("map_name", nom);
 
         Location spawnLocation = monde.getSpawnDepart();
+
 
         if (spawnLocation == null) {
             yamlConfiguration.set("default_spawn", "null");
@@ -154,6 +177,28 @@ public class mcbuild extends CommandTemplate {
             Bukkit.broadcastMessage("Une erreur est survenue lors de la sauvegarde de la map, veuillez regarder la console!");
             return;
         }
+
+        try {
+            int indexNPC = 0;
+            for (BonusSeller npc : monde.getGroupe().getGame().getShopManager().getListe_pnj()) {
+                yamlConfiguration.set("npcs." + indexNPC + ".x", npc.getEmplacement().getX());
+                yamlConfiguration.set("npcs." + indexNPC + ".y", npc.getEmplacement().getY());
+                yamlConfiguration.set("npcs." + indexNPC + ".z", npc.getEmplacement().getZ());
+                yamlConfiguration.set("npcs." + indexNPC + ".pitch", npc.getEmplacement().getPitch());
+                yamlConfiguration.set("npcs." + indexNPC + ".yaw", npc.getEmplacement().getYaw());
+                indexNPC++;
+            }
+
+            for (Entity entity : monde.getArene().getCoffre().getLocation().getWorld().getEntities())
+                if (entity instanceof Villager) entity.remove();
+
+            monde.getArene().getCoffre().getLocation().getWorld().save();
+        } catch (Exception e) {
+
+        }
+
+        yamlConfiguration.set("settings.protected_zone_area_radius", monde.getHouses_playzone_radius());
+        yamlConfiguration.set("settings.mp_set_playzone_radius", 1000);
 
         try {
             yamlConfiguration.save(fichierMonde);

@@ -5,6 +5,7 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mapbuilder.Core.Monde;
 import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -17,12 +18,12 @@ public class mcteam extends CommandTemplate {
 
 
     private LinkedList<String> actionsPossible;
-    public static Monde monde = MapBuilder.monde;
 
     private static HashMap<House, LinkedList<Block>> porteEquipe;
     private static HashMap<House, Player> attributionEquipeJoueur;
 
     public mcteam() {
+
 
         if (porteEquipe == null) porteEquipe = new HashMap<>();
         if (attributionEquipeJoueur == null) attributionEquipeJoueur = new HashMap<>();
@@ -33,20 +34,25 @@ public class mcteam extends CommandTemplate {
         actionsPossible.add("setSpawn");
         actionsPossible.add("addPorte");
         actionsPossible.add("setCoffre");
+        actionsPossible.add("addNPCShop");
 
 
         addArgument("action", true);
         addArgument("nom equipe", true);
         addArgument("couleur", false);
 
-        if (monde == null) monde = new Monde();
 
         accessCommande.add(PLAYER_COMMAND);
     }
 
     @Override
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
+
+        Monde monde = MapBuilder.monde;
+
         Player joueur = (Player) commandSender;
+
+        Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
         if (args[0].equalsIgnoreCase("creer")) {
             if (args.length == 3) {
                 return creerEquipeHandler(commandSender, args);
@@ -90,6 +96,14 @@ public class mcteam extends CommandTemplate {
                 commandSender.sendMessage(mineralcontest.prefixErreur + getUsage());
                 return false;
             }
+        }
+
+        if (args[0].equalsIgnoreCase("addNPCShop")) {
+            if (playerGroup == null) return false;
+            BonusSeller bonusSeller = new BonusSeller(joueur.getLocation());
+            playerGroup.getGame().getShopManager().ajouterVendeur(bonusSeller);
+            bonusSeller.spawn();
+            return false;
         }
 
         if (args[0].equalsIgnoreCase("addPorte")) {
@@ -146,6 +160,7 @@ public class mcteam extends CommandTemplate {
      * @param p         - Le joueur ayant demander la création de la porte
      */
     private void creerPorteMaison(String nomEquipe, Player p) {
+        Monde monde = MapBuilder.monde;
         House maison = monde.getHouseFromNom(nomEquipe);
         if (maison == null) return;
 
@@ -164,6 +179,7 @@ public class mcteam extends CommandTemplate {
      * @return false
      */
     private boolean addPorteHandler(CommandSender commandSender, String[] args) {
+        Monde monde = MapBuilder.monde;
         Player joueur = (Player) commandSender;
         House playerHouse = getPlayerAllocatedHouse(joueur);
 
@@ -201,6 +217,7 @@ public class mcteam extends CommandTemplate {
      * @return false
      */
     private boolean supprimerEquipeHandler(CommandSender commandSender, String[] args) {
+        Monde monde = MapBuilder.monde;
         String nomEquipe = args[1];
         House equipe = monde.getHouseFromNom(nomEquipe);
         if (equipe == null) {
@@ -223,6 +240,7 @@ public class mcteam extends CommandTemplate {
      * @throws Exception si la maison en question n'a pas de spawn de défini
      */
     private boolean setSpawnHandler(CommandSender commandSender, String[] args) throws Exception {
+        Monde monde = MapBuilder.monde;
         String nomEquipe = args[1];
         House equipe = monde.getHouseFromNom(nomEquipe);
         if (equipe == null) {
@@ -240,6 +258,7 @@ public class mcteam extends CommandTemplate {
     }
 
     private boolean setCoffreHandler(CommandSender commandSender, String[] args) throws Exception {
+        Monde monde = MapBuilder.monde;
         String nomEquipe = args[1];
         House equipe = monde.getHouseFromNom(nomEquipe);
         if (equipe == null) {
@@ -250,8 +269,7 @@ public class mcteam extends CommandTemplate {
         Player p = (Player) commandSender;
         equipe.setCoffreEquipe(p.getLocation().getBlock().getLocation());
 
-        p.sendMessage(mineralcontest.prefixPrive + "Le coffre de l'équipe " + equipe.getTeam().getCouleur() + equipe.getTeam().getNomEquipe() + ChatColor.WHITE + " a été défini en " + equipe.getHouseLocation().toVector().toString());
-
+        p.sendMessage(mineralcontest.prefixPrive + "Le coffre de l'équipe " + equipe.getTeam().getCouleur() + equipe.getTeam().getNomEquipe() + ChatColor.WHITE + " a été défini en " + equipe.getCoffre().getPosition().toVector().toString());
 
         return false;
     }
@@ -264,6 +282,7 @@ public class mcteam extends CommandTemplate {
      * @return false
      */
     private boolean creerEquipeHandler(CommandSender commandSender, String[] args) {
+        Monde monde = MapBuilder.monde;
         String nomEquipe = args[1];
         try {
             ChatColor couleur = ChatColor.valueOf(args[2].toUpperCase());
@@ -292,6 +311,7 @@ public class mcteam extends CommandTemplate {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) throws IllegalArgumentException {
         if (sender instanceof Player) {
+            Monde monde = MapBuilder.monde;
             Player joueur = (Player) sender;
             Groupe playerGroup = mineralcontest.getPlayerGroupe(joueur);
             if (playerGroup == null) return null;

@@ -107,9 +107,9 @@ public class KitManager implements Listener {
         Equipe playerTeam = groupe.getPlayerTeam(joueur);
 
         // On averti le serveur que le joueur a sélectionner un kit
-        if (playerTeam != null)
+        if (playerTeam != null && !groupe.getGame().isGameStarted())
             groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.kitmanager_player_selected_kit.toString(), joueur));
-        if (playerTeam != null)
+        if (playerTeam != null && !groupe.getGame().isGameStarted())
             playerTeam.sendMessage(mineralcontest.prefixTeamChat + Lang.translate(Lang.kitmanager_player_selected_kit_team.toString(), joueur).replace("%k", kit.getNom()));
 
 
@@ -139,7 +139,7 @@ public class KitManager implements Listener {
         // On regarde si on peut démarrer la partie
         if (doesAllPlayerHaveAKit(false)) {
             try {
-                groupe.getGame().demarrerPartie(false);
+                if (!groupe.getGame().isGameStarted()) groupe.getGame().demarrerPartie(false);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -18,7 +18,9 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -202,6 +204,9 @@ public class WorldLoader {
 
     private void lireFichierMonde(String nomDossier, World monde) throws Exception {
         String nomFichierConfig = "mc_world_settings.yml";
+
+        for (Entity entity : monde.getEntities())
+            if (entity instanceof Villager) entity.remove();
 
         boolean loadNPC = true;
 

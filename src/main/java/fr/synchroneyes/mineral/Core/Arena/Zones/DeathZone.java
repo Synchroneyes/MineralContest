@@ -158,7 +158,6 @@ public class DeathZone {
         if (DeathZonePlayer.getValeur() <= 0) {
 
             Player joueur = DeathZonePlayer.getJoueur();
-            joueur.sendMessage("liberer");
 
             if (!joueur.isOnline()) {
                 this.joueurs.remove(DeathZonePlayer);
@@ -190,7 +189,7 @@ public class DeathZone {
 
             } else {
                 // ON le TP vers son spawn equipe
-                PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), teamHouse.getHouseLocation());
+                //PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), teamHouse.getHouseLocation());
                 joueur.removePotionEffect(PotionEffectType.INVISIBILITY);
                 joueur.removePotionEffect(PotionEffectType.BLINDNESS);
 

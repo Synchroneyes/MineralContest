@@ -390,8 +390,12 @@ public class Arene {
 
     // Set le coffre de l'arène
     public void setCoffre(Location position) {
+
+        if (position == null) {
+            Bukkit.getLogger().severe("Position is null !");
+        }
         this.coffreArene.setChestLocation(position);
-        position.getBlock().setType(Material.AIR);
+        if (position.getBlock() != null) position.getBlock().setType(Material.AIR);
 
         groupe.getAutomatedChestManager().replace(CoffreArene.class, coffreArene);
         //if (mineralcontest.debug)

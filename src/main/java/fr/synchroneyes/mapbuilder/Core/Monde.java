@@ -4,6 +4,8 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,6 +18,16 @@ public class Monde {
     private Arene arene;
     private Location spawnDepart;
     private String nom;
+
+    @Getter
+    @Setter
+    private int arena_safezone_radius = 0;
+
+    @Getter
+    @Setter
+    private int houses_playzone_radius;
+
+    @Getter
     private Groupe groupe;
 
     public Monde() {

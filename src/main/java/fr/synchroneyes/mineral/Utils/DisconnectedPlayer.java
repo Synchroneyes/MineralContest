@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Utils;
 
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
@@ -24,8 +25,9 @@ public class DisconnectedPlayer {
     private Location oldPlayerLocation;
     private List<ItemStack> oldPlayerInventory;
     private LinkedBlockingQueue<ShopItem> bonus;
+    private KitAbstract kit;
 
-    public DisconnectedPlayer(UUID playerUUID, Equipe oldPlayerTeam, Groupe oldPlayerGroupe, CouplePlayer oldPlayerDeathTime, Location oldPlayerLocation, Player p, LinkedBlockingQueue bonus) {
+    public DisconnectedPlayer(UUID playerUUID, Equipe oldPlayerTeam, Groupe oldPlayerGroupe, CouplePlayer oldPlayerDeathTime, Location oldPlayerLocation, Player p, LinkedBlockingQueue bonus, KitAbstract kit) {
         this.playerUUID = playerUUID;
         this.oldPlayerTeam = oldPlayerTeam;
         this.oldPlayerGroupe = oldPlayerGroupe;
@@ -33,6 +35,7 @@ public class DisconnectedPlayer {
         this.oldPlayerLocation = oldPlayerLocation;
         this.oldPlayerInventory = new LinkedList<>();
         this.bonus = bonus;
+        this.kit = kit;
 
         for (ItemStack item : p.getInventory().getContents())
             if (item != null) oldPlayerInventory.add(item);
@@ -69,5 +72,9 @@ public class DisconnectedPlayer {
 
     public LinkedBlockingQueue<ShopItem> getBonus() {
         return bonus;
+    }
+
+    public KitAbstract getKit() {
+        return kit;
     }
 }

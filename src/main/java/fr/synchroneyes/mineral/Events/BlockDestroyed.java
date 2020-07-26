@@ -12,13 +12,18 @@ import fr.synchroneyes.mineral.Utils.BlockSaver;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.Utils.RawToCooked;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -76,10 +81,7 @@ public class BlockDestroyed implements Listener {
 
 
             // On vérifie si c'est un block que l'on veut supprimer sans check
-            if (canBlockBeDestroyed(event.getBlock())) {
-                event.setDropItems(false);
-                return;
-            }
+
 
             // On doit vérifier si on se trouve autour de la zone protegée
             int rayonZoneProtege = playerGroupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
@@ -88,6 +90,11 @@ public class BlockDestroyed implements Listener {
 
             // Si le block détruit est dans le rayon de la zone protegé, on annule l'event
             if (Radius.isBlockInRadius(centreArene, blockDetruit.getLocation(), rayonZoneProtege)) {
+
+                if (canBlockBeDestroyed(event.getBlock())) {
+                    event.setDropItems(false);
+                    return;
+                }
 
                 // Si le block est un bloc ajouté par un joueur, on ne fait rien
                 BlockManager blockManager = BlockManager.getInstance();
@@ -112,6 +119,13 @@ public class BlockDestroyed implements Listener {
 
             }
 
+
+            Bukkit.getLogger().info(blockDetruit.getState().toString() + " - " + blockDetruit.getState().getClass().getName());
+            if (blockDetruit.getState() instanceof InventoryHolder && !partie.isThisBlockAGameChest(blockDetruit)) {
+                ((InventoryHolder) blockDetruit.getState()).getInventory().clear();
+                event.setDropItems(false);
+            }
+
             // Sinon, le block détruit n'est pas dans la zone protégé, on autorise la destruction
             playerGroupe.getGame().addBlock(event.getBlock(), BlockSaver.Type.DESTROYED);
 
@@ -125,6 +139,21 @@ public class BlockDestroyed implements Listener {
         }
 
 
+    }
+
+
+    @EventHandler
+    public void onVehicleDestroyed(VehicleDestroyEvent event) {
+
+        Bukkit.getLogger().info(event.getVehicle().getType().toString());
+        if (event.getVehicle().getType() == EntityType.MINECART_CHEST) {
+            StorageMinecart vehicle = (StorageMinecart) event.getVehicle();
+
+            if (mineralcontest.isAMineralContestWorld(vehicle.getWorld())) {
+                vehicle.getInventory().clear();
+            }
+
+        }
     }
 
     private boolean canBlockBeDestroyed(Block b) {
@@ -162,4 +191,6 @@ public class BlockDestroyed implements Listener {
 
         return allowedToBeDestroyed.contains(b.getType());
     }
+
+
 }
