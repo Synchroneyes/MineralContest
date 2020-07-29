@@ -1,6 +1,6 @@
 package fr.synchroneyes.mineral.Core.Game;
 
-import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
@@ -168,6 +168,18 @@ public class Game implements Listener {
         }
 
         return winner;
+    }
+
+    /**
+     * Retourne si un joueur fait partie de la partie
+     *
+     * @param p
+     * @return
+     */
+    public boolean isPlayerInGame(Player p) {
+        for (Player joueur : groupe.getPlayers())
+            if (p.equals(joueur)) return true;
+        return false;
     }
 
 
@@ -466,7 +478,7 @@ public class Game implements Listener {
         if (mineralcontest.plugin.pluginWorld != null && !mineralcontest.debug) {
             for (Player player : groupe.getPlayers()) {
                 teleportToLobby(player);
-                PlayerUtils.clearPlayer(player);
+                PlayerUtils.clearPlayer(player, true);
             }
         }
 
@@ -495,7 +507,7 @@ public class Game implements Listener {
         if (isReferee(player)) {
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);
-            PlayerUtils.clearPlayer(player);
+            PlayerUtils.clearPlayer(player, true);
             //PlayerBaseItem.givePlayerItems(player, PlayerBaseItem.onFirstSpawnName);
 
 
@@ -670,6 +682,11 @@ public class Game implements Listener {
                             // On envoie les informations de la partie
                             SendInformation.sendGameData(SendInformation.start, instance);
 
+                            // On appelle l'event de démarrage de partie
+                            MCGameStartedEvent startedEvent = new MCGameStartedEvent(instance);
+                            Bukkit.getPluginManager().callEvent(startedEvent);
+
+
                         }
 
 
@@ -686,15 +703,10 @@ public class Game implements Listener {
                                     GameStarted = true;
 
                                     online.setGameMode(GameMode.SURVIVAL);
-                                    online.getInventory().clear();
 
-                                    PlayerUtils.clearPlayer(online);
+                                    PlayerUtils.clearPlayer(online, false);
                                     PlayerUtils.setMaxHealth(online);
 
-
-                                    // On appelle l'evenement de respawn
-                                    MCPlayerRespawnEvent respawnEvent = new MCPlayerRespawnEvent(online);
-                                    Bukkit.getPluginManager().callEvent(respawnEvent);
 
                                     if (groupe.getParametresPartie().getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1)
                                         online.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
@@ -876,7 +888,7 @@ public class Game implements Listener {
         // On téléport tout le monde au centre de l'arène
         for (Player player : groupe.getPlayers()) {
             PlayerUtils.teleportPlayer(player, groupe.getMonde(), getArene().getCoffre().getLocation());
-            PlayerUtils.clearPlayer(player);
+            PlayerUtils.clearPlayer(player, true);
             if (!isReferee(player)) player.setGameMode(GameMode.SPECTATOR);
         }
 

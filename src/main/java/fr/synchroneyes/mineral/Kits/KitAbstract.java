@@ -54,8 +54,6 @@ public abstract class KitAbstract implements Listener {
         // Si le groupe est nulle, il n'a pas de kit
         if (groupe == null) return false;
 
-        // Si la partie n'est pas démarré, il n'a pas de kit non plus, ou alors il ne faut pas les activer
-        if (!groupe.getGame().isGameStarted()) return false;
 
         if (groupe.getKitManager().getPlayerKit(joueur) == null) return false;
 

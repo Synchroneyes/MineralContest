@@ -508,13 +508,14 @@ public class Groupe {
 
                     }
 
+                    if (infoJoueur.getKit() != null) getKitManager().setPlayerKit(p, infoJoueur.getKit());
                     p.getInventory().clear();
+
                     for (ItemStack item : infoJoueur.getOldPlayerInventory())
                         p.getInventory().addItem(item);
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
 
-                    if (infoJoueur.getKit() != null) getKitManager().setPlayerKit(p, infoJoueur.getKit());
 
                     PlayerBonus playerBonusManager = getGame().getPlayerBonusManager();
                     playerBonusManager.setPlayerBonusList(p, infoJoueur.getBonus());

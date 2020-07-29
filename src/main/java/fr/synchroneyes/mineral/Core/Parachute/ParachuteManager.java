@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Core.Parachute;
 
+import fr.synchroneyes.custom_events.MCAirDropSpawnEvent;
+import fr.synchroneyes.custom_events.MCAirDropTickEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
@@ -80,9 +82,16 @@ public class ParachuteManager {
         for (Player joueur : groupe.getGame().getReferees())
             joueur.sendMessage(mineralcontest.prefixPrive + "Drop: " + nextDropLocation.getBlockX() + " Y: " + nextDropLocation.getBlockY() + " Z: " + nextDropLocation.getBlockZ());
 
+        // On appelle l'event de spawn de parachute
+        MCAirDropSpawnEvent event = new MCAirDropSpawnEvent(nextDropLocation, groupe.getGame());
+        Bukkit.getPluginManager().callEvent(event);
+
+
+
         // On génère le prochain tour
         generateRandomLocation();
         generateTimeleftBeforeNextDrop();
+
 
     }
 
@@ -94,6 +103,10 @@ public class ParachuteManager {
 
         // On fera un tour de boucle chaque seconde
         dropsHandler = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, () -> {
+
+            // ON appelle l'evenement de tick de parachute
+            MCAirDropTickEvent event = new MCAirDropTickEvent(timeleft_before_next_drop, groupe.getGame());
+            Bukkit.getPluginManager().callEvent(event);
 
             // On ne veut pas continuer le timer si la game est en pause ou en attente de démarrage
             if (groupe.getGame().isPreGame() || groupe.getGame().isGamePaused() || !groupe.getGame().isGameStarted())

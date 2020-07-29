@@ -79,7 +79,7 @@ public class GroupeExtension {
                     } else {
                         p.sendMessage("Teleporting you to plugin hub");
                         p.teleport(mineralcontest.plugin.defaultSpawn);
-                        PlayerUtils.clearPlayer(p);
+                        PlayerUtils.clearPlayer(p, true);
                     }
                 }
 

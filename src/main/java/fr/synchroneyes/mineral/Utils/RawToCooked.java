@@ -28,7 +28,7 @@ public class RawToCooked {
                 return Material.COOKED_PORKCHOP;
             case RABBIT:
                 return Material.COOKED_RABBIT;
-            case SADDLE:
+            case SALMON:
                 return Material.COOKED_SALMON;
             default:
                 return null;

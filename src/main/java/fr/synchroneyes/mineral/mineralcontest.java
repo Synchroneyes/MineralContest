@@ -288,7 +288,7 @@ public final class mineralcontest extends JavaPlugin {
             if (pluginWorld != null && !debug) {
                 for (Player player : pluginWorld.getPlayers()) {
                     game.teleportToLobby(player);
-                    PlayerUtils.clearPlayer(player);
+                    PlayerUtils.clearPlayer(player, true);
                 }
             }
         }

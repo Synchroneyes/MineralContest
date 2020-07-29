@@ -162,6 +162,10 @@ public class EntityDamage implements Listener {
                 }
 
                 // Si on arrive là, le joueur est mort d'un suicide
+
+                PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, null);
+                Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
+
                 registerPlayerSuicide(joueur);
                 event.setCancelled(true);
                 return;

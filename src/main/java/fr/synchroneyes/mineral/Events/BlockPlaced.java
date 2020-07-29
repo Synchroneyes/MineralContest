@@ -11,6 +11,7 @@ import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,6 +49,13 @@ public class BlockPlaced implements Listener {
             if (game.isReferee(event.getPlayer())) return;
 
             if (game.isGameStarted() && !game.isGamePaused()) {
+
+                // On bloque les hopper
+                if (event.getBlock().getType() == Material.HOPPER) {
+                    event.setCancelled(true);
+                    return;
+                }
+
                 try {
 
                     GameSettings settings = game.groupe.getParametresPartie();

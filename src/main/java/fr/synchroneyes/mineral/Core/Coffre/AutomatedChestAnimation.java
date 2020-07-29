@@ -286,6 +286,7 @@ public abstract class AutomatedChestAnimation {
 
     public void spawn() {
 
+
         actionToPerformBeforeSpawn();
 
         isChestSpawned = true;

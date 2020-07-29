@@ -8,6 +8,7 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.RawToCooked;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Random;
 
 /**
  * Cuit instantanément ses mienrais, mais retire une ligne dans l'inventaire
@@ -125,6 +128,19 @@ public class Mineur extends KitAbstract {
         Material materialToDrop = RawToCooked.toCooked(blockDetruit.getType());
 
         if (materialToDrop != null) {
+
+            int maxXP = 3;
+            int minXP = 1;
+
+            int nombreXpRandom = new Random().nextInt(maxXP - minXP) + 1 + minXP;
+
+            // On donne l'xp du bloc
+            event.getPlayer().giveExp(new Random().nextInt(5));
+
+            // On joue le son de l'xp
+            event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.4f, 1);
+
+            // On supprime le block
             blockDetruit.setType(Material.AIR);
             blockDetruit.getWorld().dropItemNaturally(blockDetruit.getLocation(), new ItemStack(materialToDrop));
         }

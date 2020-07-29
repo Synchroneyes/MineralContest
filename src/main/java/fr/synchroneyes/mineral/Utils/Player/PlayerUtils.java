@@ -431,8 +431,8 @@ public class PlayerUtils {
         }, 20);
     }
 
-    public static void clearPlayer(Player joueur) {
-        joueur.getInventory().clear();
+    public static void clearPlayer(Player joueur, boolean clearInventory) {
+        if (clearInventory) joueur.getInventory().clear();
         for (PotionEffect potion : joueur.getActivePotionEffects())
             joueur.removePotionEffect(potion.getType());
 

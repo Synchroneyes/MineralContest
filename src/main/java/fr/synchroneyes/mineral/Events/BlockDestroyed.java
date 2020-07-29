@@ -79,6 +79,11 @@ public class BlockDestroyed implements Listener {
         // Maintenant, on doit vérifier si la partie est en cours
         if (partie.isGameStarted()) {
 
+            // On bloque les hopper
+            if (event.getBlock().getType() == Material.HOPPER) {
+                event.setCancelled(true);
+                return;
+            }
 
             // On vérifie si c'est un block que l'on veut supprimer sans check
 
@@ -119,8 +124,6 @@ public class BlockDestroyed implements Listener {
 
             }
 
-
-            Bukkit.getLogger().info(blockDetruit.getState().toString() + " - " + blockDetruit.getState().getClass().getName());
             if (blockDetruit.getState() instanceof InventoryHolder && !partie.isThisBlockAGameChest(blockDetruit)) {
                 ((InventoryHolder) blockDetruit.getState()).getInventory().clear();
                 event.setDropItems(false);

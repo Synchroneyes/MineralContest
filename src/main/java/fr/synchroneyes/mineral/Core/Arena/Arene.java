@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Core.Arena;
 
+import fr.synchroneyes.custom_events.MCArenaChestSpawnEvent;
+import fr.synchroneyes.custom_events.MCArenaChestTickEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
@@ -265,10 +267,18 @@ public class Arene {
 
                 if (groupe.getGame().isGameStarted() && !groupe.getGame().isGamePaused()) {
                     try {
+
+
                         // Si le coffre est initialisé et n'est pas encore apparu
                         if (CHEST_INITIALIZED) {
                             // Le coffre n'est pas encore disponible
                             if (TIME_BEFORE_CHEST > 0) {
+
+                                // On appelle l'event qui annonce un tick passé
+                                MCArenaChestTickEvent mcArenaChestTickEvent = new MCArenaChestTickEvent(TIME_BEFORE_CHEST, groupe.getGame());
+                                Bukkit.getPluginManager().callEvent(mcArenaChestTickEvent);
+
+
                                 TIME_BEFORE_CHEST--;
                                 if (TIME_BEFORE_CHEST == TIMELEFT_REQUIRED_BEFORE_WARNING)
                                     notifyTeams();
@@ -276,6 +286,9 @@ public class Arene {
                                 // LE coffre doit apparaitre !
                                 coffreArene.getLocation().getBlock().setType(Material.AIR);
                                 coffreArene.spawn();
+                                MCArenaChestSpawnEvent mcArenaChestSpawnEvent = new MCArenaChestSpawnEvent(groupe.getGame());
+                                Bukkit.getPluginManager().callEvent(mcArenaChestSpawnEvent);
+
                             }
 
                         }
@@ -293,6 +306,7 @@ public class Arene {
                         if (getCoffre().isChestSpawned() && isTeleportAllowed()) {
                             updateTeleportBar();
                             TELEPORT_TIME_LEFT--;
+
                             if (TELEPORT_TIME_LEFT <= 0) {
                                 disableTeleport();
                                 removePlayerTeleportBar();

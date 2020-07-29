@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MinerStat extends Statistic {
 
-    Map<Player, Integer> playerInformation;
+    private Map<Player, Integer> playerInformation;
 
     public MinerStat() {
         this.playerInformation = new HashMap<>();

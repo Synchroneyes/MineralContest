@@ -78,8 +78,10 @@ public class KitManager implements Listener {
 
         // On y ajoute les classes disponibles
         this.kitsDisponible.add(new Agile());
+        this.kitsDisponible.add(new CowBoy());
         this.kitsDisponible.add(new Enchanteur());
         this.kitsDisponible.add(new Guerrier());
+        this.kitsDisponible.add(new Informateur());
         this.kitsDisponible.add(new Mineur());
         this.kitsDisponible.add(new Parieur());
         this.kitsDisponible.add(new Robuste());

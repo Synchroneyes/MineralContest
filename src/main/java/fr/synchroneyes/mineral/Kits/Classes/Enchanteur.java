@@ -1,7 +1,9 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
@@ -11,10 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import java.util.List;
 import java.util.Random;
 
 /**
  * Spawn avec 15 niveau d'experience, 32 lapis lazuli, et 3 livre d'enchantement
+ * Il reçoit ses bonus uniquement au démarrage de la partie
  */
 public class Enchanteur extends KitAbstract {
 
@@ -52,8 +56,8 @@ public class Enchanteur extends KitAbstract {
     @EventHandler
     public void onKitSelected(PlayerKitSelectedEvent event) {
 
-        if (!isPlayerUsingThisKit(event.getPlayer())) return;
-        applyKitEffectToPlayer(event.getPlayer());
+        //if (!isPlayerUsingThisKit(event.getPlayer())) return;
+        //applyKitEffectToPlayer(event.getPlayer());
 
     }
 
@@ -65,8 +69,26 @@ public class Enchanteur extends KitAbstract {
      */
     @EventHandler
     public void onPlayerRespawn(MCPlayerRespawnEvent event) {
-        if (!isPlayerUsingThisKit(event.getJoueur())) return;
-        applyKitEffectToPlayer(event.getJoueur());
+        //if (!isPlayerUsingThisKit(event.getJoueur())) return;
+        //applyKitEffectToPlayer(event.getJoueur());
+    }
+
+    @EventHandler
+    public void OnGameStarted(MCGameStartedEvent event) {
+        Game partie = event.getGame();
+
+        // On récupère les joueurs
+        List<Player> joueurs = partie.groupe.getPlayers();
+
+        // On regarde pour chaque joueur si ils ont ce kit
+        for (Player joueur : joueurs)
+            // Si le joueur possède le kit
+            if (isPlayerUsingThisKit(joueur))
+                // On lui applique les effets!
+                applyKitEffectToPlayer(joueur);
+
+
+
     }
 
 
