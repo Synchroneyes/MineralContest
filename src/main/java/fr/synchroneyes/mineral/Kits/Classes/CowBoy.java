@@ -8,8 +8,10 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +26,9 @@ import java.util.UUID;
  * Spawn avec un cheval, -25% de vitesse à pied, et ne peux pas faire de dégats avec des armes, uniquement des projectiles
  */
 public class CowBoy extends KitAbstract {
+
+
+    private double reductionVitesse = 15.0;
 
     // Liste des joueurs avec leurs chevaux respectifs
     public HashMap<UUID, Horse> chevaux_joueurs;
@@ -58,7 +63,7 @@ public class CowBoy extends KitAbstract {
 
     @Override
     public String getDescription() {
-        return "Vous apparaissez avec un oeuf de cheval, une selle, et une armure de cheval. Vous perdez 15% de vitesse de déplacement à pieds";
+        return "Il réapparait avec un cheval, il se déplace 15% moins vite à pieds, mais ne peut pas utiliser d'armes à cheval, sauf des projectiles (ex: arc, arbalète ...). Il peut bien évidemment utiliser ses armes quand il n'est pas sur son cheval";
     }
 
     @Override
@@ -98,6 +103,7 @@ public class CowBoy extends KitAbstract {
 
             if (entityEvent.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && joueur.getVehicle() != null && joueur.getVehicle() instanceof Horse) {
                 joueur.playSound(joueur.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+                joueur.sendMessage(mineralcontest.prefixErreur + "Malheureusement, vous ne pouvez pas attaquer avec cet item sur votre cheval. Utilisez un " + ChatColor.RED + "arc");
                 entityEvent.setCancelled(true);
             }
 
@@ -144,7 +150,15 @@ public class CowBoy extends KitAbstract {
      * @param joueur
      */
     private void applyEffectToPlayer(Player joueur) {
+        // On récupère la vitesse de base d'un joueur
+        double currentSpeed = 0.2f;
 
+        // On calcule sa nouvelle vitesse
+        double newSpeed = currentSpeed - (currentSpeed * reductionVitesse / 100);
+
+        joueur.setWalkSpeed((float) newSpeed);
+
+        joueur.setHealth(joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
     }
 
 

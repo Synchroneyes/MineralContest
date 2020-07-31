@@ -5,7 +5,9 @@ import fr.synchroneyes.custom_events.MCAirDropTickEvent;
 import fr.synchroneyes.custom_events.MCArenaChestTickEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +31,7 @@ public class Informateur extends KitAbstract {
 
     @Override
     public String getDescription() {
-        return "Il recoit des informations cruciale sur les largages et les coffres ... Il ne peut pas les ouvrir";
+        return "Il reçoit des informations sur les largages & coffre d'arène ... Il connait également la position du largage à son apparition! En revanche, il ne peut pas ouvrir les coffres d'arènes, ni les largages";
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Informateur extends KitAbstract {
             if (isPlayerUsingThisKit(joueur))
                 // On vérfie le temps restant
                 if (event.getTimeLeft() == timeLeftBeforeArenaWarn)
-                    joueur.sendMessage("Le coffre va apparaitre dans 30sec");
+                    joueur.sendMessage(mineralcontest.prefixPrive + "Le coffre va apparaitre dans 30 secondes");
     }
 
     @EventHandler
@@ -61,16 +63,22 @@ public class Informateur extends KitAbstract {
             if (isPlayerUsingThisKit(joueur))
                 // On vérfie le temps restant
                 if (event.getTimeLeft() == timeLeftBeforeDropWarn)
-                    joueur.sendMessage("Le drop va apparaitre dans 30sec");
+                    joueur.sendMessage(mineralcontest.prefixPrive + "Le drop va apparaitre dans 30 secondes");
     }
 
     @EventHandler
     public void onAirdropSpawn(MCAirDropSpawnEvent event) {
+        String chestLocationText = Lang.airdrop_subtitle.toString();
+        Location nextDropLocation = event.getParachuteLocation();
+
+        chestLocationText = chestLocationText.replace("%x", nextDropLocation.getBlockX() + "");
+        chestLocationText = chestLocationText.replace("%z", nextDropLocation.getBlockZ() + "");
+
         // On récupère les joueurs de la partie
         for (Player joueur : event.getGame().groupe.getPlayers())
             // On vérifie si ils ont le kit
             if (isPlayerUsingThisKit(joueur))
-                joueur.sendMessage(event.getParachuteLocation().toVector().toString());
+                joueur.sendMessage(mineralcontest.prefixPrive + chestLocationText);
     }
 
 

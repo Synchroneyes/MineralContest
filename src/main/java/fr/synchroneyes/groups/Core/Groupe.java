@@ -11,6 +11,7 @@ import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
+import fr.synchroneyes.mineral.Core.Spectators.SpectatorManager;
 import fr.synchroneyes.mineral.Kits.KitManager;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
@@ -64,6 +65,9 @@ public class Groupe {
     @Getter
     private KitManager kitManager;
 
+    @Getter
+    private SpectatorManager spectatorManager;
+
 
     // UUID, <NomEquipe, PositionDeco>
     //
@@ -91,6 +95,9 @@ public class Groupe {
         this.worldLoader = new WorldLoader(this);
 
         this.kitManager = new KitManager(this);
+
+        this.spectatorManager = new SpectatorManager(this.partie);
+
         genererIdentifiant();
 
 

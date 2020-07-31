@@ -42,6 +42,8 @@ public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
 
+    // TODO: kits onGameStart
+
     /**
      * Community version is a version ran by server that wants to have multiple games running at the same time.
      * If set to true, then players will have to create a groupe, invite players, start the vote.
