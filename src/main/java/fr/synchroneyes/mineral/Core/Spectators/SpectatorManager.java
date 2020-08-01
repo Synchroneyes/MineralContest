@@ -1,7 +1,6 @@
 package fr.synchroneyes.mineral.Core.Spectators;
 
 
-import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
@@ -214,6 +213,7 @@ public class SpectatorManager implements Listener {
      */
     @EventHandler
     public void OnPlayerDeath(PlayerDeathByPlayerEvent event) {
+
         Player joueur = event.getPlayerDead();
 
         // On vérifie que le joueur fait parti du plugin
@@ -221,6 +221,8 @@ public class SpectatorManager implements Listener {
 
         // Si il est déjà spectateur, on ne fait rien
         if (isPlayerSpectator(joueur)) return;
+
+        if (boucle == null) startSpectateLoop();
 
         // SI il n'est pas dans une partie ou que la partie n'est pas en cours, on s'arrête
         Game playerGame = mineralcontest.getPlayerGame(joueur);
@@ -274,11 +276,12 @@ public class SpectatorManager implements Listener {
 
         joueur.setGameMode(GameMode.SURVIVAL);
 
-    }
+        // On regarde si il reste des spectateurs, si il n'y en a pas, on arrête la boucle
+        if (spectateurs.isEmpty()) {
+            boucle.cancel();
+            boucle = null;
+        }
 
-    @EventHandler
-    public void OnGameStart(MCGameStartedEvent event) {
-        this.startSpectateLoop();
     }
 
 }

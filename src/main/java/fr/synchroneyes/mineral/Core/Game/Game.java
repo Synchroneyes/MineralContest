@@ -505,6 +505,8 @@ public class Game implements Listener {
 
     public void removeReferee(Player player, boolean switchToTeam) throws Exception {
         if (isReferee(player)) {
+
+
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);
             PlayerUtils.clearPlayer(player, true);
@@ -513,6 +515,15 @@ public class Game implements Listener {
 
             if ((isGameStarted() || isPreGame()) && switchToTeam) setPlayerRandomTeam(player);
         }
+
+        // On le rend visible pour tout le monde
+        for (Player joueur : groupe.getPlayers()) {
+            joueur.showPlayer(mineralcontest.plugin, player);
+            player.showPlayer(mineralcontest.plugin, joueur);
+        }
+
+        // Si le joueur n'a pas de kit, on lui ouvre le menu
+        if (groupe.getKitManager().getPlayerKit(player) == null) groupe.getKitManager().openInventoryToPlayer(player);
 
     }
 
