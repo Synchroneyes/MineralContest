@@ -159,7 +159,7 @@ public class WorldLoader {
                             // Sinon, on lui donne le livre de selection d'équipe!
                         else if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 0) {
                             joueur.getInventory().setItemInMainHand(Game.getTeamSelectionItem());
-                            joueur.sendMessage(groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() + "");
+
                         }
                         joueur.teleport(worldSpawnLocation);
                         joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
@@ -245,6 +245,8 @@ public class WorldLoader {
         if (settings == null)
             throw new Exception("Unable to load \"npcs\" section from " + nomFichierConfig + ". World file settings is not correct.");
 
+
+        boolean spawnNPC = (groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() == 1);
 
         if (yamlConfiguration.getConfigurationSection("default_spawn") == null) {
             spawnLocation = null;

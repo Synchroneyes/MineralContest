@@ -1,8 +1,10 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.RawToCooked;
@@ -67,6 +69,33 @@ public class Mineur extends KitAbstract {
         groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
 
 
+    }
+
+    /**
+     * Evenement appelé lors du démarrage de la game
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        Game partie = event.getGame();
+
+        // Pour chaque joueur de la partie
+        for (Player joueur : partie.groupe.getPlayers()) {
+            // On vérifie si ils ont ce kit
+            if (isPlayerUsingThisKit(joueur)) {
+                // Et on réduit sa vitesse, et on retire sa vie
+                // On vide son inventaire
+                joueur.getInventory().clear();
+
+                // On lui ajoute les barrières, on block la première ligne
+                for (int index = 9; index < 18; ++index)
+                    joueur.getInventory().setItem(index, getBarrierItem());
+
+                // On lui donne le stuff de base
+                partie.groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
+            }
+        }
     }
 
 

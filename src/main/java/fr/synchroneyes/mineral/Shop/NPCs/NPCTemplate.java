@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
@@ -25,6 +26,9 @@ public abstract class NPCTemplate {
     private Location emplacement;
 
     protected Inventory inventaire;
+
+    @Getter
+    private Entity entity;
 
 
     public NPCTemplate(int nombreDeLigne) {
@@ -78,6 +82,9 @@ public abstract class NPCTemplate {
      * Permet de faire apparaitre le NPC à la position enregistrée
      **/
     public void spawn() {
+
+
+        if (this.entity != null) this.entity.remove();
         if (this.emplacement == null) return;
         if (this.emplacement.getWorld() == null) return;
 
@@ -97,6 +104,10 @@ public abstract class NPCTemplate {
         entitySpawned.setRemoveWhenFarAway(false);
         entitySpawned.setAgeLock(true);
         entitySpawned.setSilent(true);
+
+        this.entity = entitySpawned;
+
+
 
 
     }

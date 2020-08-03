@@ -338,7 +338,7 @@ public final class mineralcontest extends JavaPlugin {
 
         Bukkit.getServer().getPluginManager().registerEvents(new RefereeEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerPick(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChange(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new WorldLoaded(), this);
 
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerPermissionChange(), this);

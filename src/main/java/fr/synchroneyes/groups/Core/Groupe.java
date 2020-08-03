@@ -391,6 +391,7 @@ public class Groupe {
      * @param message: Message à envoyer
      */
     public void sendToadmin(String message) {
+
         for (Player player : admins)
             player.sendMessage(message);
     }
@@ -419,6 +420,7 @@ public class Groupe {
             if (!partie.isPlayerReady(joueur))
                 joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_votemap.toString());
         }
+
     }
 
     public void addAdmin(Player p) {

@@ -6,6 +6,7 @@ import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +40,16 @@ public class CowBoy extends KitAbstract {
         this.chevaux_joueurs = new HashMap<>();
     }
 
+    @Override
+    public String getNom() {
+        return Lang.kit_cowboy_title.toString();
+    }
+
+    @Override
+    public String getDescription() {
+        return Lang.kit_cowboy_description.toString();
+    }
+
 
     /**
      * Fonction appelée lors de la selection du kit
@@ -56,15 +67,7 @@ public class CowBoy extends KitAbstract {
         chevaux_joueurs.put(event.getPlayer().getUniqueId(), null);
     }
 
-    @Override
-    public String getNom() {
-        return "CowBoy";
-    }
 
-    @Override
-    public String getDescription() {
-        return "Il réapparait avec un cheval, il se déplace 15% moins vite à pieds, mais ne peut pas utiliser d'armes à cheval, sauf des projectiles (ex: arc, arbalète ...). Il peut bien évidemment utiliser ses armes quand il n'est pas sur son cheval";
-    }
 
     @Override
     public Material getRepresentationMaterialForSelectionMenu() {
@@ -122,7 +125,7 @@ public class CowBoy extends KitAbstract {
 
         if (!isPlayerUsingThisKit(joueur)) return;
 
-        spawnHorseToPlayer(joueur);
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> spawnHorseToPlayer(joueur), 5);
 
         applyEffectToPlayer(joueur);
     }

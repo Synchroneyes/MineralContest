@@ -85,6 +85,7 @@ public class PlayerSpawn implements Listener {
                 if (mineralcontest.isInMineralContestHub(joueur)) {
                     // Le joueur est dans le hub, on le re tp
                     PlayerUtils.teleportPlayer(joueur, mineralcontest.plugin.pluginWorld, mineralcontest.plugin.defaultSpawn);
+                    Bukkit.getLogger().severe("ddd");
                     return;
                 } else {
                     // Le joueur est dans son monde, on le TP au centre de l'arène
@@ -103,6 +104,7 @@ public class PlayerSpawn implements Listener {
         }
 
     }
+
 
     private void teleportToLobby(Player joueur) {
         Location hubSpawnLocation = mineralcontest.plugin.defaultSpawn;

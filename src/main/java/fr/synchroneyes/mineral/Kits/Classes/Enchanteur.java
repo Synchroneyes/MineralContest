@@ -1,8 +1,6 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
-import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
-import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -30,7 +28,7 @@ public class Enchanteur extends KitAbstract {
     private int nombreLapisRespawn = 32;
 
     // Nombre de livre au respawn
-    private int nombreLivreEnchant = 3;
+    private int nombreLivreEnchant = 5;
 
     @Override
     public String getNom() {
@@ -48,30 +46,6 @@ public class Enchanteur extends KitAbstract {
     }
 
 
-    /**
-     * Fonction appelé lors de la selection de ce kit par le joueur
-     *
-     * @param event
-     */
-    @EventHandler
-    public void onKitSelected(PlayerKitSelectedEvent event) {
-
-        //if (!isPlayerUsingThisKit(event.getPlayer())) return;
-        //applyKitEffectToPlayer(event.getPlayer());
-
-    }
-
-
-    /**
-     * Fonction appelé lors de la selection de ce kit par le joueur
-     *
-     * @param event
-     */
-    @EventHandler
-    public void onPlayerRespawn(MCPlayerRespawnEvent event) {
-        //if (!isPlayerUsingThisKit(event.getJoueur())) return;
-        //applyKitEffectToPlayer(event.getJoueur());
-    }
 
     @EventHandler
     public void OnGameStarted(MCGameStartedEvent event) {
@@ -86,8 +60,6 @@ public class Enchanteur extends KitAbstract {
             if (isPlayerUsingThisKit(joueur))
                 // On lui applique les effets!
                 applyKitEffectToPlayer(joueur);
-
-
 
     }
 

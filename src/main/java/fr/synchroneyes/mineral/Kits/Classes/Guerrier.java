@@ -1,7 +1,9 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
@@ -59,6 +61,25 @@ public class Guerrier extends KitAbstract {
         if (!isPlayerUsingThisKit(event.getPlayer())) return;
 
         setPlayerBonus(event.getPlayer());
+    }
+
+    /**
+     * Evenement appelé lors du démarrage d'une game
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        Game partie = event.getGame();
+
+        // Pour chaque joueur de la partie
+        for (Player joueur : partie.groupe.getPlayers()) {
+            // On vérifie si ils ont ce kit
+            if (isPlayerUsingThisKit(joueur)) {
+                // Et on réduit sa vitesse, et on retire sa vie
+                setPlayerBonus(joueur);
+            }
+        }
     }
 
     /**

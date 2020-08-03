@@ -307,6 +307,19 @@ public class PlayerUtils {
             if (player.getGameMode() != GameMode.SPECTATOR) {
                 // Player team null = arbitre
                 getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
+            } else {
+                // Si le joueur est spectateur, on doit vérifier si il est mort ou non
+                // On regarde si il a une équipe ou non
+                if (playerTeam != null) {
+                    // Il peut-être spectateur
+                    if (playerGroup.getSpectatorManager().isPlayerSpectator(player)) {
+                        // On récu
+                        elementsADisplay.add("                  ");
+                        elementsADisplay.add(playerTeam.getCouleur() + Lang.hud_currently_spectating.toString() + ChatColor.WHITE + playerGroup.getSpectatorManager().getSpectator(player).getCurrent_spectated_player().getDisplayName());
+
+                        getPlayerTeamHUDContent(player, playerTeam, playerGame, elementsADisplay);
+                    }
+                }
             }
 
 

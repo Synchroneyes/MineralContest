@@ -31,6 +31,7 @@ public class ShopManager {
     @Getter
     private List<BonusSeller> liste_pnj;
 
+
     /**
      * Contructeur
      *
@@ -120,6 +121,30 @@ public class ShopManager {
 
         return false;
     }
+
+
+    /**
+     * Fonction permettant de désactiver le shop
+     */
+    public void disableShop() {
+        // ON récupère tous les PNJ
+        for (BonusSeller vendeur : liste_pnj)
+            // On le supprime
+            vendeur.getEntity().remove();
+    }
+
+    /**
+     * Fonction permettant de activer le shop
+     */
+    public void enableShop() {
+
+        // ON récupère tous les PNJ
+        for (BonusSeller vendeur : liste_pnj)
+            // On le supprime
+            vendeur.spawn();
+    }
+
+
 
 
 }

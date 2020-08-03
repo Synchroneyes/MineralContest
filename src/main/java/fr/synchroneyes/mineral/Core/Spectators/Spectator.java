@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * Classe représentant un spectateur
@@ -143,7 +145,11 @@ public class Spectator {
         // Si la liste est vide, on ne fait rien
         // Sinon, on spectate le premier joueur de la liste
         if (current_spectated_player == null) {
-            if (joueurs_a_spectate.isEmpty()) return;
+            if (joueurs_a_spectate.isEmpty()) {
+                joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 2, 1));
+                joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
+                return;
+            }
             spectateNextPlayer();
         }
 

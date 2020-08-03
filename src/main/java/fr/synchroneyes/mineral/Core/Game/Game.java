@@ -382,8 +382,13 @@ public class Game implements Listener {
                         // Si l'option de random est active, on génère les équipes aléatoirement
                         if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
                             randomizeTeam(true);
-                            if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
-                                groupe.getKitManager().openMenuToEveryone(false);
+
+                            if (groupe.getKitManager().isKitsEnabled()) {
+                                if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                                    groupe.getKitManager().openMenuToEveryone(false);
+                            } else {
+                                demarrerPartie(true);
+                            }
 
                             return;
                         } else {
@@ -402,8 +407,14 @@ public class Game implements Listener {
                         // Sinon, la game peut démarrer
                     else {
                         // On va ouvrir le menu de selection de kit à tous les joueurs, sauf les arbitres
-                        if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
-                            groupe.getKitManager().openMenuToEveryone(false);
+
+                        if (groupe.getKitManager().isKitsEnabled()) {
+                            if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                                groupe.getKitManager().openMenuToEveryone(false);
+                        } else {
+                            demarrerPartie(false);
+                        }
+
 
                     }
                 }
@@ -424,8 +435,8 @@ public class Game implements Listener {
                 if (allPlayerHaveTeam()) {
                     try {
 
-                        groupe.getKitManager().openMenuToEveryone(false);
-                        //demarrerPartie(false);
+                        if (groupe.getKitManager().isKitsEnabled()) groupe.getKitManager().openMenuToEveryone(false);
+                        else demarrerPartie(false);
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();

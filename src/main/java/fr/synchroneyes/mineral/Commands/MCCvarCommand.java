@@ -55,6 +55,11 @@ public class MCCvarCommand extends CommandTemplate {
 
                     cvar.setValeur(args[1]);
 
+                    try {
+                        playerGroup.getParametresPartie().setCVARValeur(cvar.getCommand(), args[1]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     // Si on est pas sur la version communautaire, on peut sauvegarder le fichier
                     playerGroup.getParametresPartie().saveCVAR(cvar);

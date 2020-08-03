@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
+import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -12,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 import java.util.List;
 
@@ -113,6 +116,39 @@ public class Soutien extends KitAbstract {
                 }
             }
         }
+    }
+
+
+    /**
+     * Evenement appelé lors du démarrage de la game
+     */
+    @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        Game partie = event.getGame();
+
+        // Pour chaque joueur de la partie
+        for (Player joueur : partie.groupe.getPlayers()) {
+            // On vérifie si ils ont ce kit
+            if (isPlayerUsingThisKit(joueur)) {
+                setPlayerEffects(joueur);
+            }
+        }
+    }
+
+    /**
+     * Evenement appelé lors du respawn d'un joueur
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerRespawn(MCPlayerRespawnEvent event) {
+        // ON récup_ère le joueur
+        Player joueur = event.getJoueur();
+        // On vérifie si il utilise le kit
+        if (!isPlayerUsingThisKit(joueur)) return;
+
+        setPlayerEffects(joueur);
+
     }
 
 

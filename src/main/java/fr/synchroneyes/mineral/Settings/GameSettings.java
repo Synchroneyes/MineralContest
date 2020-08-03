@@ -77,7 +77,7 @@ public class GameSettings {
             }
         }
 
-        Bukkit.getLogger().severe(mineralcontest.prefixErreur + "Invalid cvar name: " + cvar);
+        Bukkit.getLogger().severe(mineralcontest.prefixErreur + "Invalid cvar name: \"" + cvar + "\"");
         return null;
     }
 
@@ -93,7 +93,11 @@ public class GameSettings {
         GameCVAR gameCVAR = null;
         for (GameCVAR parametre : parametres) {
             if (parametre.getCommand().equalsIgnoreCase(cvar)) {
+
+
                 gameCVAR = parametre;
+
+                gameCVAR.setValeur(valeur);
 
                 if (parametre.getCommand().equalsIgnoreCase("mp_enable_old_pvp")) {
                     for (Player player : groupe.getPlayers()) {
@@ -114,13 +118,25 @@ public class GameSettings {
                         groupe.getKitManager().setKitsEnabled(false);
                     }
                 }
+
+
+                // On vérifie le paramètre du shop
+                if (parametre.getCommand().equalsIgnoreCase("enable_shop")) {
+                    // Si la valeur est à 1, on active le shop
+                    if (parametre.getValeurNumerique() == 1) {
+                        groupe.getGame().getShopManager().enableShop();
+                    } else {
+                        groupe.getGame().getShopManager().disableShop();
+                    }
+                }
+
                 break;
             }
         }
 
         if (gameCVAR == null)
             throw new Exception("Impossible d'appliquer la valeur " + valeur + " à " + cvar + " car ce paramètre est inconnu");
-        gameCVAR.setValeur(valeur);
+
     }
 
     /**

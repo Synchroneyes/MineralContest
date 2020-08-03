@@ -41,7 +41,7 @@ public class KitManager implements Listener {
 
     @Getter
     @Setter
-    private boolean kitsEnabled = true;
+    private boolean kitsEnabled = false;
 
     @Getter
     @Setter
@@ -86,6 +86,9 @@ public class KitManager implements Listener {
         this.kitsDisponible.add(new Parieur());
         this.kitsDisponible.add(new Robuste());
         this.kitsDisponible.add(new Soutien());
+
+
+        this.kitsEnabled = (groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() == 1);
     }
 
 
@@ -250,6 +253,8 @@ public class KitManager implements Listener {
      * @param joueur
      */
     public void openInventoryToPlayer(Player joueur) {
+        // On vérifie si on doit ouvrir le menu ou non (ex: si les kits sont actif ou non)
+        if (!isKitsEnabled()) return;
         joueur.openInventory(getKitSelectionInventory());
     }
 
@@ -339,6 +344,10 @@ public class KitManager implements Listener {
      * @param openToReferee - Si vrai, on ouvrira également le menu aux arbitres
      */
     public void openMenuToEveryone(boolean openToReferee) {
+
+        // On vérifie si on doit ouvrir le menu ou non (ex: si les kits sont actif ou non)
+        if (!isKitsEnabled()) return;
+
 
         // Pour chaque jouuer de la partie
         for (Player joueur : groupe.getPlayers()) {

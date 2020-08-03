@@ -371,6 +371,13 @@ kit_support_title: "Soutien"
 kit_support_description: "Vous donnez de la vie à vos alliés proche de vous, vous avez 5 coeurs en moins et 15% de vitesse en moins"
 shopitem_not_compatible_with_kits: "Désactivé lorsque les kits sont actifs"
 
+kit_cowboy_title: "Cowboy"
+kit_cowboy_description: "Il réapparait avec un cheval, il se déplace 15% moins vite à pieds, mais ne peut pas utiliser d'armes à cheval, sauf des projectiles (ex: arc, arbalète ...). Il peut bien évidemment utiliser ses armes quand il n'est pas sur son cheval"
+kit_spy_title: "Informateur"
+kit_spy_description: "Il reçoit des informations sur les largages & coffre d'arène ... Il connait également la position du largage à son apparition! En revanche, il ne peut pas ouvrir les coffres d'arènes, ni les largages"
+kit_spy_airdrop_will_spawn: "%red%Le drop va apparaitre dans 30 secondes"
+hud_currently_spectating: "Spectateur: "
+
 
 
 

@@ -20,18 +20,18 @@ import org.bukkit.inventory.Inventory;
  */
 public class Informateur extends KitAbstract {
 
-    private int timeLeftBeforeArenaWarn = 30;
+    private int timeLeftBeforeArenaWarn = 10;
     private int timeLeftBeforeDropWarn = 60;
 
 
     @Override
     public String getNom() {
-        return "Informateur";
+        return Lang.kit_spy_title.toString();
     }
 
     @Override
     public String getDescription() {
-        return "Il reçoit des informations sur les largages & coffre d'arène ... Il connait également la position du largage à son apparition! En revanche, il ne peut pas ouvrir les coffres d'arènes, ni les largages";
+        return Lang.kit_spy_description.toString();
     }
 
     @Override
@@ -52,9 +52,14 @@ public class Informateur extends KitAbstract {
             if (isPlayerUsingThisKit(joueur))
                 // On vérfie le temps restant
                 if (event.getTimeLeft() == timeLeftBeforeArenaWarn)
-                    joueur.sendMessage(mineralcontest.prefixPrive + "Le coffre va apparaitre dans 30 secondes");
+                    joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.arena_chest_will_spawn_in.toString(), event.getGame().groupe));
     }
 
+    /**
+     * Evenement appelé à chaque tick du airdrop, chaque seconde de la boucle de gestion des drops (timer, ...)
+     *
+     * @param event
+     */
     @EventHandler
     public void onAirDropTick(MCAirDropTickEvent event) {
         // On récupère les joueurs de la partie
@@ -63,7 +68,7 @@ public class Informateur extends KitAbstract {
             if (isPlayerUsingThisKit(joueur))
                 // On vérfie le temps restant
                 if (event.getTimeLeft() == timeLeftBeforeDropWarn)
-                    joueur.sendMessage(mineralcontest.prefixPrive + "Le drop va apparaitre dans 30 secondes");
+                    joueur.sendMessage(mineralcontest.prefixPrive + Lang.kit_spy_airdrop_will_spawn.toString());
     }
 
     @EventHandler

@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Classe permettant de gérer les spectateurs
@@ -26,7 +26,7 @@ import java.util.List;
 public class SpectatorManager implements Listener {
 
     // Liste des joueurs actuellement spectateurs
-    private List<Spectator> spectateurs;
+    private Queue<Spectator> spectateurs;
 
     // Variable stockant la boucle de gestion de spectateur
     private BukkitTask boucle;
@@ -38,7 +38,7 @@ public class SpectatorManager implements Listener {
     private int delayBoucle = 0;
 
     public SpectatorManager(Game partie) {
-        this.spectateurs = new LinkedList<>();
+        this.spectateurs = new LinkedBlockingQueue<>();
 
         // On enregistre nos evenements
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
@@ -78,8 +78,6 @@ public class SpectatorManager implements Listener {
         // On l'ajoute à notre liste de spectateurs
         this.spectateurs.add(spectator);
 
-        joueur.sendMessage("Vous êtes désormais spectateur");
-
     }
 
     /**
@@ -89,8 +87,6 @@ public class SpectatorManager implements Listener {
      */
     public void supprimerSpectateur(Player joueur) {
 
-        // Si le joueur n'est pas spectateur, on s'arrête
-        if (!isPlayerSpectator(joueur)) return;
 
         // On récupère l'instance de spectateur du joueur passé en paramètre
         // Et on le supprime
@@ -99,7 +95,7 @@ public class SpectatorManager implements Listener {
             if (spectator.getJoueur().equals(joueur)) playerSpectator = spectator;
 
         // On le supprime
-        spectateurs.remove(playerSpectator);
+        if (playerSpectator != null) spectateurs.remove(playerSpectator);
     }
 
     /**
@@ -248,13 +244,6 @@ public class SpectatorManager implements Listener {
     public void OnPlayerRespawn(MCPlayerRespawnEvent event) {
         Player joueur = event.getJoueur();
 
-        // On vérifie que le joueur fait parti du plugin
-        if (!mineralcontest.isInAMineralContestWorld(joueur)) return;
-
-        // Si il n'est pas spectateur, on ne fait rien
-        if (!isPlayerSpectator(joueur)) return;
-
-
         // Sinon, on ajoute le joueur à la liste des spectateurs
         supprimerSpectateur(joueur);
 
@@ -278,7 +267,7 @@ public class SpectatorManager implements Listener {
 
         // On regarde si il reste des spectateurs, si il n'y en a pas, on arrête la boucle
         if (spectateurs.isEmpty()) {
-            boucle.cancel();
+            if (boucle != null) boucle.cancel();
             boucle = null;
         }
 

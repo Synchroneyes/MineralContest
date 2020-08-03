@@ -1,7 +1,9 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
@@ -58,6 +60,25 @@ public class Agile extends KitAbstract {
         // Si le joueur n'utilise pas le kit, on s'arrête
         if (!isPlayerUsingThisKit(event.getJoueur())) return;
         addPlayerBonus(event.getJoueur());
+    }
+
+    /**
+     * Evenement appelé lors du démarrage de la game
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        Game partie = event.getGame();
+
+        // Pour chaque joueur de la partie
+        for (Player joueur : partie.groupe.getPlayers()) {
+            // On vérifie si ils ont ce kit
+            if (isPlayerUsingThisKit(joueur)) {
+                // Et applique son bonus
+                addPlayerBonus(joueur);
+            }
+        }
     }
 
     /**
