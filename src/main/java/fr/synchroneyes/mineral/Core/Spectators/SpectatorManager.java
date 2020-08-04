@@ -35,7 +35,7 @@ public class SpectatorManager implements Listener {
     private Game partie;
 
     // Nombre de tick entre chaque tour de boucle
-    private int delayBoucle = 0;
+    private int delayBoucle = 1;
 
     public SpectatorManager(Game partie) {
         this.spectateurs = new LinkedBlockingQueue<>();
@@ -96,6 +96,11 @@ public class SpectatorManager implements Listener {
 
         // On le supprime
         if (playerSpectator != null) spectateurs.remove(playerSpectator);
+
+        if (spectateurs.isEmpty()) {
+            if (boucle != null) boucle.cancel();
+            if (boucle != null) boucle = null;
+        }
     }
 
     /**
@@ -136,7 +141,7 @@ public class SpectatorManager implements Listener {
         }
 
         // On démarre notre boucle
-        Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::doSpectateTick, 0, delayBoucle);
+        boucle = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::doSpectateTick, 0, delayBoucle);
     }
 
     /**
@@ -246,7 +251,6 @@ public class SpectatorManager implements Listener {
 
         // Sinon, on ajoute le joueur à la liste des spectateurs
         supprimerSpectateur(joueur);
-
 
         // On rend le joueur visible de tous si il n'est pas arbitre
         Game partie = mineralcontest.getPlayerGame(joueur);
