@@ -128,110 +128,110 @@ cvar_friendly_fire_enabled: "Friendly fire is now enabled"
 cvar_friendly_fire_disabled: "Friendly fire is now disabled"
 arena_chest_opened: "Arena chest was opened!"
 error_command_only_when_game_is_started: "This command can only be used whe the game is in progress"
-private: '[Private]'
-group: '[Group]'
-team_penalty: ' penalty points'
-cant_interact_block_hub: You cannot interact with block here
-cvar_block_adding_enabled: Block placing is now enabled
-cvar_block_adding_disabled: Block placing is now disabled
-cvar_old_pvp_enabled: The OLD pvp system is now %green%enabled
-cvar_old_pvp_disabled: The OLD pvp system is now %red%disabled
-block_not_allowed_to_be_placed: Placing this block is forbidden
-error_command_can_only_be_used_in_game: This command can only be used in game.
-error_you_already_have_a_group: You already have a group.
-error_group_with_this_name_already_exists: There is already a group existing with this name
-success_group_successfully_created: Group has been created !
-error_command_can_only_be_used_hub_world: This command can only be used in the world '%hubWorldName%'
-error_you_must_be_in_a_group: You must be in a group.
-error_you_must_be_group_admin: You must be a group admin
-error_no_player_with_this_name: There is no player with this name
-error_you_cant_join_this_group: You can't join this group.
-error_group_doesnt_exists: This group doesn't exists
-successfully_joined_a_group: You joined %groupName% !
-you_got_invited_to_a_group: You have been invited into %groupName%. You can join this group with the command /joingroupe %groupName%
-error_player_already_jave_a_group: Player %playerName% already have a group.
-error_player_already_in_this_group: %playerName% is already in the group.
-player_successfully_invited_to_group: %playerName% has been invited into our group.
-error_you_cant_kick_yourself_from_group: You cannot kick yourself from the group.
-you_were_kicked_from_a_group: You have been kicked from group %groupName%
-player_got_kicked_from_group: %playerName% got kicked from the group.
-error_you_cant_kick_this_player_from_the_group: You cannot kick this player.
-group_got_deleted: The group has been dismissed
-you_left_the_group: You left the group %groupName%
-error_you_must_be_group_owner: You must be the group owner
-error_player_not_in_our_group: The player is not in our group.
-player_is_now_group_admin: %playerName% is now a group admin
-error_player_is_not_admin: %playerName% is not a group admin
-player_is_no_longer_a_group_admin: %playerName% is no longer an admin
-error_you_cant_remove_this_admin: You cant remove this admin
-error_group_is_not_locked: The group is not locked
-error_group_is_locked: The group is locked
-group_is_now_locked: The group is now locked
-group_is_now_unlocked: The group is now unlocked
-error_switch_fail_team_doesnt_exists: Switch command failed, the selected team doesn't exists
-team_available_list_text: 'Available team list: '
-hud_game_state: 'Status: %playerGroupState%'
-hud_referee_text: 'Role: Referee'
-hud_map_name: 'Current map: %mapName%'
-vote_already_started: The vote is already started
-cvar_error_invalid_team_name: This team doesn't exists
-error_vote_available_only_when_no_game: The vote is only available before starting a game.
-group_finished_their_game_winner_display: Group %groupName% has ended their game. The winning team is %coloredWinningTeamName% !
-custom_chicken_name: $ CHICKEN $
-error_command_unavailable_in_this_version: This command is not available in this version.
-error_cant_load_game_settings_file: Unable to load the map game setting. This document %red%is not a requirement%white%and doesn't prevent you to start a game
-referee_item_teleport_to_player_description: 'This item allows you to teleport to '
-referee_item_teleport_to_player_title: 'Teleport to '
-referee_item_teleport_inventory_title: Teleport menu
-referee_item_teleporting_you_to_player: Teleporting you to player ...
-referee_inventory_teleport_description: Teleport menu
-referee_item_teleport_to_house_title: Teleport to the base of %coloredTeamName%
-referee_item_teleport_to_house_description: Allow you to teleport yourself into %coloredTeamName% house
-referee_item_inventory_of_player_title: 'Inventory of '
-referee_item_inventory_of_player_description: 'Open inventory of '
-referee_item_player_inventory_title: Inventories list
-referee_item_player_inventory_description: Open inventories menu
-referee_item_team_chest_inventory_title: Team's chest menu
-referee_item_team_chest_inventory_description: Allows you to open a team chest
-referee_item_team_chest_item_title: Team chest of %coloredTeamName%
-referee_item_team_chest_item_description: Open's %coloredTeamName% team chest
-referee_team_current_score: 'Current score of team %coloredTeamName% is: %teamScore% points'
-referee_item_inventory_map_selector_title: Select a map to play
-referee_item_inventory_map_selector_description: Allows you select the map to play
-referee_item_map_selector_description: 'Load the map: '
-referee_error_map_selector_only_hub: Map selecting is only available in the hub
-referee_inventory_game_title: Game management
-referee_inventory_game_description: Game management (spawn arena chest, chicken waves, pause....)
-referee_item_enable_disable_chicken_wave_title: Enable/disable chicken waves
-referee_item_enable_disable_chicken_wave_description: Enable or disable the chicken waves
-referee_item_start_chicken_wave_title: Start a chicken wave
-chiken_wave_now_enabled: Chicken waves are now enabled
-chiken_wave_now_disabled: Chicken waves are now disabled
-chicken_wave_error_disabled: Chicken waves are disabled
-chicken_wave_spawned: Chickens has appeared in the arena!
-referee_item_inventory_stopgame_title: Stop the game
-referee_item_inventory_stopgame_description: Display a confirmation menu to stop the game
-referee_item_cancel_game_stop_title: Cancel
-referee_item_confirm_game_stop_title: Confirm
-referee_item_show_score_to_admin_title: Display score to the admins
-referee_item_show_score_to_admin_description: Score will only be shown to admins
-referee_item_show_score_to_everyone_title: Display score to everyone
-referee_item_show_score_to_everyone_description: Score will be broadcasted to the group.
-error_you_must_be_server_admin: You need to be a server admin
-map_downloader_inventory_name: Map downloader menu
-map_downloader_inventory_maps_list_name: Available maps list
-error_already_downloading_a_map: A download is already in progress, please wait
-downloading_map_progress: 'Downloading %mapName% in progress: %percentage%%'
-downloading_map_done_now_extracting: Download complete! Now extracting the map, please wait ...
-downloading_map_extracted: Extraction complete, you can now play the map!
-map_downloader_delete_title: Map deletion menu
-map_downloader_delete_description: Do you really want to delete the map ?
-player_base_item_inventory_title: Respawn inventory menu
-player_base_item_close_inventory_item_title: Close
-error_no_maps_downloaded_to_start_game: There is no map downloaded. A server admin needs to run the command /mcdownloader
-set_yourself_as_ready_to_start_votemap: All players must be ready in order to start the vote. Set yourself as ready with the following command /ready
-player_joined_our_group: %playerName% have joined our group!
-error_no_teams_with_player: There is no teams with players!
+private: "[Private]"
+group: "[Group]"
+team_penalty: " penalty points"
+cant_interact_block_hub: "You cannot interact with block here"
+cvar_block_adding_enabled: "Block placing is now enabled"
+cvar_block_adding_disabled: "Block placing is now disabled"
+cvar_old_pvp_enabled: "The OLD pvp system is now %green%enabled"
+cvar_old_pvp_disabled: "The OLD pvp system is now %red%disabled"
+block_not_allowed_to_be_placed: "Placing this block is forbidden"
+error_command_can_only_be_used_in_game: "This command can only be used in game."
+error_you_already_have_a_group: "You already have a group."
+error_group_with_this_name_already_exists: "There is already a group existing with this name"
+success_group_successfully_created: "Group has been created !"
+error_command_can_only_be_used_hub_world: "This command can only be used in the world '%hubWorldName%"
+error_you_must_be_in_a_group: "You must be in a group."
+error_you_must_be_group_admin: "You must be a group admin"
+error_no_player_with_this_name: "There is no player with this name"
+error_you_cant_join_this_group: "You can't join this group."
+error_group_doesnt_exists: "This group doesn't exists"
+successfully_joined_a_group: "You joined %groupName% !"
+you_got_invited_to_a_group: "You have been invited into %groupName%. You can join this group with the command /joingroupe %groupName%"
+error_player_already_jave_a_group: "Player %playerName% already have a group."
+error_player_already_in_this_group: "%playerName% is already in the group."
+player_successfully_invited_to_group: "%playerName% has been invited into our group."
+error_you_cant_kick_yourself_from_group: "You cannot kick yourself from the group."
+you_were_kicked_from_a_group: "You have been kicked from group %groupName%"
+player_got_kicked_from_group: "%playerName% got kicked from the group."
+error_you_cant_kick_this_player_from_the_group: "You cannot kick this player."
+group_got_deleted: "The group has been dismissed"
+you_left_the_group: "You left the group %groupName%"
+error_you_must_be_group_owner: "You must be the group owner"
+error_player_not_in_our_group: "The player is not in our group."
+player_is_now_group_admin: "%playerName% is now a group admin"
+error_player_is_not_admin: "%playerName% is not a group admin"
+player_is_no_longer_a_group_admin: "%playerName% is no longer an admin"
+error_you_cant_remove_this_admin: "You cant remove this admin"
+error_group_is_not_locked: "The group is not locked"
+error_group_is_locked: "The group is locked"
+group_is_now_locked: "The group is now locked"
+group_is_now_unlocked: "The group is now unlocked"
+error_switch_fail_team_doesnt_exists: "Switch command failed, the selected team doesn't exists"
+team_available_list_text: "Available team list: "
+hud_game_state: "Status: %playerGroupState%"
+hud_referee_text: "Role: Referee"
+hud_map_name: "Current map: %mapName%"
+vote_already_started: "The vote is already started"
+cvar_error_invalid_team_name: "This team doesn't exists"
+error_vote_available_only_when_no_game: "The vote is only available before starting a game."
+group_finished_their_game_winner_display: "Group %groupName% has ended their game. The winning team is %coloredWinningTeamName% !"
+custom_chicken_name: "$ CHICKEN $"
+error_command_unavailable_in_this_version: "This command is not available in this version."
+error_cant_load_game_settings_file: "Unable to load the map game setting. This document %red%is not a requirement%white%and doesn't prevent you to start a game"
+referee_item_teleport_to_player_description: "This item allows you to teleport to "
+referee_item_teleport_to_player_title: "Teleport to "
+referee_item_teleport_inventory_title: "Teleport menu"
+referee_item_teleporting_you_to_player: ""
+referee_inventory_teleport_description: "Teleport menu"
+referee_item_teleport_to_house_title: "Teleport to the base of %coloredTeamName%"
+referee_item_teleport_to_house_description: "Allow you to teleport yourself into %coloredTeamName% house"
+referee_item_inventory_of_player_title: "Inventory of "
+referee_item_inventory_of_player_description: "Open inventory of "
+referee_item_player_inventory_title: "Inventories list"
+referee_item_player_inventory_description: "Open inventories menu"
+referee_item_team_chest_inventory_title: "Team's chest menu"
+referee_item_team_chest_inventory_description: "Allows you to open a team chest"
+referee_item_team_chest_item_title: "Team chest of %coloredTeamName%"
+referee_item_team_chest_item_description: "Open's %coloredTeamName% team chest"
+referee_team_current_score: "Current score of team %coloredTeamName% is: %teamScore% points"
+referee_item_inventory_map_selector_title: "Select a map to play"
+referee_item_inventory_map_selector_description: "Allows you select the map to play"
+referee_item_map_selector_description: "Load the map: "
+referee_error_map_selector_only_hub: "Map selecting is only available in the hub"
+referee_inventory_game_title: "Game management"
+referee_inventory_game_description: "Game management (spawn arena chest, chicken waves, pause....)"
+referee_item_enable_disable_chicken_wave_title: "Enable/disable chicken waves"
+referee_item_enable_disable_chicken_wave_description: "Enable or disable the chicken waves"
+referee_item_start_chicken_wave_title: "Start a chicken wave"
+chiken_wave_now_enabled: "Chicken waves are now enabled"
+chiken_wave_now_disabled: "Chicken waves are now disabled"
+chicken_wave_error_disabled: "Chicken waves are disabled"
+chicken_wave_spawned: "Chickens has appeared in the arena!"
+referee_item_inventory_stopgame_title: "Stop the game"
+referee_item_inventory_stopgame_description: "Display a confirmation menu to stop the game"
+referee_item_cancel_game_stop_title: "Cancel"
+referee_item_confirm_game_stop_title: "Confirm"
+referee_item_show_score_to_admin_title: "Display score to the admins"
+referee_item_show_score_to_admin_description: "Score will only be shown to admins"
+referee_item_show_score_to_everyone_title: "Display score to everyone"
+referee_item_show_score_to_everyone_description: "Score will be broadcasted to the group."
+error_you_must_be_server_admin: "You need to be a server admin"
+map_downloader_inventory_name: "Map downloader menu"
+map_downloader_inventory_maps_list_name: "Available maps list"
+error_already_downloading_a_map: "A download is already in progress, please wait"
+downloading_map_progress: "Downloading %mapName% in progress: %percentage%%"
+downloading_map_done_now_extracting: "Download complete! Now extracting the map, please wait ..."
+downloading_map_extracted: "Extraction complete, you can now play the map!"
+map_downloader_delete_title: "Map deletion menu"
+map_downloader_delete_description: "Do you really want to delete the map ?"
+player_base_item_inventory_title: "Respawn inventory menu"
+player_base_item_close_inventory_item_title: "Close"
+error_no_maps_downloaded_to_start_game: "There is no map downloaded. A server admin needs to run the command /mcdownloader"
+set_yourself_as_ready_to_start_votemap: "All players must be ready in order to start the vote. Set yourself as ready with the following command /ready"
+player_joined_our_group: "%playerName% have joined our group!"
+error_no_teams_with_player: "There is no teams with players!"
 currently_no_player_in_this_team: "The team is empty"
 arena_chest_will_spawn_in: "Arena chest will spawn in %arenaChestTimeLeft% seconds!"
 stats_arena_chest_title:  "Indiana Jones"
@@ -265,7 +265,6 @@ arena_chest_title_being_opened: "%red%Opening Chest"
 vote_you_voted_for_map: "You have voted to play on: %map%"
 vote_map: "Vote to play on: %map%"
 currently_no_vote: "No one voted yet"
-
 informations_category_title: "Informations"
 shopitem_next_airdrop_location_title: "Next airdrop location"
 shopitem_next_airdrop_description_1: "Want to prepare yourself for the next airdrop?"
@@ -376,5 +375,7 @@ kit_spy_airdrop_will_spawn: "%red%Next airdrop will spawn in 30 seconds"
 kit_spy_title: "Spy"
 kit_cowboy_description: "He will spawn with a horse, it moves 15% slower on foot, but cannot use weapons while being on horse, except projectiles (eg: bow, crossbow ...). He can of course use his weapons when he is not on his horse."
 kit_cowboy_title: "Cowboy"
-kit_spy_description: "
-  He receives information on drops & arena chest ... He also knows the position of the drop when it appears! However, he cannot open arena chests or drops."
+kit_spy_description: "He receives information on drops & arena chest ... He also knows the position of the drop when it appears! However, he cannot open arena chests or drops."
+hud_players_count: "Players: "
+hud_current_game_state: "Currently: "
+hud_currently_waiting_game_start: "Waiting ..."

@@ -417,7 +417,10 @@ public enum Lang {
 
     shopitem_not_compatible_with_kits("shopitem_not_compatible_with_kits", "Désactivé lorsque les kits sont actifs"),
 
-    hud_currently_spectating("hud_currently_spectating", "Spectateur: ");
+    hud_currently_spectating("hud_currently_spectating", "Spectateur: "),
+    hud_players_count("hud_players_count", "Joueurs: "),
+    hud_current_game_state("hud_current_game_state", "Etat: "),
+    hud_currently_waiting_game_start("hud_currently_waiting_game_start", "En attente");
 
 
 

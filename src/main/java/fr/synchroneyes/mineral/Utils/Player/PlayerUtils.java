@@ -210,8 +210,8 @@ public class PlayerUtils {
                             // Le joueur possède un groupe !
                             if (mineralcontest.communityVersion)
                                 elementsADisplay.add(ChatColor.GOLD + "Groupe: " + ChatColor.WHITE + playerGroup.getNom());
-                            elementsADisplay.add(ChatColor.GOLD + "Joueurs: " + playerGroup.getPlayerCount() + "");
-                            elementsADisplay.add(ChatColor.GOLD + "Etat: " + ChatColor.RED + playerGroup.getEtatPartie().getNom());
+                            elementsADisplay.add(ChatColor.GOLD + Lang.hud_players_count.toString() + playerGroup.getPlayerCount() + "");
+                            elementsADisplay.add(ChatColor.GOLD + Lang.hud_current_game_state.toString() + ChatColor.RED + Lang.hud_currently_waiting_game_start.toString());
                             elementsADisplay.add("========= ");
                             if (playerGroup.getNomsJoueurNonPret().length() > 0)
                                 elementsADisplay.add(Lang.non_ready_hud.toString() + playerGroup.getNomsJoueurNonPret());

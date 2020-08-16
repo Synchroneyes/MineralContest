@@ -12,6 +12,7 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Spectators.SpectatorManager;
+import fr.synchroneyes.mineral.Kits.Classes.Mineur;
 import fr.synchroneyes.mineral.Kits.KitManager;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
@@ -23,6 +24,7 @@ import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -520,8 +522,17 @@ public class Groupe {
                     if (infoJoueur.getKit() != null) getKitManager().setPlayerKit(p, infoJoueur.getKit());
                     p.getInventory().clear();
 
+
+                    // Si le joueur est mineur, on doit mettre les barrieres tout en haut
+                    if(infoJoueur.getKit() instanceof Mineur) {
+                        // On lui ajoute les barrières, on block la première ligne
+                        for (int index = 9; index < 18; ++index)
+                            p.getInventory().setItem(index, Mineur.getBarrierItem());
+                    }
+
                     for (ItemStack item : infoJoueur.getOldPlayerInventory())
-                        p.getInventory().addItem(item);
+                        if(item.getType() != Material.BARRIER)
+                            p.getInventory().addItem(item);
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
 

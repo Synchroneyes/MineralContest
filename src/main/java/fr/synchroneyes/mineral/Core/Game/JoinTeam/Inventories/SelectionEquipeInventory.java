@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories;
 
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Items.JoinTeamItem;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -71,11 +72,11 @@ public class SelectionEquipeInventory extends InventoryInterface {
 
     @Override
     public String getNomInventaire() {
-        return "Choisir une équipe";
+        return Lang.item_team_selection_title.toString();
     }
 
     @Override
     public String getDescriptionInventaire() {
-        return "Choisir une équipe";
+        return Lang.item_team_selection_title.toString();
     }
 }

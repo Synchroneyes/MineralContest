@@ -92,8 +92,6 @@ public class Mineur extends KitAbstract {
                 for (int index = 9; index < 18; ++index)
                     joueur.getInventory().setItem(index, getBarrierItem());
 
-                // On lui donne le stuff de base
-                partie.groupe.getPlayerBaseItem().giveItemsToPlayer(joueur);
             }
         }
     }
@@ -181,7 +179,7 @@ public class Mineur extends KitAbstract {
      *
      * @return
      */
-    private ItemStack getBarrierItem() {
+    public static ItemStack getBarrierItem() {
         ItemStack barriere = new ItemStack(Material.BARRIER);
 
         ItemMeta meta = barriere.getItemMeta();

@@ -22,7 +22,6 @@ import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
 import fr.synchroneyes.world_downloader.WorldDownloader;
-import jdk.internal.jline.internal.Nullable;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.command.CommandMap;
@@ -155,9 +154,6 @@ public final class mineralcontest extends JavaPlugin {
         return true;
     }
 
-    public void setDefaultSpawn(Location defaultSpawn) {
-        this.defaultSpawn = defaultSpawn;
-    }
 
 
     public void initCommunityVersion() {
@@ -413,18 +409,6 @@ public final class mineralcontest extends JavaPlugin {
 
     }
 
-    // Called when the game start
-    public void setWorldBorder(Groupe groupe) throws Exception {
-        int playZoneRadius = groupe.getParametresPartie().getCVAR("mp_set_playzone_radius").getValeurNumerique();
-        int marge = 100; // Use to prevent server.properties spawn protection
-
-        WorldBorder world = groupe.getMonde().getWorldBorder();
-        world.setCenter(groupe.getGame().getArene().getCoffre().getLocation());
-        world.setSize(playZoneRadius * 2);
-
-
-
-    }
 
     public void setDefaultWorldBorder() {
 
@@ -484,14 +468,12 @@ public final class mineralcontest extends JavaPlugin {
         return w.equals(plugin.pluginWorld);
     }
 
-    @Nullable
     public static Game getPlayerGame(Player p) {
         Groupe g = getPlayerGroupe(p);
         if (g != null) return g.getGame();
         return null;
     }
 
-    @Nullable
     public static Game getWorldGame(World world) {
         for (Groupe groupe : plugin.groupes) {
             if (groupe.getMonde() == null && world != mineralcontest.plugin.pluginWorld) return null;

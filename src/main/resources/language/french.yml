@@ -1,236 +1,234 @@
-title: '[%gold%Mineral%blue%Contest%white%]'
-error: '[Erreur]'
-global: '[Global]'
-_private: '[Privé]'
-admin: '[Admin]'
+title: "[%gold%Mineral%blue%Contest%white%]"
+error: "[Erreur]"
+global: "[Global]"
+_private: "[Privé]"
+admin: "[Admin]"
 web: "[Web]"
-cvar_diamond_score: Le score du diamand est maintenant de
-cvar_iron_score: 'Le score du fer est maintenant de '
-cvar_emerald_score: 'Le score de l''émeraude est maintenant de '
-cvar_gold_score: 'Le score de l''or est maintenant de '
-cvar_team_max_player: Le nombre de joueur requis par equipe est maintenant de %teamNumber%
-error_when_resume: Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine
-game_already_started: La partie a déjà commencé !
-all_team_not_full: Au moins une équipe n'est pas complète. Il faut %teamNumber% joueurs par équipe.
-not_enought_player_connected: Il n'y a pas assez de joueurs connecté
-must_be_in_team: Vous devez être dans une équipe
-arena_not_defined: L'arène n'est pas défini
-game_not_started: La partie n'a pas encore commencé
-chest_not_defined: Le coffre n'a pas encore été défini
-arena_spawnzone_not_added: La zone de spawn de l'arene n'est pas defini
-team_house_location_not_added: Le spawn de l'équipe %coloredTeamName% n'a pas été ajouté
-team_house_location_added: Le spawn de l'équipe %coloredTeamName% a été ajouté
-cant_teleport_player_without_team: Impossible de téléporter un joueur sans équipe
-vote_already_voted: Vous avez déjà voté !
-vote_not_enabled: Les votes ne sont pas actif
-vote_selected_biome_doesnt_exist: Le biome demandé n'existe pas
-cant_break_block_here: Vous ne pouvez pas casser de bloc ici
-cant_interact_block_pre_game: Vous ne pouvez pas interagir avec des blocs avant le début d'une partie
-bad_map_loaded: Mauvaise map chargée, merci de changer le nom de la map dans le fichier config.yml, ou de télécharger la bonne map. Disponible sur le github
-github_link: http://github.com/jaunefra/mineralcontest
-plugin_shutdown: Désactivation du plugin ...
-kick_game_already_in_progress: Une partie est déjà en cours
-deathzone_spawn_location_added: Position de la deathzone ajoutée
-deathzone_spawn_location_undefined: La position de spawn de la deathzone n'est pas défini
-deathzone_you_are_dead: Vous êtes mort
-deathzone_respawn_in: Vous allez réapparaitre dans %deathTime% secondes
-deathzone_respawned: De retour au combat !
-vote_you_voted_for: Vous avez voté pour le biome %votedBiome%
-vote_winning_biome: Le biome selectionné est %winningBiome%
-vote_title: Vote pour le biome à jouer
-vote_count: Vote(s)
-vote_snow: Neige
-vote_desert: Desert
-vote_forest: Foret
-vote_plain: Plaine
-vote_mountain: Montagne
-vote_swamp: Marécage
-vote_started: Le vote a démarré ! Vous pouvez voter pour votre biome préféré avec la commande /vote <numero du biome>
-vote_ended: Le vote est terminé
-vote_explain: 'Ex: pour voter neige: /vote 0'
-game_successfully_started: La partie vient de commencer
-game_starting: La partie va démarrer
-game_resumed: La partie a repris !
-game_already_paused: La partie est déjà en pause
-team_score: 'Score de l''équipe %coloredTeamName%: %teamScore% points'
-team_winning: L'équipe %coloredTeamName% remporte la partie avec %teamScore% points
-game_over: La partie est terminée !
-player_killed: Le joueur %deadPlayer% a été tué par %killingPlayer%
-player_died: Le joueur %deadPlayer% est mort
-hud_game_resumed: Go go go !
-hud_game_paused: La partie est en pause
-hud_game_waiting_start: En attente du démarrage de la partie
-hud_game_starting: La partie va démarrer dans %preGameTime% secondes
-hud_player_paused: PAUSE !
-hud_player_resume_soon: La partie reprendra bientôt
-hud_admin_resume_help: Pour reprendre la partie, faites /resume
-hud_you_are_not_in_team: Vous n'êtes pas dans une équipe
-hud_team_name_no_score: '%teamColor%Equipe %teamName%'
-hud_team_name_score: '%teamColor%Equipe %teamName% : %teamScore%'
-hud_time_left: 'Temps restant: %timeLeft%'
-hud_awaiting_players: '%onlinePlayers%/%requiredPlayers% joueurs connectés'
-admin_played_tried_to_login: Le joueur %playerName% a tenté de se connecter alors que la partie est déjà en cours
-admin_played_logged_in_pause_without_team: Le joueur %playerName% s'est connecté alors qu'il ne faisait pas partie d'une équipe
-admin_team_non_empty: L'équipe %coloredTeamName% n'est pas pleine
-admin_switch_command_help: Vous pouvez changer un joueur d''équipe avec la commande /switch
-admin_team_will_be_randomized: Les équipes seront attribué de manière aléatoire, Pour changer ça, l'admin doit entrer la commande mp_randomize_team 0
-arena_spawn_added: Le spawn pour l'arène a bien été ajouté
-arena_teleporting: Téléportation vers l'arène
-arena_teleport_disabled: La téléportation de l'arène n'est pas active
-arena_now_teleporting: Téléportation vers l'arène ...
-arena_chest_title: Coffre d'arène !
-arena_chest_being_opened: Quelqu'un ouvre déjà le coffre
-arena_teleport_now_enabled: Vous pouvez vous téléporter vers l'arène avec la commande /arene
-arena_teleport_now_disabled: Il n'est plus possible de se téléporter vers l'arène
-arena_chest_added: Le coffre d'arène a bien été ajouté
-arena_chest_spawned: Le coffre d'arène vient d'apparaitre
-team_chest_not_defined: Le coffre de l'équipe %coloredTeamName% n'a pas encore été défini
-team_randomizer_begin: Vous allez être attribué à une équipe aléatoire
-team_kicked: Vous avez été retiré de votre équipe
-team_welcome: Bienvenue dans l'équipe %coloredTeamName%
-team_score_now: Votre score est maintenant de %teamScore%
-team_chest_added: Le coffre de l'équipe %coloredTeamName% a été ajouté
-team_player_joined: Le joueur %playerName% a rejoint l'équipe %coloredTeamName%
-team_is_full: L'équipe %coloredTeamName% est pleine
-team_got_penality: L'équipe %coloredTeamName% possède %penality% points de pénalité
-team_got_penality_reseted: L'équipe %coloredTeamName% n'a plus de pénalité
-red_team: Rouge
-yellow_team: Jaune
-blue_team: Bleu
-no_longer_referee: Vous n'êtes plus arbitre !
-now_referee: Vous êtes désormais arbitre de la partie
-cant_remove_admin_game_in_progress: Une game est en cours, impossible de se retirer des arbitres
-referee_item_name: Livre d'arbitrage
-referee_item_resume: Reprendre la partie
-referee_item_start: Démarrer la partie
-referee_item_pause: Mettre la partie en pause
-referee_item_leaderboard: Tableau des scores
-referee_item_spawn_arena_chest: Faire apparaître le coffre d'arène
-referee_item_start_vote: Démarrer le vote
-referee_item_force_biome: Forcer le biome
-referee_will_now_select_biome: L'arbitre va désormais choisir le biome à jouer
-referee_action_not_available: Cette action n'est pas disponible pour le moment
-vote_required_to_start_game: Le vote doit d'abord avoir eu lieu avant de pouvoir démarrer la partie
-vote_is_in_progress_cant_start_game: Un vote est en cours, il n'est pas possible de démarrer la partie
-map_has_been_restored: La map a été remise à zéro
-admin_how_to_enable_vote: Pour forcer le démarrage du vote, faites /mp_start_vote
-metrics_are_now_enabled: Les données de votre partie mineral contest sont désormais envoyé à l'auteur du plugin, merci à vous !
-metrics_are_now_disabled: L'envoie de donnée est désormais désactivé
-ready_tag: '[PRET]'
-not_ready_tag: '[NON PRET]'
-player_is_now_ready: '%playerName% est désormais prêt'
-player_is_no_longer_ready: '%playerName% n''est plus prêt'
-warn_player_you_dont_have_a_team: Attention, vous n''êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe>
-set_yourself_as_ready_to_start_game: Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready
-teamChat: '[TEAM]'
-cvar_play_zone_radius: La taille de la zone de jeu est désormais de %playZoneRadius% block(s)
-cvar_friendly_fire_enabled: Les dégats entre coéquipiers sont désormais actif
-cvar_friendly_fire_disabled: Les dégats entre coéquipiers sont désormais désactivés
-arena_chest_opened: Le coffre d'arène a été ouvert !
-error_command_only_when_game_is_started: Cette commande ne peut être utilisé que lorsqu'une partie est en cours.
-private: '[Privé]'
-group: '[Groupe]'
-team_penalty: ' point(s) de pénalité'
-cant_interact_block_hub: Vous ne pouvez pas intéragir avec des blocs ici
-cvar_block_adding_enabled: La pose de bloc est maintenant activée
-cvar_block_adding_disabled: La pose de block est désormais désactivé
-cvar_old_pvp_enabled: L'ancien système de PVP est désormais activé
-cvar_old_pvp_disabled: L'ancien système de PVP est désormais désactivé
-block_not_allowed_to_be_placed: L'ajout de ce bloc est interdit
-error_command_can_only_be_used_in_game: Cette commande ne peut être utilisé qu'en jeu.
-error_you_already_have_a_group: Vous avez déjà un groupe.
-error_group_with_this_name_already_exists: Un groupe avec ce nom existe déjà
-success_group_successfully_created: Le groupe a été crée avec succès
-error_command_can_only_be_used_hub_world: Cette commande ne peut être utilisé que dans le monde %hubWorldName%.
-error_you_must_be_in_a_group: Vous devez être dans un groupe.
-error_you_must_be_group_admin: Vous devez être administrateur du groupe
-error_no_player_with_this_name: Il n'y a pas de joueurs avec ce nom
-error_you_cant_join_this_group: Vous ne pouvez pas rejoindre ce groupe.
-error_group_doesnt_exists: Ce groupe n'existe pas
-successfully_joined_a_group: Vous avez rejoin le groupe %groupName% avec succès !
-you_got_invited_to_a_group: Vous avez été invité à rejoindre le groupe %groupName%. Vous pouvez le rejoindre avec la commande /joingroupe %groupName%
-error_player_already_jave_a_group: Le joueur %playerName% a déjà un groupe.
-error_player_already_in_this_group: Le joueur %playerName% est déjà dans votre groupe.
-player_successfully_invited_to_group: Le joueur %playerName% a été invité dans le groupe.
-error_you_cant_kick_yourself_from_group: Vous ne pouvez pas vous exclure vous même d'un groupe
-you_were_kicked_from_a_group: Vous avez été exclu du groupe %groupName%
-player_got_kicked_from_group: Le joueur %playerName% a été exclu du groupe.
-error_you_cant_kick_this_player_from_the_group: Vous ne pouvez pas exclure ce joueur du groupe
-group_got_deleted: Le groupe a été dissous
-you_left_the_group: Vous avez quitté le groupe %groupName%
-error_you_must_be_group_owner: Vous devez être le créateur du groupe
-error_player_not_in_our_group: Le joueur n'est pas dans le groupe.
-player_is_now_group_admin: Le joueur %playerName% est désormais admin du groupe
-error_player_is_not_admin: Le joueur %playerName% n'est pas admin du groupe
-player_is_no_longer_a_group_admin: Le joueur %playerName% n'est plus un admin
-error_you_cant_remove_this_admin: Vous ne pouvez pas retirer cet admin
-error_group_is_not_locked: Le groupe n'est pas verouillé
-error_group_is_locked: Le groupe est verouillé
-group_is_now_locked: Le groupe est maintenant verouillé
-group_is_now_unlocked: Le groupe est maintenant déverouillé
-error_switch_fail_team_doesnt_exists: Le switch n'a pas fonctionné, l'équipe donnée n'existe pas.
-team_available_list_text: 'Liste des équipes disponible: '
-hud_game_state: 'Etat: %playerGroupState%'
-hud_referee_text: 'Rôle: Arbitre'
-hud_map_name: 'Map actuelle: %mapName%'
-vote_already_started: Le vote est déjà démarré
-cvar_error_invalid_team_name: Cette équipe n'existe pas
-error_vote_available_only_when_no_game: Le démarrage du vote est disponible seulement avant le début d'une partie
-group_finished_their_game_winner_display: Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !
-custom_chicken_name: POULET DE RESSOURCE
-error_command_unavailable_in_this_version: Cette commande n'est pas disponible dans cette version du plugin
-error_cant_load_game_settings_file: Impossible de charger le fichier de configuration de la carte. Ce chargement %red%n'est pas obligatoire %white%et n'empêche pas le chargement du monde
-referee_item_teleport_to_player_description: 'Cet objet permet de vous téléporter à '
-referee_item_teleport_to_player_title: 'Se téléporter à '
-referee_item_teleport_inventory_title: Menu de téléportation
-referee_item_teleporting_you_to_player: Téléportation vers le joueur en cours ...
-referee_inventory_teleport_description: Menu de téléportation
-referee_item_teleport_to_house_title: Se téléporter vers la base %coloredTeamName%
-referee_item_teleport_to_house_description: Vous permet de vous téléporter vers la base de l'équipe %coloredTeamName%
-referee_item_inventory_of_player_title: 'Inventaire de '
-referee_item_inventory_of_player_description: 'Ouvrir l''inventaire du joueur '
-referee_item_player_inventory_title: Liste des inventaires
-referee_item_player_inventory_description: Ouvrir le menu pour les inventaires
-referee_item_team_chest_inventory_title: Inventaire des coffres d'équipes
-referee_item_team_chest_inventory_description: Permet d'ouvrir les coffres d'équipes à distance
-referee_item_team_chest_item_title: Coffre de l'équipe %coloredTeamName%
-referee_item_team_chest_item_description: Ouvrir le coffre de l'équipe %coloredTeamName%
-referee_team_current_score: 'Le score actuel de l''équipe %coloredTeamName% est de: %teamScore% points'
-referee_item_inventory_map_selector_title: Selectionner une carte à jouer
-referee_item_inventory_map_selector_description: Permet de choisir la carte à jouer
-referee_item_map_selector_description: 'Charge la carte: '
-referee_error_map_selector_only_hub: La selection de map ne peut se faire que dans le hub
-referee_inventory_game_title: Gestion de la partie
-referee_inventory_game_description: Gérer la partie (spawn coffre, début vagues de poulet, pause....)
-referee_item_enable_disable_chicken_wave_title: Activer/Désactiver poulets
-referee_item_enable_disable_chicken_wave_description: Activer ou désactiver les vagues de poulets
-referee_item_start_chicken_wave_title: Démarrer les vagues de poulets
-chiken_wave_now_enabled: Les vagues de poulets sont désormais activé
-chiken_wave_now_disabled: Les vagues de poulets sont désormais désactivé
-chicken_wave_error_disabled: Les vagues de poulets sont désactivé.
-chicken_wave_spawned: Des poulets sont apparu dans l'arène !
-referee_item_inventory_stopgame_title: Arrêter la partie
-referee_item_inventory_stopgame_description: Affiche le menu de confirmation d'arrêt de partie
-referee_item_cancel_game_stop_title: Annuler
-referee_item_confirm_game_stop_title: Confirmer
-referee_item_show_score_to_admin_title: Afficher le score aux admins
-referee_item_show_score_to_admin_description: Le score ne sera affiché qu'au admins.
-referee_item_show_score_to_everyone_title: Afficher le score à tout le monde
-referee_item_show_score_to_everyone_description: Le score sera affiché à tout le monde (Tout le monde verra les points) !
-error_you_must_be_server_admin: Vous devez être OP sur le serveur
-map_downloader_inventory_name: Menu de téléchargement de maps
-map_downloader_inventory_maps_list_name: Liste des maps disponible
-error_already_downloading_a_map: Un téléchargement est déjà en cours, veuillez patienter
-downloading_map_progress: 'Téléchargement de la map %mapName% en cours: %percentage%%'
-downloading_map_done_now_extracting: Téléchargement de la carte terminée, démarrage de l'extraction de la map ...
-downloading_map_extracted: Extraction de la map terminée, vous pouvez désormais jouer dessus
-map_downloader_delete_title: Menu de suppression de map
-map_downloader_delete_description: Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après
-player_base_item_inventory_title: Inventaire de réapparition
-player_base_item_close_inventory_item_title: Fermer le menu
-error_no_maps_downloaded_to_start_game: Aucune map n'a été téléchargée, un joueur OP peut en télécharger avec la commande /mcdownloader
-set_yourself_as_ready_to_start_votemap: Tous les joueurs doivent être prêt pour démarrer le vote, marquez-vous comme prêt avec la commande /ready
-player_joined_our_group: Le joueur %playerName% a rejoin le groupe !
+cvar_diamond_score: "Le score du diamand est maintenant de"
+cvar_iron_score: "Le score du fer est maintenant de "
+cvar_emerald_score: "Le score de l''émeraude est maintenant de "
+cvar_gold_score: "Le score de l''or est maintenant de "
+cvar_team_max_player: "Le nombre de joueur requis par equipe est maintenant de %teamNumber%"
+error_when_resume: "Impossible de reprendre la partie, elle n'est pas en pause ou une équipe n'est pas pleine"
+game_already_started: "La partie a déjà commencé !"
+all_team_not_full: "Au moins une équipe n'est pas complète. Il faut %teamNumber% joueurs par équipe."
+not_enought_player_connected: "Il n'y a pas assez de joueurs connecté"
+must_be_in_team: "Vous devez être dans une équipe"
+arena_not_defined: "L'arène n'est pas défini"
+game_not_started: "La partie n'a pas encore commencé"
+chest_not_defined: "Le coffre n'a pas encore été défini"
+arena_spawnzone_not_added: "La zone de spawn de l'arene n'est pas defini"
+team_house_location_not_added: "Le spawn de l'équipe %coloredTeamName% n'a pas été ajouté"
+team_house_location_added: "Le spawn de l'équipe %coloredTeamName% a été ajouté"
+cant_teleport_player_without_team: "Impossible de téléporter un joueur sans équipe"
+vote_already_voted: "Vous avez déjà voté !"
+vote_not_enabled: "Les votes ne sont pas actif"
+vote_selected_biome_doesnt_exist: "Le biome demandé n'existe pas"
+cant_break_block_here: "Vous ne pouvez pas casser de bloc ici"
+cant_interact_block_pre_game: "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie"
+bad_map_loaded: "Mauvaise map chargée, merci de changer le nom de la map dans le fichier config.yml, ou de télécharger la bonne map. Disponible sur le github"
+github_link: "http://github.com/jaunefra/mineralcontest"
+plugin_shutdown: "Désactivation du plugin ..."
+kick_game_already_in_progress: "Une partie est déjà en cours"
+deathzone_spawn_location_added: "Position de la deathzone ajoutée"
+deathzone_spawn_location_undefined: "La position de spawn de la deathzone n'est pas défini"
+deathzone_you_are_dead: "Vous êtes mort"
+deathzone_respawn_in: "Vous allez réapparaitre dans %deathTime% secondes"
+deathzone_respawned: "De retour au combat !"
+vote_you_voted_for: "Vous avez voté pour le biome %votedBiome%"
+vote_winning_biome: "Le biome selectionné est %winningBiome%"
+vote_title: "Vote pour le biome à jouer"
+vote_count: "Vote(s)"
+vote_snow: "Neige"
+vote_desert: "Desert"
+vote_forest: "Foret"
+vote_plain: "Plaine"
+vote_mountain: "Montagne"
+vote_swamp: "Marécage"
+vote_started: "Le vote a démarré ! Vous pouvez voter pour votre biome préféré avec la commande /vote <numero du biome>"
+vote_ended: "Le vote est terminé"
+vote_explain: "Ex: pour voter neige: /vote 0"
+game_successfully_started: "La partie vient de commencer"
+game_starting: "La partie va démarrer"
+game_resumed: "La partie a repris !"
+game_already_paused: "La partie est déjà en pause"
+team_score: "Score de l''équipe %coloredTeamName%: %teamScore% points"
+team_winning: "L'équipe %coloredTeamName% remporte la partie avec %teamScore% points"
+game_over: "La partie est terminée !"
+player_killed: "Le joueur %deadPlayer% a été tué par %killingPlayer%"
+player_died: "Le joueur %deadPlayer% est mort"
+hud_game_resumed: "Go go go !"
+hud_game_paused: "La partie est en pause"
+hud_game_waiting_start: "En attente du démarrage de la partie"
+hud_game_starting: "La partie va démarrer dans %preGameTime% secondes"
+hud_player_paused: "PAUSE !"
+hud_player_resume_soon: "La partie reprendra bientôt"
+hud_admin_resume_help: "Pour reprendre la partie, faites /resume"
+hud_you_are_not_in_team: "Vous n'êtes pas dans une équipe"
+hud_team_name_no_score: "%teamColor%Equipe %teamName%"
+hud_team_name_score: "%teamColor%Equipe %teamName% : %teamScore%"
+hud_time_left: "Temps restant: %timeLeft%"
+hud_awaiting_players: "%onlinePlayers%/%requiredPlayers% joueurs connectés"
+admin_played_tried_to_login: "Le joueur %playerName% a tenté de se connecter alors que la partie est déjà en cours"
+admin_played_logged_in_pause_without_team: "Le joueur %playerName% s'est connecté alors qu'il ne faisait pas partie d'une équipe"
+admin_team_non_empty: "L'équipe %coloredTeamName% n'est pas pleine"
+admin_switch_command_help: "Vous pouvez changer un joueur d''équipe avec la commande /switch"
+admin_team_will_be_randomized: "Les équipes seront attribué de manière aléatoire, Pour changer ça, l'admin doit entrer la commande mp_randomize_team 0"
+arena_spawn_added: "Le spawn pour l'arène a bien été ajouté"
+arena_teleporting: "Téléportation vers l'arène"
+arena_teleport_disabled: "La téléportation de l'arène n'est pas active"
+arena_now_teleporting: "Téléportation vers l'arène ..."
+arena_chest_title: "Coffre d'arène !"
+arena_chest_being_opened: "Quelqu'un ouvre déjà le coffre"
+arena_teleport_now_enabled: "Vous pouvez vous téléporter vers l'arène avec la commande /arene"
+arena_teleport_now_disabled: "Il n'est plus possible de se téléporter vers l'arène"
+arena_chest_added: "Le coffre d'arène a bien été ajouté"
+arena_chest_spawned: "Le coffre d'arène vient d'apparaitre"
+team_chest_not_defined: "Le coffre de l'équipe %coloredTeamName% n'a pas encore été défini"
+team_randomizer_begin: "Vous allez être attribué à une équipe aléatoire"
+team_kicked: "Vous avez été retiré de votre équipe"
+team_welcome: "Bienvenue dans l'équipe %coloredTeamName%"
+team_score_now: "Votre score est maintenant de %teamScore%"
+team_chest_added: "Le coffre de l'équipe %coloredTeamName% a été ajouté"
+team_player_joined: "Le joueur %playerName% a rejoint l'équipe %coloredTeamName%"
+team_is_full: "L'équipe %coloredTeamName% est pleine"
+team_got_penality: "L'équipe %coloredTeamName% possède %penality% points de pénalité"
+team_got_penality_reseted: "L'équipe %coloredTeamName% n'a plus de pénalité"
+red_team: "Rouge"
+yellow_team: "Jaune"
+blue_team: "Bleu"
+no_longer_referee: "Vous n'êtes plus arbitre !"
+now_referee: "Vous êtes désormais arbitre de la partie"
+cant_remove_admin_game_in_progress: "Une game est en cours, impossible de se retirer des arbitres"
+referee_item_name: "Livre d'arbitrage"
+referee_item_resume: "Reprendre la partie"
+referee_item_start: "Démarrer la partie"
+referee_item_pause: "Mettre la partie en pause"
+referee_item_leaderboard: "Tableau des scores"
+referee_item_spawn_arena_chest: "Faire apparaître le coffre d'arène"
+referee_item_start_vote: "Démarrer le vote"
+referee_item_force_biome: "Forcer le biome"
+referee_will_now_select_biome: "L'arbitre va désormais choisir le biome à jouer"
+referee_action_not_available: "Cette action n'est pas disponible pour le moment"
+vote_required_to_start_game: "Le vote doit d'abord avoir eu lieu avant de pouvoir démarrer la partie"
+vote_is_in_progress_cant_start_game: "Un vote est en cours, il n'est pas possible de démarrer la partie"
+map_has_been_restored: "La map a été remise à zéro"
+admin_how_to_enable_vote: "Pour forcer le démarrage du vote, faites /mp_start_vote"
+metrics_are_now_enabled: "Les données de votre partie mineral contest sont désormais envoyé à l'auteur du plugin, merci à vous !"
+metrics_are_now_disabled: "L'envoie de donnée est désormais désactivé"
+ready_tag: "[PRET]"
+not_ready_tag: "[NON PRET]"
+player_is_now_ready: "%playerName% est désormais prêt"
+player_is_no_longer_ready: "%playerName% n''est plus prêt"
+warn_player_you_dont_have_a_team: "Attention, vous n''êtes pas dans une équipe. Vous pouvez rejoindre une équipe avec la commande /join <nomEquipe>"
+set_yourself_as_ready_to_start_game: "Tous les joueurs doivent être prêt pour lancer la partie, marquez vous comme étant prêt avec la commande /ready"
+teamChat: "[TEAM]"
+cvar_play_zone_radius: "La taille de la zone de jeu est désormais de %playZoneRadius% block(s)"
+cvar_friendly_fire_enabled: "Les dégats entre coéquipiers sont désormais actif"
+cvar_friendly_fire_disabled: "Les dégats entre coéquipiers sont désormais désactivés"
+arena_chest_opened: "Le coffre d'arène a été ouvert !"
+error_command_only_when_game_is_started: "Cette commande ne peut être utilisé que lorsqu'une partie est en cours."
+team_penalty: " point(s) de pénalité"
+cant_interact_block_hub: "Vous ne pouvez pas intéragir avec des blocs ici"
+cvar_block_adding_enabled: "La pose de bloc est maintenant activée"
+cvar_block_adding_disabled: "La pose de block est désormais désactivé"
+cvar_old_pvp_enabled: "L'ancien système de PVP est désormais activé"
+cvar_old_pvp_disabled: "L'ancien système de PVP est désormais désactivé"
+block_not_allowed_to_be_placed: "L'ajout de ce bloc est interdit"
+error_command_can_only_be_used_in_game: "Cette commande ne peut être utilisé qu'en jeu."
+error_you_already_have_a_group: "Vous avez déjà un groupe."
+error_group_with_this_name_already_exists: "Un groupe avec ce nom existe déjà"
+success_group_successfully_created: "Le groupe a été crée avec succès"
+error_command_can_only_be_used_hub_world: "Cette commande ne peut être utilisé que dans le monde %hubWorldName%."
+error_you_must_be_in_a_group: "Vous devez être dans un groupe."
+error_you_must_be_group_admin: "Vous devez être administrateur du groupe"
+error_no_player_with_this_name: "Il n'y a pas de joueurs avec ce nom"
+error_you_cant_join_this_group: "Vous ne pouvez pas rejoindre ce groupe."
+error_group_doesnt_exists: "Ce groupe n'existe pas"
+successfully_joined_a_group: "Vous avez rejoin le groupe %groupName% avec succès !"
+you_got_invited_to_a_group: "Vous avez été invité à rejoindre le groupe %groupName%. Vous pouvez le rejoindre avec la commande /joingroupe %groupName%"
+error_player_already_jave_a_group: "Le joueur %playerName% a déjà un groupe."
+error_player_already_in_this_group: "Le joueur %playerName% est déjà dans votre groupe."
+player_successfully_invited_to_group: "Le joueur %playerName% a été invité dans le groupe."
+error_you_cant_kick_yourself_from_group: "Vous ne pouvez pas vous exclure vous même d'un groupe"
+you_were_kicked_from_a_group: "Vous avez été exclu du groupe %groupName%"
+player_got_kicked_from_group: "Le joueur %playerName% a été exclu du groupe."
+error_you_cant_kick_this_player_from_the_group: "Vous ne pouvez pas exclure ce joueur du groupe"
+group_got_deleted: "Le groupe a été dissous"
+you_left_the_group: "Vous avez quitté le groupe %groupName%"
+error_you_must_be_group_owner: "Vous devez être le créateur du groupe"
+error_player_not_in_our_group: "Le joueur n'est pas dans le groupe."
+player_is_now_group_admin: "Le joueur %playerName% est désormais admin du groupe"
+error_player_is_not_admin: "Le joueur %playerName% n'est pas admin du groupe"
+player_is_no_longer_a_group_admin: "Le joueur %playerName% n'est plus un admin"
+error_you_cant_remove_this_admin: "Vous ne pouvez pas retirer cet admin"
+error_group_is_not_locked: "Le groupe n'est pas verouillé"
+error_group_is_locked: "Le groupe est verouillé"
+group_is_now_locked: "Le groupe est maintenant verouillé"
+group_is_now_unlocked: "Le groupe est maintenant déverouillé"
+error_switch_fail_team_doesnt_exists: "Le switch n'a pas fonctionné, l'équipe donnée n'existe pas."
+team_available_list_text: "Liste des équipes disponible: "
+hud_game_state: "Etat: %playerGroupState%"
+hud_referee_text: "Rôle: Arbitre"
+hud_map_name: "Map actuelle: %mapName%"
+vote_already_started: "Le vote est déjà démarré"
+cvar_error_invalid_team_name: "Cette équipe n'existe pas"
+error_vote_available_only_when_no_game: "Le démarrage du vote est disponible seulement avant le début d'une partie"
+group_finished_their_game_winner_display: "Le groupe %groupName% a terminé sa partie, l'équipe gagnante est %coloredWinningTeamName% !"
+custom_chicken_name: "POULET DE RESSOURCE"
+error_command_unavailable_in_this_version: "Cette commande n'est pas disponible dans cette version du plugin"
+error_cant_load_game_settings_file: "Impossible de charger le fichier de configuration de la carte. Ce chargement %red%n'est pas obligatoire %white%et n'empêche pas le chargement du monde"
+referee_item_teleport_to_player_description: "Cet objet permet de vous téléporter à "
+referee_item_teleport_to_player_title: "Se téléporter à "
+referee_item_teleport_inventory_title: "Menu de téléportation"
+referee_item_teleporting_you_to_player: "Téléportation vers le joueur en cours ..."
+referee_inventory_teleport_description: "Menu de téléportation"
+referee_item_teleport_to_house_title: "Se téléporter vers la base %coloredTeamName%"
+referee_item_teleport_to_house_description: "Vous permet de vous téléporter vers la base de l'équipe %coloredTeamName%"
+referee_item_inventory_of_player_title: "Inventaire de "
+referee_item_inventory_of_player_description: "Ouvrir l''inventaire du joueur "
+referee_item_player_inventory_title: "Liste des inventaires"
+referee_item_player_inventory_description: "Ouvrir le menu pour les inventaires"
+referee_item_team_chest_inventory_title: "Inventaire des coffres d'équipes"
+referee_item_team_chest_inventory_description: "Permet d'ouvrir les coffres d'équipes à distance"
+referee_item_team_chest_item_title: "Coffre de l'équipe %coloredTeamName%"
+referee_item_team_chest_item_description: "Ouvrir le coffre de l'équipe %coloredTeamName%"
+referee_team_current_score: "Le score actuel de l''équipe %coloredTeamName% est de: %teamScore% points"
+referee_item_inventory_map_selector_title: "Selectionner une carte à jouer"
+referee_item_inventory_map_selector_description: "Permet de choisir la carte à jouer"
+referee_item_map_selector_description: "Charge la carte: "
+referee_error_map_selector_only_hub: "La selection de map ne peut se faire que dans le hub"
+referee_inventory_game_title: "Gestion de la partie"
+referee_inventory_game_description: "Gérer la partie (spawn coffre, début vagues de poulet, pause....)"
+referee_item_enable_disable_chicken_wave_title: "Activer/Désactiver poulets"
+referee_item_enable_disable_chicken_wave_description: "Activer ou désactiver les vagues de poulets"
+referee_item_start_chicken_wave_title: "Démarrer les vagues de poulets"
+chiken_wave_now_enabled: "Les vagues de poulets sont désormais activé"
+chiken_wave_now_disabled: "Les vagues de poulets sont désormais désactivé"
+chicken_wave_error_disabled: "Les vagues de poulets sont désactivé."
+chicken_wave_spawned: "Des poulets sont apparu dans l'arène !"
+referee_item_inventory_stopgame_title: "Arrêter la partie"
+referee_item_inventory_stopgame_description: "Affiche le menu de confirmation d'arrêt de partie"
+referee_item_cancel_game_stop_title: "Annuler"
+referee_item_confirm_game_stop_title: "Confirmer"
+referee_item_show_score_to_admin_title: "Afficher le score aux admins"
+referee_item_show_score_to_admin_description: "Le score ne sera affiché qu'au admins."
+referee_item_show_score_to_everyone_title: "Afficher le score à tout le monde"
+referee_item_show_score_to_everyone_description: "Le score sera affiché à tout le monde (Tout le monde verra les points) !"
+error_you_must_be_server_admin: "Vous devez être OP sur le serveur"
+map_downloader_inventory_name: "Menu de téléchargement de maps"
+map_downloader_inventory_maps_list_name: "Liste des maps disponible"
+error_already_downloading_a_map: "Un téléchargement est déjà en cours, veuillez patienter"
+downloading_map_progress: "Téléchargement de la map %mapName% en cours: %percentage%%"
+downloading_map_done_now_extracting: "Téléchargement de la carte terminée, démarrage de l'extraction de la map ..."
+downloading_map_extracted: "Extraction de la map terminée, vous pouvez désormais jouer dessus"
+map_downloader_delete_title: "Menu de suppression de map"
+map_downloader_delete_description: "Voulez-vous vraiment supprimer la map ? Un menu de confirmation s'ouvrira après"
+player_base_item_inventory_title: "Inventaire de réapparition"
+player_base_item_close_inventory_item_title: "Fermer le menu"
+error_no_maps_downloaded_to_start_game: "Aucune map n'a été téléchargée, un joueur OP peut en télécharger avec la commande /mcdownloader"
+set_yourself_as_ready_to_start_votemap: "Tous les joueurs doivent être prêt pour démarrer le vote, marquez-vous comme prêt avec la commande /ready"
+player_joined_our_group: "Le joueur %playerName% a rejoin le groupe !"
 currently_no_player_in_this_team: "Aucun joueur dans cette équipe pour le moment"
 arena_chest_will_spawn_in: "Le coffre d'arène va apparaitre dans %arenaChestTimeLeft% secondes!"
 stats_arena_chest_title:  "Indiana Jones"
@@ -264,7 +262,6 @@ arena_chest_title_being_opened: "%red%Ouverture du coffre"
 vote_you_voted_for_map: "Vous avez voté pour la carte: %map%"
 vote_map: "Voter pour la carte: %map%"
 currently_no_vote: "Personne n'a voté"
-
 informations_category_title: "Informations"
 shopitem_next_airdrop_location_title: "Position du prochain largage"
 shopitem_next_airdrop_description_1: "Vous voulez vous préparer pour le prochain largage ?"
@@ -349,7 +346,6 @@ stats_mostpoints_title: "Meilleur joueur"
 stats_mostpoints_subtitle: "Avec %d points rapporté"
 stats_mostpoints_taken_title: "Petit coquin"
 stats_mostpoints_taken_subtitle: "Avec %d points retirés aux autres équipes"
-
 kitmanager_player_selected_kit: "Le joueur %playerName% a choisit son kit."
 kitmanager_player_selected_kit_team: "Le joueur %playerName% a choisit le kit: %k"
 kitmanager_player_list_without_kits: "Liste des joueurs n'ayant pas encore de kit: "
@@ -370,16 +366,12 @@ kit_toughguy_description: "Vous avez 15 coeurs, 15% de dégats en moins, et 15% 
 kit_support_title: "Soutien"
 kit_support_description: "Vous donnez de la vie à vos alliés proche de vous, vous avez 5 coeurs en moins et 15% de vitesse en moins"
 shopitem_not_compatible_with_kits: "Désactivé lorsque les kits sont actifs"
-
 kit_cowboy_title: "Cowboy"
 kit_cowboy_description: "Il réapparait avec un cheval, il se déplace 15% moins vite à pieds, mais ne peut pas utiliser d'armes à cheval, sauf des projectiles (ex: arc, arbalète ...). Il peut bien évidemment utiliser ses armes quand il n'est pas sur son cheval"
 kit_spy_title: "Informateur"
 kit_spy_description: "Il reçoit des informations sur les largages & coffre d'arène ... Il connait également la position du largage à son apparition! En revanche, il ne peut pas ouvrir les coffres d'arènes, ni les largages"
 kit_spy_airdrop_will_spawn: "%red%Le drop va apparaitre dans 30 secondes"
 hud_currently_spectating: "Spectateur: "
-
-
-
-
-
-
+hud_players_count: "Joueurs: "
+hud_current_game_state: "Etat: "
+hud_currently_waiting_game_start: "En attente ..."

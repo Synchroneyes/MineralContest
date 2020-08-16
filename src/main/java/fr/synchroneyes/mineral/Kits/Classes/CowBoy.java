@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -102,7 +103,6 @@ public class CowBoy extends KitAbstract {
 
             // On va blocker les dégats fait par le joueur si ce n'est pas fait depuis un projectile
             Player joueur = (Player) entityEvent.getDamager();
-            if (!isPlayerUsingThisKit(joueur)) return;
 
             if (entityEvent.getCause() != EntityDamageEvent.DamageCause.PROJECTILE && joueur.getVehicle() != null && joueur.getVehicle() instanceof Horse) {
                 joueur.playSound(joueur.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
@@ -113,6 +113,28 @@ public class CowBoy extends KitAbstract {
 
         }
     }
+
+
+    /**
+     * Méthode appelée lorsqu'un joueur monte sur un cheval
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerRideHorse(VehicleEnterEvent event) {
+        // On vérifie qu'on traite bien un joueur
+        if(event.getEntered() instanceof Player) {
+
+            // On vérifie que l'entité est bien un cheval
+            if(event.getVehicle() instanceof Horse) {
+
+                // Si ce n'est pas le propriétaire du cheval, on empeche de monter
+                if(((Horse) event.getVehicle()).getOwner().equals(event.getEntered())) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
 
     /**
      * Méthode appelée lorsque le joueur respawn
