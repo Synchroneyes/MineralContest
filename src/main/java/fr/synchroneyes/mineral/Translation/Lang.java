@@ -80,7 +80,7 @@ public enum Lang {
     vote_ended("vote_ended", "Le vote est terminé"),
     vote_explain("vote_explain", "Ex: pour voter neige: /vote 0"),
     game_successfully_started("game_successfully_started", "La partie vient de commencer"),
-    game_starting("game_starting", "La partie va démarrer"),
+    game_starting("game_starting", "%green%La partie va démarrer"),
     game_resumed("game_resumed", "La partie a repris !"),
     game_already_paused("game_already_paused", "La partie est déjà en pause"),
     team_score("team_score", "Score de l'équipe %coloredTeamName%: %teamScore% points"),

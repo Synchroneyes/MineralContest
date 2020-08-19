@@ -90,7 +90,7 @@ public class Groupe {
         this.automatedChestManager = new AutomatedChestManager(this);
 
         this.partie = new Game(this);
-        this.partie.init();
+        //this.partie.init();
         partie.setGroupe(this);
 
         this.etat = Etats.EN_ATTENTE;
@@ -115,8 +115,10 @@ public class Groupe {
      * Cette méthode est appelée à la fin d'une partie
      */
     public void resetGame() {
+        this.kitManager.removeAllPlayersKit();
         this.partie = new Game(this);
-        this.partie.init();
+        this.partie.startGameLoop();
+
     }
 
 
@@ -422,6 +424,10 @@ public class Groupe {
             if (!partie.isPlayerReady(joueur))
                 joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_votemap.toString());
         }
+
+        // On récupère l'instance MCPlayer du joueur et on set son groupe
+        if(mineralcontest.plugin.getMCPlayer(p) == null) mineralcontest.plugin.addNewPlayer(p);
+        mineralcontest.plugin.getMCPlayer(p).setGroupe(this);
 
     }
 

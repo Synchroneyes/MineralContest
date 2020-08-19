@@ -26,6 +26,9 @@ public class PlayerJoin implements Listener {
 
             Player joueur = event.getPlayer();
 
+            // On ajoute le joueur au plugin
+            mineralcontest.plugin.addNewPlayer(joueur);
+
             // On applique le système de pvp au joueur
             PlayerUtils.applyPVPtoPlayer(joueur);
 

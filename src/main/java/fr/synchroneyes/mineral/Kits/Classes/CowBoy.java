@@ -127,8 +127,10 @@ public class CowBoy extends KitAbstract {
             // On vérifie que l'entité est bien un cheval
             if(event.getVehicle() instanceof Horse) {
 
+                Horse cheval = (Horse) event.getVehicle();
+
                 // Si ce n'est pas le propriétaire du cheval, on empeche de monter
-                if(((Horse) event.getVehicle()).getOwner().equals(event.getEntered())) {
+                if(cheval.getOwner() != null && !cheval.getOwner().equals(event.getEntered())) {
                     event.setCancelled(true);
                 }
             }

@@ -228,6 +228,9 @@ public class Equipe implements Comparable<Equipe> {
 
         mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_player_joined.toString(), this, p), groupe);
 
+        // On set son équipe
+        mineralcontest.plugin.getMCPlayer(p).setEquipe(this);
+
 
         return true;
 

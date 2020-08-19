@@ -10,6 +10,7 @@ import fr.synchroneyes.mapbuilder.MapBuilder;
 import fr.synchroneyes.mineral.Commands.*;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.JoinTeamInventoryEvent;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
@@ -23,6 +24,7 @@ import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.*;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,11 +32,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class mineralcontest extends JavaPlugin {
@@ -78,9 +82,15 @@ public final class mineralcontest extends JavaPlugin {
     public LinkedList<Groupe> groupes;
     public WorldDownloader worldDownloader;
 
+    /**
+     * List of every players of the plugin
+     */
+    private List<MCPlayer> joueurs;
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
+        this.joueurs = new ArrayList<>();
     }
 
 
@@ -114,10 +124,11 @@ public final class mineralcontest extends JavaPlugin {
 
     public static Groupe getPlayerGroupe(Player p) {
         mineralcontest instance = plugin;
-        for (Groupe groupe : instance.groupes) {
-            if (groupe.containsPlayer(p)) return groupe;
-        }
-        return null;
+        MCPlayer joueur = instance.getMCPlayer(p);
+
+        if(joueur == null) return null;
+        return joueur.getGroupe();
+
     }
 
     public Groupe getNonCommunityGroup() {
@@ -153,8 +164,6 @@ public final class mineralcontest extends JavaPlugin {
             if (g.getIdentifiant().equalsIgnoreCase(groupe.getIdentifiant())) return false;
         return true;
     }
-
-
 
     public void initCommunityVersion() {
         if (!communityVersion) {
@@ -448,10 +457,9 @@ public final class mineralcontest extends JavaPlugin {
 
 
     public static boolean isInAMineralContestWorld(Player p) {
-        for (Groupe groupe : plugin.groupes)
-            if (groupe.getMonde() != null && p.getWorld().equals(groupe.getMonde())) return true;
-
-        return p.getWorld().equals(mineralcontest.plugin.pluginWorld);
+        MCPlayer joueur = plugin.getMCPlayer(p);
+        if(joueur == null) return false;
+        return (p.getWorld().equals(plugin.pluginWorld) || joueur.getGroupe().getMonde() != null);
     }
 
     public static boolean isInMineralContestHub(Player p) {
@@ -484,6 +492,52 @@ public final class mineralcontest extends JavaPlugin {
         }
         return null;
     }
+
+    /**
+     * Méthode permettant d'ajouter un nouveau joueur au plugin
+     * @param nouveauJoueur
+     */
+    public void addNewPlayer(Player nouveauJoueur) {
+
+        // On vérifie si il existe déjà
+        for(MCPlayer joueur: joueurs)
+            // Si il existe déjà, on ne l'ajoute pas
+            if(joueur.getJoueur().equals(nouveauJoueur)) return;
+
+        MCPlayer joueur = new MCPlayer(nouveauJoueur);
+
+        this.joueurs.add(joueur);
+
+    }
+
+    /**
+     * Méthode permettant de supprimer un joueur de la partie
+     * @param joueur
+     */
+    public void removePlayer(Player joueur) {
+        // On vérifie si il existe déjà
+        for(MCPlayer _joueur: joueurs)
+            // Si il existe déjà, on ne l'ajoute pas
+            if(_joueur.getJoueur().equals(joueur)) {
+                this.joueurs.remove(_joueur);
+                return;
+            }
+    }
+
+    /**
+     * Méthode permettant de récuperer l'instance du joueur
+     * @param joueur
+     * @return
+     */
+    public MCPlayer getMCPlayer(Player joueur) {
+        for(MCPlayer _joueur: joueurs)
+            // Si il existe déjà, on ne l'ajoute pas
+            if(_joueur.getJoueur().equals(joueur)) return _joueur;
+        return null;
+    }
+
+    public List<MCPlayer> getMCPlayers() { return joueurs; }
+
 
 
 }

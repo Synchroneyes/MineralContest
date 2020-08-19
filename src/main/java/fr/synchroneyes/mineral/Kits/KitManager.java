@@ -92,6 +92,11 @@ public class KitManager implements Listener {
     }
 
 
+    public void removeAllPlayersKit() {
+        this.kits_joueurs.clear();
+    }
+
+
     /**
      * Permet d'attribuer un kit à un joueur
      *

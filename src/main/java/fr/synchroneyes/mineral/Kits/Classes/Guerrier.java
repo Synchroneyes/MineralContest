@@ -96,6 +96,8 @@ public class Guerrier extends KitAbstract {
         joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(nouvelleValeur);
         joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(nouvelleVie);
 
+        joueur.setHealth(nouvelleVie);
+
     }
 
 

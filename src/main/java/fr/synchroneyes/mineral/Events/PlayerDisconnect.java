@@ -61,6 +61,10 @@ public class PlayerDisconnect implements Listener {
             if (team != null)
                 team.removePlayer(joueur);
 
+            // On supprime le joueur du plugin
+            // On ajoute le joueur au plugin
+            mineralcontest.plugin.removePlayer(joueur);
+
 
 
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {

@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Core.Arena.Arene;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.InventoryInterface;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInventory;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Shop.ShopManager;
@@ -39,6 +40,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -77,6 +79,8 @@ public class Game implements Listener {
     // <username, allowed to login>
     private HashMap<String, Boolean> PlayerThatTriedToLogIn;
     private LinkedList<Block> addedChests;
+
+    private BukkitTask gameLoopManager = null;
 
 
     /**
@@ -686,7 +690,7 @@ public class Game implements Listener {
     }
 
 
-    public void init() {
+    /*public void init() {
 
         Game instance = this;
         new BukkitRunnable() {
@@ -836,6 +840,141 @@ public class Game implements Listener {
 
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
 
+    }*/
+
+    /**
+     * Méthode permettant de démarrer la boucle de gestion de partie
+     */
+    public void startGameLoop() {
+
+        if(gameLoopManager != null) {
+            gameLoopManager.cancel();
+            gameLoopManager = null;
+        }
+
+        gameLoopManager = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::gameTick, 0, 20);
+
+    }
+
+    /**
+     * Fonction permettant de gérer un tick de démarrage de partie
+     */
+    private void gameTick() {
+
+        /**
+         * Dans cette fonction, on souhaite executer les actions nécessaires à chaque "tick" de la partie
+         * On doit pouvoir gérer le preGame, quand la partie est en pause, et quand elle est en cours.
+         */
+
+        // On commence par vérifier l'état de la partie
+        if(isPreGame()) doGameStartingTick();
+        else if(isGamePaused()) doGamePausedTick();
+        else doGameTick();
+
+    }
+
+    /**
+     * Méthode appelée lorsqu'une game est en pause
+     */
+    private void doGamePausedTick() {
+        // On envoie un message à chaque joueur en informant que la game est en pause
+        for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) {
+            String subTitleMessage = "";
+
+            // Si le joueur est admin on lui affiche le message admin
+            if(!joueur.getJoueur().isOp()) subTitleMessage = Lang.hud_player_resume_soon.toString();
+            else subTitleMessage = Lang.hud_admin_resume_help.toString();
+
+            joueur.getJoueur().sendTitle(Lang.hud_player_paused.toString(), subTitleMessage, 0, 20*2, 0);
+        }
+    }
+
+    /**
+     * Méthode appelée lorsqu'une partie est sur le point de démarrer
+     */
+    private void doGameStartingTick() {
+        // On vérifie le temps pre-game restant
+        // Si le temps est supérieur à 0, on clear chaque joueur
+        // Et on affiche le message comme quoi la game est sur le point de démarrer
+
+        if(PreGameTimeLeft > 0) {
+            // On réduit le timer de 1
+            PreGameTimeLeft--;
+
+            // Pour chaque joueur
+            for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) {
+                // Si le joueur possède une équipe, on clear son inventaire
+                // Ainsi que ses effets
+                if(joueur.getEquipe() != null) {
+                    joueur.clearInventory();
+                    joueur.clearPlayerPotionEffects();
+                }
+
+                // Et on affiche un titre comme quoi la game démarre
+                joueur.getJoueur().sendTitle(Lang.game_starting.toString(), Lang.translate(Lang.hud_game_starting.toString(), this), 0, 20, 0);
+            }
+
+
+            return;
+        }
+
+        // Sinon, c'est que le preGame est terminé et qu'on peut démarrer la game
+        // On clear les joueurs une dernière fois, puis on envoie l'event GameStarted
+        // Puis on TP dans sa base
+        for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) if(joueur.getEquipe() != null) {
+            joueur.clearInventory();
+            joueur.clearPlayerPotionEffects();
+            joueur.giveBaseItems();
+
+            if(joueur.getEquipe() != null && !isReferee(joueur.getJoueur())) joueur.teleportToHouse();
+            joueur.getJoueur().sendTitle(Lang.game_successfully_started.toString(), "", 20, 20*2, 20);
+
+        }
+
+        // On appelle L'event de démarrage de partie
+        MCGameStartedEvent event = new MCGameStartedEvent(this);
+        Bukkit.getPluginManager().callEvent(event);
+
+        PreGame = false;
+        GameStarted = true;
+    }
+
+    /**
+     * Méthode appelée pour gérer la partie
+     */
+    private void doGameTick() {
+
+
+        try {
+
+            // Si le temps de la partie est égale à 0, la partie est termiéne
+            if (tempsPartie == 0) {
+                terminerPartie();
+                this.gameLoopManager.cancel();
+                return;
+            }
+
+            // On gère les morts
+            arene.getDeathZone().reducePlayerTimer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Error.Report(e, this);
+        }
+
+
+        // Si le temps n'est pas à zéro, on continue
+        if (tempsPartie > 0) tempsPartie--;
+
+        // On gère les vagues de poulet
+        try {
+            if (tempsPartie <= groupe.getParametresPartie().getCVAR("chicken_spawn_time").getValeurNumerique() * 60) {
+                if (!arene.chickenWaves.isStarted()) arene.chickenWaves.start();
+            }
+        } catch (Exception e) {
+            Error.Report(e, this);
+            e.printStackTrace();
+        }
     }
 
 
@@ -1213,6 +1352,8 @@ public class Game implements Listener {
         groupe.removeAllDroppedItem();
 
         if (!mineralcontest.communityVersion) mineralcontest.afficherMessageVersion();
+
+        startGameLoop();
 
         return true;
 
