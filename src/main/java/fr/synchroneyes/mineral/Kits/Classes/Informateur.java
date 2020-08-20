@@ -4,6 +4,9 @@ import fr.synchroneyes.custom_events.MCAirDropSpawnEvent;
 import fr.synchroneyes.custom_events.MCAirDropTickEvent;
 import fr.synchroneyes.custom_events.MCArenaChestTickEvent;
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -107,9 +110,14 @@ public class Informateur extends KitAbstract {
 
         // On regarde si l'inventaire est celui d'un coffre automatique
         if (playerGroup.getAutomatedChestManager().isThisAnAnimatedInventory(inventaire)) {
-            joueur.closeInventory();
-            playerGroup.getAutomatedChestManager().getFromInventory(inventaire).closeInventory();
-            event.setCancelled(true);
+
+            AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getFromInventory(inventaire);
+            if(automatedChestAnimation instanceof CoffreArene || automatedChestAnimation instanceof CoffreParachute) {
+                joueur.closeInventory();
+                playerGroup.getAutomatedChestManager().getFromInventory(inventaire).closeInventory();
+                event.setCancelled(true);
+            }
+
         }
     }
 }

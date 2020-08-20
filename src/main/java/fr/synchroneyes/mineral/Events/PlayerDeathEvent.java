@@ -39,7 +39,7 @@ public class PlayerDeathEvent implements Listener {
                     PlayerUtils.setMaxHealth(joueur);
                     partie.getArene().getDeathZone().add(joueur);
 
-                    PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller());
+                    PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
                     Bukkit.getPluginManager().callEvent(event1);
 
                     joueur.openInventory(joueur.getInventory());

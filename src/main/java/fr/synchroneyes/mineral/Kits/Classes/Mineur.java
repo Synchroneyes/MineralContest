@@ -85,12 +85,11 @@ public class Mineur extends KitAbstract {
             // On vérifie si ils ont ce kit
             if (isPlayerUsingThisKit(joueur)) {
                 // Et on réduit sa vitesse, et on retire sa vie
-                // On vide son inventaire
-                joueur.getInventory().clear();
 
                 // On lui ajoute les barrières, on block la première ligne
                 for (int index = 9; index < 18; ++index)
                     joueur.getInventory().setItem(index, getBarrierItem());
+
 
             }
         }

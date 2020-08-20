@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Coffre;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 
@@ -29,6 +30,15 @@ public class AutomatedChestManager {
     private void registerCoffres() {
         this.coffresAvecAnimation.add(new CoffreParachute(this));
         this.coffresAvecAnimation.add(new CoffreArene(this, null));
+    }
+
+    /**
+     * Permet d'ajouter un nouveau coffre
+     * @param chestAnimation
+     */
+    public void addChest(AutomatedChestAnimation chestAnimation) {
+        Bukkit.broadcastMessage("Opening: " + chestAnimation.getClass());
+        this.coffresAvecAnimation.add(chestAnimation);
     }
 
 

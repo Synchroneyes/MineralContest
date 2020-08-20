@@ -23,7 +23,7 @@ public abstract class AutomatedChestAnimation {
     protected Player openingPlayer = null;
 
     // Variable contenant le contenu de l'inventaire du coffre
-    private Inventory inventaireCoffre;
+    protected Inventory inventaireCoffre;
 
     // Variable contenant la position du coffre
     private Location chestLocation;
@@ -274,6 +274,7 @@ public abstract class AutomatedChestAnimation {
      * @param p
      */
     public void setOpeningPlayer(Player p) {
+        Bukkit.broadcastMessage(p.getDisplayName() + " is opening");
         this.openingPlayer = p;
         performAnimation();
         p.openInventory(inventaireCoffre);

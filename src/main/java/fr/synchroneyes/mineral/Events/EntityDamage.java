@@ -125,7 +125,7 @@ public class EntityDamage implements Listener {
                         // On annule l'event, on enregistre le kill, et on ajoute la personne venant de mourir à la deathzone, elle sera donc automatiquement
                         // TP dans sa base avec les effets de mort
                         Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
-                        PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant);
+                        PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant, playerGroup.getGame());
                         Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
                         registerKill(joueur, attaquant);
                         event.setCancelled(true);
@@ -141,7 +141,7 @@ public class EntityDamage implements Listener {
                         if (fleche.getShooter() instanceof Player) {
                             Player attaquant = (Player) fleche.getShooter();
 
-                            PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant);
+                            PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, attaquant, playerGroup.getGame());
                             Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
 
                             registerKill(joueur, attaquant);
@@ -163,7 +163,7 @@ public class EntityDamage implements Listener {
 
                 // Si on arrive là, le joueur est mort d'un suicide
 
-                PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, null);
+                PlayerDeathByPlayerEvent playerDeathByPlayerEvent = new PlayerDeathByPlayerEvent(joueur, null, playerGroup.getGame());
                 Bukkit.getPluginManager().callEvent(playerDeathByPlayerEvent);
 
                 registerPlayerSuicide(joueur);

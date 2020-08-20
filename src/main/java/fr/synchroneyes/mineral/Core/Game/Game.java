@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Game;
 
+import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
@@ -24,6 +25,7 @@ import fr.synchroneyes.mineral.Utils.Metric.SendInformation;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayerTeam;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
+import fr.synchroneyes.mineral.Utils.WorldUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -568,38 +570,11 @@ public class Game implements Listener {
     }
 
     public void resetMap() {
-        if (isGameInitialized) {
-            for (BlockSaver block : affectedBlocks) {
-                block.applyMethod();
-            }
-            removeAllDroppedItems();
-        }
-
-        //mineralcontest.plugin.setDefaultWorldBorder();
         clear();
     }
 
 
-    /*
-    Credit: https://bukkit.org/threads/remove-dropped-items-on-ground.100750/
-     */
-    private void removeAllDroppedItems() {
-        World world = null;//get the world
-        try {
-            world = Bukkit.getServer().getWorld(mineralcontest.getPluginConfigValue("world_name").toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Error.Report(e, this);
-        }
 
-        List<Entity> entList = world.getEntities();//get all entities in the world
-
-        for (Entity current : entList) {//loop through the list
-            if (current instanceof Item) {//make sure we aren't deleting mobs/players
-                current.remove();//remove it
-            }
-        }
-    }
 
 
     public void handleDoors() {
@@ -689,158 +664,6 @@ public class Game implements Listener {
 
     }
 
-
-    /*public void init() {
-
-        Game instance = this;
-        new BukkitRunnable() {
-            public void run() {
-
-                if (isPreGame() && !isGamePaused()) {
-
-                    // ON DEMARRE LA PARTIE !
-                    if (PreGameTimeLeft <= 0) {
-                        PreGame = false;
-
-
-                        if (tempsPartie == DUREE_PARTIE * 60) {
-                            // METRIC
-                            // On envoie les informations de la partie
-                            SendInformation.sendGameData(SendInformation.start, instance);
-
-                            // On appelle l'event de démarrage de partie
-                            MCGameStartedEvent startedEvent = new MCGameStartedEvent(instance);
-                            Bukkit.getPluginManager().callEvent(startedEvent);
-
-
-                        }
-
-
-                        for (Player online : groupe.getMonde().getPlayers()) {
-
-                            if (isGamePaused()) {
-                                // La partie était en cours, elle reprend
-                                online.sendTitle(Lang.game_resumed.toString(), "", 0, 20 * 5, 0);
-                                online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
-                                GamePaused = false;
-                            } else {
-                                // Début de partie
-                                if (tempsPartie == DUREE_PARTIE * 60) {
-                                    GameStarted = true;
-
-                                    online.setGameMode(GameMode.SURVIVAL);
-
-                                    PlayerUtils.clearPlayer(online, false);
-                                    PlayerUtils.setMaxHealth(online);
-
-
-                                    if (groupe.getParametresPartie().getCVAR("mp_enable_old_pvp").getValeurNumerique() == 1)
-                                        online.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024d);
-                                    //PlayerUtils.givePlayerBaseItems(online);
-                                    try {
-                                        groupe.getPlayerBaseItem().giveItemsToPlayer(online);
-                                    } catch (Exception e) {
-                                        mineralcontest.broadcastMessage(mineralcontest.prefixErreur + "An error occured, please check server console", groupe);
-                                        e.printStackTrace();
-                                        Error.Report(e, instance);
-                                    }
-
-                                    online.sendTitle(ChatColor.GOLD + Lang.game_successfully_started.toString(), "", 0, 20 * 5, 0);
-
-                                    groupe.getKitManager().startKitLoop(20);
-
-                                    // On TP le joueur dans sa maison
-                                    try {
-                                        if (!isReferee(online))
-                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getPlayerHouse(online).getHouseLocation());
-                                        else {
-                                            PlayerUtils.teleportPlayer(online, groupe.getMonde(), getArene().getCoffre().getLocation());
-                                            online.setGameMode(GameMode.CREATIVE);
-                                            PlayerUtils.equipReferee(online);
-                                        }
-                                        //MobKiller.killMobNearArena(80, instance);
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Error.Report(e, instance);
-                                    }
-
-                                } else {
-                                    // La partie reprend
-                                    online.sendTitle(Lang.game_resumed.toString(), "", 0, 20 * 5, 0);
-                                    online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
-                                }
-                            }
-                        }
-
-                    } else {
-                        for (Player online : groupe.getMonde().getPlayers()) {
-                            online.sendTitle(Lang.translate(Lang.hud_game_starting.toString(), instance), "", 0, 20 * 2, 0);
-                            if (tempsPartie == DUREE_PARTIE * 60) online.getInventory().clear();
-                        }
-                    }
-                    for (Player online : groupe.getMonde().getPlayers())
-                        if (PreGameTimeLeft > 0) online.playNote(online.getLocation(), Instrument.PIANO, new Note(1));
-                        else online.playNote(online.getLocation(), Instrument.PIANO, new Note(24));
-
-                    PreGameTimeLeft--;
-
-                }
-
-                // FIN PREGAME
-
-
-                if (isGameStarted() && !isPreGame()) {
-                    if (isGamePaused()) {
-                        // La game est en pause
-                        for (Player online : groupe.getMonde().getPlayers())
-                            if (!online.isOp())
-                                online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_player_resume_soon.toString(), 0, 20 * 10, 0);
-                            else
-                                online.sendTitle(Lang.hud_player_paused.toString(), Lang.hud_admin_resume_help.toString(), 0, 20 * 10, 0);
-                    } else {
-                        // La game est en cours
-                        // Si le temps atteins 0, alors on arrête la game
-
-                        //
-
-
-                        try {
-
-                            if (tempsPartie == 0) {
-                                terminerPartie();
-                                this.cancel();
-                            }
-
-                            // On gère la deathzone
-                            arene.getDeathZone().reducePlayerTimer();
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Error.Report(e, instance);
-                        }
-                        // Si le temps n'est pas à zéro, on continue
-                        if (tempsPartie > 0) tempsPartie--;
-
-                        try {
-                            if (tempsPartie <= groupe.getParametresPartie().getCVAR("chicken_spawn_time").getValeurNumerique() * 60) {
-                                if (!arene.chickenWaves.isStarted()) arene.chickenWaves.start();
-                            }
-                        } catch (Exception e) {
-                            Error.Report(e, instance);
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-
-
-            }
-
-        }.runTaskTimer(mineralcontest.plugin, 0, 20);
-
-    }*/
 
     /**
      * Méthode permettant de démarrer la boucle de gestion de partie
@@ -1040,6 +863,9 @@ public class Game implements Listener {
 
 
         this.GameEnded = true;
+
+        MCGameEndEvent endEvent = new MCGameEndEvent(this);
+        Bukkit.getPluginManager().callEvent(endEvent);
 
 
         SendInformation.sendGameData(SendInformation.ended, this);
@@ -1329,7 +1155,6 @@ public class Game implements Listener {
         // On clear l'arene
         getArene().clear();
 
-        removeAllDroppedItems();
         initGameSettings();
 
         PreGame = true;
@@ -1345,7 +1170,8 @@ public class Game implements Listener {
 
         // On démarre les portes
         handleDoors();
-        removeAllDroppedItems();
+        WorldUtils.removeAllDroppedItems(groupe.getMonde());
+
 
 
         // On supprime tous les items au sol

@@ -330,7 +330,7 @@ public class ChestEvent implements Listener {
                 }
 
 
-
+                Bukkit.broadcastMessage("playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest) => " + (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)));
                 // Si le coffre ouvert fait parti des blocs d'animation
                 if (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)) {
 
