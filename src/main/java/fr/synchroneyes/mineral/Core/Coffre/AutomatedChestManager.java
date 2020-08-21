@@ -1,25 +1,38 @@
 package fr.synchroneyes.mineral.Core.Coffre;
 
+import fr.synchroneyes.custom_events.MCAutomatedChestTimeOverEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class AutomatedChestManager {
+public class AutomatedChestManager implements Listener {
 
     private List<AutomatedChestAnimation> coffresAvecAnimation;
+    private Queue<TimeChestAnimation> coffreAvecDureeDeVie;
     private Groupe groupe;
+
+    private BukkitTask chestTimedLoop;
 
     public AutomatedChestManager(Groupe groupe) {
         this.coffresAvecAnimation = new LinkedList<>();
+        this.coffreAvecDureeDeVie = new LinkedBlockingQueue<>();
         this.groupe = groupe;
 
         registerCoffres();
+
+        Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
     }
 
 
@@ -39,6 +52,17 @@ public class AutomatedChestManager {
     public void addChest(AutomatedChestAnimation chestAnimation) {
         Bukkit.broadcastMessage("Opening: " + chestAnimation.getClass());
         this.coffresAvecAnimation.add(chestAnimation);
+    }
+
+    /**
+     * Permet d'ajouter un nouveau coffre avec durée de vie
+     * @param chestAnimation
+     */
+    public void addTimedChest(TimeChestAnimation chestAnimation) {
+
+        this.coffreAvecDureeDeVie.add(chestAnimation);
+        if(chestTimedLoop == null) startChestTimerLoop();
+
     }
 
 
@@ -80,6 +104,60 @@ public class AutomatedChestManager {
 
         }
         return false;
+    }
+
+
+    /**
+     * Méthode appelée lorsqu'un coffre doit disparaitre
+     * @param event
+     */
+    @EventHandler
+    public void onTimedChestEnd(MCAutomatedChestTimeOverEvent event) {
+        TimeChestAnimation coffre = (TimeChestAnimation) event.getAutomatedChest();
+        coffreAvecDureeDeVie.remove(coffre);
+
+        if(coffreAvecDureeDeVie.isEmpty()) endChestTimerLoop();
+    }
+
+    private void endChestTimerLoop() {
+        if(chestTimedLoop != null) {
+            chestTimedLoop.cancel();
+            chestTimedLoop = null;
+        }
+    }
+
+    private void startChestTimerLoop() {
+        if(chestTimedLoop != null) endChestTimerLoop();
+        chestTimedLoop = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::doTimedChestTick, 0, 20);
+    }
+
+    private void doTimedChestTick() {
+
+        // Si la liste est vide, on arrête le timer
+        if(coffresAvecAnimation.isEmpty()) {
+            endChestTimerLoop(); return;
+        }
+
+        // On traite chaque coffre
+        for(TimeChestAnimation coffre : coffreAvecDureeDeVie) {
+
+            // Si le temps ne peut pas diminuer, on passe au coffre suivant
+            if(!coffre.isCanTimeBeReduced()) {
+                Bukkit.getLogger().info(coffre.getTimeTriggerAction() + " - " + coffre.isCanTimeBeReduced());
+                continue;
+            }
+
+            // Si le temps n'est pas encore terminé
+            if(coffre.getTimeLeft() > 0) {
+                coffre.reduceChestTime();
+                continue;
+            }
+
+            // Le temps est terminé
+            coffre.deleteChest();
+        }
+
+
     }
 
 

@@ -26,6 +26,13 @@ public class PlayerKilledByPlayer implements Listener {
     public void onPlayerKilled(PlayerDeathByPlayerEvent event) {
         Player deadPlayer = event.getPlayerDead();
 
+        // Si l'apparition de coffre est désactivée, on ne fait rien
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(deadPlayer);
+        if(mcPlayer == null) return;
+
+        if(mcPlayer.getGroupe().getParametresPartie().getCVAR("drop_chest_on_death").getValeurNumerique() != 1) return;
+
+
         // On récupère la position du joueur
         Location deadLocation = new Location(deadPlayer.getWorld(), deadPlayer.getLocation().getBlockX(), deadPlayer.getLocation().getBlockY(), deadPlayer.getLocation().getBlockZ());
 
@@ -33,15 +40,9 @@ public class PlayerKilledByPlayer implements Listener {
 
         int distanceProtectedArenaRadius = event.getPartie().groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
 
-        Bukkit.broadcastMessage("Player died!");
-
 
         // Si le joueur est autour de l'arène, on ne fait rien
         if(Radius.isBlockInRadius(deadLocation, arenaCenterLocation, distanceProtectedArenaRadius)) return;
-
-        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(deadPlayer);
-
-        if(mcPlayer == null) return;
 
 
         // On ajoute un nouveau coffre de mort
@@ -49,9 +50,11 @@ public class PlayerKilledByPlayer implements Listener {
         // On met sa position
         coffreMortJoueur.setChestLocation(deadLocation);
 
-        mcPlayer.getGroupe().getAutomatedChestManager().addChest(coffreMortJoueur);
+        mcPlayer.getGroupe().getAutomatedChestManager().addTimedChest(coffreMortJoueur);
 
         coffreMortJoueur.spawn();
+
+        deadPlayer.getInventory().clear();
 
 
 

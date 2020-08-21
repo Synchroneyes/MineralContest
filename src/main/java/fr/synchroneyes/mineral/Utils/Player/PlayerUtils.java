@@ -6,6 +6,7 @@ import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
@@ -486,6 +487,28 @@ public class PlayerUtils {
 
     public static void killPlayer(Player player) {
 
+
+        // On regarde si on doit faire apparaitre un coffre ou non, si non on arrête là
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
+        if(mcPlayer != null) {
+            GameSettings gameSettings = mcPlayer.getGroupe().getParametresPartie();
+            if(gameSettings.getCVAR("drop_chest_on_death").getValeurNumerique() == 1 && !Radius.isBlockInRadius(player.getLocation(), mcPlayer.getGroupe().getGame().getArene().getCoffre().getLocation(), gameSettings.getCVAR("protected_zone_area_radius").getValeurNumerique())){
+                // On l'ajoute à la deathzone
+                try {
+                    mineralcontest.getPlayerGame(player).getArene().getDeathZone().add(player);
+                    GameLogger.addLog(new Log("PlayerUtils_Dead", "Player " + player.getDisplayName() + " died", "death"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Error.Report(e, mineralcontest.getPlayerGame(player));
+                }
+                return;
+            }
+        }
+
+
+
+
         // On récupère l'inventaire du joueur
         List<ItemStack> inventaire = new LinkedList<>();
         player.setLevel(0);
@@ -528,6 +551,7 @@ public class PlayerUtils {
                 e.printStackTrace();
                 Error.Report(e, playerGroup.getGame());
             }
+
 
             // DROP ONLY INGOTS
             if (mp_enable_item_drop == 1) {

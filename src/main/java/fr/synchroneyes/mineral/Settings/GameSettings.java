@@ -307,6 +307,10 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, true));
             parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, true));
 
+            // Système de coffre à la mort
+            parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "1", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
+
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 
         }

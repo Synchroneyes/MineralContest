@@ -274,7 +274,6 @@ public abstract class AutomatedChestAnimation {
      * @param p
      */
     public void setOpeningPlayer(Player p) {
-        Bukkit.broadcastMessage(p.getDisplayName() + " is opening");
         this.openingPlayer = p;
         performAnimation();
         p.openInventory(inventaireCoffre);
