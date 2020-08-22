@@ -420,7 +420,8 @@ public enum Lang {
     hud_currently_spectating("hud_currently_spectating", "Spectateur: "),
     hud_players_count("hud_players_count", "Joueurs: "),
     hud_current_game_state("hud_current_game_state", "Etat: "),
-    hud_currently_waiting_game_start("hud_currently_waiting_game_start", "En attente");
+    hud_currently_waiting_game_start("hud_currently_waiting_game_start", "En attente"),
+    death_inventory_player_title("death_inventory_player_title", "Inventaire de %coloredPlayerName%");
 
 
 
@@ -604,6 +605,7 @@ public enum Lang {
             string = string.replace("%deathTime%", "" + Objects.requireNonNull(mineralcontest.getPlayerGame(player)).getArene().getDeathZone().getPlayerDeathTime(player));
         if (string.contains("%playerName%")) string = string.replace("%playerName%", player.getDisplayName());
         if (string.contains("%deadPlayer%")) string = string.replace("%deadPlayer%", player.getDisplayName());
+        if(string.contains("%coloredPlayerName%")) string = string.replace("%coloredPlayerName%", (mineralcontest.plugin.getMCPlayer(player).getEquipe() == null) ? ChatColor.WHITE + player.getDisplayName() : mineralcontest.plugin.getMCPlayer(player).getEquipe().getCouleur() + player.getDisplayName());
 
         string = translate(string);
         return string;

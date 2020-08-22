@@ -50,7 +50,6 @@ public class AutomatedChestManager implements Listener {
      * @param chestAnimation
      */
     public void addChest(AutomatedChestAnimation chestAnimation) {
-        Bukkit.broadcastMessage("Opening: " + chestAnimation.getClass());
         this.coffresAvecAnimation.add(chestAnimation);
     }
 
@@ -143,7 +142,6 @@ public class AutomatedChestManager implements Listener {
 
             // Si le temps ne peut pas diminuer, on passe au coffre suivant
             if(!coffre.isCanTimeBeReduced()) {
-                Bukkit.getLogger().info(coffre.getTimeTriggerAction() + " - " + coffre.isCanTimeBeReduced());
                 continue;
             }
 

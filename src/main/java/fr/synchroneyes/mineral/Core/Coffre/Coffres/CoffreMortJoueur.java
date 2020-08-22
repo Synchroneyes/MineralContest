@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Coffre.Coffres;
 import fr.synchroneyes.mineral.Core.Coffre.*;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -50,9 +51,11 @@ public class CoffreMortJoueur extends TimeChestAnimation {
         return true;
     }
 
+
+
     @Override
     public String getOpeningChestTitle() {
-        return (joueurMort == null) ? "Chargement du titre ..." : "Inventaire de " + ((mcPlayer == null) ? joueurMort.getDisplayName() : mcPlayer.getEquipe().getCouleur() + joueurMort.getDisplayName());
+        return (joueurMort == null) ? "Chargement du titre ..." : Lang.translate(Lang.death_inventory_player_title.toString(), joueurMort);
     }
 
     @Override
