@@ -9,10 +9,21 @@ import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -22,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Classe permettant de définir un parachute
  */
-public class Parachute {
+public class Parachute implements Listener {
 
 
     // Blocs représentant le parachute
@@ -60,6 +71,11 @@ public class Parachute {
 
     private ParachuteManager parachuteManager;
 
+    private BukkitTask parachuteLoop;
+
+    // Falling start location, used to check if falling block is from the parachute (from event)
+    private Location fallingStartLocation;
+
 
     /**
      * Constructeur, prend en paramètre la santé que doit avoir le parachute
@@ -95,6 +111,9 @@ public class Parachute {
 
         }
 
+        // On register l'event
+        Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
+
     }
 
 
@@ -104,7 +123,7 @@ public class Parachute {
      * @param fleche La flèche tirée
      * @return
      */
-    public boolean isParachuteHit(Arrow fleche) {
+    public boolean isParachuteHit(Projectile fleche) {
         if (isParachuteOnGround || isParachuteBroken) return false;
         return isParachuteHit(fleche.getLocation().getBlock().getLocation());
     }
@@ -263,12 +282,47 @@ public class Parachute {
     private void breakParachute() {
         // Pour chaque bloc du parachute
 
-        isParachuteBroken = true;
+        //isParachuteBroken = true;
+        World currentWorld = null;
+        Location dropLocation = null;
+        BlockData chestData = null;
 
         for (Map.Entry<String, ParachuteBlock> block : blocksParachute.entrySet())
             if (block.getValue().getLocation().getBlock().getType() != Material.CHEST) {
                 block.getValue().remove();
+            } else {
+                currentWorld = block.getValue().getLocation().getWorld();
+                dropLocation = block.getValue().getLocation();
+                chestData = dropLocation.getBlock().getBlockData();
+
             }
+
+        // On récupère le monde actuel
+        if(currentWorld != null) {
+            dropLocation.getBlock().setType(Material.AIR);
+            parachuteLoop.cancel();
+
+            ArmorStand armorStand = currentWorld.spawn(dropLocation, ArmorStand.class);
+            armorStand.getEquipment().setHelmet(new ItemStack(Material.CHEST));
+            armorStand.setVelocity(new Vector(0, -1, 0));
+            armorStand.setInvulnerable(true);
+            //armorStand.setGlowing(true);
+            armorStand.setVisible(false);
+            armorStand.setBasePlate(false);
+            armorStand.setSmall(true);
+            armorStand.setArms(false);
+            this.fallingStartLocation = dropLocation;
+
+            /*Bukkit.broadcastMessage("FALLING !!");
+            FallingBlock fallingBlock = currentWorld.spawnFallingBlock(dropLocation, armorStand);
+            fallingBlock.setInvulnerable(true);
+            fallingBlock.setDropItem(false);
+            fallingBlock.setGlowing(true);
+            fallingBlock.setVelocity(new Vector(0, -0.1, 0));
+
+            currentWorld.spawnEntity(dropLocation, fallingBlock);*/
+
+        }
     }
 
     /**
@@ -439,7 +493,9 @@ public class Parachute {
         AtomicInteger ticks = new AtomicInteger();
 
 
-        new BukkitRunnable() {
+        if(parachuteLoop != null) parachuteLoop.cancel();
+
+        parachuteLoop = new BukkitRunnable() {
 
             @Override
             public void run() {
@@ -463,17 +519,20 @@ public class Parachute {
                     return;
                 }
 
+
+
                 int tickActuel = ticks.incrementAndGet();
 
+                if(isParachuteBroken) doChestFallingTickWhenParachuteIsBroken();
 
                 // Si on est sur un tick où il faut faire descendre le parachute
-                if (tickActuel % currentFallingSpeed == 0) {
+                //if (tickActuel % currentFallingSpeed == 0) {
 
-                    if (isParachuteBroken) {
-                        makeChestGoDown();
-                    } else makeParachuteGoDown(true);
+                    //if (isParachuteBroken) {
+                        /*makeChestGoDown();
+                    } else makeParachuteGoDown(true);*/
 
-                }
+                //}
             }
         }.runTaskTimer(mineralcontest.plugin, 0, 1);
 
@@ -509,4 +568,14 @@ public class Parachute {
             }
         }
     }
+
+
+    /**
+     * Méthode appelée lorsque le parachute est cassé et que le coffre tomnre
+     */
+    private void doChestFallingTickWhenParachuteIsBroken() {
+
+    }
+
+
 }

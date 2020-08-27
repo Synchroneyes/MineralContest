@@ -10,6 +10,7 @@ import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,11 @@ public class PlayerKilledByPlayer implements Listener {
 
         // On récupère la position du joueur
         Location deadLocation = new Location(deadPlayer.getWorld(), deadPlayer.getLocation().getBlockX(), deadPlayer.getLocation().getBlockY(), deadPlayer.getLocation().getBlockZ());
+        while(deadLocation.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+            int y = deadLocation.getBlockY();
+            y--;
+            deadLocation.setY(y);
+        }
 
         Location arenaCenterLocation = event.getPartie().getArene().getCoffre().getLocation();
 

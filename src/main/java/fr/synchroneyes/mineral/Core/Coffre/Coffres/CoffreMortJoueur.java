@@ -2,7 +2,9 @@ package fr.synchroneyes.mineral.Core.Coffre.Coffres;
 
 import fr.synchroneyes.mineral.Core.Coffre.*;
 import fr.synchroneyes.mineral.Core.MCPlayer;
+import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -37,7 +39,7 @@ public class CoffreMortJoueur extends TimeChestAnimation {
 
         this.playerInventory = new ArrayList<>();
         for(ItemStack item : joueurMort.getInventory())
-            if(item != null && !item.equals(Mineur.getBarrierItem())) playerInventory.add(new ItemStack(item.getType(), item.getAmount()));
+            if(item != null && !item.equals(Mineur.getBarrierItem()) && !ShopManager.isAnShopItem(item) && item.getType() != Material.POTION) playerInventory.add(new ItemStack(item.getType(), item.getAmount()));
     }
 
 

@@ -720,6 +720,9 @@ public class Game implements Listener {
         // Si le temps est supérieur à 0, on clear chaque joueur
         // Et on affiche le message comme quoi la game est sur le point de démarrer
 
+
+        boolean shouldClearPlayer = (tempsPartie == (60*groupe.getParametresPartie().getCVAR("game_time").getValeurNumerique()));
+
         if(PreGameTimeLeft > 0) {
             // On réduit le timer de 1
             PreGameTimeLeft--;
@@ -728,7 +731,7 @@ public class Game implements Listener {
             for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) {
                 // Si le joueur possède une équipe, on clear son inventaire
                 // Ainsi que ses effets
-                if(joueur.getEquipe() != null) {
+                if(joueur.getEquipe() != null && shouldClearPlayer) {
                     joueur.clearInventory();
                     joueur.clearPlayerPotionEffects();
                 }
@@ -741,22 +744,26 @@ public class Game implements Listener {
             return;
         }
 
-        // Sinon, c'est que le preGame est terminé et qu'on peut démarrer la game
-        // On clear les joueurs une dernière fois, puis on envoie l'event GameStarted
-        // Puis on TP dans sa base
-        for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) if(joueur.getEquipe() != null) {
-            joueur.clearInventory();
-            joueur.clearPlayerPotionEffects();
-            joueur.giveBaseItems();
+        // On effectue les actions suivante uniquement si c'est un début de partie
+        // On ne doit pas le faire en cas de resume
+        if(shouldClearPlayer) {
+            // On clear les joueurs une dernière fois, puis on envoie l'event GameStarted
+            // Puis on TP dans sa base
+            for(MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) if(joueur.getEquipe() != null) {
+                joueur.clearInventory();
+                joueur.clearPlayerPotionEffects();
+                joueur.giveBaseItems();
 
-            if(joueur.getEquipe() != null && !isReferee(joueur.getJoueur())) joueur.teleportToHouse();
-            joueur.getJoueur().sendTitle(Lang.game_successfully_started.toString(), "", 20, 20*2, 20);
+                if(joueur.getEquipe() != null && !isReferee(joueur.getJoueur())) joueur.teleportToHouse();
+                joueur.getJoueur().sendTitle(Lang.game_successfully_started.toString(), "", 20, 20*2, 20);
 
+            }
+
+            // On appelle L'event de démarrage de partie
+            MCGameStartedEvent event = new MCGameStartedEvent(this);
+            Bukkit.getPluginManager().callEvent(event);
         }
 
-        // On appelle L'event de démarrage de partie
-        MCGameStartedEvent event = new MCGameStartedEvent(this);
-        Bukkit.getPluginManager().callEvent(event);
 
         PreGame = false;
         GameStarted = true;

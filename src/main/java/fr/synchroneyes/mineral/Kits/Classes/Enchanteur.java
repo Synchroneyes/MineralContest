@@ -1,7 +1,10 @@
 package fr.synchroneyes.mineral.Kits.Classes;
 
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
+import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
+import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Events.PlayerKilledByPlayer;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Translation.Lang;
 import org.bukkit.Material;
@@ -11,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -20,6 +24,8 @@ import java.util.Random;
  */
 public class Enchanteur extends KitAbstract {
 
+    // On doit stocker les niveaux de chaque enchanteur
+    private HashMap<Player, Integer> niveaux_joueurs;
 
     // Nombre de niveau au respawn
     private int niveauxExpRespawn = 15;
@@ -29,6 +35,10 @@ public class Enchanteur extends KitAbstract {
 
     // Nombre de livre au respawn
     private int nombreLivreEnchant = 5;
+
+    public Enchanteur() {
+        this.niveaux_joueurs = new HashMap<>();
+    }
 
     @Override
     public String getNom() {
@@ -61,6 +71,25 @@ public class Enchanteur extends KitAbstract {
                 // On lui applique les effets!
                 applyKitEffectToPlayer(joueur);
 
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathByPlayerEvent event) {
+        Player deadPlayer = event.getPlayerDead();
+
+        if(!isPlayerUsingThisKit(deadPlayer)) return;
+
+        if(niveaux_joueurs.containsKey(deadPlayer)) niveaux_joueurs.replace(deadPlayer, deadPlayer.getLevel());
+        else niveaux_joueurs.put(deadPlayer, deadPlayer.getLevel());
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(MCPlayerRespawnEvent event) {
+        if(!isPlayerUsingThisKit(event.getJoueur())) return;
+
+        if(!niveaux_joueurs.containsKey(event.getJoueur())) return;
+
+        event.getJoueur().setLevel(niveaux_joueurs.get(event.getJoueur()));
     }
 
 

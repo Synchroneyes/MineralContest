@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Kits;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
@@ -428,5 +429,14 @@ public class KitManager implements Listener {
         }
 
         return joueurs_sans_kits;
+    }
+
+    /**
+     * Méthode appelée lors du démarrage d'une game
+     * @param event
+     */
+    @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        startKitLoop(20);
     }
 }

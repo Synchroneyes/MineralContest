@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
@@ -31,20 +32,25 @@ public class PlayerDeathEvent implements Listener {
             // Il est dans une partie, on vérifie si elle a démarré ou non
             if (partie.isGameStarted()) {
 
-                event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), joueur));
+                if(joueur.getKiller() == null) event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), joueur));
+                else event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_killed.toString(), joueur, joueur.getKiller()));
+
+                PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
+                Bukkit.getPluginManager().callEvent(event1);
+
+                event.getDrops().clear();
+
+                MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 
                 // On execute ces actions 1 tick plus tard
                 Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
                     // La partie est démarrée, on remet le joueur en vie, on l'ajoute à la deathzone, et on shoot l'event killed
-                    PlayerUtils.setMaxHealth(joueur);
+
                     partie.getArene().getDeathZone().add(joueur);
+                    if(mcPlayer != null) {
+                        mcPlayer.cancelDeathEvent();
+                    }
 
-                    PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
-                    Bukkit.getPluginManager().callEvent(event1);
-
-                    joueur.openInventory(joueur.getInventory());
-
-                    Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, joueur::closeInventory, 1);
                 }, 1);
 
 
