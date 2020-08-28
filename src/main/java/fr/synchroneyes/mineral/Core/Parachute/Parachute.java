@@ -76,6 +76,11 @@ public class Parachute implements Listener {
     // Falling start location, used to check if falling block is from the parachute (from event)
     private Location fallingStartLocation;
 
+    // ArmorStand, used when falling
+    private ArmorStand armorStand;
+
+    private Vector armorStandVelocity;
+
 
     /**
      * Constructeur, prend en paramètre la santé que doit avoir le parachute
@@ -312,15 +317,12 @@ public class Parachute implements Listener {
             armorStand.setSmall(true);
             armorStand.setArms(false);
             this.fallingStartLocation = dropLocation;
+            this.armorStand = armorStand;
 
-            /*Bukkit.broadcastMessage("FALLING !!");
-            FallingBlock fallingBlock = currentWorld.spawnFallingBlock(dropLocation, armorStand);
-            fallingBlock.setInvulnerable(true);
-            fallingBlock.setDropItem(false);
-            fallingBlock.setGlowing(true);
-            fallingBlock.setVelocity(new Vector(0, -0.1, 0));
+            this.isParachuteBroken = true;
 
-            currentWorld.spawnEntity(dropLocation, fallingBlock);*/
+            this.parachuteLoop = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::doChestFallingTickWhenParachuteIsBroken, 0, 1);
+
 
         }
     }
@@ -523,16 +525,15 @@ public class Parachute implements Listener {
 
                 int tickActuel = ticks.incrementAndGet();
 
-                if(isParachuteBroken) doChestFallingTickWhenParachuteIsBroken();
 
                 // Si on est sur un tick où il faut faire descendre le parachute
-                //if (tickActuel % currentFallingSpeed == 0) {
+                if (tickActuel % currentFallingSpeed == 0) {
 
-                    //if (isParachuteBroken) {
-                        /*makeChestGoDown();
-                    } else makeParachuteGoDown(true);*/
+                    if (isParachuteBroken) {
+                        makeChestGoDown();
+                    } else makeParachuteGoDown(true);
 
-                //}
+                }
             }
         }.runTaskTimer(mineralcontest.plugin, 0, 1);
 
@@ -574,6 +575,60 @@ public class Parachute implements Listener {
      * Méthode appelée lorsque le parachute est cassé et que le coffre tomnre
      */
     private void doChestFallingTickWhenParachuteIsBroken() {
+
+
+        if(armorStandVelocity == null) {
+            this.armorStandVelocity = this.armorStand.getVelocity();
+            return;
+        }
+
+
+        // Si l'armorstand est null, on s'arrête
+        if(armorStand == null) {
+            Bukkit.getLogger().info("ArmorStand is null!");
+            parachuteLoop.cancel();
+            parachuteLoop = null;
+            return;
+        }
+
+
+        // On vérifie la vélocité de l'armorstand
+        if(this.armorStandVelocity.equals(this.armorStand.getVelocity())) {
+            parachuteLoop.cancel();
+            parachuteLoop = null;
+
+            // On récupère la position au sol du drop
+            Location feltLocation = this.armorStand.getLocation();
+
+
+            // On descend jusqu'au sol, tant que le bloc en dessous est de l'air
+            while(feltLocation.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+                // On change la position pour prendre le bloc du dessous
+                int y = feltLocation.getBlockY();
+                y--;
+                feltLocation.setY(y);
+            }
+
+            // On supprime l'armorStand
+            this.armorStand.remove();
+
+            // On spawn le coffre
+            this.coffre.setChestLocation(feltLocation);
+            this.coffre.spawn();
+
+            return;
+        }
+
+        // On update la velocité
+        this.armorStandVelocity = this.armorStand.getVelocity();
+
+        Location particleLocation = this.armorStand.getLocation().clone();
+
+        particleLocation.setY(particleLocation.getY() + 5);
+
+        // On fait spawn des particules pour l'effet de chute
+        //this.armorStand.getLocation().getWorld().spawnParticle(Particle.REDSTONE, this.armorStand.getLocation(), 10, 0.000, 0, 0, 0, new Particle.DustOptions(Color.BLACK, 10));
+        this.armorStand.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE, this.armorStand.getLocation(), 10, 0.000, 0, 0, 0);
 
     }
 

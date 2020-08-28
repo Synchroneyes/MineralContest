@@ -361,6 +361,11 @@ public final class mineralcontest extends JavaPlugin {
         // Drop
         Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
 
+        // Metric
+        Bukkit.getServer().getPluginManager().registerEvents(new GameStart(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new GameEnd(), this);
+
+
         // AutomatedChest
         //Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
 
@@ -404,7 +409,7 @@ public final class mineralcontest extends JavaPlugin {
 
             //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
-            bukkitCommandMap.register("", new ArmorStandCommand());
+            //bukkitCommandMap.register("", new ArmorStandCommand());
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());
