@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.MCPlayer;
+import fr.synchroneyes.mineral.Kits.Classes.Mineur;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerDeathEvent implements Listener {
 
@@ -45,6 +47,9 @@ public class PlayerDeathEvent implements Listener {
                 Location arenaCenter = partie.getArene().getCoffre().getLocation();
                 if(partie.groupe.getParametresPartie().getCVAR("drop_chest_on_death").getValeurNumerique() == 1 && !Radius.isBlockInRadius(arenaCenter, joueur.getLocation(), radiusProtection))
                     event.getDrops().clear();
+
+                // On retire les barrieres du mineur des drops
+                event.getDrops().removeIf(item -> item.isSimilar(Mineur.getBarrierItem()));
 
                 MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 

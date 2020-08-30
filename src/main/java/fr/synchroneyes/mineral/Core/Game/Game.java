@@ -836,7 +836,7 @@ public class Game implements Listener {
                 gagnante = equipe;
                 scoreMax = equipe.getScore();
             }
-        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_winning.toString(), gagnante), groupe);
+        if(gagnante != null) mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.team_winning.toString(), gagnante), groupe);
         return gagnante;
 
     }
