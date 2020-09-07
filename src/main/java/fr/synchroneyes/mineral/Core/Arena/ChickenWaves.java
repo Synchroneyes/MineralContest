@@ -43,6 +43,10 @@ public class ChickenWaves {
     }
 
     public void setEnabled(boolean enabled) {
+
+        if(!enabled) {
+            for(LivingEntity poulet : pouletsEnVie) poulet.remove();
+        }
         this.enabled = enabled;
     }
 
@@ -96,6 +100,10 @@ public class ChickenWaves {
      * Fait apparaitre les poulets dans l'arène
      */
     public void apparitionPoulets() {
+
+        if(!enabled) return;
+        if(arene.groupe.getGame().isGameEnded()) return;
+
         this.monde = arene.groupe.getMonde();
         try {
             this.spawnCoffre = arene.getCoffre().getLocation();

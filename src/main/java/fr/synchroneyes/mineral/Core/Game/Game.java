@@ -33,6 +33,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -774,7 +775,6 @@ public class Game implements Listener {
      */
     private void doGameTick() {
 
-
         try {
 
             // Si le temps de la partie est égale à 0, la partie est termiéne
@@ -869,6 +869,9 @@ public class Game implements Listener {
     public void terminerPartie() throws Exception {
 
 
+        if(isGameEnded()) return;
+
+        this.tempsPartie = 60;
         this.GameEnded = true;
 
         MCGameEndEvent endEvent = new MCGameEndEvent(this);
@@ -899,7 +902,7 @@ public class Game implements Listener {
         arene.chickenWaves.setEnabled(false);
 
         for (Entity entity : groupe.getMonde().getEntities())
-            if (!(entity instanceof Player)) entity.remove();
+            if (!(entity instanceof Player) && !(entity instanceof ArmorStand)) entity.remove();
 
 
 
@@ -945,6 +948,7 @@ public class Game implements Listener {
             this.groupe.setGroupLocked(false);
             this.groupe.enableVote();
             this.groupe.resetGame();
+
         }, 20 * delaiAvantFinPartie);
 
 

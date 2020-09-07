@@ -50,6 +50,42 @@ public class PlayerUtils {
         firework.setFireworkMeta(fireworkMeta);
     }
 
+    public static void setFirework(Location position, Color couleur) {
+        Firework firework = (Firework) position.getWorld().spawn(position, Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+        // On ajoute un effet
+        fireworkMeta.addEffect(FireworkEffect.builder()
+                .flicker(true)
+                .trail(true)
+                .withColor(couleur)
+                .withFade(Color.WHITE)
+                .build()
+
+        );
+
+        fireworkMeta.setPower(0);
+        firework.setFireworkMeta(fireworkMeta);
+    }
+
+    public static void setFirework(Location position, Color couleur, int puissance) {
+        Firework firework = (Firework) position.getWorld().spawn(position, Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+        // On ajoute un effet
+        fireworkMeta.addEffect(FireworkEffect.builder()
+                .flicker(true)
+                .trail(true)
+                .withColor(couleur)
+                .withFade(couleur)
+                .build()
+
+        );
+
+        fireworkMeta.setPower(puissance);
+        firework.setFireworkMeta(fireworkMeta);
+    }
+
     public static void setFirework(Player joueur, Color couleur, int puissance) {
         Firework firework = (Firework) joueur.getWorld().spawn(joueur.getLocation(), Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();

@@ -309,6 +309,8 @@ public final class mineralcontest extends JavaPlugin {
 
     private void registerEvents() {
 
+        Bukkit.getServer().getPluginManager().registerEvents(new ArmorStandPickup(), this);
+
         Bukkit.getServer().getPluginManager().registerEvents(new BlockDestroyed(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new BlockPlaced(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityInteract(), this);
@@ -326,6 +328,9 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new EntityTarget(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new EntityDeathEvent(), this);
+
+
+
 
         Bukkit.getServer().getPluginManager().registerEvents(new ExplosionEvent(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new ItemDropped(), this);
@@ -409,7 +414,7 @@ public final class mineralcontest extends JavaPlugin {
 
             //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
-            //bukkitCommandMap.register("", new ArmorStandCommand());
+            bukkitCommandMap.register("", new ArmorStand());
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());

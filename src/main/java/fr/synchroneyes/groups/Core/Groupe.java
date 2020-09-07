@@ -119,6 +119,8 @@ public class Groupe {
         this.partie = new Game(this);
         this.partie.startGameLoop();
 
+        this.dechargerMonde();
+
     }
 
 

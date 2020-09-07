@@ -4,6 +4,7 @@ import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
+import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
@@ -11,10 +12,15 @@ import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PlayerDeathEvent implements Listener {
 
@@ -50,6 +56,38 @@ public class PlayerDeathEvent implements Listener {
 
                 // On retire les barrieres du mineur des drops
                 event.getDrops().removeIf(item -> item.isSimilar(Mineur.getBarrierItem()));
+                event.getDrops().removeIf(item -> item.getType() == Material.POTION);
+                event.getDrops().removeIf(ShopManager::isAnShopItem);
+
+
+                // Liste des items à drop
+                LinkedList<Material> item_a_drop = new LinkedList<Material>();
+                item_a_drop.add(Material.IRON_INGOT);
+                item_a_drop.add(Material.GOLD_INGOT);
+                item_a_drop.add(Material.DIAMOND);
+                item_a_drop.add(Material.EMERALD);
+                item_a_drop.add(Material.IRON_ORE);
+                item_a_drop.add(Material.GOLD_ORE);
+                item_a_drop.add(Material.DIAMOND_ORE);
+                item_a_drop.add(Material.EMERALD_ORE);
+                item_a_drop.add(Material.IRON_ORE);
+                item_a_drop.add(Material.GOLD_ORE);
+                item_a_drop.add(Material.EMERALD_ORE);
+                item_a_drop.add(Material.DIAMOND_ORE);
+
+                item_a_drop.add(Material.POTION);
+                item_a_drop.add(Material.REDSTONE);
+                item_a_drop.add(Material.ENCHANTED_BOOK);
+
+
+                // On doit gérer mp_enable_item_drop
+                switch(partie.groupe.getParametresPartie().getCVAR("mp_enable_item_drop").getValeurNumerique()) {
+                    // Dans le cas où c'est 0, on drop rien
+                    case 0: event.getDrops().clear(); break;
+                    // Dans le cas où c'est 1, on drop uniquement les minerais
+                    case 1: event.getDrops().removeIf(item -> !item_a_drop.contains(item.getType())); break;
+                }
+
 
                 MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 

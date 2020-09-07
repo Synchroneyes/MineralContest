@@ -283,4 +283,36 @@ public class Equipe implements Comparable<Equipe> {
     public int compareTo(Equipe equipe) {
         return (int) (this.getScore() - equipe.getScore());
     }
+
+
+    public Color getBukkitColor() {
+        switch (getCouleur()) {
+            case YELLOW:
+            case GOLD:
+                return Color.YELLOW;
+            case GREEN:
+            case DARK_GREEN:
+                return Color.GREEN;
+            case BLACK: return Color.BLACK;
+            case GRAY:
+            case DARK_GRAY:
+                return Color.GRAY;
+            case BLUE:
+            case DARK_BLUE:
+                return Color.BLUE;
+            case AQUA:
+            case DARK_AQUA:
+                return Color.AQUA;
+            case DARK_RED:
+            case RED:
+                return Color.RED;
+            case DARK_PURPLE:
+
+            case LIGHT_PURPLE:
+                return Color.PURPLE;
+
+            default: return Color.WHITE;
+
+        }
+    }
 }

@@ -1,9 +1,6 @@
 package fr.synchroneyes.mineral.Utils;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -19,6 +16,7 @@ public class ArmorStandUtility {
      * @return
      */
     public static ArmorStand createArmorStandWithColoredLeather(Location location, String customName, Color color, Material itemInMainHand) {
+
         ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
 
         armorStand.setInvulnerable(true);
