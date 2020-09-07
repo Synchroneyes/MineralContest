@@ -42,7 +42,6 @@ public class StopGameCommand implements CommandExecutor {
 
                 // On est jamais trop prudent ...
                 if (partie.isGameStarted()) {
-                    mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + ChatColor.RED + Lang.translate(Lang.game_over.toString()), partie.groupe);
                     try {
                         partie.terminerPartie();
                     } catch (Exception e) {

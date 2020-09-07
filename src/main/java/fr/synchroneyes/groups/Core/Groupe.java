@@ -20,6 +20,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
+import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -430,6 +431,10 @@ public class Groupe {
         // On récupère l'instance MCPlayer du joueur et on set son groupe
         if(mineralcontest.plugin.getMCPlayer(p) == null) mineralcontest.plugin.addNewPlayer(p);
         mineralcontest.plugin.getMCPlayer(p).setGroupe(this);
+
+        // Si le joueur n'est pas dans le monde du groupe, on le TP
+        if(getMonde() != null && !p.getWorld().equals(getMonde()))
+            PlayerUtils.teleportPlayer(p, getMonde(), getMonde().getSpawnLocation());
 
     }
 

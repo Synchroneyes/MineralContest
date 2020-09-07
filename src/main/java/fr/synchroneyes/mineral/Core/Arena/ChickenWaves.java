@@ -59,6 +59,7 @@ public class ChickenWaves {
      */
     public void start() {
         if (started) return;
+        if(arene.groupe.getGame().isGameEnded()) return;
         this.started = true;
         this.enabled = true;
 

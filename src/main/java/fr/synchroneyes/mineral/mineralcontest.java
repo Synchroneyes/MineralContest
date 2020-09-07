@@ -521,6 +521,8 @@ public final class mineralcontest extends JavaPlugin {
 
         this.joueurs.add(joueur);
 
+
+
     }
 
     /**

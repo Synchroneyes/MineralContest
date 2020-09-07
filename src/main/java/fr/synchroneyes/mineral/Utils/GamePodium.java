@@ -50,8 +50,6 @@ public class GamePodium {
         secondePlace = centrePodium.getBlock().getRelative(BlockFace.WEST).getLocation();
         troisiemePlace = centrePodium.getBlock().getRelative(BlockFace.EAST).getLocation();
 
-        Bukkit.broadcastMessage(centrePodium + "");
-
 
         // On défini la base du podium
         centrePodium.getBlock().setType(Material.QUARTZ_BLOCK);
@@ -61,35 +59,26 @@ public class GamePodium {
 
 
 
-        Location premierArmorLocation, secondArmorLocation, troisiemeArmorLocation;
 
         premierePlace.setY(premierePlace.getBlockY() + 1);
-        premierArmorLocation = premierePlace.clone();
-
-
-
         secondePlace.setY(secondePlace.getBlockY() + 1);
-        secondArmorLocation = secondePlace.clone();
-
         troisiemePlace.setY(troisiemePlace.getBlockY() + 1);
-        troisiemeArmorLocation = troisiemePlace.clone();
 
 
 
         if(equipes.get(0) != null){
-            ArmorStand premierArmorStand =  ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(premierePlace.getBlock().getLocation()), equipes.get(0).getCouleur() + equipes.get(0).getNomEquipe(), equipes.get(0).getBukkitColor(), Material.GOLDEN_SWORD);
+            ArmorStand premierArmorStand =  ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(premierePlace), equipes.get(0).getCouleur() + equipes.get(0).getNomEquipe(), equipes.get(0).getBukkitColor(), Material.GOLDEN_SWORD);
             setSignWithTeamScore(premierePlace.getBlock(), equipes.get(0));
             PlayerUtils.setFirework(getCenter(premierArmorStand.getLocation()), equipes.get(0).getBukkitColor(), 2);
 
-            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "" + (getCenter(premierePlace.getBlock().getLocation())) + " - " + ChatColor.RED + "" + premierePlace.getBlock().getLocation());
         }
         if(equipes.size() >= 2 && equipes.get(1) != null) {
-            ArmorStand secondArmorStand = ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(secondArmorLocation), equipes.get(1).getCouleur() +equipes.get(1).getNomEquipe(), equipes.get(1).getBukkitColor(), Material.DIAMOND_SWORD);
+            ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(secondePlace), equipes.get(1).getCouleur() +equipes.get(1).getNomEquipe(), equipes.get(1).getBukkitColor(), Material.DIAMOND_SWORD);
             setSignWithTeamScore(secondePlace.getBlock(), equipes.get(1));
         }
 
         if(equipes.size() >= 3 && equipes.get(2) != null) {
-            ArmorStand troisiemeArmorStand = ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(troisiemeArmorLocation), equipes.get(2).getCouleur() + equipes.get(2).getNomEquipe(), equipes.get(2).getBukkitColor(), Material.WOODEN_SWORD);
+            ArmorStandUtility.createArmorStandWithColoredLeather(getCenter(troisiemePlace), equipes.get(2).getCouleur() + equipes.get(2).getNomEquipe(), equipes.get(2).getBukkitColor(), Material.WOODEN_SWORD);
             setSignWithTeamScore(troisiemePlace.getBlock(), equipes.get(2));
         }
 
