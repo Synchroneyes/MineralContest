@@ -20,19 +20,19 @@ public class OpenPlayerInventory extends RefereeItemTemplate {
     @Override
     public void performClick(Player joueur) {
         if (target instanceof Player) {
-            Inventory copiedInventory = Bukkit.createInventory(joueur, 54, Lang.referee_item_inventory_of_player_title + ((Player) target).getDisplayName());
+            Inventory copiedInventory = Bukkit.createInventory(null, 54, Lang.referee_item_inventory_of_player_title + ((Player) target).getDisplayName());
             Inventory targetInventory = ((Player) target).getInventory();
 
             for (ItemStack item : targetInventory.getContents())
                 if (item != null && !item.getType().equals(Material.AIR))
-                    copiedInventory.addItem(item);
+                    copiedInventory.addItem(new ItemStack(item.getType(), item.getAmount()));
 
             for (int i = 0; i < 10; ++i)
                 copiedInventory.addItem(new ItemStack(Material.AIR, 1));
 
             for (ItemStack armure : targetInventory.getStorageContents())
                 if (armure != null && !armure.getType().equals(Material.AIR))
-                    copiedInventory.addItem(armure);
+                    copiedInventory.addItem(new ItemStack(armure.getType(), armure.getAmount()));
 
 
             joueur.closeInventory();

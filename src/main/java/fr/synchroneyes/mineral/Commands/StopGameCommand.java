@@ -47,6 +47,8 @@ public class StopGameCommand implements CommandExecutor {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    
+                    
                 } else {
                     sender.sendMessage(mineralcontest.prefixErreur + Lang.translate(Lang.game_not_started.toString()));
                 }

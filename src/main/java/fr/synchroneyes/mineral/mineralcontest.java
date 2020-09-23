@@ -246,6 +246,12 @@ public final class mineralcontest extends JavaPlugin {
                 Thread operationsThreade = new Thread(() -> {
                     // On récupère toutes les URL du plugin
                     Urls.FetchAllUrls();
+
+                    if(Urls.isWebsiteDown) {
+                        Bukkit.broadcastMessage(ChatColor.RED + Urls.WEBSITE_URL + " is down. Please check on our discord to get the latest plugin version & maps mirrors link");
+                        return;
+                    }
+
                     worldDownloader.initMapLists();
 
                     Version.fetchAllMessages(messagesFromWebsite);
@@ -263,7 +269,7 @@ public final class mineralcontest extends JavaPlugin {
                     @Override
                     public void run() {
                         // La procédure à commencer
-                        if (Version.isCheckingStarted) {
+                        if (Version.isCheckingStarted && !Urls.isWebsiteDown) {
 
                             // Si le plugin a été mis à jour, on reload le plugin
                             if (Version.hasUpdated) {
@@ -321,7 +327,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new ChestEvent(), this);
 
         //
-        //Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         //Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeathEvent(), this);
 
 
@@ -414,7 +420,7 @@ public final class mineralcontest extends JavaPlugin {
 
             //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
-            bukkitCommandMap.register("", new ArmorStand());
+            //bukkitCommandMap.register("", new GetPlayerDistance());
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());

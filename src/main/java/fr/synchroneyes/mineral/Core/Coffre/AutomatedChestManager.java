@@ -89,9 +89,16 @@ public class AutomatedChestManager implements Listener {
     }
 
     public AutomatedChestAnimation getChestAnomation(Block b) {
+
+
         for (AutomatedChestAnimation automatedChest : coffresAvecAnimation) {
             if (automatedChest.getLocation() == null) continue;
             if (automatedChest.getLocation().equals(b.getLocation())) return automatedChest;
+        }
+
+        for (AutomatedChestAnimation timedChest : coffreAvecDureeDeVie) {
+            if (timedChest.getLocation() == null) continue;
+            if (timedChest.getLocation().equals(b.getLocation())) return timedChest;
         }
         return null;
     }
@@ -100,7 +107,10 @@ public class AutomatedChestManager implements Listener {
         for (AutomatedChestAnimation automatedChest : coffresAvecAnimation) {
             if (automatedChest.getLocation() != null && automatedChest.getLocation().equals(b.getLocation()))
                 return true;
+        }
 
+        for(TimeChestAnimation timedChest : coffreAvecDureeDeVie) {
+            if(timedChest.getLocation() != null && timedChest.getLocation().equals(b.getLocation())) return true;
         }
         return false;
     }

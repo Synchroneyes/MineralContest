@@ -39,7 +39,6 @@ public abstract class TimeChestAnimation extends AutomatedChestAnimation{
 
 
     public void reduceChestTime() {
-        Bukkit.getLogger().info(this + " - Temps restant: " + timeLeft);
         this.timeLeft--;
     }
 

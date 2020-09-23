@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 
 public class Urls {
 
+
+    public static boolean isWebsiteDown = false;
+
     public static String API_URL_WORKSHOP_LIST = "";
     public static String API_URL_LAST_VERSION_CHECK = "";
     public static String API_URL_GET_CURRENT_VERSION_MESSAGES = "";
@@ -70,6 +73,7 @@ public class Urls {
 
 
         } catch (Exception e) {
+            isWebsiteDown = true;
             e.printStackTrace();
         }
     }

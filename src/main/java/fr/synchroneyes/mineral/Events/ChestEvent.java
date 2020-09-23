@@ -135,7 +135,7 @@ public class ChestEvent implements Listener {
             if (partie != null && partie.isGameStarted()) {
 
                 if (!partie.groupe.getMonde().equals(world)) {
-                    Bukkit.getLogger().severe("onChestBReaked L110");
+                    //Bukkit.getLogger().severe("onChestBReaked L110");
                     return;
                 }
 
@@ -331,7 +331,6 @@ public class ChestEvent implements Listener {
 
                 // Si le coffre ouvert fait parti des blocs d'animation
                 if (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)) {
-
 
                     event.setCancelled(true);
                     // On récupère son instance

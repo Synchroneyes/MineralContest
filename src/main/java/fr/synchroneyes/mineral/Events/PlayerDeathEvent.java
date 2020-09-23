@@ -51,6 +51,7 @@ public class PlayerDeathEvent implements Listener {
                 // On doit clear les drops seulement si le joueur est proche de l'arène (zone protégé) et que les coffres sont activé
                 int radiusProtection = partie.groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
                 Location arenaCenter = partie.getArene().getCoffre().getLocation();
+
                 if(partie.groupe.getParametresPartie().getCVAR("drop_chest_on_death").getValeurNumerique() == 1 && !Radius.isBlockInRadius(arenaCenter, joueur.getLocation(), radiusProtection))
                     event.getDrops().clear();
 
