@@ -614,7 +614,11 @@ public class Parachute implements Listener {
 
             // On spawn le coffre
             this.coffre.setChestLocation(feltLocation);
-            this.coffre.spawn();
+            // On fait apparaitre le coffre d'animation
+            coffre.spawn();
+
+            // Et on oublie pas d'enregistrer !
+            parachuteManager.getGroupe().getAutomatedChestManager().addChest(coffre);
 
             return;
         }

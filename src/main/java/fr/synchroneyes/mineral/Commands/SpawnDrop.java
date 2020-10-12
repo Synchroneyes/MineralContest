@@ -20,7 +20,7 @@ public class SpawnDrop extends CommandTemplate {
         accessCommande.add(GROUP_REQUIRED);
         accessCommande.add(GAME_STARTED);
 
-        addArgument("spawnParachute", false);
+        //addArgument("spawnParachute", false);
     }
 
     @Override
@@ -28,9 +28,9 @@ public class SpawnDrop extends CommandTemplate {
         Player joueur = (Player) commandSender;
         Groupe playerGroupe = mineralcontest.getPlayerGroupe(joueur);
 
-        if (args.length > 0) {
+        /*if (args.length > 0) {
 
-            Location randomLocation = playerGroupe.getGame().getArene().getCoffre().getLocation().clone();
+            /*Location randomLocation = playerGroupe.getGame().getArene().getCoffre().getLocation().clone();
 
             int tentatives = 1;
             int max = 100;
@@ -77,17 +77,18 @@ public class SpawnDrop extends CommandTemplate {
 
 
             //playerGroupe.getGame().getParachuteManager().(randomLocation);
+            playerGroupe.getGame().getParachuteManager().spawnNewParachute();
         }
         else {
 
-        }
+        }*/
         /*else {
             AutomatedChestAnimation test = playerGroupe.getAutomatedChestManager().getFromClass(TestAnimation.class);
             test.spawn(joueur.getLocation().getBlock().getLocation());
 
             playerGroupe.getAutomatedChestManager().replace(TestAnimation.class, test);
         }*/
-
+        playerGroupe.getGame().getParachuteManager().spawnNewParachute();
         return false;
     }
 
