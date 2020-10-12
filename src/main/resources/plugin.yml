@@ -92,18 +92,6 @@ commands:
     permission:
     permission-message: you do not have the permission
 
-  referee:
-    description: Devenir un arbitre
-    use: /referee
-    permission: admin
-    permission-message: you do not have the permission
-
-  arbitre:
-    description: Devenir un arbitre
-    use: /arbitre
-    permission: admin
-    permission-message: you do not have the permission
-
   spawnchest:
     description: Spawn le coffre d'arène
     use: /spawnchest

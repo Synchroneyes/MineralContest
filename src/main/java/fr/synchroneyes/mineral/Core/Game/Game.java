@@ -541,7 +541,7 @@ public class Game implements Listener {
         }
 
         // Si le joueur n'a pas de kit, on lui ouvre le menu
-        if (groupe.getKitManager().getPlayerKit(player) == null) groupe.getKitManager().openInventoryToPlayer(player);
+        if(groupe.getGame() != null && (groupe.getGame().isGameStarted() || groupe.getGame().isPreGame())) if (groupe.getKitManager().getPlayerKit(player) == null) groupe.getKitManager().openInventoryToPlayer(player);
 
     }
 

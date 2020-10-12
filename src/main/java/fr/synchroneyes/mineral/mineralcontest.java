@@ -14,6 +14,7 @@ import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
+import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -393,8 +394,6 @@ public final class mineralcontest extends JavaPlugin {
         getCommand("arene").setExecutor(new AreneTeleportCommand());
         getCommand("arena").setExecutor(new AreneTeleportCommand());
         getCommand("join").setExecutor(new JoinCommand());
-        getCommand("referee").setExecutor(new RefereeCommand());
-        getCommand("arbitre").setExecutor(new RefereeCommand());
         getCommand("ready").setExecutor(new ReadyCommand());
         getCommand("t").setExecutor(new TeamChat());
         getCommand("team").setExecutor(new TeamChat());
@@ -413,6 +412,7 @@ public final class mineralcontest extends JavaPlugin {
             bukkitCommandMap.register("", new MCCvarCommand());
             bukkitCommandMap.register("", new SetDefaultItems());
             bukkitCommandMap.register("", new SpawnDrop());
+            bukkitCommandMap.register("", new RefereeCommand());
 
             //bukkitCommandMap.register("", new SaveDropToFile());
 

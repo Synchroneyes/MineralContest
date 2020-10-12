@@ -9,9 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CommandTemplate extends BukkitCommand {
 
@@ -35,6 +33,17 @@ public abstract class CommandTemplate extends BukkitCommand {
 
     public abstract String getCommand();
 
+    public String[] setCommands() {
+        return null;
+    }
+
+    public List<String> getAliases() {
+        List<String> alias = new ArrayList<>();
+        if(setCommands() == null) return alias;
+        alias.addAll(Arrays.asList(setCommands()));
+        return alias;
+    }
+
     public abstract String getDescription();
 
     public abstract String getPermissionRequise();
@@ -51,6 +60,8 @@ public abstract class CommandTemplate extends BukkitCommand {
         super("");
         this.description = getDescription();
         this.setName(getCommand());
+
+        if(getAliases().size() > 0) this.setAliases(getAliases());
         this.setPermission(this.getPermissionRequise());
         this.setPermissionMessage(getErrorMessage());
         this.setUsage("Usage: /" + getCommand() + " " + getArgumentsString());
@@ -185,6 +196,7 @@ public abstract class CommandTemplate extends BukkitCommand {
     }
 
     public void constructArguments() {
+
         this.setUsage("Usage: /" + this.getCommand() + " " + getArgumentsString());
     }
 
