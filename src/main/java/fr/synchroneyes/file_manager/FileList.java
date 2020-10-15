@@ -16,7 +16,9 @@ public enum FileList {
     CustomMap_east_house_scheme("models/custom-maps-models", "east-house.yml"),
     CustomMap_west_house_scheme("models/custom-maps-models", "west-house.yml"),
     AirDrop_model("models/airdrop", "airdrop.yml"),
-    ShopItem_PriceList("config/shop", "items_price.yml");
+    ShopItem_PriceList("config/shop", "items_price.yml"),
+    MySQL_Config_File("config", "mysql_settings.yml"),
+    MySQL_database_schema("models", "database_schema.sql");
 
     private String path;
     private String fileName;

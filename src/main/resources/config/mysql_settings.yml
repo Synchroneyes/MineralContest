@@ -1,0 +1,5 @@
+host: "synchroneyes.fr"
+port: 3306
+username: "mineralcontest-dev"
+password: "MkZXO5euyAZVt3HU"
+database: "mineralcontest-dev"

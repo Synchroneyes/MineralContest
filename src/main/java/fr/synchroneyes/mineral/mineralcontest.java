@@ -1,6 +1,8 @@
 package fr.synchroneyes.mineral;
 
 import fr.synchroneyes.custom_events.PermissionCheckerLoop;
+import fr.synchroneyes.data_storage.DatabaseInitialisation;
+import fr.synchroneyes.data_storage.SQLConnection;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.file_manager.RessourceFilesManager;
 import fr.synchroneyes.groups.Core.Groupe;
@@ -37,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,6 +90,9 @@ public final class mineralcontest extends JavaPlugin {
      * List of every players of the plugin
      */
     private List<MCPlayer> joueurs;
+
+    @Getter
+    private SQLConnection connexion_database;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
@@ -205,6 +211,15 @@ public final class mineralcontest extends JavaPlugin {
         // Initialisation des events customs
         PermissionCheckerLoop permissionCheckerLoop = new PermissionCheckerLoop(this, 1);
         permissionCheckerLoop.run();
+
+        // On initialise la base de donnée
+        this.connexion_database = SQLConnection.getInstance();
+        try {
+            //connexion_database.query("CREATE TABLE IF NOT EXISTS `mineral_game` ( `id` int(11) NOT NULL, `gamestate` enum('started','ended') NOT NULL, `date_start` timestamp NOT NULL DEFAULT current_timestamp(), `date_end` timestamp NULL DEFAULT NULL, `map` varchar(255) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            DatabaseInitialisation.createDatabase();
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+        }
 
 
         pluginWorld = PlayerUtils.getPluginWorld();
@@ -411,17 +426,9 @@ public final class mineralcontest extends JavaPlugin {
 
             bukkitCommandMap.register("", new MCCvarCommand());
             bukkitCommandMap.register("", new SetDefaultItems());
-            bukkitCommandMap.register("", new SpawnDrop());
+            // bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new RefereeCommand());
-
-            //bukkitCommandMap.register("", new SaveDropToFile());
-
-
-            //bukkitCommandMap.register("", new SpawnShop());
-
-            //bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new McStats());
-            //bukkitCommandMap.register("", new GetPlayerDistance());
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());
