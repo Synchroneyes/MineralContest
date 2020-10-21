@@ -213,13 +213,13 @@ public final class mineralcontest extends JavaPlugin {
         permissionCheckerLoop.run();
 
         // On initialise la base de donnée
-        this.connexion_database = SQLConnection.getInstance();
+        /*this.connexion_database = SQLConnection.getInstance();
         try {
             //connexion_database.query("CREATE TABLE IF NOT EXISTS `mineral_game` ( `id` int(11) NOT NULL, `gamestate` enum('started','ended') NOT NULL, `date_start` timestamp NOT NULL DEFAULT current_timestamp(), `date_end` timestamp NULL DEFAULT NULL, `map` varchar(255) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseInitialisation.createDatabase();
         } catch (Exception throwables) {
             throwables.printStackTrace();
-        }
+        }*/
 
 
         pluginWorld = PlayerUtils.getPluginWorld();
@@ -393,6 +393,8 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new GameEnd(), this);
 
 
+
+
         // AutomatedChest
         //Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
 
@@ -429,6 +431,8 @@ public final class mineralcontest extends JavaPlugin {
             // bukkitCommandMap.register("", new SpawnDrop());
             bukkitCommandMap.register("", new RefereeCommand());
             bukkitCommandMap.register("", new McStats());
+
+            bukkitCommandMap.register("", new Halloween());
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());

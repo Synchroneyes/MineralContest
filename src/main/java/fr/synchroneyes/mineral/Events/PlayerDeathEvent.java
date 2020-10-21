@@ -92,14 +92,14 @@ public class PlayerDeathEvent implements Listener {
 
                 MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 
+
                 // On execute ces actions 1 tick plus tard
                 Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
                     // La partie est démarrée, on remet le joueur en vie, on l'ajoute à la deathzone, et on shoot l'event killed
 
                     partie.getArene().getDeathZone().add(joueur);
-                    if(mcPlayer != null) {
-                        mcPlayer.cancelDeathEvent();
-                    }
+                    joueur.spigot().respawn();
+                    mcPlayer.cancelDeathEvent();
 
                 }, 1);
 

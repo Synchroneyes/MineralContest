@@ -5,6 +5,7 @@ import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
+import fr.synchroneyes.mineral.Core.Boss.BossManager;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.InventoryInterface;
 import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInventory;
 import fr.synchroneyes.mineral.Core.House;
@@ -103,6 +104,9 @@ public class Game implements Listener {
     @Getter
     private ShopManager shopManager;
 
+    // Gestionnaire de boss d'une partie
+    @Getter
+    private BossManager bossManager;
 
 
     // Group of the game
@@ -132,6 +136,8 @@ public class Game implements Listener {
         this.statsManager = new StatsManager(this);
         this.playerBonusManager = new PlayerBonus(this);
         this.shopManager = new ShopManager(this);
+        this.bossManager = new BossManager();
+
         initGameSettings();
     }
 

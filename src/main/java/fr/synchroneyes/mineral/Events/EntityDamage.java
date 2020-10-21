@@ -92,6 +92,12 @@ public class EntityDamage implements Listener {
                     }
                 }
 
+                // On vérifie si le dégat est causé par un éclair/tonnerre
+                if(event.getCause().equals(EntityDamageEvent.DamageCause.LIGHTNING)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
 
 
 
