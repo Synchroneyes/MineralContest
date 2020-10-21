@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Boss;
 
+import fr.synchroneyes.mineral.Core.Game.Game;
 import org.bukkit.Location;
 
 import java.util.LinkedList;
@@ -18,8 +19,14 @@ public class BossManager {
      */
     private List<Boss> bossList;
 
-    public BossManager() {
+    /**
+     * Partie dans lequel le bossmanager doit agir
+     */
+    private Game partie;
+
+    public BossManager(Game partie) {
         this.bossList = new LinkedList<>();
+        this.partie = partie;
     }
 
     /**
@@ -30,6 +37,7 @@ public class BossManager {
     public void spawnNewBoss(Location position, Boss boss) {
         this.bossList.add(boss);
         boss.spawn(position);
+        boss.setChestManager(partie.groupe.getAutomatedChestManager());
     }
 
 }

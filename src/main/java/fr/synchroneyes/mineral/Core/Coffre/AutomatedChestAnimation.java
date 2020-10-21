@@ -55,7 +55,10 @@ public abstract class AutomatedChestAnimation {
 
 
     public void setChestLocation(Location chestLocation) {
-        this.chestLocation = chestLocation;
+
+        Location loc = new Location(chestLocation.getWorld(), chestLocation.getBlockX(), chestLocation.getBlockY(), chestLocation.getBlockZ());
+
+        this.chestLocation = loc;
         updateManager();
     }
 

@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Core.Boss;
 
+import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
+import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreBoss;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
@@ -41,6 +43,8 @@ public abstract class Boss {
      * Méthode permettant de définir quand le mob doit faire son attaque spéciale
      */
     private int compteur = 1;
+
+    private AutomatedChestManager chestManager;
 
 
     /**
@@ -132,6 +136,10 @@ public abstract class Boss {
      */
     public abstract void defineCustomAttributes();
 
+    /**
+     * Méthode appelée à la mort d'un mob
+     */
+    public abstract void onBossDeath();
 
 
     /**
@@ -255,7 +263,9 @@ public abstract class Boss {
                 removeBossBar();
                 spawnMobKillRewards();
                 if(entity.getKiller() != null) mineralcontest.broadcastMessage(entity.getKiller().getDisplayName() + " a tué " + getName());
+                onBossDeath();
                 this.boucle.cancel();
+
                 return;
             }
 
@@ -292,6 +302,14 @@ public abstract class Boss {
     private void spawnMobKillRewards() {
         List<ItemStack> items = getKillRewards();
 
+        CoffreBoss coffreBoss = new CoffreBoss(items, this.chestManager);
+
+
+        coffreBoss.setChestLocation(this.entity.getLocation());
+        coffreBoss.spawn();
+
+        this.chestManager.addChest(coffreBoss);
+
 
     }
 
@@ -323,6 +341,10 @@ public abstract class Boss {
     private String getNameWithHealth() {
         if(this.entity.getHealth() == 0) return getName();
         return getName() + " " + ((int)entity.getHealth()) + ChatColor.RED + "♥" + ChatColor.RESET;
+    }
+
+    protected void setChestManager(AutomatedChestManager manager) {
+        this.chestManager = manager;
     }
 
 }

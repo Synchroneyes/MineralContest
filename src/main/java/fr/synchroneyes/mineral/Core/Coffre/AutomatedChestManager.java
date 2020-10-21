@@ -50,7 +50,8 @@ public class AutomatedChestManager implements Listener {
      * @param chestAnimation
      */
     public void addChest(AutomatedChestAnimation chestAnimation) {
-        this.coffresAvecAnimation.add(chestAnimation);
+        Bukkit.broadcastMessage(this + " added " + chestAnimation);
+        if(!this.coffresAvecAnimation.contains(chestAnimation)) this.coffresAvecAnimation.add(chestAnimation);
     }
 
     /**
@@ -105,6 +106,7 @@ public class AutomatedChestManager implements Listener {
 
     public boolean isThisBlockAChestAnimation(Block b) {
         for (AutomatedChestAnimation automatedChest : coffresAvecAnimation) {
+            Bukkit.getLogger().info(automatedChest + " - " + automatedChest.getLocation() + " - " + automatedChest.getChestMaterial());
             if (automatedChest.getLocation() != null && automatedChest.getLocation().equals(b.getLocation()))
                 return true;
         }

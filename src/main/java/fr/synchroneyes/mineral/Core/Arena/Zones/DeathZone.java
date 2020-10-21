@@ -136,6 +136,7 @@ public class DeathZone {
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //PlayerUtils.teleportPlayer(this.spawnLocation);
 
+        Bukkit.broadcastMessage("TELEPORTING " + joueur.getDisplayName());
         PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getPlayerHouse(joueur).getHouseLocation());
 
 

@@ -45,9 +45,6 @@ public class PlayerDeathEvent implements Listener {
                 if(joueur.getKiller() == null) event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), joueur));
                 else event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_killed.toString(), joueur, joueur.getKiller()));
 
-                PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
-                Bukkit.getPluginManager().callEvent(event1);
-
                 // On doit clear les drops seulement si le joueur est proche de l'arène (zone protégé) et que les coffres sont activé
                 int radiusProtection = partie.groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique();
                 Location arenaCenter = partie.getArene().getCoffre().getLocation();
@@ -92,16 +89,17 @@ public class PlayerDeathEvent implements Listener {
 
                 MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 
-
                 // On execute ces actions 1 tick plus tard
-                Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-                    // La partie est démarrée, on remet le joueur en vie, on l'ajoute à la deathzone, et on shoot l'event killed
-
-                    partie.getArene().getDeathZone().add(joueur);
-                    joueur.spigot().respawn();
+                if(mcPlayer != null) {
                     mcPlayer.cancelDeathEvent();
+                }
 
-                }, 1);
+                Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> partie.getArene().getDeathZone().add(joueur), 1);
+
+                PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
+                Bukkit.getPluginManager().callEvent(event1);
+
+                new Exception().printStackTrace();
 
 
                 // On enregistre les stats, au cas où ...

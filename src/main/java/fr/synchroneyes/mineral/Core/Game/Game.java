@@ -136,7 +136,7 @@ public class Game implements Listener {
         this.statsManager = new StatsManager(this);
         this.playerBonusManager = new PlayerBonus(this);
         this.shopManager = new ShopManager(this);
-        this.bossManager = new BossManager();
+        this.bossManager = new BossManager(this);
 
         initGameSettings();
     }

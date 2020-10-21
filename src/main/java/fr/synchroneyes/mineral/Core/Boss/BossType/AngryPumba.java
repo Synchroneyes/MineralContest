@@ -91,4 +91,9 @@ public class AngryPumba extends Boss {
     public void defineCustomAttributes() {
 
     }
+
+    @Override
+    public void onBossDeath() {
+
+    }
 }
