@@ -10,11 +10,9 @@ import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Range;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +23,7 @@ public class EntityDeathEvent implements Listener {
 
     @EventHandler
     public void OnEntityDeath(org.bukkit.event.entity.EntityDeathEvent event) {
+
         if (mineralcontest.isAMineralContestWorld(event.getEntity().getWorld())) {
             Game partie = mineralcontest.getWorldGame(event.getEntity().getWorld());
             if (event.getEntity() instanceof LivingEntity && partie != null && partie.isGameStarted()) {

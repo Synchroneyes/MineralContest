@@ -1178,7 +1178,7 @@ public class Game implements Listener {
         GameStarted = false;
         this.tempsPartie = 60 * DUREE_PARTIE;
         getArene().startArena();
-        getArene().startAutoMobKill();
+        //getArene().startAutoMobKill();
 
         getParachuteManager().handleDrops();
 

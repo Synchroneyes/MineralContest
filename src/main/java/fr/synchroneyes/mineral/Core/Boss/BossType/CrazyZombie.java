@@ -1,7 +1,9 @@
 package fr.synchroneyes.mineral.Core.Boss.BossType;
 
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Boss.Boss;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.HalloweenHurricaneAnimation;
 import fr.synchroneyes.mineral.Statistics.Class.BossKiller;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -118,28 +120,9 @@ public class CrazyZombie extends Boss {
 
             if(list_sbire.size() >= maxSbire) break;
 
-            ZombieVillager zombieSbire = (ZombieVillager) this.entity.getWorld().spawnEntity(this.entity.getLocation(), EntityType.ZOMBIE_VILLAGER);
-            if(zombieSbire.isBaby())zombieSbire.setAdult();
-            zombieSbire.setCustomNameVisible(true);
-            zombieSbire.setCustomName("Sbire");
-            zombieSbire.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(getSanteMax()/3);
-            zombieSbire.setHealth(getSanteMax()/3);
-
-            zombieSbire.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(getDegatsParAttaque()/3);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(zombieSbire.isDead()) {
-                        this.cancel();
-                    }
-
-                    zombieSbire.setCustomName("Sbire " + ((int)zombieSbire.getHealth()) + ChatColor.RED + "♥" + ChatColor.RESET);
-                }
-            }.runTaskTimer(mineralcontest.plugin, 0, 5);
-
-            list_sbire.add(zombieSbire);
-            this.spawnedEntities.add(zombieSbire);
+            ZombieVillager zombieVillager = this.addSbire(this.entity.getLocation());
+            list_sbire.add(zombieVillager);
+            this.spawnedEntities.add(zombieVillager);
 
         }
 
@@ -179,6 +162,7 @@ public class CrazyZombie extends Boss {
 
     @Override
     public void onBossDeath() {
+
         for(LivingEntity sbire : list_sbire)
             sbire.setHealth(0);
 
@@ -209,13 +193,29 @@ public class CrazyZombie extends Boss {
             joueur.sendMessage(ChatColor.GOLD + "???: " + ChatColor.RESET + "Je suis " + getName() + ", venez m'affronter dans l'arène !");
 
             // On envoie un titre
-            joueur.sendTitle(ChatColor.RED + getName(), "Pourrez vous m'affronter? Mouhaha", 20, 20*duree_annonce, 20);
+            joueur.sendTitle(ChatColor.RED + getName(), "Venez m'affronter dans l'arène. Si vous survivez à mon premier sbire...", 20, 20*duree_annonce, 20);
         }
 
-        // On s'assure que le zombie est adule
+        // On s'assure que le zombie est adulte
         if(entity instanceof Zombie) {
             Zombie zombie = (Zombie) entity;
             zombie.setAdult();
+        }
+
+        // On fait apparaitre un sbire sur chaque personne d'une équipe
+        Groupe groupe = getChestManager().getGroupe();
+
+        // Pour chaque Maison
+        for(House maison : groupe.getGame().getHouses()) {
+            // On récupère un joueur aléatoire
+            int team_member_cout = maison.getTeam().getJoueurs().size();
+            if(team_member_cout > 0){
+                Player joueurAleatoire = maison.getTeam().getJoueurs().get(new Random().nextInt(team_member_cout));
+                // Et on spawn un sbire sur lui
+                addSbire(joueurAleatoire.getLocation());
+            }
+
+
         }
     }
 
@@ -323,5 +323,29 @@ public class CrazyZombie extends Boss {
         };
 
         return messages[new Random().nextInt(messages.length)];
+    }
+
+    private ZombieVillager addSbire(Location position) {
+        ZombieVillager zombieSbire = (ZombieVillager) this.entity.getWorld().spawnEntity(position, EntityType.ZOMBIE_VILLAGER);
+        if(zombieSbire.isBaby())zombieSbire.setAdult();
+        zombieSbire.setCustomNameVisible(true);
+        zombieSbire.setCustomName("Sbire");
+        zombieSbire.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(getSanteMax()/3);
+        zombieSbire.setHealth(getSanteMax()/3);
+
+        zombieSbire.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(getDegatsParAttaque()/3);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(zombieSbire.isDead()) {
+                    this.cancel();
+                }
+
+                zombieSbire.setCustomName("Sbire " + ((int)zombieSbire.getHealth()) + ChatColor.RED + "♥" + ChatColor.RESET);
+            }
+        }.runTaskTimer(mineralcontest.plugin, 0, 5);
+
+        return zombieSbire;
     }
 }

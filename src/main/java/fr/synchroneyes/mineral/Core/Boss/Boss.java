@@ -186,8 +186,12 @@ public abstract class Boss {
             return;
         }
 
+        Location mobLocation = position.clone();
+        mobLocation.setY(position.getBlockY()+1);
+
         // On crée l'entité et on définit ses attributs
-        this.entity = (Mob) monde.spawnEntity(position, getMobType());
+        this.entity = (Mob) monde.spawnEntity(mobLocation, getMobType());
+
 
         // Il doit avoir un nom visible constamment
         this.entity.setCustomNameVisible(true);
@@ -221,6 +225,8 @@ public abstract class Boss {
         this.onBossSpawn();
 
         this.defineCustomAttributes();
+
+
 
 
     }
@@ -274,6 +280,7 @@ public abstract class Boss {
      */
     private void startMobTask(){
 
+
         // On arrête la précedente boucle si elle existait
         if(this.boucle != null) {
             this.boucle.cancel();
@@ -285,7 +292,6 @@ public abstract class Boss {
 
         // On crée la nouvelle boucle
         this.boucle = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, () -> {
-
             // On vérifie si le mob existe ou est mort
             if(entity == null) {
                 this.boucle.cancel();
@@ -295,6 +301,7 @@ public abstract class Boss {
 
             // On vérifie si le mob est mort
             if(entity.isDead()) {
+
                 removeBossBar();
                 spawnMobKillRewards();
                 if(entity.getKiller() != null) mineralcontest.broadcastMessage(entity.getKiller().getDisplayName() + " a tué " + getName());
@@ -333,6 +340,7 @@ public abstract class Boss {
 
             // On incrémente le compteur
             this.compteur++;
+
         }, 0, 5);
     }
 

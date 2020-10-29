@@ -265,6 +265,7 @@ public class Arene {
 
 
                         if (Radius.isBlockInRadius(coffreArene.getLocation(), entite.getLocation(), groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique())) {
+                            Bukkit.broadcastMessage("removed " + entite);
                             entite.remove();
                         }
                     }

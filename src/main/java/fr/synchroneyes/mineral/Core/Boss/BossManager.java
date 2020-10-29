@@ -79,6 +79,15 @@ public class BossManager implements Listener {
      * Méthode permettant de faire apparaitre le boss d'halloween
      */
     public void spawnHalloweenBoss() {
+
+        if(this.nextBoss != null && this.nextBoss.entity != null) {
+            CrazyZombie zombie = new CrazyZombie();
+            zombie.setChestManager(partie.groupe.getAutomatedChestManager());
+            this.bossList.add(zombie);
+            zombie.spawn(partie.getArene().getCoffre().getLocation());
+            return;
+        }
+
         this.bossList.add(this.nextBoss);
         this.nextBoss.setChestManager(partie.groupe.getAutomatedChestManager());
         this.nextBoss.spawn(partie.getArene().getCoffre().getLocation());
@@ -121,7 +130,7 @@ public class BossManager implements Listener {
         // On réduit le temps de 1
         this.timeLeftBeforeNewBossSpawn--;
         if(this.timeLeftBeforeNewBossSpawn == 0) {
-            this.nextBoss.spawn(partie.getArene().getCoffre().getLocation());
+            this.spawnHalloweenBoss();
             this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
             this.boucle.cancel();
             return;
@@ -136,7 +145,7 @@ public class BossManager implements Listener {
             this.nextBoss.performAnnouncement();
         }
 
-        Bukkit.getLogger().info("Prochaine Annonce: " + this.timeLeftBeforeNextAnnouncement + " - Prochain Boss: " + this.timeLeftBeforeNewBossSpawn);
+        //Bukkit.getLogger().info("Prochaine Annonce: " + this.timeLeftBeforeNextAnnouncement + " - Prochain Boss: " + this.timeLeftBeforeNewBossSpawn);
 
 
     }

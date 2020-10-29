@@ -25,6 +25,7 @@ public class HalloweenHurricaneAnimation extends DeathAnimation {
     public void playAnimation(LivingEntity entity) {
         List<Entity> list_chauve_souris = new ArrayList<>();
 
+        int duree_animation = 3;
 
         // On joue les animations
         // On fait apparaitre des chauves souris
@@ -62,21 +63,21 @@ public class HalloweenHurricaneAnimation extends DeathAnimation {
         }
 
         // Si on est pas sous un toit, on peut jouer l'effet de tonnerre
-        if (!isUnderRoof) {
+        /*if (!isUnderRoof) {
             entity.getWorld().strikeLightningEffect(entity.getLocation());
-        }
+        }*/
 
         AreaEffectCloud e = (AreaEffectCloud) entity.getWorld().spawnEntity(entity.getLocation(), EntityType.AREA_EFFECT_CLOUD);
         e.setColor(Color.ORANGE);
-        e.setDuration(4 * 20);
+        e.setDuration(duree_animation * 20);
 
         AreaEffectCloud e1 = (AreaEffectCloud) entity.getWorld().spawnEntity(entity.getLocation(), EntityType.AREA_EFFECT_CLOUD);
         e1.setColor(Color.BLACK);
-        e1.setDuration(4 * 20);
+        e1.setDuration(duree_animation * 20);
 
         // On démarre le timer des chauves souris
         // Durée en seconde du timer
-        AtomicInteger temps_chauve_souris = new AtomicInteger(6);
+        AtomicInteger temps_chauve_souris = new AtomicInteger(duree_animation+1);
 
         new BukkitRunnable() {
             @Override

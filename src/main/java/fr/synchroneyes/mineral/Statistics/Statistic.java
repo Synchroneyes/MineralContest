@@ -111,9 +111,11 @@ public abstract class Statistic {
         if (itemMeta != null) {
             itemMeta.setDisplayName(getHighestPlayerTitle());
             List<String> description = new LinkedList<>();
-            description.add("> " + getHighestPlayer().getDisplayName());
+            if(getHighestPlayer() != null)
+                description.add("> " + getHighestPlayer().getDisplayName());
 
-            if (getHighestItemSubTitle() != null) description.add(getHighestItemSubTitle());
+            if(getHighestPlayer() != null )
+                if (getHighestItemSubTitle() != null) description.add(getHighestItemSubTitle());
             itemMeta.setLore(description);
 
             item.setItemMeta(itemMeta);

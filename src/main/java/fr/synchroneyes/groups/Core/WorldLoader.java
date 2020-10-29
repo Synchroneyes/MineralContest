@@ -94,6 +94,7 @@ public class WorldLoader {
 
 
             World createdWorld = Bukkit.getServer().createWorld(wc);
+            createdWorld.setDifficulty(Difficulty.NORMAL);
 
             lireConfigurationPartie();
             lireFichierMonde(nomMondeDossier, createdWorld);

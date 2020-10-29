@@ -57,7 +57,6 @@ public class Halloween extends CommandTemplate {
     public boolean performCommand(CommandSender commandSender, String command, String[] args) {
 
         Player joueur = (Player) commandSender;
-        Boss premierZombie = new CrazyZombie();
         Game playerGame = mineralcontest.getPlayerGame(joueur);
         playerGame.getBossManager().spawnHalloweenBoss();
 
