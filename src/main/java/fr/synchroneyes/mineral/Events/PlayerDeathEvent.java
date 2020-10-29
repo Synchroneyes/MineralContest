@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -41,6 +42,17 @@ public class PlayerDeathEvent implements Listener {
 
             // Il est dans une partie, on vérifie si elle a démarré ou non
             if (partie.isGameStarted()) {
+
+                // Dans le cas où le joueur est tué par un mob
+                if(joueur.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+                    EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) joueur.getLastDamageCause();
+
+                    // On peut vérifier si ça vient d'un boss
+                    if(partie.getBossManager().wasPlayerKilledByBoss(entityDamageByEntityEvent.getDamager())) {
+                        // Le meurtre provient d'un boss ! :(
+                        partie.getBossManager().fireBossMadeKill(entityDamageByEntityEvent.getDamager(), joueur);
+                    }
+                }
 
                 if(joueur.getKiller() == null) event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_died.toString(), joueur));
                 else event.setDeathMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_killed.toString(), joueur, joueur.getKiller()));
@@ -98,8 +110,6 @@ public class PlayerDeathEvent implements Listener {
 
                 PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
                 Bukkit.getPluginManager().callEvent(event1);
-
-                new Exception().printStackTrace();
 
 
                 // On enregistre les stats, au cas où ...

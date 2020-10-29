@@ -2,8 +2,11 @@ package fr.synchroneyes.mineral.Core.Boss;
 
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreBoss;
+import fr.synchroneyes.mineral.Statistics.Class.BossKiller;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -13,6 +16,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +49,16 @@ public abstract class Boss {
     private int compteur = 1;
 
     private AutomatedChestManager chestManager;
+
+    /**
+     * Variable contenant les entites spawn
+     */
+    protected List<Entity> spawnedEntities;
+
+    /**
+     * Variable contenant les boss spawn
+     */
+    protected List<Boss> spawnedBoss;
 
 
     /**
@@ -88,12 +102,6 @@ public abstract class Boss {
      * @return
      */
     public abstract List<ItemStack> getKillRewards();
-
-    /**
-     * Méthode permettant de définir le type de coffre à faire apparaitre contenant les objets de récompenses
-     * @return
-     */
-    public abstract Material getChestType();
 
     /**
      * Méthode permettant de définir si un mob doit être luisant ou non (visible à travers les murs)
@@ -141,6 +149,27 @@ public abstract class Boss {
      */
     public abstract void onBossDeath();
 
+    /**
+     * Méthode appelé au spawn d'un mob
+     */
+    public abstract void onBossSpawn();
+
+    /**
+     * Méthode permettant d'effectuer une annonce sur son apparition
+     */
+    protected abstract void performAnnouncement();
+
+    /**
+     * Permet de définir si le boss peut faire apparaitre ou non d'autre boss
+     * @return
+     */
+    protected abstract boolean canSpawnMobs();
+
+    public Boss() {
+        this.spawnedBoss = new ArrayList<>();
+        this.spawnedEntities = new ArrayList<>();
+    }
+
 
     /**
      * Méthode permettant de faire apparaitre le monstre
@@ -187,6 +216,12 @@ public abstract class Boss {
 
         // On démarre la boucle de gestion du mob
         this.startMobTask();
+
+        // On appelle la fonction onBossSpawn
+        this.onBossSpawn();
+
+        this.defineCustomAttributes();
+
 
     }
 
@@ -263,6 +298,11 @@ public abstract class Boss {
                 removeBossBar();
                 spawnMobKillRewards();
                 if(entity.getKiller() != null) mineralcontest.broadcastMessage(entity.getKiller().getDisplayName() + " a tué " + getName());
+
+                // On enregistre le meurtre du boss
+                getChestManager().getGroupe().getGame().getStatsManager().register(BossKiller.class, entity.getKiller(), null);
+
+                // On appelle la fonction OnBossDeath
                 onBossDeath();
                 this.boucle.cancel();
 
@@ -283,7 +323,7 @@ public abstract class Boss {
             }
 
             // On vérifie si le mob peut faire son attaque spéciale
-            if(this.compteur % getSpecialAttackTimer() == 0) this.doMobSpecialAttack();
+            if(this.compteur % (getSpecialAttackTimer()*4) == 0) this.doMobSpecialAttack();
 
             // On gère la bossbar et son rayon de detection
             handleCrossBar();
@@ -293,7 +333,7 @@ public abstract class Boss {
 
             // On incrémente le compteur
             this.compteur++;
-        }, 0, 20);
+        }, 0, 5);
     }
 
     /**
@@ -345,6 +385,35 @@ public abstract class Boss {
 
     protected void setChestManager(AutomatedChestManager manager) {
         this.chestManager = manager;
+    }
+
+    protected AutomatedChestManager getChestManager() { return this.chestManager;}
+
+    /**
+     * Méthode permettant de définir le comportement à utiliser lorsqu'un joueur est tué par un boss
+     * @param p
+     */
+    public void onPlayerKilled(Player p){
+
+    }
+
+
+    /**
+     * Retourne si l'entité passée en paramètre a été spawn par un boss
+     * @param spawnedEntity
+     * @return
+     */
+    public boolean isThisEntitySpawnedByBoss(Entity spawnedEntity) {
+
+        if(!canSpawnMobs()) return false;
+
+        for(Entity e : spawnedEntities)
+            if(spawnedEntity.equals(e)) return true;
+
+        for(Boss b : spawnedBoss)
+            if(b.entity != null && b.entity.equals(spawnedEntity)) return true;
+
+        return false;
     }
 
 }

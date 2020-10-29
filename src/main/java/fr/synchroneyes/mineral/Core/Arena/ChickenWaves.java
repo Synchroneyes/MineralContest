@@ -11,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Zombie;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ public class ChickenWaves {
     private World monde;
     private boolean started = false;
     private boolean enabled = false;
+
 
     private LinkedList<LivingEntity> pouletsEnVie;
 
@@ -130,14 +132,17 @@ public class ChickenWaves {
 
 
         for (int i = 0; i < nombreDePouletASpawn; ++i) {
-            Chicken poulet = (Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN);
-            double currentSpeed = poulet.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-            poulet.setCustomName(Lang.custom_chicken_name.toString());
-            poulet.setAdult();
-            poulet.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(currentSpeed * 1.5);
-            poulet.setCanPickupItems(false);
-            poulet.setCustomNameVisible(false);
-            pouletsEnVie.add(poulet);
+            //Chicken poulet = (Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN);
+            pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
+
+            Zombie zombie = (Zombie) pouletsEnVie.getLast();
+
+            double currentSpeed = zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+            zombie.setCustomName(Lang.custom_chicken_name.toString());
+            zombie.setAdult();
+            zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(currentSpeed * 1.5);
+            zombie.setCanPickupItems(false);
+            zombie.setCustomNameVisible(false);
         }
 
 
@@ -160,6 +165,11 @@ public class ChickenWaves {
             Error.Report(e, arene.groupe.getGame());
         }
 
+    }
+
+
+    public boolean isFromChickenWave(LivingEntity e) {
+        return this.pouletsEnVie.contains(e);
     }
 
 }

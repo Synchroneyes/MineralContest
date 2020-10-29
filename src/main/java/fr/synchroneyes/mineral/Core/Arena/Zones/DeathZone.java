@@ -136,12 +136,11 @@ public class DeathZone {
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.deathzone_respawn_in.toString(), joueur));
         //PlayerUtils.teleportPlayer(this.spawnLocation);
 
-        Bukkit.broadcastMessage("TELEPORTING " + joueur.getDisplayName());
         PlayerUtils.teleportPlayer(joueur, partie.groupe.getMonde(), partie.getPlayerHouse(joueur).getHouseLocation());
 
 
-        // joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * (timeInDeathzone * 3), 1));
-        // joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (timeInDeathzone * 3), 1));
+        joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * (timeInDeathzone * 3), 1));
+        joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (timeInDeathzone * 3), 1));
     }
 
     public synchronized boolean isPlayerDead(Player joueur) {

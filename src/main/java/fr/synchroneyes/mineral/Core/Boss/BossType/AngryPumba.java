@@ -52,10 +52,6 @@ public class AngryPumba extends Boss {
         return items;
     }
 
-    @Override
-    public Material getChestType() {
-        return Material.CHEST;
-    }
 
     @Override
     public boolean shouldEntityGlow() {
@@ -95,5 +91,20 @@ public class AngryPumba extends Boss {
     @Override
     public void onBossDeath() {
 
+    }
+
+    @Override
+    public void onBossSpawn() {
+
+    }
+
+    @Override
+    protected void performAnnouncement() {
+
+    }
+
+    @Override
+    protected boolean canSpawnMobs() {
+        return false;
     }
 }

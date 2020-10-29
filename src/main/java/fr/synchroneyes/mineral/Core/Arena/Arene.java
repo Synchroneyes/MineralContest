@@ -20,9 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
@@ -207,7 +205,7 @@ public class Arene {
 
 
     // Supprime les mobs autour de l'arène
-    public void startAutoMobKill() {
+    /*public void startAutoMobKill() {
         new BukkitRunnable() {
             public void run() {
                 try {
@@ -215,7 +213,6 @@ public class Arene {
                         for (Entity entite : groupe.getMonde().getEntities()) {
                             if (entite instanceof Monster) {
                                 try {
-                                    if (Radius.isBlockInRadius(coffreArene.getLocation(), entite.getLocation(), groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique()))
                                         entite.remove();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -230,6 +227,49 @@ public class Arene {
 
             }
 
+        }.runTaskTimer(mineralcontest.plugin, 0, 20);
+    }*/
+
+    public void startAutoMobKill() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                List<Entity> list_entity = groupe.getMonde().getEntities();
+                list_entity.removeIf(entite -> !(entite instanceof Monster));
+                list_entity.removeIf(entite -> !Radius.isBlockInRadius(coffreArene.getLocation(), entite.getLocation(), groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique()));
+
+                if(groupe.getParametresPartie().getCVAR("enable_monster_in_protected_zone").getValeurNumerique() != 1) {
+                    for(Entity entite : list_entity) {
+
+                        // On est dans le rayon de l'arène
+                        // On doit vérifier si on est dans les vagues de poulet
+                        if(groupe.getGame().getArene().chickenWaves.isFromChickenWave((LivingEntity) entite)) {
+                            // Si oui, on ne fait rien
+                            return;
+                        }
+
+                        // On vérifie maintenant si c'est une chauve souris!
+                        if(entite instanceof Bat) {
+                            return;
+                        }
+
+                        // On vérifie maintenant si c'est le boss!
+                        if(groupe.getGame().getBossManager().isThisEntityABoss((LivingEntity) entite)) {
+                            return;
+                        }
+                        // On vérifie maintenant si c'est spawn par un boss!
+                        if(groupe.getGame().getBossManager().isThisEntitySpawnedByBoss(entite)) {
+                                return;
+                        }
+
+
+                        if (Radius.isBlockInRadius(coffreArene.getLocation(), entite.getLocation(), groupe.getParametresPartie().getCVAR("protected_zone_area_radius").getValeurNumerique())) {
+                            entite.remove();
+                        }
+                    }
+                }
+            }
         }.runTaskTimer(mineralcontest.plugin, 0, 20);
     }
 

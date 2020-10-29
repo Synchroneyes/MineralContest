@@ -24,6 +24,7 @@ public class CoffreBoss extends AutomatedChestAnimation {
         this.items = items;
     }
 
+
     @Override
     public void actionToPerformBeforeSpawn() {
 

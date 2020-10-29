@@ -394,6 +394,8 @@ public final class mineralcontest extends JavaPlugin {
 
         // Halloween
         Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.PlayerDeathEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.OnGameStart(), this);
+
 
 
 

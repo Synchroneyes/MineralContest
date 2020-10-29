@@ -25,11 +25,18 @@ import java.util.List;
 public class Halloween extends CommandTemplate {
 
 
-    private static BukkitTask boucle;
-    private static BossBar bar;
-    private static Zombie zombie;
 
     private static int compteur = 1;
+
+
+    public Halloween() {
+        accessCommande.add(PLAYER_COMMAND);
+        accessCommande.add(GAME_STARTED);
+        accessCommande.add(GROUP_REQUIRED);
+        accessCommande.add(GROUP_ADMIN);
+
+
+    }
 
     @Override
     public String getCommand() {
@@ -52,7 +59,7 @@ public class Halloween extends CommandTemplate {
         Player joueur = (Player) commandSender;
         Boss premierZombie = new CrazyZombie();
         Game playerGame = mineralcontest.getPlayerGame(joueur);
-        playerGame.getBossManager().spawnNewBoss(joueur.getLocation(), premierZombie);
+        playerGame.getBossManager().spawnHalloweenBoss();
 
         /*if(boucle != null && bar != null && zombie != null) {
             boucle.cancel();

@@ -22,11 +22,4 @@ public class BowEvent implements Listener {
         }
     }
 
-    @EventHandler
-    public void test(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow) {
-            Arrow fleche = (Arrow) event.getEntity();
-            Bukkit.broadcastMessage("HIT: " + fleche.getDamage() + " - LOC: " + fleche.getLocation().getBlock().getLocation().toVector().toString());
-        }
-    }
 }
