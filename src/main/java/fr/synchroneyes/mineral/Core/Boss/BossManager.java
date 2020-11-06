@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core.Boss;
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.mineral.Core.Boss.BossType.CrazyZombie;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -127,11 +128,17 @@ public class BossManager implements Listener {
      */
     private void doLoopTick() {
 
+        GameSettings gameSettings = partie.groupe.getParametresPartie();
+        boolean isHalloweenEnabled = (gameSettings.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+
+        // On désactive halloween pour 'isntant
+        isHalloweenEnabled = false;
+
         // On réduit le temps de 1
         this.timeLeftBeforeNewBossSpawn--;
         if(this.timeLeftBeforeNewBossSpawn == 0) {
-            this.spawnHalloweenBoss();
-            this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
+            if(isHalloweenEnabled) this.spawnHalloweenBoss();
+            if(isHalloweenEnabled) this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
             this.boucle.cancel();
             return;
         }
@@ -141,8 +148,8 @@ public class BossManager implements Listener {
 
         // On regarde si on peut faire une nouvelle annonce
         if(this.timeLeftBeforeNextAnnouncement == 0) {
-            this.timeLeftBeforeNextAnnouncement = this.time_before_each_announcement;
-            this.nextBoss.performAnnouncement();
+            if(isHalloweenEnabled) this.timeLeftBeforeNextAnnouncement = this.time_before_each_announcement;
+            if(isHalloweenEnabled) this.nextBoss.performAnnouncement();
         }
 
         //Bukkit.getLogger().info("Prochaine Annonce: " + this.timeLeftBeforeNextAnnouncement + " - Prochain Boss: " + this.timeLeftBeforeNewBossSpawn);

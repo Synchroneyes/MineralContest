@@ -5,6 +5,7 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.GroundFreezingAnimation;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.HalloweenHurricaneAnimation;
 import fr.synchroneyes.mineral.DeathAnimations.DeathAnimation;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.entity.Enderman;
@@ -29,7 +30,15 @@ public class OnGameStart implements Listener {
     @EventHandler
     public void OnGameStart(MCGameStartedEvent event) {
         // ON vérifie si halloween est actif ou non
-        boolean halloweenEnabled = true;
+        boolean halloweenEnabled = false;
+
+        Game partie = event.getGame();
+        GameSettings parametres = partie.groupe.getParametresPartie();
+        halloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+
+
+        // On force la désactivation d'halloween pour l'intant
+        halloweenEnabled = false;
 
         if(halloweenEnabled) {
 
@@ -39,7 +48,7 @@ public class OnGameStart implements Listener {
             FreezeWorldTime.setFrozenWorld(gameWorld);
             FreezeWorldTime.freezeWorld();
 
-            Game partie = event.getGame();
+
 
 
             // On joue les tâches de début de game
@@ -57,7 +66,10 @@ public class OnGameStart implements Listener {
 
 
             // Lié à N'ayez Pas Peur, à la 5ème minute
+            boolean finalHalloweenEnabled = halloweenEnabled;
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
                 for(Player joueur : partie.groupe.getPlayers()) {
                     joueur.playSound(joueur.getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, .8f, 1);
                 }
@@ -66,6 +78,8 @@ public class OnGameStart implements Listener {
 
             // Event Random à la 10ème minute, freeze du sol
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
+
                 for(Player joueur : partie.groupe.getPlayers()) {
                     joueur.playSound(joueur.getLocation(), Sound.BLOCK_GLASS_BREAK, .8f, 1);
                     joueur.sendTitle(ChatColor.GOLD + "???: " , ChatColor.BLUE + " Il fait un peu froid non ?", 20, 5*20, 20);
@@ -78,6 +92,8 @@ public class OnGameStart implements Listener {
             // Faire apparaitre un ender squelette à la 17ème minute
             sendDelayedTitleToEveryOne(unknownName, "Attention où vous marchez..", 5, 17*60, true, partie);
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
+
                 for(Player joueur : partie.groupe.getPlayers()) {
 
                     WitherSkeleton babyZombie = joueur.getWorld().spawn(joueur.getLocation(), WitherSkeleton.class);
@@ -92,6 +108,8 @@ public class OnGameStart implements Listener {
             // Faire apparaitre des bébé zombie sur chaque joueur à la 25ème minute
             sendDelayedTitleToEveryOne(unknownName, "Nourissez vous mes petits.", 5, 25*60, true, event.getGame());
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
+
                 for(Player joueur : partie.groupe.getPlayers()) {
 
                     Zombie babyZombie = joueur.getWorld().spawn(joueur.getLocation(), Zombie.class);
@@ -109,6 +127,8 @@ public class OnGameStart implements Listener {
             // On aveugle les joueurs, et on met une citrouille sur la tête des joueurs à la 34eme minute, pendant 5 secondes
             sendDelayedTitleToEveryOne(unknownName, "Besoin d'un opticien?", 5, 34*60, false, event.getGame());
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
+
                 // On prépare la sauvegarde des anciens casques
                 // On stock les casques actuels
                 for(Player joueur : partie.groupe.getPlayers()){
@@ -143,6 +163,8 @@ public class OnGameStart implements Listener {
             // On fait spawn un enderman innoffensif en face des joueurs :), à la 44ème minute
             sendDelayedTitleToEveryOne(unknownName, "Bon courage avec mon ami...", 5, 44*60, false, event.getGame());
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                if(parametres.getCVAR("enable_halloween_event").getValeurNumerique() != 1) return;
+
                 // Pour chaque joueur
                 for(Player joueur : partie.groupe.getPlayers()) {
                     Enderman enderman = joueur.getWorld().spawn(joueur.getLocation(), Enderman.class);
@@ -159,7 +181,13 @@ public class OnGameStart implements Listener {
     }
 
     private void sendDelayedTitleToEveryOne(String title, String message, int duree_seconde, int duree_avant_annonce, boolean blindPlayers, Game game) {
+
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            GameSettings parametres = game.groupe.getParametresPartie();
+            boolean halloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+
+            if(!halloweenEnabled) return;
+
             for(Player joueur : game.groupe.getPlayers()) {
                 joueur.sendTitle(title, message, 20, 20*duree_seconde, 20);
                 if(blindPlayers) joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*(duree_seconde+2), 5));

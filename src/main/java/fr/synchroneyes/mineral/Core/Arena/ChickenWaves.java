@@ -8,10 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
@@ -127,22 +124,33 @@ public class ChickenWaves {
         }
 
 
+        boolean isHalloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+
+        // On désactive halloween pour l'instant
+        isHalloweenEnabled = false;
+
+
         Random random = new Random();
         int nombreDePouletASpawn = random.nextInt((chicken_spawn_max_count - chicken_spawn_min_count) - 1) + chicken_spawn_min_count;
 
 
         for (int i = 0; i < nombreDePouletASpawn; ++i) {
-            //Chicken poulet = (Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN);
-            pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
+            LivingEntity entity = null;
 
-            Zombie zombie = (Zombie) pouletsEnVie.getLast();
+            if(!isHalloweenEnabled) entity = (Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN);
+            else {
+                pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
+                entity = pouletsEnVie.getLast();
 
-            double currentSpeed = zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-            zombie.setCustomName(Lang.custom_chicken_name.toString());
-            zombie.setAdult();
-            zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(currentSpeed * 1.5);
-            zombie.setCanPickupItems(false);
-            zombie.setCustomNameVisible(false);
+            }
+
+
+            double currentSpeed = entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+            entity.setCustomName(Lang.custom_chicken_name.toString());
+            if(isHalloweenEnabled) ((Zombie)entity).setAdult();
+            entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(currentSpeed * 1.5);
+            entity.setCanPickupItems(false);
+            entity.setCustomNameVisible(false);
         }
 
 

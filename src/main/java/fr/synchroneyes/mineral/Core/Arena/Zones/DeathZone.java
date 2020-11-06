@@ -42,6 +42,7 @@ public class DeathZone {
         try {
 
             timeInDeathzone = g.getParametresPartie().getCVAR("death_time").getValeurNumerique();
+
         } catch (Exception e) {
             Error.Report(e, g.getGame());
         }

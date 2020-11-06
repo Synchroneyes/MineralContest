@@ -311,6 +311,11 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "1", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
 
+
+            // Evenement Halloween
+            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "1", "Permet d'activer ou non le mode halloween", "event", true, true));
+
+
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 
         }

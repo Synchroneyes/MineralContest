@@ -2,9 +2,11 @@ package fr.synchroneyes.halloween_event;
 
 import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
 import fr.synchroneyes.groups.Core.Groupe;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.GroundFreezingAnimation;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.HalloweenHurricaneAnimation;
 import fr.synchroneyes.mineral.DeathAnimations.DeathAnimation;
+import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -26,9 +28,16 @@ public class PlayerDeathEvent implements Listener {
     @EventHandler
     public void onPlayerDeathEvent(PlayerDeathByPlayerEvent event) {
 
-        boolean isHalloweenMode = true;
+        Game partie = event.getPartie();
 
-        if(!isHalloweenMode) return;
+        if(partie == null) return;
+
+        GameSettings parametres = partie.groupe.getParametresPartie();
+        boolean halloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+
+        // On désactive l'event halloween pour l'instant
+        halloweenEnabled = false;
+        if(!halloweenEnabled) return;
 
         DeathAnimation animationMort = new HalloweenHurricaneAnimation();
         animationMort.playAnimation(event.getPlayerDead());
