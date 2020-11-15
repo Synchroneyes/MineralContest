@@ -66,12 +66,7 @@ public class SQLCredentials {
     }
 
     public Connection getConnection() throws SQLException {
-        /*return "jdbc:mysql://" + this.hostname + ":" + Integer.parseInt(this.port) + ";"+
-                "database=" + this.database + ";" +
-                "user=" + this.username + ";" +
-                "password=" + this.password + ";";*/
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database + ";" + this.username + ";" + this.password);
         return DriverManager.getConnection( "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database, this.username, this.password);
     }
 }

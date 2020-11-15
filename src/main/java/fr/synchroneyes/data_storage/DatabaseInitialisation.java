@@ -8,6 +8,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
@@ -23,17 +25,23 @@ public class DatabaseInitialisation {
 
         if(!SQLFile.exists()) throw new Exception("SQL Schema file doesnt exists: " + FileList.MySQL_database_schema.toString());
 
+        Connection connection = mineralcontest.plugin.getConnexion_database();
+        if(connection == null) {
+            return;
+        }
+
 
         // on vérifie si la table existe ou non
         // SHOW TABLES LIKE '%tablename%';
 
         for(DatabaseTablesName table : DatabaseTablesName.values()) {
-            Bukkit.getLogger().severe("SHOW TABLES LIKE '" + table.toString() + "';");
-            ResultSet resultSet = mineralcontest.plugin.getConnexion_database().query("SHOW TABLES LIKE '" + table.toString() + "';");
+            PreparedStatement show_table = connection.prepareStatement("SHOW TABLES LIKE ?");
+            show_table.setString(1, table.toString());
+            show_table.execute();
+            ResultSet resultSet = show_table.getResultSet();
 
             // Si il n'y a pas de résultat, alors il manque une table
             if(!resultSet.next()) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " Missing " + table.toString());
                 sqlInstallationRequired = true;
                 break;
             }
@@ -46,7 +54,7 @@ public class DatabaseInitialisation {
         List<String> lignes_fichiers = Files.readAllLines(SQLFile.toPath());
         for(String ligne : lignes_fichiers)
             if(ligne.length() > 1 ) {
-                mineralcontest.plugin.getConnexion_database().query(ligne);
+                mineralcontest.plugin.getConnexion_database().createStatement().execute(ligne);
 
             }
 

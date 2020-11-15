@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -43,6 +44,18 @@ public class MCPlayer {
     // Joueur
     @Getter
     private Player joueur;
+
+    // ID Stocké en base de donnée pour le joueur
+    @Getter @Setter
+    private int databasePlayerId;
+
+    // Variable stockant le nombre de point rapporté par le joueur
+    @Getter @Setter
+    private int score_brought = 0;
+
+    // Variable stockant le nombre de point que le joueur a fait perdre aux autres équipes
+    @Getter @Setter
+    private int score_lost = 0;
 
     /**
      * Constructeur, prend un joueur en paramètre
@@ -176,6 +189,23 @@ public class MCPlayer {
      */
     public void sendPrivateMessage(String message) {
         this.joueur.sendMessage(mineralcontest.prefixPrive + message);
+    }
+
+
+    /**
+     * Méthode permettant d'ajouter le nombre de point apporté par le joueur
+     * @param score
+     */
+    public void addPlayerScore(int score) {
+        this.score_brought += score;
+    }
+
+    /**
+     * Méthode permettant d'ajouter le nombre de point que le joueur a fait perdre aux autres joueurs
+     * @param score
+     */
+    public void addPlayerScorePenalityToOtherTeams(int score) {
+        this.score_lost += score;
     }
 
 

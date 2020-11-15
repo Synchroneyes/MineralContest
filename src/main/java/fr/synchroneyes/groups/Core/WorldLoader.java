@@ -135,6 +135,9 @@ public class WorldLoader {
             @Override
             public void run() {
                 try {
+
+                    groupe.genererIdentifiant();
+
                     World mondeCharge = doChargerMonde(nomMap, groupe.getIdentifiant());
 
                     mondeCharge.setAutoSave(false);

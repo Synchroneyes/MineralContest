@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Shop.Players;
 
+import fr.synchroneyes.custom_events.MCShopItemPurchaseEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ConsumableItem;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.LevelableItem;
@@ -10,6 +11,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
@@ -176,6 +178,9 @@ public class PlayerBonus {
 
 
         takePlayerMoney(joueur, item);
+
+        MCShopItemPurchaseEvent purchaseEvent = new MCShopItemPurchaseEvent(item, joueur);
+        Bukkit.getPluginManager().callEvent(purchaseEvent);
 
         Equipe playerTeam = mineralcontest.getPlayerGame(joueur).getPlayerTeam(joueur);
         String purchaseMessage = Lang.shopitem_player_purchased.toString();

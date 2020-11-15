@@ -30,6 +30,7 @@ import fr.synchroneyes.mineral.Utils.WorldUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -85,6 +86,10 @@ public class Game implements Listener {
     private LinkedList<Block> addedChests;
 
     private BukkitTask gameLoopManager = null;
+
+    // ID de la game stocké en base de donnée
+    @Getter @Setter
+    private int databaseGameId;
 
 
     /**
@@ -877,7 +882,7 @@ public class Game implements Listener {
 
         if(isGameEnded()) return;
 
-        this.tempsPartie = 60;
+
         this.GameEnded = true;
 
         MCGameEndEvent endEvent = new MCGameEndEvent(this);
@@ -936,7 +941,8 @@ public class Game implements Listener {
         }, 20);
 
 
-        int delaiAvantFinPartie = 60;
+        int delaiAvantFinPartie = groupe.getParametresPartie().getCVAR("end_game_timer").getValeurNumerique();
+        this.tempsPartie = delaiAvantFinPartie;
 
 
         groupe.sendToEveryone(mineralcontest.prefixGlobal + "Vous serez téléporté au HUB dans " + delaiAvantFinPartie + " secondes.");
@@ -954,6 +960,8 @@ public class Game implements Listener {
             this.groupe.setGroupLocked(false);
             this.groupe.enableVote();
             this.groupe.resetGame();
+
+
 
         }, 20 * delaiAvantFinPartie);
 

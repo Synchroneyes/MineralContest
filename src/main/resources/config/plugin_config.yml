@@ -2,3 +2,4 @@ world_name: world
 language: french
 enable_metrics: true
 enable_auto_update: true
+enable_mysql_storage: false

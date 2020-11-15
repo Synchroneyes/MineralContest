@@ -18,7 +18,8 @@ public enum FileList {
     AirDrop_model("models/airdrop", "airdrop.yml"),
     ShopItem_PriceList("config/shop", "items_price.yml"),
     MySQL_Config_File("config", "mysql_settings.yml"),
-    MySQL_database_schema("models", "database_schema.sql");
+    MySQL_database_schema("models", "database_schema.sql"),
+    Kit_Enchanteur_ConfigFile("config/kits", "enchanteur.yml");
 
     private String path;
     private String fileName;

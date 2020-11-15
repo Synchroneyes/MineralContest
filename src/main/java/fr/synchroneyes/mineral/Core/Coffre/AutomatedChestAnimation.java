@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Coffre;
 
+import fr.synchroneyes.custom_events.MCPlayerOpenChestEvent;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -215,6 +216,8 @@ public abstract class AutomatedChestAnimation {
         // Variable pour stocker la séquence actuelle afin de savoir quelle bloc il faut changer
         AtomicInteger indexSequence = new AtomicInteger(0);
 
+        AutomatedChestAnimation instance = this;
+
         // On lance la boucle d'animation
         tacheOuverture = new BukkitRunnable() {
             @Override
@@ -244,6 +247,11 @@ public abstract class AutomatedChestAnimation {
                     openInventoryToPlayer(openingPlayer);
 
                     actionToPerformAfterAnimationOver();
+
+                    // On lance l'event d'ouverture de coffre
+                    MCPlayerOpenChestEvent playerOpenChestEvent = new MCPlayerOpenChestEvent(instance, openingPlayer);
+                    Bukkit.getPluginManager().callEvent(playerOpenChestEvent);
+
 
 
                     // On ferme le coffre en question

@@ -1,6 +1,9 @@
 package fr.synchroneyes.mineral;
 
+import fr.synchroneyes.custom_events.MCGameEndEvent;
+import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
 import fr.synchroneyes.custom_events.PermissionCheckerLoop;
+import fr.synchroneyes.data_storage.Data_EventHandler;
 import fr.synchroneyes.data_storage.DatabaseInitialisation;
 import fr.synchroneyes.data_storage.SQLConnection;
 import fr.synchroneyes.file_manager.FileList;
@@ -37,8 +40,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -92,7 +97,7 @@ public final class mineralcontest extends JavaPlugin {
     private List<MCPlayer> joueurs;
 
     @Getter
-    private SQLConnection connexion_database;
+    private Connection connexion_database;
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
@@ -162,7 +167,7 @@ public final class mineralcontest extends JavaPlugin {
 
         this.groupes.add(nouveauGroupe);
         nouveauGroupe.sendToEveryone(prefixPrive + Lang.success_group_successfully_created.toString());
-        GameLogger.addLog(new Log("group_created", "created a new group with name " + nouveauGroupe.getNom() + " and ID: " + nouveauGroupe.getIdentifiant(), "mineralcontest: creerNouveauGroupe"));
+        GameLogger.addLog(new Log("group_created", "created a new group with name " + nouveauGroupe.getNom(), "mineralcontest: creerNouveauGroupe"));
 
     }
 
@@ -194,12 +199,36 @@ public final class mineralcontest extends JavaPlugin {
         // On copie les fichiers par défaut
         RessourceFilesManager.createDefaultFiles();
 
+        // On écrit les valeurs par défaut
+        writeNonExistingConfigValuesToConfigFile();
+
 
         // On charge le fichier de langue
         Lang.loadLang(getPluginConfigValue("language").toString());
 
         this.groupes = new LinkedList<>();
         this.groupeExtension = GroupeExtension.getInstance();
+
+        registerCommands();
+        registerEvents();
+
+        // On initialise la base de donnée
+        if((boolean) getPluginConfigValue("enable_mysql_storage")) {
+            this.connexion_database = SQLConnection.getInstance();
+
+            // On crée la database seulement si on a réussi à se connecter
+            if(connexion_database != null) {
+                try {
+                    DatabaseInitialisation.createDatabase();
+
+                    Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Successfully connected to MySQL database");
+                } catch (Exception throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+        }
+
 
         initCommunityVersion();
 
@@ -212,14 +241,7 @@ public final class mineralcontest extends JavaPlugin {
         PermissionCheckerLoop permissionCheckerLoop = new PermissionCheckerLoop(this, 1);
         permissionCheckerLoop.run();
 
-        // On initialise la base de donnée
-        /*this.connexion_database = SQLConnection.getInstance();
-        try {
-            //connexion_database.query("CREATE TABLE IF NOT EXISTS `mineral_game` ( `id` int(11) NOT NULL, `gamestate` enum('started','ended') NOT NULL, `date_start` timestamp NOT NULL DEFAULT current_timestamp(), `date_end` timestamp NULL DEFAULT NULL, `map` varchar(255) NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-            DatabaseInitialisation.createDatabase();
-        } catch (Exception throwables) {
-            throwables.printStackTrace();
-        }*/
+
 
 
         pluginWorld = PlayerUtils.getPluginWorld();
@@ -227,8 +249,7 @@ public final class mineralcontest extends JavaPlugin {
         if (pluginWorld != null) pluginWorld.setDifficulty(Difficulty.PEACEFUL);
 
 
-        registerCommands();
-        registerEvents();
+
 
 
         if (!debug)
@@ -310,8 +331,19 @@ public final class mineralcontest extends JavaPlugin {
     @Override
     public void onDisable() {
 
+        Bukkit.getScheduler().cancelTasks(this);
+        GameLogger.addLog(new Log("server_event", "OnDisable", "plugin_shutdown"));
+
+        if(groupes.isEmpty()) return;
+
         for (Groupe groupe : groupes) {
             Game game = groupe.getGame();
+
+            MCGameEndEvent endEvent = new MCGameEndEvent(game);
+            if(game.isGameStarted()) {
+                Bukkit.getPluginManager().callEvent(endEvent);
+            }
+
             //SendInformation.sendGameData(SendInformation.ended, game);
             // todo GETGAME
             if (pluginWorld != null && !debug) {
@@ -324,8 +356,7 @@ public final class mineralcontest extends JavaPlugin {
 
 
         //getGame().resetMap();
-        Bukkit.getScheduler().cancelTasks(this);
-        GameLogger.addLog(new Log("server_event", "OnDisable", "plugin_shutdown"));
+
 
     }
 
@@ -397,6 +428,8 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.OnGameStart(), this);
 
 
+        // Database Save
+        Bukkit.getServer().getPluginManager().registerEvents(new Data_EventHandler(), this);
 
 
 
@@ -438,6 +471,9 @@ public final class mineralcontest extends JavaPlugin {
             bukkitCommandMap.register("", new McStats());
 
             bukkitCommandMap.register("", new Halloween());
+
+            bukkitCommandMap.register("", new DisplayScoreCommand());
+
 
 
             //bukkitCommandMap.register("", new OuvrirMenuShop());
@@ -542,6 +578,9 @@ public final class mineralcontest extends JavaPlugin {
 
         MCPlayer joueur = new MCPlayer(nouveauJoueur);
 
+        MCPlayerJoinEvent mcPlayerJoinEvent = new MCPlayerJoinEvent(nouveauJoueur, joueur);
+        Bukkit.getPluginManager().callEvent(mcPlayerJoinEvent);
+
         this.joueurs.add(joueur);
 
 
@@ -575,6 +614,47 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     public List<MCPlayer> getMCPlayers() { return joueurs; }
+
+
+    /**
+     * Méthode permettant d'ajouter les valeurs présente dans le fichier de config par défaut du plugin, n'existant pas dans le fichier existant de config
+     */
+    private void writeNonExistingConfigValuesToConfigFile() {
+        try {
+
+            File tmp_default_config_file = new File(getDataFolder(), "tmp_default_config_file");
+
+            InputStream fichier_config_default = getClass().getClassLoader().getResourceAsStream("config/plugin_config.yml");
+            if(fichier_config_default == null) return;
+
+            byte[] buffer = new byte[fichier_config_default.available()];
+            fichier_config_default.read(buffer);
+            // On le sauvegarde dans un fichier TMP
+            OutputStream outputStream = new FileOutputStream(tmp_default_config_file);
+            outputStream.write(buffer);
+
+
+
+
+
+            File fichier_config_existant = new File(getDataFolder(), FileList.Config_default_plugin.toString());
+
+            YamlConfiguration config_fichier_existant = YamlConfiguration.loadConfiguration(fichier_config_existant);
+            YamlConfiguration config_fichier_default = YamlConfiguration.loadConfiguration(tmp_default_config_file);
+
+            for(String valeur : config_fichier_default.getKeys(false)) {
+                if(config_fichier_existant.get(valeur) == null) {
+                    config_fichier_existant.set(valeur, config_fichier_default.get(valeur));
+                }
+            }
+
+            config_fichier_existant.save(fichier_config_existant);
+            tmp_default_config_file.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 

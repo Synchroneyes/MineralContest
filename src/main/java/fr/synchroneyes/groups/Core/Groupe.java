@@ -39,7 +39,7 @@ import java.util.Random;
 
 public class Groupe {
     private int tailleIdentifiant = 10;
-    private String identifiant;
+    private String identifiant = "";
 
     private LinkedList<Player> admins;
     private LinkedList<Player> joueurs;
@@ -101,7 +101,7 @@ public class Groupe {
 
         this.spectatorManager = new SpectatorManager(this.partie);
 
-        genererIdentifiant();
+
 
 
     }

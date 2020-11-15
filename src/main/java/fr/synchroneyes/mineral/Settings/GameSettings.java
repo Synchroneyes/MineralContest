@@ -272,6 +272,8 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("mp_enable_block_adding", "1", "Permet d'activer ou non la pose de bloc autour de l'arène", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("game_time", "60", "Permet de définir le temps d'une partie", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("pre_game_timer", "10", "Permet de définir le temps d'attente avant de démarrer la partie", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("end_game_timer", "60", "Permet de définir le temps avant de quitter le monde à la fin d'une partie", "settings", true, true));
+
             parametresParDefaut.add(new GameCVAR("chest_opening_cooldown", "5", "Permet de définir le temps d'attente avant d'ouvrir un coffre d'arène", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("max_time_between_chests", "15", "Permet de définir le temps maximum avant l'apparition d'un coffre d'arène", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("min_time_between_chests", "10", "Permet de définir le temps minimum avant l'apparition d'un coffre d'arène", "arena", true, true));

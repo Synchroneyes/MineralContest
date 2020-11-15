@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Teams;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Statistics.Class.MeilleurJoueurStat;
 import fr.synchroneyes.mineral.Statistics.Class.VilainJoueurStat;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -136,6 +137,11 @@ public class Equipe implements Comparable<Equipe> {
         boolean scoreWasUpdated = false;
         if (score_gagne > 0) scoreWasUpdated = true;
 
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(JoueurAyantAjouteLesPoints);
+        if(mcPlayer != null) {
+            mcPlayer.addPlayerScore(score_gagne);
+        }
+
         groupe.getGame().getStatsManager().register(MeilleurJoueurStat.class, JoueurAyantAjouteLesPoints, score_gagne);
 
 
@@ -152,6 +158,8 @@ public class Equipe implements Comparable<Equipe> {
 
         // Si on a déposé de la redstone
         if (hasNegativePointItemBeenAdded) {
+
+            if(mcPlayer != null) mcPlayer.addPlayerScorePenalityToOtherTeams(score_perdu_equipes);
 
             // On enregistre le score perdu
             groupe.getGame().getStatsManager().register(VilainJoueurStat.class, JoueurAyantAjouteLesPoints, score_perdu_equipes);
