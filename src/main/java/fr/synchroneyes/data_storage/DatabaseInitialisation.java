@@ -50,6 +50,7 @@ public class DatabaseInitialisation {
         // SI on a pas besoin de faire une installation, on s'arrête
         if(!sqlInstallationRequired) return;
 
+
         StringBuilder sqlFileContent = new StringBuilder();
         List<String> lignes_fichiers = Files.readAllLines(SQLFile.toPath());
         for(String ligne : lignes_fichiers)
@@ -57,10 +58,7 @@ public class DatabaseInitialisation {
                 mineralcontest.plugin.getConnexion_database().createStatement().execute(ligne);
 
             }
-
-
-
-
+        Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + "SQL tables created!");
 
     }
 }

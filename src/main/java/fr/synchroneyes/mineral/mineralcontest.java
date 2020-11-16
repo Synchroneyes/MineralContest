@@ -54,8 +54,6 @@ public final class mineralcontest extends JavaPlugin {
 
     public static boolean debug = false;
 
-    // TODO: kits onGameStart
-
     /**
      * Community version is a version ran by server that wants to have multiple games running at the same time.
      * If set to true, then players will have to create a groupe, invite players, start the vote.
@@ -345,7 +343,6 @@ public final class mineralcontest extends JavaPlugin {
             }
 
             //SendInformation.sendGameData(SendInformation.ended, game);
-            // todo GETGAME
             if (pluginWorld != null && !debug) {
                 for (Player player : pluginWorld.getPlayers()) {
                     game.teleportToLobby(player);
@@ -632,6 +629,7 @@ public final class mineralcontest extends JavaPlugin {
             // On le sauvegarde dans un fichier TMP
             OutputStream outputStream = new FileOutputStream(tmp_default_config_file);
             outputStream.write(buffer);
+            outputStream.close();
 
 
 

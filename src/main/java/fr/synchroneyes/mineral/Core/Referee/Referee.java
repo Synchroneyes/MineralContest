@@ -28,8 +28,6 @@ public class Referee {
         Stack<Equipe> leaderboard = new Stack<>();
 
 
-        // TODO
-
         int minScore = Integer.MIN_VALUE;
         Equipe highestTeam = null;
         while (equipes.size() > 0) {
@@ -66,7 +64,6 @@ public class Referee {
         /*equipes.add(mineralcontest.getPlayerGame(joueur).getBlueHouse().getTeam());
         equipes.add(mineralcontest.getPlayerGame(joueur).getRedHouse().getTeam());
         equipes.add(mineralcontest.getPlayerGame(joueur).getYellowHouse().getTeam());*/
-        // TODO
 
         for (Equipe equipe : equipes) {
             stringBuilder.append(equipe.getCouleur() + equipe.getNomEquipe() + ": " + equipe.getScore() + " points\n" + ChatColor.WHITE);

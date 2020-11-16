@@ -76,7 +76,6 @@ public class RefereeCommand extends CommandTemplate {
     }
     /*@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // todo
         Player player = (Player) sender;
         if (mineralcontest.isInAMineralContestWorld(player)) {
             if (command.getName().equalsIgnoreCase("referee") || command.getName().equalsIgnoreCase("arbitre")) {

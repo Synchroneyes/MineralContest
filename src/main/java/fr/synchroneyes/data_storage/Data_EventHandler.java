@@ -94,17 +94,18 @@ public class Data_EventHandler implements Listener {
 
         try {
 
-            PreparedStatement insert_mineral_game = connection.prepareStatement("INSERT INTO mineral_game SET gamestate = ?, map = ?");
+            PreparedStatement insert_mineral_game = connection.prepareStatement("INSERT INTO mineral_game SET gamestate = ?, map = ?, uid = ?");
             insert_mineral_game.setString(1, "started");
             insert_mineral_game.setString(2, event.getGame().groupe.getMapName());
+            insert_mineral_game.setString(3, event.getGame().groupe.getIdentifiant());
             insert_mineral_game.executeUpdate();
 
 
             //connection.createStatement().execute("INSERT INTO mineral_game SET gamestate='started', map='" + event.getGame().groupe.getMapName() + "';");
 
             // On récupère l'ID de la game
-            PreparedStatement select_mineral_game = connection.prepareStatement("SELECT * FROM mineral_game WHERE map = ?");
-            select_mineral_game.setString(1, event.getGame().groupe.getMapName());
+            PreparedStatement select_mineral_game = connection.prepareStatement("SELECT * FROM mineral_game WHERE uid = ?");
+            select_mineral_game.setString(1, event.getGame().groupe.getIdentifiant());
             select_mineral_game.execute();
 
             ResultSet resultatSet = select_mineral_game.getResultSet();
@@ -215,7 +216,6 @@ public class Data_EventHandler implements Listener {
             for(Player joueur : partie.groupe.getPlayers()) {
                 // On récupère l'instant MCPlayer du joueur
                 MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
-                Bukkit.broadcastMessage("mcPlayer == null => " + (mcPlayer == null));
                 if(mcPlayer == null) continue;
 
                 // On vérifie si le joueur est bien dans la base de donnée
@@ -226,7 +226,6 @@ public class Data_EventHandler implements Listener {
 
                 boolean present = resultat_requete_present_dbb.next();
                 // On regarde si on a un résultat
-                Bukkit.broadcastMessage("Present DBB (id=> " + mcPlayer.getDatabasePlayerId() + ") => " + present);
                 if(present) {
                     // Si on a un résultat, c'est qu'il est présent dans la base de donnée
                     // On l'update et on ajoute ses infos
@@ -245,7 +244,7 @@ public class Data_EventHandler implements Listener {
                     requete_insert_mineral_game_end_players_info.setInt(5, mcPlayer.getEquipe().getScore());
                     requete_insert_mineral_game_end_players_info.executeUpdate();
 
-                    Bukkit.broadcastMessage("INSERT INTO mineral_game_end_players_info SET gameid = " + partie.getDatabaseGameId() + ", playerid = " + mcPlayer.getDatabasePlayerId() + ", score_brought = " + mcPlayer.getScore_brought() + ", score_lost = "+ mcPlayer.getScore_lost() +", team_score = " + mcPlayer.getEquipe().getScore() + ";");
+                    //Bukkit.broadcastMessage("INSERT INTO mineral_game_end_players_info SET gameid = " + partie.getDatabaseGameId() + ", playerid = " + mcPlayer.getDatabasePlayerId() + ", score_brought = " + mcPlayer.getScore_brought() + ", score_lost = "+ mcPlayer.getScore_lost() +", team_score = " + mcPlayer.getEquipe().getScore() + ";");
 
                 }
             }

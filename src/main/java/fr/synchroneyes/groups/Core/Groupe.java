@@ -1,9 +1,3 @@
-/**
- * TODO:
- * - Votemap
- * - Démarrer partie
- * - Creer teams (max3)
- */
 package fr.synchroneyes.groups.Core;
 
 import fr.synchroneyes.groups.Utils.Etats;
@@ -38,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Groupe {
-    private int tailleIdentifiant = 10;
+    private int tailleIdentifiant = 25;
     private String identifiant = "";
 
     private LinkedList<Player> admins;
