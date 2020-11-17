@@ -16,4 +16,8 @@ public interface PluginInterface {
      * @return
      */
     String getPluginDescription();
+
+    boolean shouldPluginRunOnDefinedMap();
+
+    String[] getAllowedMaps();
 }

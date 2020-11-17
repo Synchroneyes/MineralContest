@@ -1,5 +1,6 @@
 package fr.synchroneyes.groups.Core;
 
+import fr.synchroneyes.custom_events.MCWorldLoadedEvent;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.groups.Utils.FileManager.FileCopy;
@@ -110,6 +111,9 @@ public class WorldLoader {
 
             createdWorld.setSpawnLocation(this.spawnLocation);
             createdWorld.setAutoSave(false);
+
+            MCWorldLoadedEvent mcWorldLoadedEvent = new MCWorldLoadedEvent(nomMap, createdWorld);
+            Bukkit.getPluginManager().callEvent(mcWorldLoadedEvent);
 
             return createdWorld;
         } catch (IOException ioe) {

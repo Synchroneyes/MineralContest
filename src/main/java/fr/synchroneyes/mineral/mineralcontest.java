@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral;
 
 import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
+import fr.synchroneyes.custom_events.MCPluginLoaded;
 import fr.synchroneyes.custom_events.PermissionCheckerLoop;
 import fr.synchroneyes.custom_plugins.CustomPlugin;
 import fr.synchroneyes.custom_plugins.CustomPluginManager;
@@ -658,6 +659,12 @@ public final class mineralcontest extends JavaPlugin {
 
     public void registerNewPlugin(CustomPlugin plugin) {
         this.pluginManager.registerPlugin(plugin);
+        MCPluginLoaded mcPluginLoaded = new MCPluginLoaded(plugin);
+
+
+        Bukkit.getScheduler().runTaskLater(this, () -> Bukkit.getPluginManager().callEvent(mcPluginLoaded), 40);
+
+
     }
 
 

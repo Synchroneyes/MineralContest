@@ -1,31 +1,13 @@
 package fr.synchroneyes.custom_events;
 
-import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.custom_plugins.CustomPlugin;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Evenement symbolisant la fin d'une partie
- */
-public class MCGameEndEvent extends Event {
-
-
-    private Game partie;
+public class MCPluginLoaded extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-
-
-
-    public MCGameEndEvent(Game partie) {
-        this.partie = partie;
-    }
-
-
-    public Game getGame() {
-        return partie;
-    }
-
     @Override
     public @NotNull HandlerList getHandlers() {
         return handlers;
@@ -33,5 +15,15 @@ public class MCGameEndEvent extends Event {
 
     public static HandlerList getHandlerList() {
         return handlers;
+    }
+
+    private CustomPlugin plugin;
+
+    public MCPluginLoaded(CustomPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public CustomPlugin getPlugin() {
+        return plugin;
     }
 }
