@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral;
 import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
 import fr.synchroneyes.custom_events.PermissionCheckerLoop;
+import fr.synchroneyes.custom_plugins.CustomPlugin;
+import fr.synchroneyes.custom_plugins.CustomPluginManager;
 import fr.synchroneyes.data_storage.Data_EventHandler;
 import fr.synchroneyes.data_storage.DatabaseInitialisation;
 import fr.synchroneyes.data_storage.SQLConnection;
@@ -19,7 +21,6 @@ import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
-import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -30,7 +31,6 @@ import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import lombok.Getter;
-import lombok.NonNull;
 import org.bukkit.*;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,13 +38,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,10 +94,14 @@ public final class mineralcontest extends JavaPlugin {
     @Getter
     private Connection connexion_database;
 
+
+    private CustomPluginManager pluginManager;
+
     // Constructeur, on initialise les variables
     public mineralcontest() {
         mineralcontest.plugin = this;
         this.joueurs = new ArrayList<>();
+        this.pluginManager = new CustomPluginManager();
     }
 
 
@@ -654,6 +655,10 @@ public final class mineralcontest extends JavaPlugin {
 
     }
 
+
+    public void registerNewPlugin(CustomPlugin plugin) {
+        this.pluginManager.registerPlugin(plugin);
+    }
 
 
 }

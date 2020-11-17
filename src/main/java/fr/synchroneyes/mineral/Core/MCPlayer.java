@@ -47,7 +47,7 @@ public class MCPlayer {
 
     // ID Stocké en base de donnée pour le joueur
     @Getter @Setter
-    private int databasePlayerId;
+    private int databasePlayerId = 0;
 
     // Variable stockant le nombre de point rapporté par le joueur
     @Getter @Setter
@@ -206,6 +206,12 @@ public class MCPlayer {
      */
     public void addPlayerScorePenalityToOtherTeams(int score) {
         this.score_lost += score;
+    }
+
+
+    public void resetPlayerScores() {
+        this.score_lost = 0;
+        this.score_brought = 0;
     }
 
 

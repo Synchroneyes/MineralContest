@@ -171,7 +171,7 @@ public class Data_EventHandler implements Listener {
                 deathCause = event.getKiller().getInventory().getItemInMainHand().getType().toString();
             }
 
-            PreparedStatement insert_game_kill = connection.prepareStatement("INSERT INTO mineral_game_kills SET gameid = ?, dead_playerid = ?, killer_player_id = ?, cause = ?");
+            PreparedStatement insert_game_kill = connection.prepareStatement("INSERT INTO mineral_game_kills SET gameid = ?, dead_playerid = ?, killer_playerid = ?, cause = ?");
             insert_game_kill.setInt(1, partie.getDatabaseGameId());
             insert_game_kill.setInt(2, deadPlayer.getDatabasePlayerId());
             insert_game_kill.setInt(3, killerPlayer.getDatabasePlayerId());
@@ -182,6 +182,7 @@ public class Data_EventHandler implements Listener {
             //connection.createStatement().execute("INSERT INTO mineral_game_kills SET gameid = " + partie.getDatabaseGameId() + ", dead_playerid = " + deadPlayer.getDatabasePlayerId() + ", killer_playerid = " + killerPlayer.getDatabasePlayerId() + ", cause = '" + deathCause + "';");
         } catch (SQLException throwables) {
             Error.Report(throwables, partie);
+            throwables.printStackTrace();
         }
 
     }
@@ -247,6 +248,9 @@ public class Data_EventHandler implements Listener {
                     //Bukkit.broadcastMessage("INSERT INTO mineral_game_end_players_info SET gameid = " + partie.getDatabaseGameId() + ", playerid = " + mcPlayer.getDatabasePlayerId() + ", score_brought = " + mcPlayer.getScore_brought() + ", score_lost = "+ mcPlayer.getScore_lost() +", team_score = " + mcPlayer.getEquipe().getScore() + ";");
 
                 }
+
+                // On reset les scores apporté par un joueur
+                mcPlayer.resetPlayerScores();
             }
 
             // On enregistre les équipes
