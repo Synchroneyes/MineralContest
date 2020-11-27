@@ -7,11 +7,9 @@ import org.bukkit.event.HandlerList;
 /**
  * Evenement envoyé lors du démarrage d'une game
  */
-public class MCGameStartedEvent extends Event {
+public class MCGameStartedEvent extends MCEvent {
 
     private Game game;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public MCGameStartedEvent(Game partie) {
         this.game = partie;
@@ -21,13 +19,4 @@ public class MCGameStartedEvent extends Event {
         return game;
     }
 
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

@@ -5,13 +5,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MCPlayerOpenChestEvent extends Event {
+public class MCPlayerOpenChestEvent extends MCEvent {
 
     private Player joueur;
 
     private AutomatedChestAnimation coffre;
 
-    private static final HandlerList handlers = new HandlerList();
 
     public MCPlayerOpenChestEvent(AutomatedChestAnimation coffre, Player joueur) {
         this.joueur = joueur;
@@ -23,14 +22,6 @@ public class MCPlayerOpenChestEvent extends Event {
     }
 
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public AutomatedChestAnimation getCoffre() {
         return coffre;

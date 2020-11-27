@@ -9,14 +9,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Evenement appelé lors de la mort par un autre joueur
  */
-public class PlayerDeathByPlayerEvent extends Event {
+public class PlayerDeathByPlayerEvent extends MCEvent {
 
     private Player playerDead;
     private Player killer;
     private Game partie;
 
 
-    private static final HandlerList handlers = new HandlerList();
 
     public PlayerDeathByPlayerEvent(Player dead, Player killer, Game partie) {
         this.playerDead = dead;
@@ -36,14 +35,5 @@ public class PlayerDeathByPlayerEvent extends Event {
     @NotNull
     public Player getKiller() {
         return killer;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }

@@ -8,14 +8,13 @@ import org.bukkit.event.HandlerList;
 /**
  * Evenement appelé lors de la selection d'un kit
  */
-public class PlayerKitSelectedEvent extends Event {
+public class PlayerKitSelectedEvent extends MCEvent {
 
 
     private Player player;
     private KitAbstract selectedKit;
 
 
-    private static final HandlerList handlers = new HandlerList();
 
     public PlayerKitSelectedEvent(Player joueur, KitAbstract selectedKit) {
         this.player = joueur;
@@ -30,12 +29,4 @@ public class PlayerKitSelectedEvent extends Event {
         return selectedKit;
     }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

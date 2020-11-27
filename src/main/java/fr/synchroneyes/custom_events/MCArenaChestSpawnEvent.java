@@ -4,10 +4,8 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MCArenaChestSpawnEvent extends Event {
+public class MCArenaChestSpawnEvent extends MCEvent {
     private Game game;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public MCArenaChestSpawnEvent(Game partie) {
         this.game = partie;
@@ -17,13 +15,4 @@ public class MCArenaChestSpawnEvent extends Event {
         return game;
     }
 
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

@@ -4,12 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MCPlayerRespawnEvent extends Event {
+public class MCPlayerRespawnEvent extends MCEvent {
 
 
     private Player joueur;
 
-    private static final HandlerList handlers = new HandlerList();
 
     public MCPlayerRespawnEvent(Player joueur) {
         this.joueur = joueur;
@@ -19,13 +18,4 @@ public class MCPlayerRespawnEvent extends Event {
         return joueur;
     }
 
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

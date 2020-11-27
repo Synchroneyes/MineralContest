@@ -9,6 +9,7 @@ import fr.synchroneyes.mineral.Settings.GameCVAR;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -97,6 +98,8 @@ public class DisplayScoreCommand extends CommandTemplate {
         House best_house = null;
         List<House> ordered_Houses = new LinkedList<>();
 
+        maisons.removeIf(maison -> (maison.getTeam().getJoueurs().isEmpty()));
+
         // ON va trier dans l'ordre des points
         while(!maisons.isEmpty()) {
             for (House maison : maisons) {
@@ -106,11 +109,7 @@ public class DisplayScoreCommand extends CommandTemplate {
                 }
             }
 
-
-            if(best_house.getTeam().getJoueurs().size() > 0) {
-                ordered_Houses.add(best_house);
-            }
-
+            ordered_Houses.add(best_house);
             maisons.remove(best_house);
 
         }

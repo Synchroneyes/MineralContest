@@ -6,12 +6,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class MCAutomatedChestTimeOverEvent extends Event {
+public class MCAutomatedChestTimeOverEvent extends MCEvent {
 
 
     private AutomatedChestAnimation automatedChest;
 
-    private static final HandlerList handlers = new HandlerList();
 
     public MCAutomatedChestTimeOverEvent(AutomatedChestAnimation automatedChestAnimation) {
         this.automatedChest = automatedChestAnimation;
@@ -21,12 +20,4 @@ public class MCAutomatedChestTimeOverEvent extends Event {
         return automatedChest;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

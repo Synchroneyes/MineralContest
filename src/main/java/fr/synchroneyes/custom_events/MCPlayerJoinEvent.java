@@ -9,10 +9,9 @@ import org.bukkit.event.HandlerList;
 /**
  * Evenement envoyé lors du démarrage d'une game
  */
-public class MCPlayerJoinEvent extends Event {
+public class MCPlayerJoinEvent extends MCEvent {
 
 
-    private static final HandlerList handlers = new HandlerList();
 
     private MCPlayer mcPlayer;
 
@@ -31,12 +30,4 @@ public class MCPlayerJoinEvent extends Event {
         return player;
     }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

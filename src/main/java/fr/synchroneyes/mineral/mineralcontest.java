@@ -252,10 +252,15 @@ public final class mineralcontest extends JavaPlugin {
 
 
 
-        if (!debug)
-            if (pluginWorld != null)
-                for (Player online : pluginWorld.getPlayers())
+        if (!debug) {
+            if (pluginWorld != null) {
+                for (Player online : pluginWorld.getPlayers()) {
                     PlayerUtils.teleportPlayer(online, defaultSpawn.getWorld(), defaultSpawn);
+                    if(online.isOp()) getNonCommunityGroup().addAdmin(online);
+                    else getNonCommunityGroup().addJoueur(online);
+                }
+            }
+        }
 
         PlayerUtils.runScoreboardManager();
         GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
@@ -530,7 +535,8 @@ public final class mineralcontest extends JavaPlugin {
     public static boolean isInAMineralContestWorld(Player p) {
         MCPlayer joueur = plugin.getMCPlayer(p);
         if(joueur == null) return false;
-        return (p.getWorld().equals(plugin.pluginWorld) || joueur.getGroupe().getMonde() != null);
+
+        return (p.getWorld().equals(plugin.pluginWorld) || (joueur.getGroupe().getMonde() != null && joueur.getGroupe().getMonde().equals(p.getWorld())));
     }
 
     public static boolean isInMineralContestHub(Player p) {
@@ -581,8 +587,6 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getPluginManager().callEvent(mcPlayerJoinEvent);
 
         this.joueurs.add(joueur);
-
-
 
     }
 

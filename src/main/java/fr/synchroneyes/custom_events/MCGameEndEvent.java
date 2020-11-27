@@ -8,12 +8,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Evenement symbolisant la fin d'une partie
  */
-public class MCGameEndEvent extends Event {
+public class MCGameEndEvent extends MCEvent {
 
 
     private Game partie;
 
-    private static final HandlerList handlers = new HandlerList();
 
 
 
@@ -26,12 +25,4 @@ public class MCGameEndEvent extends Event {
         return partie;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

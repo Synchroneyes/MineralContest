@@ -1097,6 +1097,7 @@ public class Game implements Listener {
                 // Pour chaque joueur
                 for (Player joueur : groupe.getPlayers())
                     setPlayerReady(joueur);
+
                 return true;
             }
         }
@@ -1149,6 +1150,7 @@ public class Game implements Listener {
             randomizeTeam(forceGameStart);
 
 
+
         if (mineralcontest.debug)
             mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "GAME_SUCCESSFULLY_STARTED");
         if (mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
@@ -1199,6 +1201,7 @@ public class Game implements Listener {
 
 
 
+
         // On supprime tous les items au sol
         groupe.removeAllDroppedItem();
 
@@ -1218,9 +1221,12 @@ public class Game implements Listener {
      */
     public void randomizeTeam(boolean force) throws Exception {
 
+        new Exception().printStackTrace();
         Bukkit.getLogger().info("RANDOMIZING !");
         LinkedList<House> equipesDispo = new LinkedList<>();
         LinkedList<Player> joueursEnAttente = new LinkedList<>();
+
+        Bukkit.broadcastMessage("joueurs: " + groupe.getMonde().getPlayers().size());
 
         for (Player joueur : groupe.getMonde().getPlayers())
             if (!isReferee(joueur)) joueursEnAttente.add(joueur);
@@ -1250,7 +1256,11 @@ public class Game implements Listener {
 
             equipesDispo.remove(numeroEquipeRandom);
             joueursEnAttente.remove(numeroJoueurRandom);
+            Bukkit.broadcastMessage("while  !equipesDispo.isEmpty() => " + (equipesDispo.size()));
+
         }
+
+        Bukkit.broadcastMessage("randomizing done!");
 
 
     }

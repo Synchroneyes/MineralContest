@@ -38,6 +38,8 @@ public class PlayerDisconnect implements Listener {
             }
 
             partie.groupe.addDisconnectedPlayer(joueur);
+            partie.groupe.retirerJoueur(joueur);
+
 
 
 

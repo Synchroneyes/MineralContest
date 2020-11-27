@@ -4,13 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerPermissionChangeEvent extends Event {
+public class PlayerPermissionChangeEvent extends MCEvent {
 
     private Player player;
     private String oldPermission;
     private String newPermission;
 
-    private static final HandlerList handlers = new HandlerList();
 
 
     public PlayerPermissionChangeEvent(Player p, String old, String new_p) {
@@ -32,12 +31,4 @@ public class PlayerPermissionChangeEvent extends Event {
         return newPermission;
     }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

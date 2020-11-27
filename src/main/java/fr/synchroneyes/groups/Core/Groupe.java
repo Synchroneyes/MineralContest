@@ -19,8 +19,7 @@ import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -116,6 +115,14 @@ public class Groupe {
 
         this.dechargerMonde();
 
+    }
+
+    /**
+     * Méthode permettant de retirer un joueur du groupe
+     * @param joueur
+     */
+    public void removePlayer(Player joueur) {
+        this.joueurs.remove(joueur);
     }
 
 
@@ -457,6 +464,7 @@ public class Groupe {
         this.joueurs.remove(joueur);
         this.admins.remove(joueur);
         this.joueursInvites.remove(joueur);
+
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.you_left_the_group.toString(), this));
     }
 
@@ -481,8 +489,43 @@ public class Groupe {
         if (mapVote != null) getMapVote().removePlayerVote(p);
         getGame().removePlayerReady(p);
 
+        getGame().removePlayerReady(p);
+        getGame().groupe.getPlayers().remove(p);
+
         DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
         if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
+
+        if(!havePlayerDisconnected(p)) p.sendMessage(ChatColor.GOLD + "" + joueur);
+        retirerJoueur(p);
+    }
+
+    /**
+     * Sauvegarde les membres du groupe ayant été déconnecté, avec leur position
+     *
+     * @param p
+     */
+    public void addDisconnectedPlayer(Player p, Location oldPlayerLocation) {
+        /*Pair<String, Location> playerInfo = new Pair<>(getPlayerTeam(p).getNomEquipe(), p.getLocation());
+        retirerJoueur(p);
+        if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);*/
+
+        Equipe oldPlayerTeam = getPlayerTeam(p);
+        CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
+
+        if (mapVote != null) getMapVote().removePlayerVote(p);
+        getGame().removePlayerReady(p);
+
+        getGame().removePlayerReady(p);
+        getGame().groupe.getPlayers().remove(p);
+
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, oldPlayerLocation, p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
+        if (!havePlayerDisconnected(p)) {
+            disconnectedPlayers.add(joueur);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + " Disconnected location: " + oldPlayerLocation);
+        }
+
+
+        if(!havePlayerDisconnected(p)) p.sendMessage(ChatColor.GOLD + "" + joueur);
         retirerJoueur(p);
     }
 
@@ -594,8 +637,9 @@ public class Groupe {
      */
     public boolean havePlayerDisconnected(Player p) {
 
-        for (DisconnectedPlayer disconnectedPlayer : disconnectedPlayers)
+        for (DisconnectedPlayer disconnectedPlayer : disconnectedPlayers) {
             if (disconnectedPlayer.getPlayerUUID().equals(p.getUniqueId())) return true;
+        }
         return false;
     }
 

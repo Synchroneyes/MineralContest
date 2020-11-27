@@ -5,6 +5,7 @@ import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Shop.Items.Abstract.ShopItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +37,8 @@ public class DisconnectedPlayer {
         this.oldPlayerInventory = new LinkedList<>();
         this.bonus = bonus;
         this.kit = kit;
+
+        Bukkit.getLogger().info(oldPlayerLocation + "");
 
         for (ItemStack item : p.getInventory().getContents())
             if (item != null) oldPlayerInventory.add(item);

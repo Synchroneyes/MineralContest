@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Classe permettant de gérer les evenements pour le plugin Mineral Contest; afin de les sauvegarder en base de donnée
@@ -92,6 +93,14 @@ public class Data_EventHandler implements Listener {
         Connection connection = mineralcontest.plugin.getConnexion_database();
         if(connection == null) return;
 
+        // On regarde si il y a des joueurs dans la partie
+        Game game = event.getGame();
+        List<House> maisons = (List<House>) game.getHouses().clone();
+        maisons.removeIf(maison -> maison.getTeam().getJoueurs().isEmpty());
+
+        if(maisons.isEmpty()) {
+            return;
+        }
         try {
 
             PreparedStatement insert_mineral_game = connection.prepareStatement("INSERT INTO mineral_game SET gamestate = ?, map = ?, uid = ?");
