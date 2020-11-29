@@ -1221,8 +1221,6 @@ public class Game implements Listener {
      */
     public void randomizeTeam(boolean force) throws Exception {
 
-        new Exception().printStackTrace();
-        Bukkit.getLogger().info("RANDOMIZING !");
         LinkedList<House> equipesDispo = new LinkedList<>();
         LinkedList<Player> joueursEnAttente = new LinkedList<>();
 
