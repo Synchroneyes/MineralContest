@@ -137,12 +137,14 @@ public class ChickenWaves {
         for (int i = 0; i < nombreDePouletASpawn; ++i) {
             LivingEntity entity = null;
 
-            if(!isHalloweenEnabled) entity = (Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN);
+            if(!isHalloweenEnabled) pouletsEnVie.add((Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN));
             else {
                 pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
-                entity = pouletsEnVie.getLast();
+
 
             }
+
+            entity = pouletsEnVie.getLast();
 
 
             double currentSpeed = entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
