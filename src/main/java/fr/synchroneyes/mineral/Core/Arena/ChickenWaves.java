@@ -140,8 +140,6 @@ public class ChickenWaves {
             if(!isHalloweenEnabled) pouletsEnVie.add((Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN));
             else {
                 pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
-
-
             }
 
             entity = pouletsEnVie.getLast();

@@ -42,7 +42,20 @@ public class GameSettings {
                 parametres.add(new GameCVAR(parametre.getCommand(), parametre.getValeur(), parametre.getDescription(), parametre.getType(), parametre.canBeReloaded(), parametre.isNumber()));
         }
 
+
+
         fichierConfiguration = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
+
+        // On regarde si le fichier de configuration contient tout
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(fichierConfiguration);
+        if(configuration != null) {
+            for(GameCVAR parametre : parametres){
+                if(!configuration.contains("config." + parametre.getType() + "." + parametre.getCommand())) {
+                    saveCVAR(parametre);
+                }
+            }
+        }
+
         this.groupe = g;
     }
 
@@ -134,6 +147,7 @@ public class GameSettings {
             }
         }
 
+
         if (gameCVAR == null)
             throw new Exception("Impossible d'appliquer la valeur " + valeur + " à " + cvar + " car ce paramètre est inconnu");
 
@@ -197,7 +211,6 @@ public class GameSettings {
      */
     public void saveCVAR(GameCVAR cvar) {
         File fichierConfig = new File(mineralcontest.plugin.getDataFolder(), FileList.Config_default_game.toString());
-        Bukkit.getLogger().warning("fichier exist; " + fichierConfig.exists());
         if (!fichierConfig.exists()) return;
 
         // On charge la configuration
@@ -206,7 +219,7 @@ public class GameSettings {
         // On regarde si le cvar existe ou non
         String file_cvar = "config." + cvar.getType() + "." + cvar.getCommand();
         yamlConfiguration.set(file_cvar, cvar.getValeur());
-        Bukkit.getLogger().warning(file_cvar + " => " + cvar.getValeur());
+        //Bukkit.getLogger().warning(file_cvar + " => " + cvar.getValeur());
 
         try {
             yamlConfiguration.save(fichierConfig);
