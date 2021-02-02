@@ -280,9 +280,9 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("SCORE_EMERALD", "300", "Permet de définir le score pour un émeraude", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("SCORE_REDSTONE", "-3", "Permet de définir le score pour une redstone", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_set_playzone_radius", "1000", "Permet de définir le rayon de la zone jouable en nombre de bloc", "cvar", true, true));
-            parametresParDefaut.add(new GameCVAR("mp_enable_friendly_fire", "1", "Permet d'activer ou non les dégats entre alliés", "cvar", true, true));
+            parametresParDefaut.add(new GameCVAR("mp_enable_friendly_fire", "0", "Permet d'activer ou non les dégats entre alliés", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("mp_enable_old_pvp", "1", "Permet d'activer ou non l'ancien système de pvp", "cvar", true, true));
-            parametresParDefaut.add(new GameCVAR("mp_enable_block_adding", "1", "Permet d'activer ou non la pose de bloc autour de l'arène", "cvar", true, true));
+            parametresParDefaut.add(new GameCVAR("mp_enable_block_adding", "0", "Permet d'activer ou non la pose de bloc autour de l'arène", "cvar", true, true));
             parametresParDefaut.add(new GameCVAR("game_time", "60", "Permet de définir le temps d'une partie", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("pre_game_timer", "10", "Permet de définir le temps d'attente avant de démarrer la partie", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("end_game_timer", "60", "Permet de définir le temps avant de quitter le monde à la fin d'une partie", "settings", true, true));
@@ -295,13 +295,13 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("min_item_in_chest", "10", "Permet de définir le nombre minimum d'objet dans un coffre d'équipe", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("death_time", "10", "Permet de définir le temps de réapparition", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_time", "60", "Permet de définir le temps restant necessaire avant de faire apparaitre les poulets dans l'arène", "arena", true, true));
-            parametresParDefaut.add(new GameCVAR("chicken_spawn_interval", "30", "Permet de définir le temps en seconde necessaire avant de pouvoir faire apparaitre une vague de poulet", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_interval", "15", "Permet de définir le temps en seconde necessaire avant de pouvoir faire apparaitre une vague de poulet", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_min_count", "2", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_count", "5", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_min_item_count", "1", "Permet de définir le nombre minimum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_item_count", "3", "Permet de définir le nombre maximum de d'item qu'un poulet va drop dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("protected_zone_area_radius", "55", "Permet de définir le rayon en bloc de la zone protégé, où les blocs ne peuvent pas être cassé", "settings", false, true));
-            parametresParDefaut.add(new GameCVAR("enable_monster_in_protected_zone", "1", "Permet d'activer ou non l'apparition de monstre dans la zone protégée", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_monster_in_protected_zone", "0", "Permet d'activer ou non l'apparition de monstre dans la zone protégée", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("arena_safezone_radius", "5", "Permet de modifier le rayon de safezone de la zone de téléportation de l'arène", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("arena_warn_chest_time", "10", "Permet de définir le temps restant en seconde avant de mettre un message dans le chat annonçant l'arrivée du coffre d'arène", "arena", true, true));
 
@@ -313,7 +313,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("min_distance_from_arena", "150", "Permet de définir la distance minimale entre la génération de position du largage et le centre de l'arène", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("normal_falling_speed", "40", "Permet de définir la vitesse de chute lorsque le parachute est présent (en nombre de ticks, 20 ticks environ égale à 1 sec)", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("free_falling_speed", "2", "Permet de définir la vitesse de chute lorsque le parachute est cassé (en nombre de ticks, 20 ticks environ égale à 1 sec)", "airdrop", true, true));
-            parametresParDefaut.add(new GameCVAR("max_item_in_drop", "100", "Permet de définir le nombre d'item minimum présent dans le coffre", "airdrop", true, true));
+            parametresParDefaut.add(new GameCVAR("max_item_in_drop", "40", "Permet de définir le nombre d'item minimum présent dans le coffre", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("min_item_in_drop", "30", "Permet de définir le nombre d'item minimum présent dans le coffre", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("drop_opening_time", "10", "Permet de définir le nombre définir le temps d'ouverture du coffre du largage", "airdrop", true, true));
             parametresParDefaut.add(new GameCVAR("drop_display_time", "5", "Permet de définir combien de temps en seconde le message doit s'afficher", "airdrop", true, true));
@@ -328,7 +328,7 @@ public class GameSettings {
 
 
             // Evenement Halloween
-            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "1", "Permet d'activer ou non le mode halloween", "event", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "0", "Permet d'activer ou non le mode halloween", "event", true, true));
 
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));

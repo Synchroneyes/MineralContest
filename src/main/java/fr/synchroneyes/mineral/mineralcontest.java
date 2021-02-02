@@ -80,6 +80,7 @@ public final class mineralcontest extends JavaPlugin {
     /**
      * Array of all the messages we can fetch from synchroneyes's plugin website.
      */
+    @Getter
     private ArrayList<String> messagesFromWebsite;
     public GroupeExtension groupeExtension;
 

@@ -26,6 +26,7 @@ import fr.synchroneyes.mineral.Utils.Metric.SendInformation;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayerTeam;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
+import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
 import fr.synchroneyes.mineral.Utils.WorldUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
@@ -1205,7 +1206,10 @@ public class Game implements Listener {
         // On supprime tous les items au sol
         groupe.removeAllDroppedItem();
 
-        if (!mineralcontest.communityVersion) mineralcontest.afficherMessageVersion();
+        if (!mineralcontest.communityVersion) {
+            Version.fetchAllMessages(mineralcontest.plugin.getMessagesFromWebsite());
+            mineralcontest.afficherMessageVersion();
+        }
 
         startGameLoop();
 

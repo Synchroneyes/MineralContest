@@ -38,6 +38,7 @@ public class Version {
      * @param listToFill    - Une liste à remplir avec les messages du site
      */
     public static void fetchAllMessages(List<String> listToFill) {
+        listToFill.clear();
 
         // On récupère la verison du plugin
         String currentVersion = mineralcontest.plugin.getDescription().getVersion();
