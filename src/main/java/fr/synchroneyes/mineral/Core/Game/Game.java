@@ -1228,7 +1228,7 @@ public class Game implements Listener {
         LinkedList<House> equipesDispo = new LinkedList<>();
         LinkedList<Player> joueursEnAttente = new LinkedList<>();
 
-        Bukkit.broadcastMessage("joueurs: " + groupe.getMonde().getPlayers().size());
+        //Bukkit.broadcastMessage("joueurs: " + groupe.getMonde().getPlayers().size());
 
         for (Player joueur : groupe.getMonde().getPlayers())
             if (!isReferee(joueur)) joueursEnAttente.add(joueur);
@@ -1258,11 +1258,11 @@ public class Game implements Listener {
 
             equipesDispo.remove(numeroEquipeRandom);
             joueursEnAttente.remove(numeroJoueurRandom);
-            Bukkit.broadcastMessage("while  !equipesDispo.isEmpty() => " + (equipesDispo.size()));
+            //Bukkit.broadcastMessage("while  !equipesDispo.isEmpty() => " + (equipesDispo.size()));
 
         }
 
-        Bukkit.broadcastMessage("randomizing done!");
+        //Bukkit.broadcastMessage("randomizing done!");
 
 
     }

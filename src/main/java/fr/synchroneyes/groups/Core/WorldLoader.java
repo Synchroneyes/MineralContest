@@ -369,6 +369,9 @@ public class WorldLoader {
 
     }
 
+    /**
+     * Maintenant on charge les paramètrees par défaut et non ceux de la map
+     */
     private void lireConfigurationPartie() {
         GameSettings parametres = groupe.getParametresPartie();
         String nomFichierConfig = "mc_game_settings.yml";
