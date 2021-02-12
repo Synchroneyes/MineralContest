@@ -1,9 +1,6 @@
 package fr.synchroneyes.mineral;
 
-import fr.synchroneyes.custom_events.MCGameEndEvent;
-import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
-import fr.synchroneyes.custom_events.MCPluginLoaded;
-import fr.synchroneyes.custom_events.PermissionCheckerLoop;
+import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.custom_plugins.CustomPlugin;
 import fr.synchroneyes.custom_plugins.CustomPluginManager;
 import fr.synchroneyes.data_storage.Data_EventHandler;
@@ -140,6 +137,14 @@ public final class mineralcontest extends JavaPlugin {
         MCPlayer joueur = instance.getMCPlayer(p);
 
         if(joueur == null) return null;
+
+        // On regarde si le joueur fait parti du plugin
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(p);
+        if(mcPlayer == null) return null;
+
+        // Et si il est tjrs présent dans un monde du plugin
+        if(!mcPlayer.isInPlugin()) return null;
+
         return joueur.getGroupe();
 
     }
@@ -241,6 +246,10 @@ public final class mineralcontest extends JavaPlugin {
         // Initialisation des events customs
         PermissionCheckerLoop permissionCheckerLoop = new PermissionCheckerLoop(this, 1);
         permissionCheckerLoop.run();
+
+        // Initialisation de la sauvegarde des position d'un joueur
+        PlayerLocationSaverLoop playerLocationSaverLoop = new PlayerLocationSaverLoop(this, 1);
+        playerLocationSaverLoop.run();
 
 
 
@@ -436,6 +445,14 @@ public final class mineralcontest extends JavaPlugin {
         // Database Save
         Bukkit.getServer().getPluginManager().registerEvents(new Data_EventHandler(), this);
 
+        // Listener changement monde joueur (Spigot)
+        Bukkit.getServer().getPluginManager().registerEvents(new Spigot_WorldChangeEvent(), this);
+
+        // Listenenr changement monde joueur (Plugin)
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerWorldChangeEvent(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerLeavePluginWorld(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinPlugin(), this);
+
 
 
         // AutomatedChest
@@ -555,6 +572,14 @@ public final class mineralcontest extends JavaPlugin {
     }
 
     public static Game getPlayerGame(Player p) {
+
+        // On regarde si le joueur fait parti du plugin
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(p);
+        if(mcPlayer == null) return null;
+
+        // Et si il est tjrs présent dans un monde du plugin
+        if(!mcPlayer.isInPlugin()) return null;
+
         Groupe g = getPlayerGroupe(p);
         if (g != null) return g.getGame();
         return null;
@@ -584,8 +609,8 @@ public final class mineralcontest extends JavaPlugin {
 
         MCPlayer joueur = new MCPlayer(nouveauJoueur);
 
-        MCPlayerJoinEvent mcPlayerJoinEvent = new MCPlayerJoinEvent(nouveauJoueur, joueur);
-        Bukkit.getPluginManager().callEvent(mcPlayerJoinEvent);
+        /*MCPlayerJoinEvent mcPlayerJoinEvent = new MCPlayerJoinEvent(nouveauJoueur, joueur);
+        Bukkit.getPluginManager().callEvent(mcPlayerJoinEvent);*/
 
         this.joueurs.add(joueur);
 

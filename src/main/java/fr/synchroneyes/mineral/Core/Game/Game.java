@@ -159,7 +159,13 @@ public class Game implements Listener {
      * @return
      */
     public LinkedList<Player> getPlayersReady() {
-        return playersReady;
+        LinkedList<Player> liste_joueurs = new LinkedList<>();
+        for(Player membre : this.groupe.getPlayers()){
+            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(membre);
+            if(mcPlayer != null && mcPlayer.isInPlugin() && isPlayerReady(membre))
+                liste_joueurs.add(membre);
+        }
+        return liste_joueurs;
     }
 
     /**
@@ -362,11 +368,13 @@ public class Game implements Listener {
 
 
     public boolean areAllPlayersReady() {
-        return (playersReady.size() == groupe.getPlayers().size());
+        return (getPlayersReady().size() == groupe.getPlayers().size());
     }
 
     public boolean isPlayerReady(Player p) {
-        return (playersReady.contains(p));
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(p);
+        if(mcPlayer == null) return false;
+        return mcPlayer.isInPlugin() && playersReady.contains(p);
     }
 
     public void removePlayerReady(Player p) {

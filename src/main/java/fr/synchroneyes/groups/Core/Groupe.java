@@ -4,6 +4,7 @@ import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Spectators.SpectatorManager;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
@@ -133,7 +134,7 @@ public class Groupe {
      */
     public String getNomsJoueurNonPret() {
 
-        List<Player> joueurNonPrets = new ArrayList<>(joueurs);
+        List<Player> joueurNonPrets = new ArrayList<>(getPlayers());
 
         StringBuilder joueursNonPret_text = new StringBuilder();
 
@@ -177,8 +178,19 @@ public class Groupe {
         this.mapName = mapName;
     }
 
+    /**
+     * Méthode retournant les joueurs faisant parti du plugin et étant encore connecté
+     * @return
+     */
     public LinkedList<Player> getPlayers() {
-        return joueurs;
+        LinkedList<Player> liste_joueurs = new LinkedList<>();
+        for(Player membre : this.joueurs){
+            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(membre);
+            if(mcPlayer != null && mcPlayer.isInPlugin())
+                liste_joueurs.add(membre);
+        }
+
+        return liste_joueurs;
     }
 
     public String getIdentifiant() {
@@ -400,12 +412,12 @@ public class Groupe {
      */
     public void sendToadmin(String message) {
 
-        for (Player player : admins)
+        for (Player player : getAdmins())
             player.sendMessage(message);
     }
 
     public void sendToEveryone(String message) {
-        for (Player p : joueurs) {
+        for (Player p : getPlayers()) {
             p.sendMessage(message);
         }
     }
@@ -447,7 +459,7 @@ public class Groupe {
     }
 
     public int getPlayerCount() {
-        return this.joueurs.size();
+        return getPlayers().size();
     }
 
     public void retirerJoueur(Player joueur) {
@@ -470,7 +482,17 @@ public class Groupe {
 
 
     public LinkedList<Player> getAdmins() {
-        return admins;
+        LinkedList<Player> liste_admin = new LinkedList<>(admins);
+
+        liste_admin.removeIf((admin) -> {
+            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(admin);
+           if(mcPlayer == null) return false;
+           else {
+               return !mcPlayer.isInPlugin();
+           }
+        });
+
+        return liste_admin;
     }
 
     /**

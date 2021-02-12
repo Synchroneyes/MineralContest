@@ -7,9 +7,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -17,6 +15,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 
 /**
@@ -57,12 +56,17 @@ public class MCPlayer {
     @Getter @Setter
     private int score_lost = 0;
 
+    private HashMap<World, Location> player_world_locations;
+
+    private boolean isInPlugin = true;
+
     /**
      * Constructeur, prend un joueur en paramètre
      * @param joueur
      */
     public MCPlayer(Player joueur) {
         this.joueur = joueur;
+        this.player_world_locations = new HashMap<>();
     }
 
 
@@ -214,7 +218,37 @@ public class MCPlayer {
         this.score_brought = 0;
     }
 
+    /**
+     * Méthode permettant de définir la position d'un joueur dans un monde
+     * @param w
+     * @param l
+     */
+    public void setPlayerWorldLocation(World w, Location l){
 
+        if(!joueur.isOnGround()) return;
 
+        if(player_world_locations.containsKey(w)) {
+            player_world_locations.replace(w, l);
+        } else {
+            player_world_locations.put(w, l);
+        }
+    }
+
+    /**
+     * Méthode permettant de récuperer la position d'un joueur dans un monde
+     * @param w
+     * @return
+     */
+    public Location getPLayerLocationFromWorld(World w){
+        return player_world_locations.getOrDefault(w, null);
+    }
+
+    public boolean isInPlugin() {
+        return isInPlugin;
+    }
+
+    public void setInPlugin(boolean inPlugin) {
+        isInPlugin = inPlugin;
+    }
 }
 

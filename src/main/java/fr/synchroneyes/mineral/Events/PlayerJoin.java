@@ -101,15 +101,5 @@ public class PlayerJoin implements Listener {
     }
 
 
-    private void informAdminsThatAPlayerTriedToJoin(String playerName) {
-        mineralcontest.broadcastMessageToAdmins("Player " + playerName + " tried to join, you can allow him to join by typing /allow " + playerName);
-        Bukkit.getLogger().info("Player " + playerName + " tried to join, you can allow him to join by typing /allow " + playerName);
-    }
-
-    private void informAdminThatAPlayerNeedASwitch(String playerName) {
-        mineralcontest.broadcastMessageToAdmins("Player " + playerName + " have joined the game; switch him into a team with /switch " + playerName + " <team>");
-        Bukkit.getLogger().info("Player " + playerName + " have joined the game; switch him into a team with /switch " + playerName + " <team>");
-
-    }
 
 }
