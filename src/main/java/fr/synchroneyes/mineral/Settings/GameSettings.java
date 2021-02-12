@@ -319,19 +319,24 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("drop_display_time", "5", "Permet de définir combien de temps en seconde le message doit s'afficher", "airdrop", true, true));
 
 
-            parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, true));
-            parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, false));
+            parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, false));
 
             // Système de coffre à la mort
-            parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, false));
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "1", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
 
 
             // Evenement Halloween
-            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "0", "Permet d'activer ou non le mode halloween", "event", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "0", "Permet d'activer ou non le mode halloween", "event", true, false));
 
+
+            // Paramètre permettant de donner des points lors d'un kill d'un joueur
+            parametresParDefaut.add(new GameCVAR("points_per_kill", "0", "Permet de définir le nombre de points offert lors d'un kill de joueur", "cvar", true, true));
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
+
+
 
         }
 

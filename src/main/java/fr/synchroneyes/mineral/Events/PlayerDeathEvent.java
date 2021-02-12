@@ -6,6 +6,7 @@ import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
+import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
@@ -110,6 +111,24 @@ public class PlayerDeathEvent implements Listener {
 
                 PlayerDeathByPlayerEvent event1 = new PlayerDeathByPlayerEvent(joueur, joueur.getKiller(), partie);
                 Bukkit.getPluginManager().callEvent(event1);
+
+                // On gère la mort du joueur; savoir si on donne des points ou non
+                int nombre_points_bonus = partie.groupe.getParametresPartie().getCVAR("points_per_kill").getValeurNumerique();
+
+                // si le nombre de points > 0
+                if(nombre_points_bonus > 0) {
+                    // Si il n'y a pas de teamkill
+                    if(partie.getPlayerTeam(joueur) != partie.getPlayerTeam(joueur.getKiller())) {
+                        // On ajoute des points à l'équipe ayant fait le kill
+                        Equipe equipe_tueuse = partie.getPlayerTeam(joueur.getKiller());
+                        int teamScore = equipe_tueuse.getScore();
+                        teamScore += nombre_points_bonus;
+                        equipe_tueuse.setScore(teamScore);
+
+                        // On envoie un message à'léquie
+                        equipe_tueuse.sendMessage(mineralcontest.prefixTeamChat + "Vous avez reçu " + nombre_points_bonus + " points grâce au kill fait par " + joueur.getKiller().getDisplayName());
+                    }
+                }
 
 
                 // On enregistre les stats, au cas où ...
