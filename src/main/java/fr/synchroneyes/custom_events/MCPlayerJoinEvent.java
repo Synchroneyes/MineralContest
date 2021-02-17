@@ -2,6 +2,7 @@ package fr.synchroneyes.custom_events;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.MCPlayer;
+import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -17,9 +18,13 @@ public class MCPlayerJoinEvent extends MCEvent {
 
     private Player player;
 
-    public MCPlayerJoinEvent(Player p, MCPlayer mcPlayer) {
+    public MCPlayerJoinEvent(Player p) {
         this.player = p;
-        this.mcPlayer = mcPlayer;
+
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(p);
+        if(mcPlayer == null) this.mcPlayer = new MCPlayer(p);
+        else this.mcPlayer = mcPlayer;
+
     }
 
     public MCPlayer getMcPlayer() {

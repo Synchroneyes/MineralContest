@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class WorldLoader {
 
@@ -142,6 +143,8 @@ public class WorldLoader {
 
                     groupe.genererIdentifiant();
 
+
+                    groupe.setMapName(nomMap + "_" + groupe.getIdentifiant());
                     World mondeCharge = doChargerMonde(nomMap, groupe.getIdentifiant());
 
                     mondeCharge.setAutoSave(false);
@@ -193,7 +196,12 @@ public class WorldLoader {
         for (File map : maps)
             if (map.isDirectory())
                 if (nomMap.equalsIgnoreCase(map.getName())) {
-                    chargementMap.runTask(mineralcontest.plugin);
+                    CompletableFuture.runAsync(() -> {
+                        // method call or code to be asynch.
+                        chargementMap.runTask(mineralcontest.plugin);
+                    });
+
+
                     break;
                 }
     }

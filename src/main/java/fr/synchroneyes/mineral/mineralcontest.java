@@ -21,7 +21,9 @@ import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
 import fr.synchroneyes.mineral.Events.*;
+import fr.synchroneyes.mineral.Events.ArmorStandPickup;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
@@ -454,6 +456,14 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerJoinPlugin(), this);
 
 
+        // On active le chargement rapide des maps mineral contest
+        Bukkit.getServer().getPluginManager().registerEvents(new SpeedWorldLoading(), this);
+
+        // Déconnexion d'un joueur
+        Bukkit.getServer().getPluginManager().registerEvents(new MCPlayerLeavePlugin(), this);
+
+        Bukkit.getServer().getPluginManager().registerEvents(new TestCustomPLayerList(), this);
+
 
         // AutomatedChest
         //Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
@@ -542,12 +552,6 @@ public final class mineralcontest extends JavaPlugin {
         GameLogger.addLog(new Log("broadcast-plugin", message, "server"));
     }
 
-    public static void broadcastMessageToAdmins(String message) {
-        for (Player player : mineralcontest.plugin.pluginWorld.getPlayers())
-            if (player.isOp()) player.sendMessage(message);
-        Bukkit.getLogger().info(message);
-        GameLogger.addLog(new Log("broadcast_admin", message, "server"));
-    }
 
 
     public static boolean isInAMineralContestWorld(Player p) {
@@ -566,7 +570,8 @@ public final class mineralcontest extends JavaPlugin {
         if (w.equals(plugin.pluginWorld)) return true;
 
         for (Groupe groupe : plugin.groupes)
-            if (groupe.getMonde() == null) return false;
+            if(groupe.getMapName().equals(w.getName())) return true;
+            else if (groupe.getMonde() == null) return false;
             else if (w.equals(groupe.getMonde())) return true;
         return w.equals(plugin.pluginWorld);
     }
@@ -603,9 +608,13 @@ public final class mineralcontest extends JavaPlugin {
     public void addNewPlayer(Player nouveauJoueur) {
 
         // On vérifie si il existe déjà
-        for(MCPlayer joueur: joueurs)
-            // Si il existe déjà, on ne l'ajoute pas
-            if(joueur.getJoueur().equals(nouveauJoueur)) return;
+        for(MCPlayer joueur: joueurs) {
+            // Si il existe déjà, on le marque comme présent
+            if (joueur.getJoueur().equals(nouveauJoueur)) {
+                joueur.setInPlugin(true);
+                return;
+            }
+        }
 
         MCPlayer joueur = new MCPlayer(nouveauJoueur);
 
@@ -625,7 +634,7 @@ public final class mineralcontest extends JavaPlugin {
         for(MCPlayer _joueur: joueurs)
             // Si il existe déjà, on ne l'ajoute pas
             if(_joueur.getJoueur().equals(joueur)) {
-                this.joueurs.remove(_joueur);
+                _joueur.setInPlugin(false);
                 return;
             }
     }
@@ -642,7 +651,24 @@ public final class mineralcontest extends JavaPlugin {
         return null;
     }
 
-    public List<MCPlayer> getMCPlayers() { return joueurs; }
+    /**
+     * Fonction perméttant de vérifier si un joueur s'était déconnecté
+     * @param p
+     * @return
+     */
+    public DisconnectedPlayer wasPlayerDisconnected(Player p) {
+        for(Groupe groupe : groupes) {
+            if(groupe.havePlayerDisconnected(p)) return groupe.getDisconnectedPlayerInfo(p);
+        }
+
+        return null;
+    }
+
+    public List<MCPlayer> getMCPlayers() {
+        LinkedList<MCPlayer> mcPlayers = new LinkedList<>(joueurs);
+        mcPlayers.removeIf(joueur -> !joueur.isInPlugin());
+        return mcPlayers;
+    }
 
 
     /**

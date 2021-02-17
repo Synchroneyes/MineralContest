@@ -566,6 +566,10 @@ public class Groupe {
     public void playerHaveReconnected(Player p) {
         if (havePlayerDisconnected(p)) {
 
+
+            // On applique le pvp
+            PlayerUtils.applyPVPtoPlayer(p);
+
             DisconnectedPlayer infoJoueur = this.getDisconnectedPlayerInfo(p);
 
             try {
@@ -576,6 +580,7 @@ public class Groupe {
                     if (p.isOp()) infoJoueur.getOldPlayerGroupe().addAdmin(p);
                     else infoJoueur.getOldPlayerGroupe().addJoueur(p);
 
+                    Bukkit.broadcastMessage("OldTeam: " + infoJoueur.getOldPlayerTeam());
                     // On remet le joueur dans son équipe
                     if (infoJoueur.getOldPlayerTeam() != null)
                         infoJoueur.getOldPlayerTeam().addPlayerToTeam(p, false);

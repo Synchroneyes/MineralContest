@@ -4,6 +4,7 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
@@ -250,5 +251,79 @@ public class MCPlayer {
     public void setInPlugin(boolean inPlugin) {
         isInPlugin = inPlugin;
     }
+
+    /**
+     * Méthode permettant de déconnecter un joueur du plugin
+     */
+    public void disconnectPlayer() {
+
+
+
+        // On traite les actions de son groupe
+        if(getGroupe() != null) {
+
+            // On l'ajoute à la liste des personnes déconnectée
+            getGroupe().addDisconnectedPlayer(joueur, joueur.getLocation());
+
+
+            // Si le joueur est dans un groupe, on le retire des joueurs prêts
+            getGroupe().getGame().removePlayerReady(joueur);
+
+            // On le retire des arbitres
+            getGroupe().getGame().removeReferee(joueur, false);
+
+            // On le retire des admins
+            getGroupe().removeAdmin(joueur);
+
+            // On le retire des joueurs
+            getGroupe().removePlayer(joueur);
+
+
+            // On le retire de son équipe si il en a une
+            if(getEquipe() != null) {
+                getEquipe().removePlayer(this.joueur);
+            }
+
+            // SI une game est en cours
+            if(getPartie().isGameStarted()) {
+
+                // On ferme la porte
+                getMaison().getPorte().forceCloseDoor();
+            }
+        }
+
+        // On retire le joueur de la liste des joueurs connecté au plugin
+        mineralcontest.plugin.removePlayer(joueur);
+
+        // On affiche un message
+        mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + joueur.getDisplayName() + " s'est déconnecté");
+    }
+
+    /**
+     * Méthode permettant de reconnecter un joueur déconnecté
+     * @param disconnectedPlayer
+     */
+    public void reconnectPlayer(DisconnectedPlayer disconnectedPlayer) {
+        /*
+            private UUID playerUUID;
+            private Equipe oldPlayerTeam;
+            private Groupe oldPlayerGroupe;
+            private CouplePlayer oldPlayerDeathTime;
+            private Location oldPlayerLocation;
+            private List<ItemStack> oldPlayerInventory;
+            private LinkedBlockingQueue<ShopItem> bonus;
+            private KitAbstract kit;
+         */
+
+        // ON le remet dans son groupe
+        if(disconnectedPlayer.getOldPlayerGroupe() != null) {
+            Player joueur = Bukkit.getPlayer(disconnectedPlayer.getPlayerUUID());
+            disconnectedPlayer.getOldPlayerGroupe().playerHaveReconnected(joueur);
+        } else {
+            Bukkit.broadcastMessage("Le joueur nétait pas dans un groupe ");
+        }
+    }
+
+
 }
 

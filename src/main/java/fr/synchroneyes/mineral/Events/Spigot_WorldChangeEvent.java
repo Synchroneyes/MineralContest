@@ -36,7 +36,7 @@ public class Spigot_WorldChangeEvent implements Listener {
             if(mineralcontest.isAMineralContestWorld(monde_destination)) {
                 // Le joueur se rend dans un monde mineral contest pour la première fois
                 // On appelle l'event "MCPlayerJoinEvent"
-                MCPlayerJoinEvent joinEvent = new MCPlayerJoinEvent(joueur, new MCPlayer(joueur));
+                MCPlayerJoinEvent joinEvent = new MCPlayerJoinEvent(joueur);
                 Bukkit.getServer().getPluginManager().callEvent(joinEvent);
                 return;
             }

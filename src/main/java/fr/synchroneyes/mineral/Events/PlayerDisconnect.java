@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.custom_events.MCPlayerLeavePluginEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -19,7 +20,17 @@ public class PlayerDisconnect implements Listener {
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) throws Exception {
         World worldEvent = event.getPlayer().getWorld();
-        if (mineralcontest.isAMineralContestWorld(worldEvent)) {
+        // Quand un joueur se déconnecte, on appelle l'event PlayerLeavePlugin
+        Player joueur = event.getPlayer();
+
+        // ON vérifie que c'est un joueur du plugin
+        if(mineralcontest.plugin.getMCPlayer(joueur) != null) {
+            // On appelle l'event
+            MCPlayerLeavePluginEvent event1 = new MCPlayerLeavePluginEvent(event.getPlayer(), mineralcontest.plugin.getMCPlayer(event.getPlayer()));
+            Bukkit.getPluginManager().callEvent(event1);
+            return;
+        }
+        /*if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player joueur = event.getPlayer();
             Game partie = mineralcontest.getWorldGame(worldEvent);
 
@@ -87,7 +98,7 @@ public class PlayerDisconnect implements Listener {
             event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4d);
 
 
-        }
+        }*/
 
     }
 }

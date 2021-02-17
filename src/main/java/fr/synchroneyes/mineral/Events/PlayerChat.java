@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Statistics.Class.TalkStat;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -18,11 +19,11 @@ import java.util.Set;
 
 public class PlayerChat implements Listener {
 
-    // TODO
-
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         World worldEvent = event.getPlayer().getWorld();
+
+
         if (mineralcontest.isAMineralContestWorld(worldEvent)) {
             Player sender = event.getPlayer();
             Game partie = mineralcontest.getPlayerGame(sender);
@@ -38,7 +39,6 @@ public class PlayerChat implements Listener {
                     receveurs.add(online);
                 }
             }
-
 
 
             if (partie == null) return;
@@ -65,8 +65,22 @@ public class PlayerChat implements Listener {
 
 
             GameLogger.addLog(new Log("player_chat", event.getPlayer().getDisplayName() + ": " + event.getMessage(), "player_chat"));
-
+            return;
         }
 
+        // Le message provient d'un joueur ne provenant pas du plugin
+        // On regarde chaque groupe
+        for (Groupe groupe : mineralcontest.plugin.getGroupes()) {
+            // Si le groupe a activé "l'isolation" du chat
+            // On ajoute les membres de la partie à la liste des "receveurs"
+            // On fait le tri seulement si la game est en cours
+            if (groupe.getGame().isGameStarted())
+                for (Player membre : groupe.getPlayers())
+                    if (groupe.getParametresPartie().getCVAR("enable_chat_from_other_worlds").getValeurNumerique() == 1)
+                        event.getRecipients().add(membre);
+                    else event.getRecipients().remove(membre);
+
+
+        }
     }
 }

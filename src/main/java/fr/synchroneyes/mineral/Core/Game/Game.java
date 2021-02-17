@@ -541,7 +541,7 @@ public class Game implements Listener {
         }
     }
 
-    public void removeReferee(Player player, boolean switchToTeam) throws Exception {
+    public void removeReferee(Player player, boolean switchToTeam) {
         if (isReferee(player)) {
 
 

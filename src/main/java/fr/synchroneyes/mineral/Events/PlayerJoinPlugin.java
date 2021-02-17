@@ -15,6 +15,7 @@ public class PlayerJoinPlugin implements Listener {
     public void onPlayerJoinLobby(MCPlayerJoinEvent event) {
         // On l'ajoute au plugin
         mineralcontest.plugin.addNewPlayer(event.getPlayer());
+        event.getMcPlayer().setInPlugin(true);
         event.getPlayer().sendMessage("Bienvenue dans le plugin");
     }
 }
