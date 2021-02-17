@@ -23,39 +23,14 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws Exception {
 
-        // On commence par récuperer le joueur
+        // On regarde si le joueur se connecte à un monde mineral contest ou non
         Player joueur = event.getPlayer();
-
-        Bukkit.broadcastMessage("Le joueur " + joueur.getDisplayName() + " s'est reconnecté au serveur");
-
-        // On regarde si le joueur s'est déconnecté avant du plugin
-        DisconnectedPlayer disconnectedPlayer = mineralcontest.plugin.wasPlayerDisconnected(joueur);
-
-        // SI le joueur faisait parti du plugin
-        if (disconnectedPlayer != null) {
-
-            Bukkit.broadcastMessage("Le joueur faisait parti du plugin");
-
-            // On le reconnecte
-            mineralcontest.plugin.addNewPlayer(joueur);
-
-            // On récupère son instance
-            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
-
-            // Si MCPlayer est null; il ne s'était jamais connecté
-            if(mcPlayer == null){
-                Bukkit.broadcastMessage("Le joueur ne s'était jamais connecté");
-                return;
-            }
-
-            // On remet ses informations
-            mcPlayer.reconnectPlayer(disconnectedPlayer);
-
-
-            return;
+        if(mineralcontest.isInAMineralContestWorld(joueur)){
+            MCPlayerJoinEvent event1 = new MCPlayerJoinEvent(event.getPlayer());
+            Bukkit.getPluginManager().callEvent(event1);
         }
 
-        Bukkit.broadcastMessage("Le joueur est nouveau !");
+
     }
 
 

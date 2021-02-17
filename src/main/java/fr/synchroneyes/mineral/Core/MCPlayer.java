@@ -319,8 +319,6 @@ public class MCPlayer {
         if(disconnectedPlayer.getOldPlayerGroupe() != null) {
             Player joueur = Bukkit.getPlayer(disconnectedPlayer.getPlayerUUID());
             disconnectedPlayer.getOldPlayerGroupe().playerHaveReconnected(joueur);
-        } else {
-            Bukkit.broadcastMessage("Le joueur nétait pas dans un groupe ");
         }
     }
 

@@ -426,7 +426,10 @@ public class Groupe {
 
 
     public void addJoueur(Player p) {
-        if (this.joueurs.contains(p)) return;
+        if (this.joueurs.contains(p)) {
+            Bukkit.broadcastMessage("Already in addJoueur)");
+            return;
+        }
 
         p.setLevel(0);
         this.joueursInvites.remove(p);
@@ -446,8 +449,7 @@ public class Groupe {
         mineralcontest.plugin.getMCPlayer(p).setGroupe(this);
 
         // Si le joueur n'est pas dans le monde du groupe, on le TP
-        if(getMonde() != null && !p.getWorld().equals(getMonde()))
-            PlayerUtils.teleportPlayer(p, getMonde(), getMonde().getSpawnLocation());
+        teleportToGroupWorld(p);
 
     }
 
@@ -456,6 +458,8 @@ public class Groupe {
         if (!this.admins.contains(p)) this.admins.add(p);
         if (mineralcontest.communityVersion)
             sendToadmin(mineralcontest.prefixPrive + Lang.translate(Lang.player_is_now_group_admin.toString(), p));
+        teleportToGroupWorld(p);
+
     }
 
     public int getPlayerCount() {
@@ -463,15 +467,6 @@ public class Groupe {
     }
 
     public void retirerJoueur(Player joueur) {
-        /*if (isGroupeCreateur(joueur) && mineralcontest.communityVersion && partie != null && !partie.isGameStarted()) {
-
-            sendToEveryone(mineralcontest.prefixPrive + Lang.group_got_deleted.toString());
-            this.joueurs.clear();
-            this.admins.clear();
-            this.joueursInvites.clear();
-            mineralcontest.supprimerGroupe(this);
-            return;
-        }*/
 
         this.joueurs.remove(joueur);
         this.admins.remove(joueur);
@@ -493,32 +488,6 @@ public class Groupe {
         });
 
         return liste_admin;
-    }
-
-    /**
-     * Sauvegarde les membres du groupe ayant été déconnecté, avec leur position
-     *
-     * @param p
-     */
-    public void addDisconnectedPlayer(Player p) {
-        /*Pair<String, Location> playerInfo = new Pair<>(getPlayerTeam(p).getNomEquipe(), p.getLocation());
-        retirerJoueur(p);
-        if (!havePlayerDisconnected(p)) disconnectedPlayers.put(p.getUniqueId(), playerInfo);*/
-
-        Equipe oldPlayerTeam = getPlayerTeam(p);
-        CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
-
-        if (mapVote != null) getMapVote().removePlayerVote(p);
-        getGame().removePlayerReady(p);
-
-        getGame().removePlayerReady(p);
-        getGame().groupe.getPlayers().remove(p);
-
-        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, p.getLocation(), p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
-        if (!havePlayerDisconnected(p)) disconnectedPlayers.add(joueur);
-
-        if(!havePlayerDisconnected(p)) p.sendMessage(ChatColor.GOLD + "" + joueur);
-        retirerJoueur(p);
     }
 
     /**
@@ -668,6 +637,11 @@ public class Groupe {
             if (disconnectedPlayer.getPlayerUUID().equals(p.getUniqueId())) return true;
         }
         return false;
+    }
+
+    private void teleportToGroupWorld(Player p) {
+        if(getMonde() != null && !p.getWorld().equals(getMonde()))
+            PlayerUtils.teleportPlayer(p, getMonde(), getGame().getArene().getCoffre().getLocation());
     }
 
 

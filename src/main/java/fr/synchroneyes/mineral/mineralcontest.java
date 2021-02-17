@@ -214,6 +214,10 @@ public final class mineralcontest extends JavaPlugin {
         // On charge le fichier de langue
         Lang.loadLang(getPluginConfigValue("language").toString());
 
+        // On regard si on doit lancer le mode communautaire ou non
+        communityVersion = (boolean) getPluginConfigValue("enable_community_version");
+        Bukkit.getLogger().info("Version communautaire: " + communityVersion);
+
         this.groupes = new LinkedList<>();
         this.groupeExtension = GroupeExtension.getInstance();
 
@@ -264,7 +268,7 @@ public final class mineralcontest extends JavaPlugin {
 
 
 
-        if (!debug) {
+        if (!debug && !communityVersion) {
             if (pluginWorld != null) {
                 for (Player online : pluginWorld.getPlayers()) {
                     PlayerUtils.teleportPlayer(online, defaultSpawn.getWorld(), defaultSpawn);
@@ -555,10 +559,22 @@ public final class mineralcontest extends JavaPlugin {
 
 
     public static boolean isInAMineralContestWorld(Player p) {
-        MCPlayer joueur = plugin.getMCPlayer(p);
-        if(joueur == null) return false;
 
-        return (p.getWorld().equals(plugin.pluginWorld) || (joueur.getGroupe().getMonde() != null && joueur.getGroupe().getMonde().equals(p.getWorld())));
+        if(p.getWorld().equals(plugin.pluginWorld)) return true;
+
+        for(Groupe groupe : plugin.groupes) {
+            if(groupe.getMonde() != null && groupe.getMonde().equals(p.getWorld())) return true;
+        }
+        return false;
+
+        /*MCPlayer joueur = plugin.getMCPlayer(p);
+        return (p.getWorld().equals(plugin.pluginWorld) ||
+
+                (   joueur != null &&
+                    joueur.getGroupe().getMonde() != null &&
+                    joueur.getGroupe().getMonde().equals(p.getWorld())
+                )
+        );*/
     }
 
     public static boolean isInMineralContestHub(Player p) {
@@ -617,12 +633,7 @@ public final class mineralcontest extends JavaPlugin {
         }
 
         MCPlayer joueur = new MCPlayer(nouveauJoueur);
-
-        /*MCPlayerJoinEvent mcPlayerJoinEvent = new MCPlayerJoinEvent(nouveauJoueur, joueur);
-        Bukkit.getPluginManager().callEvent(mcPlayerJoinEvent);*/
-
         this.joueurs.add(joueur);
-
     }
 
     /**

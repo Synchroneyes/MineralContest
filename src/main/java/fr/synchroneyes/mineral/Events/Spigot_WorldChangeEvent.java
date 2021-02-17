@@ -33,7 +33,8 @@ public class Spigot_WorldChangeEvent implements Listener {
         // On doit alors regarder si il se dirige vers un monde du plugin
         if(mcPlayer == null) {
             // Vérification du monde de destination
-            if(mineralcontest.isAMineralContestWorld(monde_destination)) {
+            // Il faut aussi que le monde de départ ne soit pas le lobby
+            if(mineralcontest.isAMineralContestWorld(monde_destination) && !mineralcontest.isAMineralContestWorld(monde_source)) {
                 // Le joueur se rend dans un monde mineral contest pour la première fois
                 // On appelle l'event "MCPlayerJoinEvent"
                 MCPlayerJoinEvent joinEvent = new MCPlayerJoinEvent(joueur);

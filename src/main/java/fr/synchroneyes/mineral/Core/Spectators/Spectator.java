@@ -147,7 +147,7 @@ public class Spectator {
         if (current_spectated_player == null) {
             if (joueurs_a_spectate.isEmpty()) {
                 joueur.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 2, 1));
-                joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
+                //joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
                 return;
             }
             spectateNextPlayer();

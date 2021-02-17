@@ -1,12 +1,14 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.custom_events.MCPlayerChangedWorldEvent;
+import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
 import fr.synchroneyes.custom_events.MCPlayerLeaveWorldPluginEvent;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerWorldChangeEvent implements Listener {
 
@@ -34,7 +36,14 @@ public class PlayerWorldChangeEvent implements Listener {
             return;
         }else {
             // Le joueur va rejoindre le plugin à nouveau
-            event.getJoueur().sendPrivateMessage("join plugin à nouveau");
+
+            // Si le joueur faisait déjà parti du plugin; on ne fait rien
+            if(mineralcontest.isAMineralContestWorld(event.getFrom())) {
+                //Bukkit.broadcastMessage("Le joueur vient d'un monde MC; on fait rien");
+                return;
+            }
+            MCPlayerJoinEvent event1 = new MCPlayerJoinEvent(event.getJoueur().getJoueur());
+            Bukkit.getPluginManager().callEvent(event1);
 
         }
 
