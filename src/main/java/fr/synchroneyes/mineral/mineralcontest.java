@@ -374,7 +374,7 @@ public final class mineralcontest extends JavaPlugin {
             }
         }
 
-
+        // test
         //getGame().resetMap();
 
 
