@@ -466,7 +466,6 @@ public final class mineralcontest extends JavaPlugin {
         // Déconnexion d'un joueur
         Bukkit.getServer().getPluginManager().registerEvents(new MCPlayerLeavePlugin(), this);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new TestCustomPLayerList(), this);
 
 
         // AutomatedChest
