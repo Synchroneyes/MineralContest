@@ -22,11 +22,14 @@ public class PlayerLeavePluginWorld implements Listener {
 
         Location location = event.getJoueur().getLocation();
         if(mcPlayer.getGroupe() != null &&
-           mcPlayer.getGroupe().getMonde() != null) location = mcPlayer.getPLayerLocationFromWorld(mcPlayer.getGroupe().getMonde());
+           mcPlayer.getGroupe().getMonde() != null) {
+            location = mcPlayer.getPLayerLocationFromWorld(mcPlayer.getGroupe().getMonde());
+
+            event.getMcPlayer().getGroupe().addDisconnectedPlayer(event.getJoueur(), location);
+        }
 
 
         // On marque le joueur comme quoi il a quitté le plugin
-        event.getMcPlayer().getGroupe().addDisconnectedPlayer(event.getJoueur(), location);
         event.getMcPlayer().setInPlugin(false);
     }
 }

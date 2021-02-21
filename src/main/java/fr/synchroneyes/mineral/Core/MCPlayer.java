@@ -77,7 +77,8 @@ public class MCPlayer {
      */
     public void setGroupe(Groupe groupe) {
         this.groupe = groupe;
-        this.partie = groupe.getGame();
+
+        if(groupe != null) this.partie = groupe.getGame();
     }
 
     /**

@@ -473,6 +473,11 @@ public class Groupe {
         this.joueursInvites.remove(joueur);
 
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.you_left_the_group.toString(), this));
+
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+        if(mcPlayer != null) {
+            mcPlayer.setGroupe(null);
+        }
     }
 
 
