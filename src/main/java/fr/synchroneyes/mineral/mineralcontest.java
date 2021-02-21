@@ -39,6 +39,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -97,6 +98,9 @@ public final class mineralcontest extends JavaPlugin {
 
 
     private CustomPluginManager pluginManager;
+
+
+
 
     // Constructeur, on initialise les variables
     public mineralcontest() {
@@ -202,7 +206,6 @@ public final class mineralcontest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
 
         // On copie les fichiers par défaut
         RessourceFilesManager.createDefaultFiles();

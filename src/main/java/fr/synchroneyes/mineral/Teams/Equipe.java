@@ -134,6 +134,10 @@ public class Equipe implements Comparable<Equipe> {
         }
 
 
+        // On vide l'inventaire du coffre
+        openedChest.getInventory().clear();
+
+
         boolean scoreWasUpdated = false;
         if (score_gagne > 0) scoreWasUpdated = true;
 
@@ -149,11 +153,15 @@ public class Equipe implements Comparable<Equipe> {
         setScore(score_gagne);
 
         // Si le score gagné est différend du score, ça veut dire qu'on a déposé des blocs dans le coffre, on averti l'équipe
-        if (scoreWasUpdated) for (Player online : joueurs)
-            online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
+        if (scoreWasUpdated) {
+            for (Player online : joueurs) {
+                if(online != null) {
+                    online.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.team_score_now.toString(), this));
+                }
+            }
+        }
 
 
-        openedChest.getInventory().clear();
 
 
         // Si on a déposé de la redstone

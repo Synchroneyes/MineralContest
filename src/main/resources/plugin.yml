@@ -7,7 +7,7 @@ load: STARTUP
 authors: [Groupe6]
 description: Plugin gamemode Mineral Contest
 website: http://mineral.synchroneyes.fr
-
+depend: [Tablist]
 commands:
   start:
     description: Démarre une partie
