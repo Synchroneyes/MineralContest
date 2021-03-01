@@ -22,16 +22,13 @@ public class PlayerJoinPlugin implements Listener {
         // On commence par récuperer le joueur
         Player joueur = event.getPlayer();
 
-        Bukkit.broadcastMessage("Le joueur " + joueur.getDisplayName() + " s'est connecté au serveur");
 
         // On regarde si le joueur s'est déconnecté avant du plugin
         DisconnectedPlayer disconnectedPlayer = mineralcontest.plugin.wasPlayerDisconnected(joueur);
 
-        Bukkit.broadcastMessage("Le joueur faisait parti du plugin? " + (disconnectedPlayer != null));
         // SI le joueur faisait parti du plugin
         if (disconnectedPlayer != null) {
 
-            Bukkit.broadcastMessage("Le joueur faisait parti du plugin");
 
             // On le reconnecte
             mineralcontest.plugin.addNewPlayer(joueur);
@@ -41,7 +38,6 @@ public class PlayerJoinPlugin implements Listener {
 
             // Si MCPlayer est null; il ne s'était jamais connecté
             if(mcPlayer == null){
-                Bukkit.broadcastMessage("Le joueur ne s'était jamais connecté");
                 return;
             }
 

@@ -28,13 +28,6 @@ public class PlayerJoin implements Listener {
             Bukkit.getPluginManager().callEvent(event1);
         }
 
-        event.getPlayer().setPlayerListHeader("HEADER");
-        event.getPlayer().setPlayerListFooter("Footer");
-
-
-
-
-
     }
 
 
