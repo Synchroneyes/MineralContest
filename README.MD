@@ -1,5 +1,7 @@
 ## Welcome to Mineral Contest !
 
+<img src="https://github.com/Synchroneyes/MineralContest/actions/workflows/maven.yml/badge.svg">
+
 *(The plugin has been completly rewrote in order to support custom maps made by the community)*
 
 
