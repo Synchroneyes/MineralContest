@@ -16,6 +16,7 @@ public class SpeedWorldLoading implements Listener {
 
         // Si c'est un monde mineral contest; on active le chargement rapide
         if(mineralcontest.isAMineralContestWorld(monde)) {
+            Bukkit.getLogger().info("Fast load for:" + monde.getName());
             monde.setKeepSpawnInMemory(false);
         }
     }

@@ -23,6 +23,8 @@ public class Spigot_WorldChangeEvent implements Listener {
         monde_source = event.getFrom();
         monde_destination = event.getPlayer().getWorld();
 
+        Bukkit.broadcastMessage(event.getPlayer().getWorld().getName() + " - " + event.getPlayer().getLocation().getX() + " - " + event.getPlayer().getLocation().getZ());
+
         // On ne traite que les changements de monde du plugin
         Player joueur = event.getPlayer();
 

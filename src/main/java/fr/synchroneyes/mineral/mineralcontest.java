@@ -100,6 +100,11 @@ public final class mineralcontest extends JavaPlugin {
     private CustomPluginManager pluginManager;
 
 
+    // Only when communityVersion is set to True
+    // define how many player required per group before being able to start a game
+    public static int min_player_per_group = 3;
+
+
 
 
     // Constructeur, on initialise les variables
@@ -216,6 +221,9 @@ public final class mineralcontest extends JavaPlugin {
 
         // On charge le fichier de langue
         Lang.loadLang(getPluginConfigValue("language").toString());
+
+        // On charge la valeur du fichier de config pour le nombre de joueur requis
+        min_player_per_group = Integer.parseInt(getPluginConfigValue("min_player_per_group").toString());
 
         // On regard si on doit lancer le mode communautaire ou non
         communityVersion = (boolean) getPluginConfigValue("enable_community_version");
@@ -589,6 +597,7 @@ public final class mineralcontest extends JavaPlugin {
 
         for (Groupe groupe : plugin.groupes)
             if(groupe.getMapName().equals(w.getName())) return true;
+            else if(w.getName().contains(groupe.getIdentifiant())) return true;
             else if (groupe.getMonde() == null) return false;
             else if (w.equals(groupe.getMonde())) return true;
         return w.equals(plugin.pluginWorld);

@@ -335,6 +335,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("points_per_kill", "0", "Permet de définir le nombre de points offert lors d'un kill de joueur", "cvar", true, true));
 
             parametresParDefaut.add(new GameCVAR("enable_chat_from_other_worlds", "1", "Permet d'activer ou non l'isolement du chat dans une partie. Par exemple, si l'option est activé, tous les messages envoyé par des joueurs seront affiché. Sinon, seuls les messages provenant de la partie seront affiché", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_nether", "0", "Permet d'activer ou non l'accès au nether", "settings", true, true));
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

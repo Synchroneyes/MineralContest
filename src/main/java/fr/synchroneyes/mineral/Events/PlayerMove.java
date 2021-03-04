@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -77,6 +78,7 @@ public class PlayerMove implements Listener {
 
 
             if (mineralcontest.getPlayerGame(event.getPlayer()) != null && (mineralcontest.getPlayerGame(event.getPlayer()).isGamePaused() || mineralcontest.getPlayerGame(event.getPlayer()).isPreGameAndGameStarted())) {
+                if(event.getPlayer().getVelocity().getY() < 0.0783 && !event.getPlayer().isOnGround()) return;
                 Location to = event.getFrom();
                 to.setPitch(event.getTo().getPitch());
                 to.setYaw(event.getTo().getYaw());

@@ -394,6 +394,15 @@ public class Game implements Listener {
             // Si tous les joueurs sont prêt
             if (areAllPlayersReady()) {
 
+                // Si on est en mode communautaire et que le nombre de membre est inférieur au nombre de jouuers requis
+                // On ne fait rien et on averti le groupe
+                if(mineralcontest.communityVersion) {
+                    if(groupe.getPlayers().size() < mineralcontest.min_player_per_group) {
+                        groupe.sendToEveryone(mineralcontest.prefixErreur + "Il n'y a pas assez de joueur dans le groupe pour pouvoir démarrer une partie. Nombre de joueur(s) requis: " + mineralcontest.min_player_per_group);
+                        return;
+                    }
+                }
+
                 // SI on a pas encoré démarrer le vote, on le lance
                 if (groupe.getEtatPartie().equals(Etats.EN_ATTENTE)) {
                     Bukkit.getLogger().info(mineralcontest.prefix + " Starting vote for group " + groupe.getNom());

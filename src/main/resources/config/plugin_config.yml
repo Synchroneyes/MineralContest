@@ -4,3 +4,4 @@ enable_metrics: true
 enable_auto_update: true
 enable_mysql_storage: false
 enable_community_version: false
+min_player_per_group: 6

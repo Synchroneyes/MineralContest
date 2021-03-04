@@ -116,7 +116,7 @@ public class PlayerDeathEvent implements Listener {
                 int nombre_points_bonus = partie.groupe.getParametresPartie().getCVAR("points_per_kill").getValeurNumerique();
 
                 // si le nombre de points > 0
-                if(nombre_points_bonus > 0) {
+                if(nombre_points_bonus > 0 && event.getEntity().getKiller() != null && !event.getEntity().getKiller().equals(event.getEntity())) {
                     // Si il n'y a pas de teamkill
                     if(partie.getPlayerTeam(joueur) != partie.getPlayerTeam(joueur.getKiller())) {
                         // On ajoute des points à l'équipe ayant fait le kill

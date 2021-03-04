@@ -48,9 +48,18 @@ public class PlayerJoinPlugin implements Listener {
             return;
         }
 
+        // On regarde si on a le MC player du joueur
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+
+        // Le joueur faisait déjà parti du plugin
+        if(mcPlayer != null) {
+            return;
+        }
+
         // On l'ajoute au plugin
         mineralcontest.plugin.addNewPlayer(joueur);
-        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+        mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+
 
         // On regarde si on est en version communautaire ou non
         if(!mineralcontest.communityVersion) {

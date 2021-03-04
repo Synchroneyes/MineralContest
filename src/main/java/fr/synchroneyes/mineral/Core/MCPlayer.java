@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
@@ -321,6 +322,20 @@ public class MCPlayer {
             Player joueur = Bukkit.getPlayer(disconnectedPlayer.getPlayerUUID());
             disconnectedPlayer.getOldPlayerGroupe().playerHaveReconnected(joueur);
         }
+    }
+
+    /**
+     * Méthode permettant de retourner vrai si l'inventaire du joueur est plein
+     * @return
+     */
+    public boolean isInventoryFull() {
+        int inventorySize = joueur.getInventory().getSize();
+        int item_count = 0;
+
+        for(ItemStack item : joueur.getInventory().getContents())
+            if(item != null) ++item_count;
+
+        return item_count == inventorySize;
     }
 
 

@@ -20,12 +20,14 @@ import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +44,8 @@ public class Groupe {
 
     @Setter(AccessLevel.PROTECTED)
     private World gameWorld;
+
+    private World nether;
     private MapVote mapVote;
 
     private Game partie;
@@ -232,8 +236,11 @@ public class Groupe {
         try {
 
             sendToEveryone(mineralcontest.prefixGroupe + "Chargement de la map \"" + nomMonde + "\" en cours ...");
-            //this.gameWorld = worldLoader.chargerMonde(nomMonde, getIdentifiant());
-            //this.gameWorld.setAutoSave(false);
+
+            this.genererIdentifiant();
+
+
+            this.setMapName(nomMonde + "_" + this.getIdentifiant());
 
             worldLoader.chargerMondeThreade(nomMonde, this);
 
@@ -244,35 +251,6 @@ public class Groupe {
             return false;
         }
 
-
-
-
-        /*Location worldSpawnLocation = gameWorld.getSpawnLocation();
-
-        try {
-            if (worldSpawnLocation.getX() == WorldLoader.defaultX && worldSpawnLocation.getY() == WorldLoader.defaultY && worldSpawnLocation.getZ() == WorldLoader.defaultZ)
-                worldSpawnLocation = partie.getArene().getCoffre().getLocation();
-        } catch (Exception e) {
-            worldSpawnLocation = gameWorld.getSpawnLocation();
-        }
-
-
-        for (Player joueur : joueurs) {
-            joueur.getInventory().clear();
-
-            // Si le joueur est un arbitre, on lui donne le livre
-            if (getGame().isReferee(joueur)) joueur.getInventory().setItemInMainHand(Referee.getRefereeItem());
-
-                // Sinon, on lui donne le livre de selection d'équipe!
-            else joueur.getInventory().setItemInMainHand(Game.getTeamSelectionItem());
-            joueur.teleport(worldSpawnLocation);
-            joueur.sendMessage(mineralcontest.prefixPrive + Lang.set_yourself_as_ready_to_start_game.toString());
-        }
-
-        setMapName(nomMonde);
-
-
-        if (this.mapVote != null) this.mapVote.clearVotes();*/
         return true;
     }
 
@@ -398,6 +376,10 @@ public class Groupe {
         return this.admins.contains(p);
     }
 
+    public World getNether() {
+        return nether;
+    }
+
     public void kickPlayer(Player p) {
         this.joueurs.remove(p);
         this.admins.remove(p);
@@ -427,7 +409,7 @@ public class Groupe {
 
     public void addJoueur(Player p) {
         if (this.joueurs.contains(p)) {
-            Bukkit.broadcastMessage("Already in addJoueur)");
+            //Bukkit.broadcastMessage("Already in addJoueur)");
             return;
         }
 
@@ -649,6 +631,8 @@ public class Groupe {
             PlayerUtils.teleportPlayer(p, getMonde(), getGame().getArene().getCoffre().getLocation());
     }
 
-
+    public void setNether(World nether) {
+        this.nether = nether;
+    }
 }
 
