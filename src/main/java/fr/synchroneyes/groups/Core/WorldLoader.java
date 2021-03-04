@@ -98,21 +98,7 @@ public class WorldLoader {
             World createdWorld = Bukkit.getServer().createWorld(wc);
             createdWorld.setDifficulty(Difficulty.NORMAL);
 
-            File dossier_nether = new File(Bukkit.getServer().getWorldContainer(), identifiant + "_nether");
-            if (repertoireServer.exists()) {
-                FileUtils.copyDirectory(repertoireServer, dossier_nether);
 
-                uidDat = new File(dossier_nether, "uid.dat");
-                if (uidDat.exists()) uidDat.delete();
-
-                // On supprime le uid.dat qui empêche le chargement
-                WorldCreator worldCreator = new WorldCreator(identifiant + "_nether").environment(World.Environment.NETHER);
-
-                World w = Bukkit.getServer().createWorld(worldCreator);
-                groupe.setNether(w);
-            } else {
-                Bukkit.broadcastMessage("Le dossier n'existe pas !!!!!!!!!!!!!!!!!!!");
-            }
 
             lireConfigurationPartie();
             lireFichierMonde(nomMondeDossier, createdWorld);
