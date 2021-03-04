@@ -10,6 +10,11 @@ public class PointsReward extends AbstractReward{
 
     private int points;
 
+
+    public PointsReward(int points) {
+        this.points = points;
+    }
+
     public int getPoints() {
         return points;
     }

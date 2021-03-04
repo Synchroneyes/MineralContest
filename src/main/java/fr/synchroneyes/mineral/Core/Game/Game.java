@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Game;
 
+import fr.synchroneyes.achievements.AchievementManager;
 import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
@@ -114,6 +115,8 @@ public class Game implements Listener {
     @Getter
     private BossManager bossManager;
 
+    // Gestionnaire de défis
+    private AchievementManager achievementManager;
 
     // Group of the game
     public Groupe groupe;
@@ -143,6 +146,7 @@ public class Game implements Listener {
         this.playerBonusManager = new PlayerBonus(this);
         this.shopManager = new ShopManager(this);
         this.bossManager = new BossManager(this);
+        this.achievementManager = new AchievementManager(this);
 
         initGameSettings();
     }
@@ -978,6 +982,7 @@ public class Game implements Listener {
             this.groupe.setGroupLocked(false);
             this.groupe.enableVote();
             this.groupe.resetGame();
+            this.achievementManager.unloadAchievementManager();
 
 
 
@@ -1209,6 +1214,7 @@ public class Game implements Listener {
         getArene().startAutoMobKill();
 
         getParachuteManager().handleDrops();
+        this.achievementManager.init();
 
         // On set le world border
         //mineralcontest.plugin.setWorldBorder(groupe);

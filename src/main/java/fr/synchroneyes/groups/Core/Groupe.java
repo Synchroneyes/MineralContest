@@ -75,6 +75,8 @@ public class Groupe {
     // private HashMap<UUID, Pair<String, Location>> disconnectedPlayers;
     private LinkedList<DisconnectedPlayer> disconnectedPlayers;
 
+
+
     public Groupe() {
 
         this.admins = new LinkedList<>();

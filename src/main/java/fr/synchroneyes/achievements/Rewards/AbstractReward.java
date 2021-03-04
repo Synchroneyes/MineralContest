@@ -2,6 +2,7 @@ package fr.synchroneyes.achievements.Rewards;
 
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractReward {
@@ -14,7 +15,7 @@ public abstract class AbstractReward {
     /**
      * Méthode permettant de donner une récompense à un joueur
      */
-    public abstract void giveToPlayer();
+    protected abstract void giveToPlayer();
 
 
     /**
@@ -41,7 +42,7 @@ public abstract class AbstractReward {
      */
     public void rewardPlayer() {
         // On informe le joueur qu'il a reçu une récompense
-        getJoueur().sendMessage(mineralcontest.prefixPrive + getRewardText());
+        getJoueur().sendMessage(mineralcontest.prefixPrive + ChatColor.GREEN + getRewardText());
         giveToPlayer();
     }
 }
