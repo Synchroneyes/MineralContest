@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral;
 
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.effect.BleedEffect;
 import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.custom_plugins.CustomPlugin;
 import fr.synchroneyes.custom_plugins.CustomPluginManager;
@@ -75,6 +77,8 @@ public final class mineralcontest extends JavaPlugin {
 
     public Location defaultSpawn;
     public MapBuilder mapBuilderInstance;
+
+    public EffectManager effectManager;
 
 
     /**
@@ -254,6 +258,9 @@ public final class mineralcontest extends JavaPlugin {
 
 
         initCommunityVersion();
+
+        // Initialisation de l'effect manager
+        effectManager = new EffectManager(this);
 
         // Initialisation des variables du plugin
         this.mapBuilderInstance = MapBuilder.getInstance();

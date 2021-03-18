@@ -1,18 +1,31 @@
 package fr.synchroneyes.mineral.Commands;
 
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.effect.*;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.DeathAnimations.Animations.HeartAnimation;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Effect;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 public class ReadyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+
+
+        HeartAnimation animation = new HeartAnimation();
+        animation.playAnimation((LivingEntity) commandSender);
+        if(1==1) return true;
 
 
         if (!(commandSender instanceof Player)) {
