@@ -1,24 +1,20 @@
-package fr.synchroneyes.achievements.Availables;
+package fr.synchroneyes.challenges.Availables;
 
 
-import fr.synchroneyes.achievements.AchievementManager;
-import fr.synchroneyes.achievements.Rewards.AbstractReward;
+import fr.synchroneyes.challenges.ChallengeManager;
+import fr.synchroneyes.challenges.Rewards.AbstractReward;
 import fr.synchroneyes.mineral.Core.MCPlayer;
-import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
 
 /**
  * Classe représentant un succès à faire
  */
-public abstract class AbstractAchievement implements Listener {
+public abstract class AbstractChallenge implements Listener {
 
     private MCPlayer player;
-    private AchievementManager manager;
+    private ChallengeManager manager;
 
-    public AbstractAchievement(AchievementManager manager) {
+    public AbstractChallenge(ChallengeManager manager) {
         this.manager = manager;
     }
 
@@ -57,7 +53,7 @@ public abstract class AbstractAchievement implements Listener {
         this.player = player;
     }
 
-    public AchievementManager getManager() {
+    public ChallengeManager getManager() {
         return manager;
     }
 

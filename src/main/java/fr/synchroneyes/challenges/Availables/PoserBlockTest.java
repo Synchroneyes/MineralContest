@@ -1,20 +1,18 @@
-package fr.synchroneyes.achievements.Availables;
+package fr.synchroneyes.challenges.Availables;
 
-import fr.synchroneyes.achievements.AchievementManager;
-import fr.synchroneyes.achievements.Rewards.AbstractReward;
-import fr.synchroneyes.achievements.Rewards.SingleArticleReward;
+import fr.synchroneyes.challenges.ChallengeManager;
+import fr.synchroneyes.challenges.Rewards.AbstractReward;
+import fr.synchroneyes.challenges.Rewards.SingleArticleReward;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class PoserBlockTest extends AbstractAchievement{
+public class PoserBlockTest extends AbstractChallenge {
 
-    public PoserBlockTest(AchievementManager manager) {
+    public PoserBlockTest(ChallengeManager manager) {
         super(manager);
     }
 

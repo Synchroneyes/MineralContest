@@ -1,6 +1,6 @@
 package fr.synchroneyes.mineral.Core.Game;
 
-import fr.synchroneyes.achievements.AchievementManager;
+import fr.synchroneyes.challenges.ChallengeManager;
 import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
@@ -34,12 +34,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -116,7 +114,7 @@ public class Game implements Listener {
     private BossManager bossManager;
 
     // Gestionnaire de défis
-    private AchievementManager achievementManager;
+    private ChallengeManager achievementManager;
 
     // Group of the game
     public Groupe groupe;
@@ -146,7 +144,7 @@ public class Game implements Listener {
         this.playerBonusManager = new PlayerBonus(this);
         this.shopManager = new ShopManager(this);
         this.bossManager = new BossManager(this);
-        this.achievementManager = new AchievementManager(this);
+        this.achievementManager = new ChallengeManager(this);
 
         initGameSettings();
     }

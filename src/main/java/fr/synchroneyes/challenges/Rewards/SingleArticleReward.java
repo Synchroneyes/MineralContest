@@ -1,10 +1,8 @@
-package fr.synchroneyes.achievements.Rewards;
+package fr.synchroneyes.challenges.Rewards;
 
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class SingleArticleReward extends AbstractReward{
 

@@ -1,19 +1,23 @@
-package fr.synchroneyes.achievements.Availables;
+package fr.synchroneyes.challenges.Availables;
 
-import fr.synchroneyes.achievements.AchievementManager;
-import fr.synchroneyes.achievements.Rewards.AbstractReward;
-import fr.synchroneyes.achievements.Rewards.PointsReward;
+import fr.synchroneyes.challenges.ChallengeManager;
+import fr.synchroneyes.challenges.Rewards.AbstractReward;
+import fr.synchroneyes.challenges.Rewards.PointsReward;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-public class TuerZombie extends AbstractAchievement{
-    public TuerZombie(AchievementManager manager) {
+public class TuerZombie extends AbstractRepeatableChallenge {
+    public TuerZombie(ChallengeManager manager) {
         super(manager);
+    }
+
+    @Override
+    public int repetitionNeeded() {
+        return 25;
     }
 
     @Override
@@ -23,7 +27,7 @@ public class TuerZombie extends AbstractAchievement{
 
     @Override
     public String getObjectifTexte() {
-        return "Tuez un zombie. Simple non ?";
+        return "Tuez " + repetitionNeeded() + " zombies pour remporter 500 points!";
     }
 
     @Override

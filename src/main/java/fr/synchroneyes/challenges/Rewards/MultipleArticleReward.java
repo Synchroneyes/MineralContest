@@ -1,4 +1,4 @@
-package fr.synchroneyes.achievements.Rewards;
+package fr.synchroneyes.challenges.Rewards;
 
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import org.bukkit.World;
