@@ -107,6 +107,8 @@ public class GroupeExtension {
         this.bukkitCommandMap.register("", new RetirerAdmin());
 
         this.bukkitCommandMap.register("", new Vote());
+        this.bukkitCommandMap.register("", new FermerGroupe());
+        this.bukkitCommandMap.register("", new OuvrirGroupe());
 
 
     }

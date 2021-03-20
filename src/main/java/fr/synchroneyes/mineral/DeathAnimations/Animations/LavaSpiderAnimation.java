@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.DeathAnimations.Animations;
 import de.slikey.effectlib.Effect;
 import de.slikey.effectlib.effect.FountainEffect;
 import fr.synchroneyes.mineral.DeathAnimations.EffectAnimation;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 
 public class LavaSpiderAnimation extends EffectAnimation {
@@ -10,6 +11,11 @@ public class LavaSpiderAnimation extends EffectAnimation {
     @Override
     public String getAnimationName() {
         return "Araignée de feu";
+    }
+
+    @Override
+    public Material getIcone() {
+        return Material.FERMENTED_SPIDER_EYE;
     }
 
     @Override

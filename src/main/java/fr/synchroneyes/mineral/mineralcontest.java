@@ -1,7 +1,6 @@
 package fr.synchroneyes.mineral;
 
 import de.slikey.effectlib.EffectManager;
-import de.slikey.effectlib.effect.BleedEffect;
 import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.custom_plugins.CustomPlugin;
 import fr.synchroneyes.custom_plugins.CustomPluginManager;
@@ -22,6 +21,7 @@ import fr.synchroneyes.mineral.Core.Parachute.Events.ParachuteHitDetection;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Commands.SetDefaultItems;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.Events.InventoryClick;
 import fr.synchroneyes.mineral.Core.Referee.RefereeEvent;
+import fr.synchroneyes.mineral.DeathAnimations.DeathAnimationManager;
 import fr.synchroneyes.mineral.Events.*;
 import fr.synchroneyes.mineral.Events.ArmorStandPickup;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -107,6 +107,9 @@ public final class mineralcontest extends JavaPlugin {
     // Only when communityVersion is set to True
     // define how many player required per group before being able to start a game
     public static int min_player_per_group = 3;
+
+    // Gestionnaire des animations dde mort
+    public DeathAnimationManager deathAnimationManager;
 
 
 
@@ -236,6 +239,8 @@ public final class mineralcontest extends JavaPlugin {
         this.groupes = new LinkedList<>();
         this.groupeExtension = GroupeExtension.getInstance();
 
+
+
         registerCommands();
         registerEvents();
 
@@ -261,6 +266,9 @@ public final class mineralcontest extends JavaPlugin {
 
         // Initialisation de l'effect manager
         effectManager = new EffectManager(this);
+
+        // Initialisation des effets de mort
+        this.deathAnimationManager = new DeathAnimationManager();
 
         // Initialisation des variables du plugin
         this.mapBuilderInstance = MapBuilder.getInstance();
@@ -526,6 +534,7 @@ public final class mineralcontest extends JavaPlugin {
             bukkitCommandMap.register("", new Halloween());
 
             bukkitCommandMap.register("", new DisplayScoreCommand());
+            bukkitCommandMap.register("", new SelectDeathAnimationCommand());
 
 
 

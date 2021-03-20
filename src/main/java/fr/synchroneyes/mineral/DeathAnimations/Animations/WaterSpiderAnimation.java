@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.DeathAnimations.Animations;
 import de.slikey.effectlib.Effect;
 import de.slikey.effectlib.effect.FountainEffect;
 import fr.synchroneyes.mineral.DeathAnimations.EffectAnimation;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 
 public class WaterSpiderAnimation extends EffectAnimation {
@@ -10,6 +11,11 @@ public class WaterSpiderAnimation extends EffectAnimation {
     @Override
     public String getAnimationName() {
         return "Araignée d'eau";
+    }
+
+    @Override
+    public Material getIcone() {
+        return Material.SPIDER_EYE;
     }
 
     @Override

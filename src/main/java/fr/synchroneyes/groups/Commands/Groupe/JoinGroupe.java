@@ -29,17 +29,25 @@ public class JoinGroupe extends CommandTemplate {
 
         for (Groupe groupe : mineralcontest.plugin.groupes)
             if (groupe.getNom().equalsIgnoreCase(args[0])) {
-                if (groupe.isPlayerInvited(joueur)) {
-                    if (groupe.isGroupLocked()) {
-                        joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_group_is_locked.toString());
-                        return false;
+
+                // On commence par regarder si le groupe est ouvert ou fermé
+                if(groupe.isGroupLocked()) {
+                    // Le groupe est fermé, on regarde si le joueur a été invité ou non
+                    if(groupe.isPlayerInvited(joueur)) {
+                        groupe.addJoueur(joueur);
+                        return true;
                     }
-                    groupe.addJoueur(joueur);
-                } else {
+
+                    // Sinon, message d'erreur car joueur non invité
                     joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_you_cant_join_this_group.toString());
                     groupe.sendToadmin(mineralcontest.prefixPrive + "Le joueur " + joueur.getDisplayName() + " a tenté de rejoindre le groupe sans invitation. Invitez le avec la commande /invitergroupe <nom>");
+                    return false;
                 }
-                return false;
+
+                // Le groupe est ouvert, on ajoute le joueur
+                groupe.addJoueur(joueur);
+                return true;
+
             }
         joueur.sendMessage(mineralcontest.prefixErreur + Lang.error_group_doesnt_exists.toString());
         return false;

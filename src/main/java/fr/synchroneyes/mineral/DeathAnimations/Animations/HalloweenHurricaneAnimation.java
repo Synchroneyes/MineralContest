@@ -22,6 +22,11 @@ public class HalloweenHurricaneAnimation extends DeathAnimation {
     }
 
     @Override
+    public Material getIcone() {
+        return Material.NETHER_STAR;
+    }
+
+    @Override
     public void playAnimation(LivingEntity entity) {
         List<Entity> list_chauve_souris = new ArrayList<>();
 

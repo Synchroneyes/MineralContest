@@ -5,6 +5,8 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
+import fr.synchroneyes.mineral.Utils.Player.HUD.BaseHUD;
+import fr.synchroneyes.mineral.Utils.Player.HUD.PlayerHUD;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,6 +62,9 @@ public class MCPlayer {
 
     private HashMap<World, Location> player_world_locations;
 
+
+    private PlayerHUD hud;
+
     private boolean isInPlugin = true;
 
     /**
@@ -69,6 +74,7 @@ public class MCPlayer {
     public MCPlayer(Player joueur) {
         this.joueur = joueur;
         this.player_world_locations = new HashMap<>();
+        this.hud = new BaseHUD(this);
     }
 
 
@@ -268,11 +274,15 @@ public class MCPlayer {
             getGroupe().addDisconnectedPlayer(joueur, joueur.getLocation());
 
 
-            // Si le joueur est dans un groupe, on le retire des joueurs prêts
-            getGroupe().getGame().removePlayerReady(joueur);
+            if(getGroupe().getGame() != null) {
+                // Si le joueur est dans un groupe, on le retire des joueurs prêts
+                getGroupe().getGame().removePlayerReady(joueur);
 
-            // On le retire des arbitres
-            getGroupe().getGame().removeReferee(joueur, false);
+                // On le retire des arbitres
+                getGroupe().getGame().removeReferee(joueur, false);
+            }
+
+
 
             // On le retire des admins
             getGroupe().removeAdmin(joueur);

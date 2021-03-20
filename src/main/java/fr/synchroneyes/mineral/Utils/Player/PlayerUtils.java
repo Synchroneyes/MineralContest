@@ -206,6 +206,7 @@ public class PlayerUtils {
     }
 
 
+
     public static void drawPlayersHUD() {
 
         if (mineralcontest.plugin.pluginWorld == null) {
@@ -230,9 +231,8 @@ public class PlayerUtils {
             if (GroupeExtension.enabled) {
                 if (mineralcontest.isInAMineralContestWorld(online)) {
 
-                /*
-                        2 cas, le joueur à un groupe, il n'en a pas
-                 */
+                //       2 cas, le joueur à un groupe, il n'en a pas
+
                     Groupe playerGroup = mineralcontest.getPlayerGroupe(online);
                     elementsADisplay.add("=========");
                     if (playerGroup == null) {
@@ -304,10 +304,11 @@ public class PlayerUtils {
     }
 
 
-    /**
-     * Envoie du HUD à un joueur lorsqu'il est dans une partie
-     */
+
+    //* Envoie du HUD à un joueur lorsqu'il est dans une partie
+
     private static void sendPlayerInGameHUD(Player player) {
+
 
         Groupe playerGroup = mineralcontest.getPlayerGroupe(player);
         if (playerGroup == null) {
@@ -319,13 +320,10 @@ public class PlayerUtils {
         Game playerGame = playerGroup.getGame();
         ArrayList<String> elementsADisplay = new ArrayList<>();
 
+        // version
         elementsADisplay.add(ChatColor.GREEN + "v" + mineralcontest.plugin.getDescription().getVersion());
         elementsADisplay.add("                ");
 
-
-
-        //elementsADisplay.add(Lang.translate(Lang.hud_map_name.toString(), playerGroup));
-        //elementsADisplay.add("                      ");
 
         if (playerGame.isPreGame()) {
             elementsADisplay.add(Lang.translate(Lang.hud_game_starting.toString(), playerGame));
@@ -337,8 +335,11 @@ public class PlayerUtils {
             else couleur = playerTeam.getCouleur();
 
 
-            elementsADisplay.add(couleur + Lang.translate(Lang.hud_timeleft_text.toString(), playerGame));
-            elementsADisplay.add(Lang.translate(Lang.hud_timeleft_value.toString(), playerGame));
+            String title_temps_restant = couleur + Lang.translate(Lang.hud_timeleft_text.toString(), playerGame);
+            String temps_restant = Lang.translate(Lang.hud_timeleft_value.toString(), playerGame);
+
+            elementsADisplay.add(title_temps_restant);
+            elementsADisplay.add(temps_restant);
 
             // Si le joueur n'est pas spectateur de la partie
             if (player.getGameMode() != GameMode.SPECTATOR) {

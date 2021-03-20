@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.DeathAnimations.Animations;
 import de.slikey.effectlib.Effect;
 import de.slikey.effectlib.effect.ShieldEffect;
 import fr.synchroneyes.mineral.DeathAnimations.EffectAnimation;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 
 public class EnderDomeAnimation extends EffectAnimation {
@@ -10,6 +11,11 @@ public class EnderDomeAnimation extends EffectAnimation {
     @Override
     public String getAnimationName() {
         return "EnderDome";
+    }
+
+    @Override
+    public Material getIcone() {
+        return Material.END_CRYSTAL;
     }
 
     @Override

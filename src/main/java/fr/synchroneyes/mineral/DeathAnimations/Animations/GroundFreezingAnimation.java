@@ -29,6 +29,11 @@ public class GroundFreezingAnimation extends DeathAnimation {
     }
 
     @Override
+    public Material getIcone() {
+        return Material.BLUE_ICE;
+    }
+
+    @Override
     public void playAnimation(LivingEntity player) {
 
         Player killer = player.getKiller();

@@ -8,6 +8,7 @@ import fr.synchroneyes.mineral.DeathAnimations.EffectAnimation;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,6 +20,11 @@ public class HeartAnimation extends EffectAnimation {
     @Override
     public String getAnimationName() {
         return "Araignée d'eau";
+    }
+
+    @Override
+    public Material getIcone() {
+        return Material.APPLE;
     }
 
     @Override
