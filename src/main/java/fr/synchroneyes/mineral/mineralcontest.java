@@ -312,7 +312,7 @@ public final class mineralcontest extends JavaPlugin {
             public void run() {
                 PlayerUtils.drawPlayersHUD();
             }
-        }.runTaskTimer(this, 0, 10);
+        }.runTaskTimer(this, 0, 20);
 
 
 

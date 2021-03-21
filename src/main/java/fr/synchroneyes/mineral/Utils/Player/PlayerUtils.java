@@ -10,6 +10,8 @@ import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardFields;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -209,12 +211,23 @@ public class PlayerUtils {
 
     public static void drawPlayersHUD() {
 
+
+
+
+
         if (mineralcontest.plugin.pluginWorld == null) {
             return;
         }
         if (Bukkit.getOnlinePlayers().size() == 0) {
             return;
         }
+
+        HashMap<ScoreboardFields, String> map = new HashMap<>();
+        map.put(ScoreboardFields.SCOREBOARD_TITLE, "Test");
+
+        ScoreboardAPI.createScoreboard(Bukkit.getPlayer("Synchroneyes_fr"), map);
+        ScoreboardAPI.updateField(Bukkit.getPlayer("Synchroneyes_fr"), ScoreboardFields.SCOREBOARD_TIMELEFT, new Random().nextInt(100) + "");
+        if(1==1) return;
 
         if (mineralcontest.plugin.mapBuilderInstance != null && mineralcontest.plugin.mapBuilderInstance.isBuilderModeEnabled) {
             mineralcontest.plugin.mapBuilderInstance.sendPlayersHUD();
@@ -396,6 +409,8 @@ public class PlayerUtils {
             elements[0] = playerTeam.getCouleur() + Lang.hud_title_text1.toString() + ChatColor.WHITE + Lang.hud_title_text2.toString();
         else
             elements[0] = Lang.title.toString() + " - " + ChatColor.GREEN + mineralcontest.plugin.getDescription().getVersion();
+
+
 
         ScoreboardUtil.unrankedSidebarDisplay(player, elements);
 

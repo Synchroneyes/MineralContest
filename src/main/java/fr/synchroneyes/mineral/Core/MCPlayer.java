@@ -270,8 +270,7 @@ public class MCPlayer {
         // On traite les actions de son groupe
         if(getGroupe() != null) {
 
-            // On l'ajoute à la liste des personnes déconnectée
-            getGroupe().addDisconnectedPlayer(joueur, joueur.getLocation());
+
 
 
             if(getGroupe().getGame() != null) {
@@ -302,6 +301,9 @@ public class MCPlayer {
                 // On ferme la porte
                 getMaison().getPorte().forceCloseDoor();
             }
+
+            // On l'ajoute à la liste des personnes déconnectée
+            getGroupe().addDisconnectedPlayer(joueur, joueur.getLocation());
         }
 
         // On retire le joueur de la liste des joueurs connecté au plugin

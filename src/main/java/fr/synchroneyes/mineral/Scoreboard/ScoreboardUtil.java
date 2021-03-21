@@ -71,6 +71,9 @@ public class ScoreboardUtil {
     }
 
     public static boolean unrankedSidebarDisplay(Player p, String... elements) {
+
+
+
         elements = cutUnranked(elements);
 
         try {

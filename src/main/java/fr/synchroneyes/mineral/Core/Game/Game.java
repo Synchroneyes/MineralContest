@@ -114,7 +114,7 @@ public class Game implements Listener {
     private BossManager bossManager;
 
     // Gestionnaire de défis
-    private ChallengeManager achievementManager;
+    //private ChallengeManager achievementManager;
 
     // Group of the game
     public Groupe groupe;
@@ -144,7 +144,7 @@ public class Game implements Listener {
         this.playerBonusManager = new PlayerBonus(this);
         this.shopManager = new ShopManager(this);
         this.bossManager = new BossManager(this);
-        this.achievementManager = new ChallengeManager(this);
+        //this.achievementManager = new ChallengeManager(this);
 
         initGameSettings();
     }
@@ -980,7 +980,7 @@ public class Game implements Listener {
             this.groupe.setGroupLocked(false);
             this.groupe.enableVote();
             this.groupe.resetGame();
-            this.achievementManager.unloadAchievementManager();
+            //this.achievementManager.unloadAchievementManager();
 
 
 
@@ -1212,7 +1212,7 @@ public class Game implements Listener {
         getArene().startAutoMobKill();
 
         getParachuteManager().handleDrops();
-        this.achievementManager.init();
+        //this.achievementManager.init();
 
         // On set le world border
         //mineralcontest.plugin.setWorldBorder(groupe);
