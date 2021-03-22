@@ -10,8 +10,8 @@ import org.bukkit.event.Cancellable;
 public class MCPlayerJoinTeamEvent extends MCEvent implements Cancellable {
 
     private boolean cancelled;
-    private MCPlayer mcPlayer;
-    private Equipe joinedTeam;
+    private final MCPlayer mcPlayer;
+    private final Equipe joinedTeam;
 
     public MCPlayerJoinTeamEvent(MCPlayer mcPlayer, Equipe joinedTeam) {
         this.mcPlayer = mcPlayer;

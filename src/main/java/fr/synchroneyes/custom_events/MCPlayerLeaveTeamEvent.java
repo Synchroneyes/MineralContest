@@ -12,8 +12,8 @@ public class MCPlayerLeaveTeamEvent extends MCEvent implements Cancellable {
 
     private boolean cancelled;
 
-    private MCPlayer mcPlayer;
-    private Equipe oldTeam;
+    private final MCPlayer mcPlayer;
+    private final Equipe oldTeam;
 
     public MCPlayerLeaveTeamEvent(MCPlayer mcPlayer, Equipe joinedTeam) {
         this.mcPlayer = mcPlayer;
