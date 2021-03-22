@@ -12,6 +12,8 @@ import fr.synchroneyes.mineral.Core.Game.JoinTeam.Inventories.SelectionEquipeInv
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Parachute.ParachuteManager;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardFields;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.StatsManager;
@@ -383,13 +385,16 @@ public class Game implements Listener {
         if (isPlayerReady(p)) {
             playersReady.remove(p);
             mineralcontest.broadcastMessage(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_no_longer_ready.toString(), p), groupe);
-
         }
+
+        // On update son HUD
+        ScoreboardAPI.updateField(p, ScoreboardFields.SCOREBOARD_PLAYER_READY, ScoreboardAPI.prefix + ChatColor.RED + Lang.not_ready_tag);
     }
 
     public void setPlayerReady(Player p) throws Exception {
         if (!isPlayerReady(p)) {
             playersReady.add(p);
+            ScoreboardAPI.updateField(p, ScoreboardFields.SCOREBOARD_PLAYER_READY, ScoreboardAPI.prefix + ChatColor.GREEN + Lang.ready_tag);
             groupe.sendToEveryone(mineralcontest.prefixGlobal + Lang.translate(Lang.player_is_now_ready.toString(), p));
 
 
@@ -459,6 +464,8 @@ public class Game implements Listener {
 
 
 
+            }else {
+                groupe.sendToEveryone(mineralcontest.prefixGroupe + ChatColor.BOLD + "" + ChatColor.RED + Lang.non_ready_hud.toString() +  ChatColor.RESET + groupe.getNomsJoueurNonPret());
             }
         }
     }

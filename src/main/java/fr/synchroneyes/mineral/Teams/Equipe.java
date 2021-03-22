@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Teams;
 
+import fr.synchroneyes.custom_events.MCPlayerJoinTeamEvent;
+import fr.synchroneyes.custom_events.MCPlayerLeaveTeamEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
@@ -11,10 +13,7 @@ import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -218,6 +217,9 @@ public class Equipe implements Comparable<Equipe> {
 
     public boolean addPlayerToTeam(Player p, boolean teleportToBase) throws Exception {
 
+        MCPlayerJoinTeamEvent event = new MCPlayerJoinTeamEvent(mineralcontest.plugin.getMCPlayer(p), this );
+        Bukkit.getPluginManager().callEvent(event);
+        if(event.isCancelled()) return false;
 
         Game partie = mineralcontest.getPlayerGame(p);
 
@@ -248,12 +250,21 @@ public class Equipe implements Comparable<Equipe> {
         mineralcontest.plugin.getMCPlayer(p).setEquipe(this);
 
 
+
+
+
+
         return true;
 
     }
 
     public boolean removePlayer(Player p) {
         if (isPlayerInTeam(p)) {
+
+            MCPlayerLeaveTeamEvent event = new MCPlayerLeaveTeamEvent(mineralcontest.plugin.getMCPlayer(p), this);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if(event.isCancelled()) return false;
+
             this.joueurs.remove(p);
             p.sendMessage(mineralcontest.prefix + Lang.translate(Lang.team_kicked.toString(), this));
 

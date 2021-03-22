@@ -115,7 +115,7 @@ public class WorldLoader {
             createdWorld.setSpawnLocation(this.spawnLocation);
             createdWorld.setAutoSave(false);
 
-            MCWorldLoadedEvent mcWorldLoadedEvent = new MCWorldLoadedEvent(nomMap, createdWorld);
+            MCWorldLoadedEvent mcWorldLoadedEvent = new MCWorldLoadedEvent(nomMap, createdWorld, groupe);
             Bukkit.getPluginManager().callEvent(mcWorldLoadedEvent);
 
             return createdWorld;

@@ -1,6 +1,7 @@
 package fr.synchroneyes.groups.Core;
 
 import fr.synchroneyes.groups.Menus.MenuVote;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.entity.Player;
@@ -21,12 +22,19 @@ public class MapVote {
 
     private MenuVote menuVote;
 
+    private Groupe groupe;
+
     public MapVote() {
         this.maps = new ArrayList<>();
         this.votes = new HashMap<>();
         chargerNomMaps();
         voteEnabled = true;
         this.menuVote = new MenuVote();
+
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
     }
 
     public MenuVote getMenuVote() {
@@ -144,6 +152,10 @@ public class MapVote {
         if (havePlayerVoted(joueur)) this.votes.replace(joueur, idMap);
         else this.votes.put(joueur, idMap);
 
+        updatePlayersVoteHUD();
+
+
+
 
         joueur.sendMessage(mineralcontest.prefixPrive + Lang.vote_you_voted_for_map.toString().replace("%map%", idMap));
         //joueur.sendMessage(mineralcontest.prefixPrive + "Vous avez voté pour la map " + nom_map);
@@ -244,5 +256,23 @@ public class MapVote {
             joueurSansVote.remove(infoVote.getKey());
 
         return joueurSansVote;
+    }
+
+    private void updatePlayersVoteHUD() {
+        if(groupe == null) return;
+
+        Map<String, Integer> liste_votes = getMapVotes(true);
+
+        // Pour chaque joueur
+        for(Player joueur : groupe.getPlayers()){
+            // On clear le HUD
+            ScoreboardAPI.clearScoreboard(joueur);
+
+            int index = 16;
+
+            // On ajoute les votes
+            for(Map.Entry<String, Integer> votes : liste_votes.entrySet())
+                ScoreboardAPI.addScoreboardText(joueur, votes.getKey() + " - " + votes.getValue(), index--);
+        }
     }
 }

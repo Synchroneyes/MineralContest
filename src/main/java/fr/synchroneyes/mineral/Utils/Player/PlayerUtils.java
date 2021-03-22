@@ -225,8 +225,8 @@ public class PlayerUtils {
         HashMap<ScoreboardFields, String> map = new HashMap<>();
         map.put(ScoreboardFields.SCOREBOARD_TITLE, "Test");
 
-        ScoreboardAPI.createScoreboard(Bukkit.getPlayer("Synchroneyes_fr"), map);
-        ScoreboardAPI.updateField(Bukkit.getPlayer("Synchroneyes_fr"), ScoreboardFields.SCOREBOARD_TIMELEFT, new Random().nextInt(100) + "");
+        //ScoreboardAPI.createScoreboard(Bukkit.getPlayer("Synchroneyes_fr"), map);
+        //ScoreboardAPI.updateField(Bukkit.getPlayer("Synchroneyes_fr"), ScoreboardFields.SCOREBOARD_TIMELEFT, new Random().nextInt(100) + "");
         if(1==1) return;
 
         if (mineralcontest.plugin.mapBuilderInstance != null && mineralcontest.plugin.mapBuilderInstance.isBuilderModeEnabled) {

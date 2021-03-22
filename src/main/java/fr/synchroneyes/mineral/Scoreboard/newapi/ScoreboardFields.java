@@ -10,12 +10,22 @@ public enum ScoreboardFields {
     SCOREBOARD_PLUGIN_VERSION("plugin_version", ChatColor.WHITE + "" + ChatColor.RED),
     SCOREBOARD_PLAYER_COUNT("player_count", ChatColor.WHITE + "" + ChatColor.GOLD),
     SCOREBOARD_GROUP_STATE("group_state", ChatColor.WHITE + "" + ChatColor.BLACK),
-    SCOREBOARD_NON_READY("non_ready", ChatColor.WHITE + "" + ChatColor.BLUE),
+    SCOREBOARD_PLAYER_NOT_READY("player_not_ready", ChatColor.WHITE + "" + ChatColor.LIGHT_PURPLE),
+    SCOREBOARD_PLAYER_READY("player_ready", ChatColor.WHITE + "" + ChatColor.BLUE),
     SCOREBOARD_ADMINS("admins", ChatColor.WHITE + "" + ChatColor.DARK_AQUA),
-    SCOREBOARD_TEAMNAME("team_name", ChatColor.WHITE + "" + ChatColor.DARK_BLUE),
-    SCOREBOARD_TIMELEFT("timeleft", ChatColor.WHITE + "" + ChatColor.DARK_GRAY),
-    SCOREBOARD_TEAMSCORE("teamscore", ChatColor.WHITE + "" + ChatColor.DARK_GREEN),
-    SCOREBOARD_PLAYERLOCATION("playerlocation", ChatColor.WHITE + "" + ChatColor.DARK_PURPLE)
+
+    SCOREBOARD_TEAMNAME_TEXT("team_name_text", ChatColor.WHITE + "" + ChatColor.DARK_BLUE),
+    SCOREBOARD_TEAMNAME_VALUE("team_name_value", ChatColor.RED + "" + ChatColor.DARK_BLUE),
+
+
+    SCOREBOARD_TIMELEFT_TEXT("timeleft_text", ChatColor.WHITE + "" + ChatColor.DARK_GRAY),
+    SCOREBOARD_TIMELEFT_VALUE("timeleft_value", ChatColor.RED + "" + ChatColor.DARK_GRAY),
+
+    SCOREBOARD_TEAMSCORE_TEXT("teamscore_text", ChatColor.WHITE + "" + ChatColor.GREEN),
+    SCOREBOARD_TEAMSCORE_VALUE("teamscore_value", ChatColor.RED + "" + ChatColor.GREEN),
+
+    SCOREBOARD_PLAYERLOCATION_TEXT("playerlocation_text", ChatColor.WHITE + "" + ChatColor.DARK_PURPLE),
+    SCOREBOARD_PLAYERLOCATION_VALUE("playerlocation_value", ChatColor.RED + "" + ChatColor.DARK_PURPLE),
     ;
 
 

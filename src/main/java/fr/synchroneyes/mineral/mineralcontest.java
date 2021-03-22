@@ -300,6 +300,9 @@ public final class mineralcontest extends JavaPlugin {
                     PlayerUtils.teleportPlayer(online, defaultSpawn.getWorld(), defaultSpawn);
                     if(online.isOp()) getNonCommunityGroup().addAdmin(online);
                     else getNonCommunityGroup().addJoueur(online);
+
+                    MCPlayerJoinEvent event = new MCPlayerJoinEvent(online);
+                    Bukkit.getServer().getPluginManager().callEvent(event);
                 }
             }
         }
@@ -307,12 +310,12 @@ public final class mineralcontest extends JavaPlugin {
         PlayerUtils.runScoreboardManager();
         GameLogger.addLog(new Log("server_event", "OnEnable", "plugin_startup"));
 
-        new BukkitRunnable() {
+        /*new BukkitRunnable() {
             @Override
             public void run() {
                 PlayerUtils.drawPlayersHUD();
             }
-        }.runTaskTimer(this, 0, 20);
+        }.runTaskTimer(this, 0, 20);*/
 
 
 
@@ -491,6 +494,10 @@ public final class mineralcontest extends JavaPlugin {
 
         // Déconnexion d'un joueur
         Bukkit.getServer().getPluginManager().registerEvents(new MCPlayerLeavePlugin(), this);
+
+        // Events gérant les HUD
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerHUDEvents(), this);
+
 
 
 

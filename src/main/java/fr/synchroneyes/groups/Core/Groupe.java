@@ -9,6 +9,8 @@ import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
 import fr.synchroneyes.mineral.Core.Spectators.SpectatorManager;
 import fr.synchroneyes.mineral.Kits.Classes.Mineur;
 import fr.synchroneyes.mineral.Kits.KitManager;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
+import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardFields;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.Players.PlayerBonus;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -28,10 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Groupe {
     private int tailleIdentifiant = 25;
@@ -291,6 +290,7 @@ public class Groupe {
 
     public void initVoteMap() {
         this.mapVote = new MapVote();
+        this.mapVote.setGroupe(this);
 
         if (mapVote.getMaps().isEmpty()) {
             mapVote.disableVote();
@@ -383,9 +383,7 @@ public class Groupe {
     }
 
     public void kickPlayer(Player p) {
-        this.joueurs.remove(p);
-        this.admins.remove(p);
-        this.joueursInvites.remove(p);
+        retirerJoueur(p);
         p.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.you_were_kicked_from_a_group.toString(), this));
         sendToEveryone(mineralcontest.prefixPrive + Lang.translate(Lang.player_got_kicked_from_group.toString(), p));
     }
@@ -432,6 +430,13 @@ public class Groupe {
         if(mineralcontest.plugin.getMCPlayer(p) == null) mineralcontest.plugin.addNewPlayer(p);
         mineralcontest.plugin.getMCPlayer(p).setGroupe(this);
 
+        // On met à jour tous les HUD
+        HashMap<ScoreboardFields, String> map = new HashMap<>();
+        map.put(ScoreboardFields.SCOREBOARD_PLAYER_COUNT, ScoreboardAPI.prefix + getPlayerCount() + "");
+        if(getAdmins().size() > 0) map.put(ScoreboardFields.SCOREBOARD_ADMINS, ScoreboardAPI.prefix + getAdmins().getFirst().getDisplayName());
+
+        updatePlayersHUD(map);
+
         // Si le joueur n'est pas dans le monde du groupe, on le TP
         teleportToGroupWorld(p);
 
@@ -462,6 +467,13 @@ public class Groupe {
         if(mcPlayer != null) {
             mcPlayer.setGroupe(null);
         }
+
+        // On met à jour tous les HUD
+        HashMap<ScoreboardFields, String> map = new HashMap<>();
+        map.put(ScoreboardFields.SCOREBOARD_PLAYER_COUNT, ScoreboardAPI.prefix + getPlayerCount() + "");
+        if(getAdmins().size() > 0) map.put(ScoreboardFields.SCOREBOARD_ADMINS, ScoreboardAPI.prefix + getAdmins().getFirst().getDisplayName());
+
+        updatePlayersHUD(map);
     }
 
 
@@ -635,6 +647,24 @@ public class Groupe {
 
     public void setNether(World nether) {
         this.nether = nether;
+    }
+
+
+
+
+
+    private void updatePlayersHUD(ScoreboardFields champs, String valeur){
+        for(Player joueur : getPlayers()){
+            ScoreboardAPI.updateField(joueur, champs, valeur);
+        }
+    }
+
+    private void updatePlayersHUD(Map<ScoreboardFields, String> valeurs){
+        for(Player joueur : getPlayers()){
+            for(Map.Entry<ScoreboardFields, String> _donnes : valeurs.entrySet()){
+                ScoreboardAPI.updateField(joueur, _donnes.getKey(), _donnes.getValue());
+            }
+        }
     }
 }
 

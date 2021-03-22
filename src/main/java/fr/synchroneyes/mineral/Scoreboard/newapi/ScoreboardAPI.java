@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Scoreboard.newapi;
 
+import fr.synchroneyes.mineral.Core.MCPlayer;
+import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,8 +17,14 @@ public class ScoreboardAPI {
 
     private static ArrayList<Player> playersWithScoreboard;
 
+    public static String prefix = "» ";
 
-    public static void createScoreboard(Player player, HashMap<ScoreboardFields, String> champs){
+
+    public static void createScoreboard(Player player){
+
+        // Récupération du MCPlayer
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
+        if(mcPlayer == null) return;
 
         // Création d'une liste de joueurs ayant un scoreboard
         if(playersWithScoreboard == null) playersWithScoreboard = new ArrayList<>();
@@ -24,37 +32,39 @@ public class ScoreboardAPI {
         if(playersWithScoreboard.contains(player)) return;
 
 
-        // Création d'un nouveau scoreboard
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        clearScoreboard(player);
+        Scoreboard scoreboard = player.getScoreboard();
 
+        int position = 16;
 
+        addScoreboardText(player, ChatColor.GOLD + "Groupe", position--);
+        registerNewObjective(player, ScoreboardFields.SCOREBOARD_GROUP_STATE, prefix + mcPlayer.getGroupe().getEtatPartie().getNom(), position--);
 
+        addEmptyLine(player, position--);
 
+        addScoreboardText(player, ChatColor.GOLD + "Joueurs", position--);
+        registerNewObjective(player, ScoreboardFields.SCOREBOARD_PLAYER_COUNT, prefix + mcPlayer.getGroupe().getPlayerCount(), position--);
 
+        addEmptyLine(player, position--);
 
-        // On traite les paramètres passé
-        // Premier element, le titre
-        String scoreboardTitle = "Mineral Contest";
-        if(champs.containsKey(ScoreboardFields.SCOREBOARD_TITLE)) {
-            scoreboardTitle = champs.get(ScoreboardFields.SCOREBOARD_TITLE);
+        addScoreboardText(player, ChatColor.GOLD + "Etat", position--);
+        registerNewObjective(player, ScoreboardFields.SCOREBOARD_PLAYER_READY, prefix, position--);
+
+        if(mcPlayer.getGroupe().getAdmins().size() > 0) {
+            Player admin = mcPlayer.getGroupe().getAdmins().getFirst();
+            addEmptyLine(player, position--);
+            addScoreboardText(player, ChatColor.RED + "Admin", position--);
+            registerNewObjective(player, ScoreboardFields.SCOREBOARD_ADMINS, prefix + admin.getDisplayName(), position--);
+
         }
-
-
-        Objective objective = scoreboard.registerNewObjective(ScoreboardFields.SCOREBOARD_TITLE.toString(), "dummy", scoreboardTitle);
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        player.setScoreboard(scoreboard);
-
-        addScoreboardText(player, "Mon text", 16);
-        registerNewObjective(player, ScoreboardFields.SCOREBOARD_GROUP_STATE, "Ouvert", 15);
-        addEmptyLine(player, 14);
-        addScoreboardText(player, "Temps restant", 14);
-        registerNewObjective(player, ScoreboardFields.SCOREBOARD_TIMELEFT, "Temps restant:", 13);
-
-
 
         player.setScoreboard(scoreboard);
         playersWithScoreboard.add(player);
+
+        if(mcPlayer.getGroupe().getGame().isPlayerReady(player)) updateField(player, ScoreboardFields.SCOREBOARD_PLAYER_READY, prefix + ChatColor.GREEN + Lang.ready_tag.toString());
+        else updateField(player, ScoreboardFields.SCOREBOARD_PLAYER_READY, prefix + ChatColor.RED + Lang.not_ready_tag.toString());
+
+
     }
 
     public static void updateField(Player player, ScoreboardFields cle, String valeur){
@@ -65,15 +75,32 @@ public class ScoreboardAPI {
         Scoreboard scoreboard = player.getScoreboard();
         scoreboard.getObjective(ScoreboardFields.SCOREBOARD_TITLE.toString());
 
+
         // On mets le nombre de joueur en ligne
         Team team = scoreboard.getTeam(cle.toString());
+        if(team == null) return;
         team.setPrefix(valeur);
 
 
     }
 
-    public static void removeField(Player joueur, ScoreboardFields cle){
+    /**
+     * Méthode permettabt de clear le scoreboard d'un joueur
+     * @param joueur
+     */
+    public static void clearScoreboard(Player joueur){
+        // Création d'un nouveau scoreboard
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
+        // On traite les paramètres passé
+        // Premier element, le titre
+        String scoreboardTitle = Lang.title.toString();
+
+
+        Objective objective = scoreboard.registerNewObjective(ScoreboardFields.SCOREBOARD_TITLE.toString(), "dummy", scoreboardTitle);
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        joueur.setScoreboard(scoreboard);
     }
 
     /**
@@ -83,7 +110,7 @@ public class ScoreboardAPI {
      * @param value
      * @param position
      */
-    private static void registerNewObjective(Player player, ScoreboardFields fields, String value, int position) {
+    public static void registerNewObjective(Player player, ScoreboardFields fields, String value, int position) {
         Scoreboard scoreboard = player.getScoreboard();
 
         Objective objective = scoreboard.getObjective(ScoreboardFields.SCOREBOARD_TITLE.toString());
@@ -97,7 +124,7 @@ public class ScoreboardAPI {
         player.setScoreboard(scoreboard);
     }
 
-    private static void addScoreboardText(Player player, String text, int position) {
+    public static void addScoreboardText(Player player, String text, int position) {
         Scoreboard scoreboard = player.getScoreboard();
 
         Objective objective = scoreboard.getObjective(ScoreboardFields.SCOREBOARD_TITLE.toString());
@@ -110,7 +137,7 @@ public class ScoreboardAPI {
         player.setScoreboard(scoreboard);
     }
 
-    private static void addEmptyLine(Player player, int position) {
+    public static void addEmptyLine(Player player, int position) {
         Scoreboard scoreboard = player.getScoreboard();
 
         Objective objective = scoreboard.getObjective(ScoreboardFields.SCOREBOARD_TITLE.toString());

@@ -23,11 +23,6 @@ public class ReadyCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
 
-        HeartAnimation animation = new HeartAnimation();
-        animation.playAnimation((LivingEntity) commandSender);
-        if(1==1) return true;
-
-
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(Lang.error_command_can_only_be_used_in_game.toString());
             return false;
