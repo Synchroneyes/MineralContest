@@ -80,6 +80,8 @@ public final class mineralcontest extends JavaPlugin {
 
     public EffectManager effectManager;
 
+    public static int player_location_hud_refresh_rate = 10;
+
 
     /**
      * Array of all the messages we can fetch from synchroneyes's plugin website.
@@ -231,6 +233,10 @@ public final class mineralcontest extends JavaPlugin {
 
         // On charge la valeur du fichier de config pour le nombre de joueur requis
         min_player_per_group = Integer.parseInt(getPluginConfigValue("min_player_per_group").toString());
+
+        // On charge le nombre de tick requis pour update le scoreboard
+        player_location_hud_refresh_rate = Integer.parseInt(getPluginConfigValue("player_location_refresh_rate").toString());
+
 
         // On regard si on doit lancer le mode communautaire ou non
         communityVersion = (boolean) getPluginConfigValue("enable_community_version");

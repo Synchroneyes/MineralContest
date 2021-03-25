@@ -3,6 +3,8 @@ package fr.synchroneyes.mineral.Core.Game;
 import fr.synchroneyes.challenges.ChallengeManager;
 import fr.synchroneyes.custom_events.MCGameEndEvent;
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
+import fr.synchroneyes.custom_events.MCGameTickEvent;
+import fr.synchroneyes.custom_events.MCPlayerLocationHUDUpdatedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
@@ -716,6 +718,23 @@ public class Game implements Listener {
 
         gameLoopManager = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::gameTick, 0, 20);
 
+        // Boucle d'update du hud des joueurs
+        Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, () -> {
+            for(Player player : groupe.getPlayers()){
+                MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
+                MCPlayerLocationHUDUpdatedEvent event = new MCPlayerLocationHUDUpdatedEvent(mcPlayer);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+                if(event.isCancelled()) return;
+
+                ChatColor resetColor = ChatColor.RESET;
+                ChatColor teamColor = ChatColor.GOLD;
+
+                if(!isReferee(player) && mcPlayer.getEquipe() != null) teamColor = mcPlayer.getEquipe().getCouleur();
+                String position = teamColor + "X: " + resetColor + player.getLocation().getBlockX() + " " + teamColor + "Y:" + resetColor + player.getLocation().getBlockY() + teamColor + " Z:" + resetColor + player.getLocation().getBlockZ();
+                ScoreboardAPI.updateField(player, ScoreboardFields.SCOREBOARD_PLAYERLOCATION_VALUE, position);
+            }
+        },0, mineralcontest.player_location_hud_refresh_rate);
+
     }
 
     /**
@@ -812,6 +831,9 @@ public class Game implements Listener {
      * Méthode appelée pour gérer la partie
      */
     private void doGameTick() {
+
+        MCGameTickEvent event = new MCGameTickEvent(this);
+        event.callEvent();
 
         try {
 

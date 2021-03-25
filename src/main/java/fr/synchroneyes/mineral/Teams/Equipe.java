@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Teams;
 
 import fr.synchroneyes.custom_events.MCPlayerJoinTeamEvent;
 import fr.synchroneyes.custom_events.MCPlayerLeaveTeamEvent;
+import fr.synchroneyes.custom_events.MCTeamScoreUpdated;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
@@ -19,7 +20,10 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
+import java.util.Locale;
 
 public class Equipe implements Comparable<Equipe> {
     private LinkedList<Player> joueurs;
@@ -190,6 +194,11 @@ public class Equipe implements Comparable<Equipe> {
      * @param score - le nombre de points à perdre
      */
     public void retirerPoints(int score) {
+        MCTeamScoreUpdated event = new MCTeamScoreUpdated(this.score, this.score - score, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if(event.isCancelled()) return;
+
         this.score -= score;
     }
 
@@ -210,6 +219,12 @@ public class Equipe implements Comparable<Equipe> {
         return this.score - this.penalty;
     }
     public void setScore(int score) {
+
+        MCTeamScoreUpdated event = new MCTeamScoreUpdated(this.score, score, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if(event.isCancelled()) return;
+
         this.score = score;
         GameLogger.addLog(new Log("TeamChestScoreUpdated", "The team " + getNomEquipe() + " score got updated to " + score + "", "ChestEvent"));
     }
@@ -341,5 +356,46 @@ public class Equipe implements Comparable<Equipe> {
             default: return Color.WHITE;
 
         }
+    }
+
+    public String getFormattedScore() {
+        // ON calcule le nouveau score
+        String nouveau_score = "";
+
+        // On ajoute un espace pour les milliers etc
+        DecimalFormatSymbols customSymbols = DecimalFormatSymbols.getInstance(Locale.US);
+        customSymbols.setGroupingSeparator(' ');
+        nouveau_score = new DecimalFormat("#,###;-#,###", customSymbols).format(score);
+
+        // Si le score est positif, le score est vert
+        // sinon il est rouge
+        if(score >= 0){
+            nouveau_score = ChatColor.GREEN + nouveau_score;
+        } else {
+            nouveau_score = ChatColor.RED + nouveau_score;
+        }
+
+        return nouveau_score;
+    }
+
+
+    public String getFormattedScore(int score) {
+        // ON calcule le nouveau score
+        String nouveau_score = "";
+
+        // On ajoute un espace pour les milliers etc
+        DecimalFormatSymbols customSymbols = DecimalFormatSymbols.getInstance(Locale.US);
+        customSymbols.setGroupingSeparator(' ');
+        nouveau_score = new DecimalFormat("#,###;-#,###", customSymbols).format(score);
+
+        // Si le score est positif, le score est vert
+        // sinon il est rouge
+        if(score >= 0){
+            nouveau_score = ChatColor.GREEN + nouveau_score;
+        } else {
+            nouveau_score = ChatColor.RED + nouveau_score;
+        }
+
+        return nouveau_score;
     }
 }

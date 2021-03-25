@@ -1,5 +1,6 @@
 package fr.synchroneyes.groups.Core;
 
+import fr.synchroneyes.custom_events.MCPlayerReconnectEvent;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Game.Game;
@@ -504,13 +505,16 @@ public class Groupe {
         Equipe oldPlayerTeam = getPlayerTeam(p);
         CouplePlayer oldPlayerDeathTime = partie.getArene().getDeathZone().getPlayerInfo(p);
 
+
+        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, oldPlayerLocation, p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
+
+
         if (mapVote != null) getMapVote().removePlayerVote(p);
         getGame().removePlayerReady(p);
 
         getGame().removePlayerReady(p);
         getGame().groupe.getPlayers().remove(p);
 
-        DisconnectedPlayer joueur = new DisconnectedPlayer(p.getUniqueId(), oldPlayerTeam, this, oldPlayerDeathTime, oldPlayerLocation, p, getGame().getPlayerBonusManager().getListeBonusJoueur(p), getKitManager().getPlayerKit(p));
         if (!havePlayerDisconnected(p)) {
             disconnectedPlayers.add(joueur);
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + " Disconnected location: " + oldPlayerLocation);
@@ -535,6 +539,8 @@ public class Groupe {
      */
     public void playerHaveReconnected(Player p) {
         if (havePlayerDisconnected(p)) {
+
+
 
 
             // On applique le pvp
@@ -592,6 +598,9 @@ public class Groupe {
                     // On le supprime de la liste des déco
                     disconnectedPlayers.remove(infoJoueur);
 
+                    MCPlayerReconnectEvent event = new MCPlayerReconnectEvent(mineralcontest.plugin.getMCPlayer(p));
+                    event.callEvent();
+
                     // SI il n'y a plus personne dans la liste, on relance la partie!
                     //if (disconnectedPlayers.isEmpty()) partie.resumeGame();
 
@@ -600,30 +609,6 @@ public class Groupe {
                 e.printStackTrace();
             }
         }
-
-
-            /*Pair<String, Location> playerInfo = disconnectedPlayers.get(p.getUniqueId());
-
-            Equipe playerTeam = partie.getHouseFromName(playerInfo.getKey()).getTeam();
-            Location playerLocation = playerInfo.getValue();
-            p.setFlying(false);
-            // Si la team n'est pas nulle, on le remet dans son équipe
-            if (playerTeam != null) {
-                try {
-                    playerTeam.addPlayerToTeam(p, true, false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                if (p.isOp()) {
-                    partie.addReferee(p);
-                    return;
-                }
-            }*/
-
-            // On téléport le joueur à sa dernière position
-
-
 
     }
 

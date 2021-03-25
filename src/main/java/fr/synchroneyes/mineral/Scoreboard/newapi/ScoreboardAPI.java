@@ -29,7 +29,8 @@ public class ScoreboardAPI {
         // Création d'une liste de joueurs ayant un scoreboard
         if(playersWithScoreboard == null) playersWithScoreboard = new ArrayList<>();
 
-        if(playersWithScoreboard.contains(player)) return;
+        if(doesPlayerHaveHUD(player)) return;
+
 
 
         clearScoreboard(player);
@@ -69,7 +70,8 @@ public class ScoreboardAPI {
 
     public static void updateField(Player player, ScoreboardFields cle, String valeur){
         if(playersWithScoreboard == null) playersWithScoreboard = new ArrayList<>();
-        if(!playersWithScoreboard.contains(player)) return;
+        if(!doesPlayerHaveHUD(player)) return;
+
 
         // On mets à jour le scoreboard du joueur
         Scoreboard scoreboard = player.getScoreboard();
@@ -152,6 +154,14 @@ public class ScoreboardAPI {
         score.setScore(position);
 
         player.setScoreboard(scoreboard);
+    }
+
+
+    private static boolean doesPlayerHaveHUD(Player player){
+        for(Player player1 : playersWithScoreboard)
+            if(player1.getUniqueId().equals(player.getUniqueId())) return true;
+
+        return false;
     }
 
 

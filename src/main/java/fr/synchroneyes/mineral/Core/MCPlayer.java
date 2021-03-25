@@ -270,24 +270,28 @@ public class MCPlayer {
         // On traite les actions de son groupe
         if(getGroupe() != null) {
 
+            Groupe groupe = getGroupe();
+
+            // On l'ajoute à la liste des personnes déconnectée
+            groupe.addDisconnectedPlayer(joueur, joueur.getLocation());
 
 
 
-            if(getGroupe().getGame() != null) {
+            if(groupe.getGame() != null) {
                 // Si le joueur est dans un groupe, on le retire des joueurs prêts
-                getGroupe().getGame().removePlayerReady(joueur);
+                groupe.getGame().removePlayerReady(joueur);
 
                 // On le retire des arbitres
-                getGroupe().getGame().removeReferee(joueur, false);
+                groupe.getGame().removeReferee(joueur, false);
             }
 
 
 
             // On le retire des admins
-            getGroupe().removeAdmin(joueur);
+            groupe.removeAdmin(joueur);
 
             // On le retire des joueurs
-            getGroupe().removePlayer(joueur);
+            groupe.removePlayer(joueur);
 
 
             // On le retire de son équipe si il en a une
@@ -302,8 +306,7 @@ public class MCPlayer {
                 getMaison().getPorte().forceCloseDoor();
             }
 
-            // On l'ajoute à la liste des personnes déconnectée
-            getGroupe().addDisconnectedPlayer(joueur, joueur.getLocation());
+
         }
 
         // On retire le joueur de la liste des joueurs connecté au plugin
@@ -318,16 +321,6 @@ public class MCPlayer {
      * @param disconnectedPlayer
      */
     public void reconnectPlayer(DisconnectedPlayer disconnectedPlayer) {
-        /*
-            private UUID playerUUID;
-            private Equipe oldPlayerTeam;
-            private Groupe oldPlayerGroupe;
-            private CouplePlayer oldPlayerDeathTime;
-            private Location oldPlayerLocation;
-            private List<ItemStack> oldPlayerInventory;
-            private LinkedBlockingQueue<ShopItem> bonus;
-            private KitAbstract kit;
-         */
 
         // ON le remet dans son groupe
         if(disconnectedPlayer.getOldPlayerGroupe() != null) {
