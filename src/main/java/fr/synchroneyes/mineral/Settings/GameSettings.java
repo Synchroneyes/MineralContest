@@ -112,6 +112,8 @@ public class GameSettings {
 
                 gameCVAR.setValeur(valeur);
 
+                Bukkit.broadcastMessage("set: " + cvar + " => " + valeur + " | enregistré: " + gameCVAR.getValeurNumerique());
+
                 if (parametre.getCommand().equalsIgnoreCase("mp_enable_old_pvp")) {
                     for (Player player : groupe.getPlayers()) {
                         if (parametre.getValeurNumerique() == 1) {
@@ -319,8 +321,8 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("drop_display_time", "5", "Permet de définir combien de temps en seconde le message doit s'afficher", "airdrop", true, true));
 
 
-            parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, false));
-            parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, false));
+            parametresParDefaut.add(new GameCVAR("enable_shop", "1", "Permet d'activer ou non le shop", "shop", true, true));
+            parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, true));
 
             // Système de coffre à la mort
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, false));

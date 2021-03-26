@@ -7,7 +7,6 @@ config:
     SCORE_DIAMOND: '150'
     SCORE_EMERALD: '300'
     SCORE_REDSTONE: -3
-    mp_team_max_player: '2'
     mp_enable_friendly_fire: '1'
     mp_enable_old_pvp: '1'
     mp_enable_block_adding: '1'
@@ -15,7 +14,11 @@ config:
     game_time: '60'
     death_time: '10'
     pre_game_timer: '10'
-    enable_monster_in_protected_zone: '1'
+    enable_monster_in_protected_zone: '0'
+  shop:
+    enable_shop: '1'
+  kits:
+    enable_kits: '1'
   arena:
     chest_opening_cooldown: '5'
     max_time_between_chests: '15'

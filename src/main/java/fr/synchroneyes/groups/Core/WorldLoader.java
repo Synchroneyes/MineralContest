@@ -404,11 +404,13 @@ public class WorldLoader {
                     parametres.setCVARValeur(variable, (String) config.get(section + "." + variable));
                 } catch (Exception e) {
                     //groupe.sendToadmin(mineralcontest.prefixErreur + "Setting " + variable + " doesnt exists");
+                    e.printStackTrace();
                 }
             }
         }
 
         groupe.sendToadmin(mineralcontest.prefixGroupe + "Les paramètres de la carte ont bien été chargé!");
+        Bukkit.broadcastMessage("enable_kits => " + parametres.getCVAR("enable_kits").getValeurNumerique());
 
 
     }

@@ -292,7 +292,7 @@ public class PlayerHUDEvents implements Listener {
         }
 
         // On affiche le kit du joueur
-        if(game.groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() == 1) {
+        if(game.groupe.getKitManager().isKitsEnabled()) {
             KitAbstract playerKit = game.groupe.getKitManager().getPlayerKit(joueur);
             if(playerKit != null) {
                 ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_KIT_NAME, teamColor + "Kit", position--);

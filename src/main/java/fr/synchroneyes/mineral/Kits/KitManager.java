@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Kits;
 
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
+import fr.synchroneyes.custom_events.MCPreGameStartEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
@@ -351,6 +352,7 @@ public class KitManager implements Listener {
      */
     public void openMenuToEveryone(boolean openToReferee) {
 
+        new Exception().printStackTrace();
         // On vérifie si on doit ouvrir le menu ou non (ex: si les kits sont actif ou non)
         if (!isKitsEnabled()) return;
 
@@ -429,6 +431,27 @@ public class KitManager implements Listener {
         }
 
         return joueurs_sans_kits;
+    }
+
+
+    /**
+     * Au démarrage d'une game, vérifie si tout le monde possède un kit
+     * @param event
+     */
+    @EventHandler
+    private void onGameStart(MCPreGameStartEvent event){
+
+        // ON vérifie que les kits soient activé
+        if(event.getPartie().groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() != 1) return;
+        new Exception().printStackTrace();
+
+        // On vérifie que tout le monde ait un kit
+        List<Player> joueurs_sans_kit = getPlayerWithoutKits(false);
+        if(joueurs_sans_kit.isEmpty()) return;
+        event.setCancelled(true);
+        for(Player joueur : joueurs_sans_kit) {
+            openInventoryToPlayer(joueur);
+        }
     }
 
     /**

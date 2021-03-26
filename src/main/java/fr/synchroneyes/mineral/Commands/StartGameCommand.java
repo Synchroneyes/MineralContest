@@ -36,9 +36,9 @@ public class StartGameCommand implements CommandExecutor {
                     if (args.length == 1 && args[0].equals("force")) {
                         partie.demarrerPartie(true);
                     } else {
-                        if (!partie.groupe.getKitManager().doesAllPlayerHaveAKit(false))
-                            partie.groupe.getKitManager().openMenuToEveryone(false);
-                        else partie.demarrerPartie(false);
+                        //if (!partie.groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                            //partie.groupe.getKitManager().openMenuToEveryone(false);
+                        partie.demarrerPartie(false);
 
                     }
 

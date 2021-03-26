@@ -417,31 +417,24 @@ public class Game implements Listener {
                 } else {
 
                     // Sinon, on va pouvoir démarrer la partie
+                    if(!isGameStarted()) {
 
-                    // Si tous les joueurs n'ont pas d'équipe
-                    if (!allPlayerHaveTeam()) {
+                        // Si tous les joueurs n'ont pas d'équipe
+                        if (!allPlayerHaveTeam()) {
 
-                        // Si l'option de random est active, on génère les équipes aléatoirement
-                        if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
-                            randomizeTeam(true);
-
-                            if (groupe.getKitManager().isKitsEnabled()) {
-                                if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
-                                    groupe.getKitManager().openMenuToEveryone(false);
+                            if (groupe.getParametresPartie().getCVAR("mp_randomize_team").getValeurNumerique() == 1) {
+                                randomizeTeam(true);
+                                return;
                             } else {
-                                demarrerPartie(true);
+                                startAllPlayerHaveTeamTimer();
+                                return;
                             }
 
-                            return;
-                        } else {
-
-                            // Sinon, on averti les joueurs sans équipe
-                            //warnPlayerWithNoTeam();
-                            startAllPlayerHaveTeamTimer();
-                            return;
                         }
-
+                        demarrerPartie(true);
+                        return;
                     }
+
 
                     // Si la game était en pause, on redémarre la partie
                     if (isGamePaused()) resumeGame();
@@ -451,8 +444,8 @@ public class Game implements Listener {
                         // On va ouvrir le menu de selection de kit à tous les joueurs, sauf les arbitres
 
                         if (groupe.getKitManager().isKitsEnabled()) {
-                            if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
-                                groupe.getKitManager().openMenuToEveryone(false);
+                            //if (!groupe.getKitManager().doesAllPlayerHaveAKit(false))
+                                //groupe.getKitManager().openMenuToEveryone(false);
                         } else {
                             demarrerPartie(false);
                         }
@@ -478,9 +471,8 @@ public class Game implements Listener {
             public void run() {
                 if (allPlayerHaveTeam()) {
                     try {
-
-                        if (groupe.getKitManager().isKitsEnabled()) groupe.getKitManager().openMenuToEveryone(false);
-                        else demarrerPartie(false);
+                        //if (groupe.getKitManager().isKitsEnabled()) groupe.getKitManager().openMenuToEveryone(false);
+                        demarrerPartie(false);
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1142,23 +1134,7 @@ public class Game implements Listener {
         this.statsManager = new StatsManager(this);
 
 
-        if (forceGameStart) {
-            GameForced = true;
-            tempsPartie = 60 * 60;
-            PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
 
-            if (!allPlayerHaveTeam()) randomizeTeam(forceGameStart);
-
-            // Si les kits sont actif, on met tout le monde ready, et on ouvre le menu
-            if (groupe.getKitManager().isKitsEnabled()) {
-
-                // Pour chaque joueur
-                for (Player joueur : groupe.getPlayers())
-                    setPlayerReady(joueur);
-
-                return true;
-            }
-        }
 
 
         if (mineralcontest.debug)
@@ -1214,11 +1190,21 @@ public class Game implements Listener {
         if (mineralcontest.debug) mineralcontest.plugin.getServer().getLogger().info("=============================");
 
 
+
+
+
+        if (forceGameStart) {
+            if (!allPlayerHaveTeam()) randomizeTeam(true);
+        }
+
+        MCPreGameStartEvent event = new MCPreGameStartEvent(this);
+        event.callEvent();
+        if(event.isCancelled()) return false;
+
         if (!forceGameStart && !allPlayerHaveTeam()) {
             groupe.sendToadmin(mineralcontest.prefixAdmin + "Il y a des joueurs sans team, la partie ne peut pas démarrer");
             return false;
         }
-
 
         for (Player online : groupe.getPlayers()) {
 
