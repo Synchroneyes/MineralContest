@@ -168,6 +168,8 @@ public class Arene {
     public void clear() {
         if (this.coffreArene != null) this.coffreArene.getInventory().clear();
         removePlayerTeleportBar();
+        this.chickenWaves.setEnabled(false);
+
     }
 
     public void generateTimeBetweenChest() {

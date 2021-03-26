@@ -24,6 +24,9 @@ public enum ScoreboardFields {
     SCOREBOARD_TEAMSCORE_TEXT("teamscore_text", ChatColor.WHITE + "" + ChatColor.GREEN),
     SCOREBOARD_TEAMSCORE_VALUE("teamscore_value", ChatColor.RED + "" + ChatColor.GREEN),
 
+    SCOREBOARD_KIT_NAME("player_kit_name", ChatColor.GOLD + "" + ChatColor.WHITE),
+    SCOREBOARD_KIT_VALUE("player_kit_val", ChatColor.GOLD + "" + ChatColor.RED),
+
     SCOREBOARD_PLAYERLOCATION_TEXT("playerloc_text", ChatColor.WHITE + "" + ChatColor.DARK_PURPLE),
     SCOREBOARD_PLAYERLOCATION_VALUE("playerloc_value", ChatColor.RED + "" + ChatColor.DARK_PURPLE),
     ;

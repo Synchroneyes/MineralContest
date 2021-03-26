@@ -1,10 +1,7 @@
 package fr.synchroneyes.mineral.Core.Game;
 
 import fr.synchroneyes.challenges.ChallengeManager;
-import fr.synchroneyes.custom_events.MCGameEndEvent;
-import fr.synchroneyes.custom_events.MCGameStartedEvent;
-import fr.synchroneyes.custom_events.MCGameTickEvent;
-import fr.synchroneyes.custom_events.MCPlayerLocationHUDUpdatedEvent;
+import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
 import fr.synchroneyes.mineral.Core.Arena.Arene;
@@ -529,6 +526,8 @@ public class Game implements Listener {
         this.disconnectedPlayers.clear();
         this.playersReady.clear();
 
+
+
         BlockManager instance = BlockManager.getInstance();
         for (Block block : instance.getPlacedBlocks())
             block.setType(Material.AIR);
@@ -541,6 +540,7 @@ public class Game implements Listener {
         }
 
         this.equipes.clear();
+
     }
 
     public void addBlock(Block b, BlockSaver.Type type) {
@@ -552,6 +552,10 @@ public class Game implements Listener {
 
     public void addReferee(Player player) {
         if (!isReferee(player)) {
+            MCPlayerBecomeRefereeEvent event = new MCPlayerBecomeRefereeEvent(mineralcontest.plugin.getMCPlayer(player));
+            event.callEvent();
+
+            if(event.isCancelled()) return;
             player.sendMessage(mineralcontest.prefixPrive + Lang.now_referee.toString());
             this.referees.add(player);
             PlayerUtils.equipReferee(player);
@@ -564,6 +568,10 @@ public class Game implements Listener {
     public void removeReferee(Player player, boolean switchToTeam) {
         if (isReferee(player)) {
 
+            MCPlayerQuitRefereeEvent event = new MCPlayerQuitRefereeEvent(mineralcontest.plugin.getMCPlayer(player));
+            event.callEvent();
+
+            if(event.isCancelled()) return;
 
             player.sendMessage(mineralcontest.prefixPrive + Lang.no_longer_referee.toString());
             this.referees.remove(player);

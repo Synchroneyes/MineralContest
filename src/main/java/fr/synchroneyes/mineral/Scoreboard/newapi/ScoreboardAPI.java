@@ -20,16 +20,16 @@ public class ScoreboardAPI {
     public static String prefix = "» ";
 
 
-    public static void createScoreboard(Player player){
+    public static void createScoreboard(Player player, boolean force){
 
         // Récupération du MCPlayer
         MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
-        if(mcPlayer == null) return;
+        if(mcPlayer == null && !force) return;
 
         // Création d'une liste de joueurs ayant un scoreboard
         if(playersWithScoreboard == null) playersWithScoreboard = new ArrayList<>();
 
-        if(doesPlayerHaveHUD(player)) return;
+        if(doesPlayerHaveHUD(player) && !force) return;
 
 
 

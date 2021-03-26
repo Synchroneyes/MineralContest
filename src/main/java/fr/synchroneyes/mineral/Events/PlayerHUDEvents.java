@@ -2,7 +2,9 @@ package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.MCPlayer;
+import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
 import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardFields;
 import fr.synchroneyes.mineral.Teams.Equipe;
@@ -14,7 +16,7 @@ import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.*;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -34,7 +36,7 @@ public class PlayerHUDEvents implements Listener {
 
         // On lui ajoute son HUD
         Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " JOIN");
-        ScoreboardAPI.createScoreboard(event.getPlayer());
+        ScoreboardAPI.createScoreboard(event.getPlayer(), false);
     }
 
     /**
@@ -116,9 +118,16 @@ public class PlayerHUDEvents implements Listener {
     @EventHandler
     public void onGameStart(MCGameStartedEvent event) {
 
-        for(Player joueur : event.getGame().groupe.getPlayers()){
-            setPlayerInGameHUD(mineralcontest.plugin.getMCPlayer(joueur));
-        }
+
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            for(Player joueur : event.getGame().groupe.getPlayers()){
+                // On envoie le HUD normal si le joueur n'est pas arbitre
+                if(!event.getGame().isReferee(joueur)) setPlayerInGameHUD(mineralcontest.plugin.getMCPlayer(joueur));
+                    // Sinon, on envoie le HUD arbitre
+                else setPlayerRefereeHUD(mineralcontest.plugin.getMCPlayer(joueur));
+            }
+        }, 1);
+
 
     }
 
@@ -136,10 +145,24 @@ public class PlayerHUDEvents implements Listener {
         for(Player player : mcTeamScoreUpdated.getEquipe().getJoueurs()){
             // Pour chaque joueur, on update le score
             ScoreboardAPI.updateField(player, ScoreboardFields.SCOREBOARD_TEAMSCORE_VALUE, mcTeamScoreUpdated.getEquipe().getFormattedScore(mcTeamScoreUpdated.getNewScore()));
-
         }
+
+
+        // On retarde l'execution de cette méthode
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            // On update le HUD des arbitres
+            for(Player joueur : mcTeamScoreUpdated.getEquipe().getPartie().getReferees()) {
+                setPlayerRefereeHUD(mineralcontest.plugin.getMCPlayer(joueur));
+                joueur.sendMessage("HUD arbitre updated");
+            }
+        }, 1);
+
     }
 
+    /**
+     * Mise à jour du temps restant lors d'un tick d'un game
+     * @param event
+     */
     @EventHandler
     public void onGameTick(MCGameTickEvent event) {
         // Pour chaque joueur de la game
@@ -147,6 +170,64 @@ public class PlayerHUDEvents implements Listener {
             // On met à jour le temps
             ScoreboardAPI.updateField(joueur, ScoreboardFields.SCOREBOARD_TIMELEFT_VALUE, event.getGame().getTempsRestant());
         }
+    }
+
+    /**
+     * Evenemnt appelé lorsqu'un joueur change de monde
+     * @param event
+     */
+    @EventHandler
+    public void onWorldChangeEvent(MCPlayerWorldChangeEvent event){
+        // Si la destination n'est pas un monde mineralcntest, on vire son hud
+        if(!mineralcontest.isAMineralContestWorld(event.getToWorld())){ event.getPlayer().setScoreboard(null); return;}
+
+        // Si il rejoint le lobby, on lui remet son HUD par défaut
+        if(mineralcontest.plugin.pluginWorld.equals(event.getToWorld())) {
+            ScoreboardAPI.createScoreboard(event.getPlayer(), true);
+            return;
+        }
+
+        // Si il rejoint un monde, on lui applique le HUD de jeu
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(event.getPlayer());
+        if(mcPlayer.getPartie().isPlayerReady(event.getPlayer())) setPlayerRefereeHUD(mcPlayer);
+        else setPlayerInGameHUD(mcPlayer);
+
+
+    }
+
+
+    /**
+     * Evenemnt appelé lorsqu'un joueur devient arbitre. ON lui applique le HUD Arbitre
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerBecomesReferee(MCPlayerBecomeRefereeEvent event) {
+        if(event.getPlayer().getPartie().isGameStarted()) setPlayerRefereeHUD(event.getPlayer());
+
+
+    }
+
+    /**
+     * Evenemnt appelé lorsqu'un joueur quitte l'arbitrage. ON lui applique le HUD de jeu
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerQuitReferee(MCPlayerQuitRefereeEvent event) {
+
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> setPlayerInGameHUD(event.getPlayer()), 1);
+
+    }
+
+    /**
+     * Event appelé lorsqu'un joueur selectionne un kit
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerKitSelected(PlayerKitSelectedEvent event){
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            Player joueur = event.getPlayer();
+            ScoreboardAPI.updateField(joueur, ScoreboardFields.SCOREBOARD_KIT_VALUE, event.getSelectedKit().getNom());
+        }, 1);
     }
 
 
@@ -162,14 +243,23 @@ public class PlayerHUDEvents implements Listener {
         ChatColor teamColor = ChatColor.GOLD;
         ChatColor resetColor = ChatColor.RESET;
         int position = 16;
+        String playerTeamName = "Arbitre";
         boolean isPlayerReferee = game.isReferee(player.getJoueur());
         Equipe playerTeam = game.getPlayerTeam(player.getJoueur());
+
+        if(!game.isGameStarted()) {
+            ScoreboardAPI.createScoreboard(player.getJoueur(), true);
+            return;
+        }
 
 
         if(isPlayerReferee) {
             teamColor = ChatColor.GOLD;
         } else {
-            if(playerTeam != null) teamColor = playerTeam.getCouleur();
+            if(playerTeam != null){
+                teamColor = playerTeam.getCouleur();
+                playerTeamName = playerTeam.getNomEquipe();
+            }
         }
 
         // On remet à zéro les HUD
@@ -188,21 +278,74 @@ public class PlayerHUDEvents implements Listener {
 
         // On ajoute le nom de l'équipe
         ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMNAME_TEXT, teamColor + Lang.hud_team_text.toString(), position--);
-        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMNAME_VALUE, playerTeam.getNomEquipe(), position--);
+        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMNAME_VALUE, playerTeamName, position--);
 
         ScoreboardAPI.addEmptyLine(joueur, position--);
 
-        // On ajoute le score de l'équipe
-        String score = playerTeam.getFormattedScore();
-        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMSCORE_TEXT, teamColor + Lang.hud_score_text.toString(), position--);
-        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMSCORE_VALUE, score, position--);
+        if(!isPlayerReferee){
+            // On ajoute le score de l'équipe
+            String score = playerTeam.getFormattedScore();
+            ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMSCORE_TEXT, teamColor + Lang.hud_score_text.toString(), position--);
+            ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TEAMSCORE_VALUE, score, position--);
+            ScoreboardAPI.addEmptyLine(joueur, position--);
+
+        }
+
+        // On affiche le kit du joueur
+        if(game.groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() == 1) {
+            KitAbstract playerKit = game.groupe.getKitManager().getPlayerKit(joueur);
+            if(playerKit != null) {
+                ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_KIT_NAME, teamColor + "Kit", position--);
+                ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_KIT_VALUE, playerKit.getNom(), position--);
+
+                ScoreboardAPI.addEmptyLine(joueur, position--);
+            }
+
+        }
 
 
-        ScoreboardAPI.addEmptyLine(joueur, position--);
+
         // ON affiche la position du joueur
         String position_joueur = teamColor + "X: " + resetColor + joueur.getLocation().getBlockX() + " " + teamColor + "Y: " + resetColor + joueur.getLocation().getBlockY() + teamColor + " Z: " + resetColor + joueur.getLocation().getBlockZ();
         ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_PLAYERLOCATION_VALUE, position_joueur, position--);
 
     }
+
+    /**
+     * Applique le HUD d'arbitre à un joueur
+     * @param player
+     */
+    public static void setPlayerRefereeHUD(MCPlayer player) {
+
+        Player joueur = player.getJoueur();
+
+        int position = 16;
+
+        // ON commence par vider son HUD
+        ScoreboardAPI.clearScoreboard(player.getJoueur());
+
+        // On ajoute la version du plugin
+        ScoreboardAPI.addScoreboardText(joueur, ChatColor.GREEN + "v" + mineralcontest.plugin.getDescription().getVersion(), position--);
+
+        ScoreboardAPI.addEmptyLine(joueur, position--);
+
+        // On ajoute le temps restant
+        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TIMELEFT_TEXT, ChatColor.GOLD + Lang.hud_timeleft_text.toString(), position--);
+        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TIMELEFT_VALUE, player.getPartie().getTempsRestant(), position--);
+
+
+        // On ajoute le score de chaque équipe
+        for(House maisons : player.getPartie().getHouses()){
+            if(maisons.getTeam().getJoueurs().isEmpty()) continue;
+
+            ScoreboardAPI.addEmptyLine(joueur, position--);
+            String teamScore = maisons.getTeam().getFormattedScore();
+            ScoreboardAPI.addScoreboardText(joueur,maisons.getTeam().getCouleur() + maisons.getTeam().getNomEquipe(), position--);
+            ScoreboardAPI.addScoreboardText(joueur, teamScore, position--);
+
+        }
+    }
+
+
 
 }

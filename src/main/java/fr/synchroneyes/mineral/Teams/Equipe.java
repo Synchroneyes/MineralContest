@@ -53,6 +53,14 @@ public class Equipe implements Comparable<Equipe> {
         return maison;
     }
 
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public Game getPartie() {
+        return partie;
+    }
+
     public void clear() {
         this.joueurs.clear();
         this.score = 0;
