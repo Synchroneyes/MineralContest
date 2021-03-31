@@ -26,6 +26,16 @@ public class CoffreBoss extends AutomatedChestAnimation {
 
 
     @Override
+    public int playNoteOnTick() {
+        return 0;
+    }
+
+    @Override
+    public int playNoteOnEnd() {
+        return 0;
+    }
+
+    @Override
     public void actionToPerformBeforeSpawn() {
 
     }

@@ -23,6 +23,7 @@ public abstract class DeathAnimation {
      */
     public abstract String getAnimationName();
 
+
     public abstract Material getIcone();
 
     public ItemStack toItemStack() {

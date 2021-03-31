@@ -19,7 +19,8 @@ public enum FileList {
     ShopItem_PriceList("config/shop", "items_price.yml"),
     MySQL_Config_File("config", "mysql_settings.yml"),
     MySQL_database_schema("models", "database_schema.sql"),
-    Kit_Enchanteur_ConfigFile("config/kits", "enchanteur.yml");
+    Kit_Enchanteur_ConfigFile("config/kits", "enchanteur.yml"),
+    DeathAnimation_DataFile("data", "death_animations.yml");
 
     private String path;
     private String fileName;

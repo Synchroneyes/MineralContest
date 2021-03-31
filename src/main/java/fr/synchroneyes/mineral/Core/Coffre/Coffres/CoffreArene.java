@@ -42,6 +42,16 @@ public class CoffreArene extends AutomatedChestAnimation {
     }
 
     @Override
+    public int playNoteOnTick() {
+        return 1;
+    }
+
+    @Override
+    public int playNoteOnEnd() {
+        return 24;
+    }
+
+    @Override
     public void actionToPerformBeforeSpawn() {
         this.arene.getCoffre().remove();
 

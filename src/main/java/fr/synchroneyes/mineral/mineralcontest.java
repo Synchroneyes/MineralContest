@@ -82,6 +82,9 @@ public final class mineralcontest extends JavaPlugin {
 
     public static int player_location_hud_refresh_rate = 10;
 
+    // Variable permettant d'avertir l'utilisateur en cas d'interaction avec un bloc avant une game
+    public static boolean enable_block_warning = false;
+
 
     /**
      * Array of all the messages we can fetch from synchroneyes's plugin website.
@@ -236,6 +239,8 @@ public final class mineralcontest extends JavaPlugin {
 
         // On charge le nombre de tick requis pour update le scoreboard
         player_location_hud_refresh_rate = Integer.parseInt(getPluginConfigValue("player_location_refresh_rate").toString());
+
+        enable_block_warning = Boolean.parseBoolean(getPluginConfigValue("enable_block_warning").toString());
 
 
         // On regard si on doit lancer le mode communautaire ou non

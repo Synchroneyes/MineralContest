@@ -44,6 +44,16 @@ public class CoffreMortJoueur extends TimeChestAnimation {
 
 
     @Override
+    public int playNoteOnTick() {
+        return 0;
+    }
+
+    @Override
+    public int playNoteOnEnd() {
+        return 0;
+    }
+
+    @Override
     public void actionToPerformBeforeSpawn() {
 
     }

@@ -410,7 +410,6 @@ public class WorldLoader {
         }
 
         groupe.sendToadmin(mineralcontest.prefixGroupe + "Les paramètres de la carte ont bien été chargé!");
-        Bukkit.broadcastMessage("enable_kits => " + parametres.getCVAR("enable_kits").getValeurNumerique());
 
 
     }

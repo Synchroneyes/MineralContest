@@ -2,9 +2,7 @@ package fr.synchroneyes.mineral.Core.Coffre;
 
 import fr.synchroneyes.custom_events.MCPlayerOpenChestEvent;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -87,6 +85,10 @@ public abstract class AutomatedChestAnimation {
         return isAnimationOver;
     }
 
+
+    public abstract int playNoteOnTick();
+
+    public abstract int playNoteOnEnd();
 
     /**
      * Fonction appelée avant de faire apparaitre le coffre
@@ -230,6 +232,9 @@ public abstract class AutomatedChestAnimation {
                 }
 
                 if (indexSequence.get() > nombreItemSequence - 1) {
+                    // On joue le son
+                    if(playNoteOnEnd() > 0) openingPlayer.playNote(openingPlayer.getLocation(), Instrument.PIANO, new Note(playNoteOnEnd()));
+
                     inventaireCoffre.clear();
                     inventaireCoffre = Bukkit.createInventory(null, tailleInventaire, getOpenedChestTitle());
 
@@ -259,6 +264,8 @@ public abstract class AutomatedChestAnimation {
 
 
 
+
+
                     this.cancel();
 
 
@@ -271,6 +278,9 @@ public abstract class AutomatedChestAnimation {
 
                 // On incrémente le compteur
                 indexSequence.incrementAndGet();
+
+                // On joue le son
+                if(playNoteOnTick() > 0) openingPlayer.playNote(openingPlayer.getLocation(), Instrument.PIANO, new Note(playNoteOnTick()));
 
 
             }

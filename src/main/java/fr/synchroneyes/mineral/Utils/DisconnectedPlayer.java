@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,6 +29,7 @@ public class DisconnectedPlayer {
     private LinkedBlockingQueue<ShopItem> bonus;
     private KitAbstract kit;
 
+
     public DisconnectedPlayer(UUID playerUUID, Equipe oldPlayerTeam, Groupe oldPlayerGroupe, CouplePlayer oldPlayerDeathTime, Location oldPlayerLocation, Player p, LinkedBlockingQueue bonus, KitAbstract kit) {
         this.playerUUID = playerUUID;
         this.oldPlayerTeam = oldPlayerTeam;
@@ -40,9 +42,14 @@ public class DisconnectedPlayer {
 
         Bukkit.getLogger().info(oldPlayerLocation + "");
 
-        for (ItemStack item : p.getInventory().getContents())
+
+
+        for (ItemStack item : p.getInventory().getStorageContents())
             if (item != null) oldPlayerInventory.add(item);
+
+
     }
+
 
     public UUID getPlayerUUID() {
         return playerUUID;
@@ -80,4 +87,6 @@ public class DisconnectedPlayer {
     public KitAbstract getKit() {
         return kit;
     }
+
+
 }

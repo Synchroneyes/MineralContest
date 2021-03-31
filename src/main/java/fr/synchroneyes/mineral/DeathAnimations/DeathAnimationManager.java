@@ -1,19 +1,27 @@
 package fr.synchroneyes.mineral.DeathAnimations;
 
+import fr.synchroneyes.custom_events.MCGameStartedEvent;
 import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
+import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.*;
 import fr.synchroneyes.mineral.Events.PlayerKilledByPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Menu permettant de gérer les animations de mort
@@ -31,6 +39,8 @@ public class DeathAnimationManager implements Listener {
 
     private Inventory inventaireSelectionAnimation;
 
+    private File fichier_data;
+
 
     public DeathAnimationManager() {
 
@@ -46,6 +56,9 @@ public class DeathAnimationManager implements Listener {
             inventaireSelectionAnimation.addItem(animation.toItemStack());
 
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
+
+        // Vérification si le fichier data existe ou non
+        fichier_data = new File(mineralcontest.plugin.getDataFolder(), FileList.DeathAnimation_DataFile.toString());
 
     }
 
@@ -68,6 +81,8 @@ public class DeathAnimationManager implements Listener {
     private void setPlayerAnimation(Player player, DeathAnimation animation) {
         if(animation_par_joueur.containsKey(player)) animation_par_joueur.replace(player, animation);
         else animation_par_joueur.put(player, animation);
+
+        savePlayerAnimation(player, animation);
     }
 
     /**
@@ -90,7 +105,47 @@ public class DeathAnimationManager implements Listener {
     }
 
 
+    public void loadAnimationData() {
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(fichier_data);
+        for(String player_uid : configuration.getKeys(false)){
+            if(Bukkit.getPlayer(UUID.fromString(player_uid)) != null){
+                DeathAnimation animation = getAnimationFromString(configuration.get(player_uid).toString());
+                if(animation == null) continue;
+
+
+                setPlayerAnimation(Bukkit.getPlayer(UUID.fromString(player_uid)), animation);
+            }
+        }
+    }
+
+    private DeathAnimation getAnimationFromString(String name) {
+        for(DeathAnimation animation : liste_animations)
+            if(animation.getClass().getSimpleName().equals(name)) return animation;
+
+        return null;
+    }
+
+
+    public void savePlayerAnimation(Player player, DeathAnimation animation){
+
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(fichier_data);
+        configuration.set(player.getUniqueId().toString(), animation.getClass().getSimpleName());
+
+
+        try {
+            configuration.save(fichier_data);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
     @EventHandler
+    public void onGameStart(MCGameStartedEvent event) {
+        loadAnimationData();
+    }
+
+                            @EventHandler
     public void onPlayerAnimationSelected(InventoryClickEvent event) {
 
         if(!(event.getWhoClicked() instanceof Player)) {
@@ -125,6 +180,11 @@ public class DeathAnimationManager implements Listener {
         DeathAnimation animation = getPlayerAnimation(playerEvent.getKiller());
         animation.playAnimation(playerEvent.getPlayerDead());
     }
+
+
+
+
+
 
 
 

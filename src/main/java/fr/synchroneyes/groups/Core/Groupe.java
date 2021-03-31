@@ -556,7 +556,6 @@ public class Groupe {
                     if (p.isOp()) infoJoueur.getOldPlayerGroupe().addAdmin(p);
                     else infoJoueur.getOldPlayerGroupe().addJoueur(p);
 
-                    Bukkit.broadcastMessage("OldTeam: " + infoJoueur.getOldPlayerTeam());
                     // On remet le joueur dans son équipe
                     if (infoJoueur.getOldPlayerTeam() != null)
                         infoJoueur.getOldPlayerTeam().addPlayerToTeam(p, false);
@@ -586,6 +585,7 @@ public class Groupe {
                     for (ItemStack item : infoJoueur.getOldPlayerInventory())
                         if(item.getType() != Material.BARRIER)
                             p.getInventory().addItem(item);
+
 
                     p.teleport(infoJoueur.getOldPlayerLocation());
 

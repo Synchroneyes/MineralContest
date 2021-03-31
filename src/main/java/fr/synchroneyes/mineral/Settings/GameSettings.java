@@ -112,7 +112,6 @@ public class GameSettings {
 
                 gameCVAR.setValeur(valeur);
 
-                Bukkit.broadcastMessage("set: " + cvar + " => " + valeur + " | enregistré: " + gameCVAR.getValeurNumerique());
 
                 if (parametre.getCommand().equalsIgnoreCase("mp_enable_old_pvp")) {
                     for (Player player : groupe.getPlayers()) {
@@ -325,7 +324,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("enable_kits", "1", "Permet d'activer ou non les kits", "kits", true, true));
 
             // Système de coffre à la mort
-            parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, false));
+            parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "1", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
 
 
@@ -338,6 +337,9 @@ public class GameSettings {
 
             parametresParDefaut.add(new GameCVAR("enable_chat_from_other_worlds", "1", "Permet d'activer ou non l'isolement du chat dans une partie. Par exemple, si l'option est activé, tous les messages envoyé par des joueurs seront affiché. Sinon, seuls les messages provenant de la partie seront affiché", "settings", true, true));
             parametresParDefaut.add(new GameCVAR("enable_nether", "0", "Permet d'activer ou non l'accès au nether", "settings", true, true));
+
+            parametresParDefaut.add(new GameCVAR("enable_hunger", "1", "Permet d'activer ou non la faim dans une partie", "game", true, true));
+
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
 

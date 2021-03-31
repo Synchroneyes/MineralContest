@@ -36,7 +36,7 @@ public class PlayerInteract implements Listener {
             if (mineralcontest.isInMineralContestHub(joueur)) {
                 event.setCancelled(true);
 
-                if (event.getClickedBlock() != null)
+                if (event.getClickedBlock() != null && mineralcontest.enable_block_warning)
                     event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
                 return;
             }
@@ -44,7 +44,7 @@ public class PlayerInteract implements Listener {
 
             if (partie != null && !partie.isGameStarted() && (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && !Setup.premierLancement) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
+                if(mineralcontest.enable_block_warning) event.getPlayer().sendMessage(mineralcontest.prefixPrive + Lang.cant_interact_block_pre_game.toString());
             }
 
         }

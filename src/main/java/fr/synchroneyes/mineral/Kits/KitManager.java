@@ -443,7 +443,6 @@ public class KitManager implements Listener {
 
         // ON vérifie que les kits soient activé
         if(event.getPartie().groupe.getParametresPartie().getCVAR("enable_kits").getValeurNumerique() != 1) return;
-        new Exception().printStackTrace();
 
         // On vérifie que tout le monde ait un kit
         List<Player> joueurs_sans_kit = getPlayerWithoutKits(false);

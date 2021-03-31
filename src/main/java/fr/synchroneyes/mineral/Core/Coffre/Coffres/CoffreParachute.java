@@ -42,6 +42,16 @@ public class CoffreParachute extends AutomatedChestAnimation {
     }
 
     @Override
+    public int playNoteOnTick() {
+        return 24;
+    }
+
+    @Override
+    public int playNoteOnEnd() {
+        return 24;
+    }
+
+    @Override
     public void actionToPerformBeforeSpawn() {
 
     }

@@ -6,3 +6,4 @@ enable_mysql_storage: false # Enable MySQL data storage
 enable_community_version: false # Enable/disable community mod
 min_player_per_group: 6 # Number of player required to start a game in community Mode
 player_location_refresh_rate: 10 # Number of tick between each player's HUD location refreshs.
+enable_block_warning: true

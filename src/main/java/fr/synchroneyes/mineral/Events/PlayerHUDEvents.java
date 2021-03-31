@@ -35,7 +35,32 @@ public class PlayerHUDEvents implements Listener {
     public void onPlayerJoinPlugin(MCPlayerJoinEvent event) {
 
         // On lui ajoute son HUD
-        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " JOIN");
+        Game partie = event.getMcPlayer().getPartie();
+        if(partie == null || partie.isGameStarted()) {
+
+
+            if(event.getMcPlayer().getEquipe() != null) {
+                setPlayerInGameHUD(event.getMcPlayer());
+                return;
+            }
+
+            Player joueur = event.getPlayer();
+            int position = 16;
+
+            ScoreboardAPI.createScoreboard(event.getPlayer(), false);
+            ScoreboardAPI.clearScoreboard(event.getPlayer());
+            ScoreboardAPI.addScoreboardText(joueur, ChatColor.GREEN + "v" + mineralcontest.plugin.getDescription().getVersion(), position--);
+            ScoreboardAPI.addEmptyLine(joueur, position--);
+            ScoreboardAPI.addScoreboardText(joueur, "Temps restant", position--);
+            ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_TIMELEFT_VALUE, "", position--);
+            ScoreboardAPI.addEmptyLine(joueur, position--);
+            ScoreboardAPI.addScoreboardText(joueur, "Spectateur", position--);
+
+
+
+            return;
+        }
+
         ScoreboardAPI.createScoreboard(event.getPlayer(), false);
     }
 
@@ -45,8 +70,7 @@ public class PlayerHUDEvents implements Listener {
      */
     @EventHandler
     public void onPlayerReconnect(MCPlayerReconnectEvent event) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + " RECONNECT");
-        setPlayerInGameHUD(event.getPlayer());
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> setPlayerInGameHUD(event.getPlayer()), 2);
     }
 
     /**
@@ -213,9 +237,7 @@ public class PlayerHUDEvents implements Listener {
      */
     @EventHandler
     public void onPlayerQuitReferee(MCPlayerQuitRefereeEvent event) {
-
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> setPlayerInGameHUD(event.getPlayer()), 1);
-
     }
 
     /**
