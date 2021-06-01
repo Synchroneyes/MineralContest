@@ -36,7 +36,7 @@ public class PlayerHUDEvents implements Listener {
 
         // On lui ajoute son HUD
         Game partie = event.getMcPlayer().getPartie();
-        if(partie == null || partie.isGameStarted()) {
+        if(partie != null && partie.isGameStarted()) {
 
 
             if(event.getMcPlayer().getEquipe() != null) {
