@@ -9,6 +9,7 @@ import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -46,7 +47,9 @@ public class EntityDamage implements Listener {
             }
 
 
+
             // On doit bloquer les dégats si ils sont causé par un autre joueur de la même équipe
+            // et on divise par 2 les dégats fait par une hache
             if (event instanceof EntityDamageByEntityEvent) {
 
                 EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
@@ -54,6 +57,16 @@ public class EntityDamage implements Listener {
                 // On vérifie les dégats fait par un joueur
                 if (entityDamageByEntityEvent.getDamager() instanceof Player) {
                     Player attaquant = (Player) entityDamageByEntityEvent.getDamager();
+
+                    // On divise par 2 les dégats fait par une hache
+                    Material[] items_nerf = new Material[]{Material.WOODEN_AXE, Material.IRON_AXE, Material.GOLDEN_AXE, Material.DIAMOND_AXE, Material.STONE_AXE};
+                    for(Material item : items_nerf) {
+                        if (attaquant.getInventory().getItemInMainHand().getType() == item) {
+                            event.setDamage(event.getDamage()/2);
+                            break;
+                        }
+                    }
+
 
                     if (playerGroup.getPlayerTeam(attaquant) == null) {
                         event.setCancelled(true);
