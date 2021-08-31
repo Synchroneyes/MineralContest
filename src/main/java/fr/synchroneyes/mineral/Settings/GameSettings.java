@@ -295,7 +295,7 @@ public class GameSettings {
             parametresParDefaut.add(new GameCVAR("max_item_in_chest", "20", "Permet de définir le nombre maximum d'objet dans un coffre d'équipe", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("min_item_in_chest", "10", "Permet de définir le nombre minimum d'objet dans un coffre d'équipe", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("death_time", "10", "Permet de définir le temps de réapparition", "settings", true, true));
-            parametresParDefaut.add(new GameCVAR("chicken_spawn_time", "60", "Permet de définir le temps restant necessaire avant de faire apparaitre les poulets dans l'arène", "arena", true, true));
+            parametresParDefaut.add(new GameCVAR("chicken_spawn_time", "5", "Permet de définir le temps restant necessaire en minute avant de faire apparaitre les poulets dans l'arène", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_interval", "15", "Permet de définir le temps en seconde necessaire avant de pouvoir faire apparaitre une vague de poulet", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_min_count", "2", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
             parametresParDefaut.add(new GameCVAR("chicken_spawn_max_count", "5", "Permet de définir le nombre minimum de poulet dans une vague d'apparition", "arena", true, true));
