@@ -18,13 +18,13 @@ import java.util.Random;
 
 
 /**
- * Lors qu'il mine de l'emeraude, 20% de chance d'avoir 2 émeraude, 20% de chance d'avoir 2 dirts
+ * Lors qu'il mine du diamant, 20% de chance d'avoir 2 émeraude, 20% de chance d'avoir 2 dirts
  */
 public class Parieur extends KitAbstract {
 
 
     // Sur quel block on doit réagir
-    private Material materialToReact = Material.EMERALD_ORE;
+    private Material materialToReact = Material.DIAMOND_ORE;
 
     // Pourcentage de mauvaise chance
     private double badLuckPercentage = 20.0;
@@ -42,7 +42,7 @@ public class Parieur extends KitAbstract {
     private int goodLuckMultiplier = 2;
 
     // Item à donner en cas de bonne chance
-    private Material goodLuckMaterial = Material.EMERALD;
+    private Material goodLuckMaterial = Material.DIAMOND;
 
 
     @Override
