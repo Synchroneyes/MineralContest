@@ -402,7 +402,7 @@ public enum Lang {
     kit_miner_description("kit_miner_description", "Cuit instantanément vos minerais, mais vous retire une ligne dans votre inventaire"),
     kit_miner_item_denied("kit_miner_item_denied", "Bloqué"),
     kit_crazy_bet_title("kit_crazy_bet_title", "Parieur fou"),
-    kit_crazy_bet_description("kit_crazy_bet_description", "Lorsque vous minez de l'émeraude, vous avez 20% de chance d'avoir 2 émeraudes, et 20% d'avoir 2 blocs de terre."),
+    kit_crazy_bet_description("kit_crazy_bet_description", "Lorsque vous minez du diamant, vous avez 20% de chance d'avoir 2 diamants, et 20% d'avoir 2 blocs de terre."),
     kit_toughguy_title("kit_toughguy_title", "Robuste"),
     kit_toughguy_description("kit_toughguy_description", "Vous avez 15 coeurs, 15% de dégats en moins, et 15% de vitesse en moins"),
     kit_support_title("kit_support_title", "Soutien"),

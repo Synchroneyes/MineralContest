@@ -19,12 +19,12 @@ import org.bukkit.event.EventHandler;
 import java.util.List;
 
 /**
- * Kit soutien, heal ses amis proche de lui, possède -5 coeurs et -15% de speed
+ * Kit soutien, heal ses amis proche de lui -15% de speed
  */
 public class Soutien extends KitAbstract {
 
     // Le nombre de coeur qu'un joueur doit avoir en utilisant cette classe
-    private double nombreCoeur = 5.0;
+    private double nombreCoeur = 10;
 
     // Le pourcentage de réduction de vitesse du joueur
     private double pourcentageReductionVitesse = 15.0;
