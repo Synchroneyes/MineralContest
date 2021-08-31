@@ -11,6 +11,7 @@ import fr.synchroneyes.mineral.Utils.RawToCooked;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +26,13 @@ import java.util.Random;
  * Cuit instantanément ses mienrais, mais retire une ligne dans l'inventaire
  */
 public class Mineur extends KitAbstract {
+
+
+    // Le pourcentage de réduction de vitesse du joueur
+
+    private double pourcentageReductionVitesse = 15.0;
+
+
     @Override
     public String getNom() {
         return Lang.kit_miner_title.toString();
@@ -39,6 +47,8 @@ public class Mineur extends KitAbstract {
     public Material getRepresentationMaterialForSelectionMenu() {
         return Material.GOLDEN_PICKAXE;
     }
+
+
 
 
     /**
@@ -111,6 +121,9 @@ public class Mineur extends KitAbstract {
         // On ajoute les lignes dans l'inventaire du joueur
         for (int i = 9; i < 18; ++i)
             event.getJoueur().getInventory().setItem(i, getBarrierItem());
+
+        // On applique le ralentissement
+        setPlayerEffects(event.getJoueur());
     }
 
 
@@ -186,5 +199,25 @@ public class Mineur extends KitAbstract {
 
         barriere.setItemMeta(meta);
         return barriere;
+    }
+
+
+    /**
+     * Fonction permettant d'ajouter à un joueur, les effets de  ce  kit
+     *
+     * @param joueur
+     */
+    private void setPlayerEffects(Player joueur) {
+
+        // On récupère la vitesse de base d'un joueur
+        double currentSpeed = 0.2f;
+
+
+        // On calcule sa nouvelle vitesse
+        double newSpeed = currentSpeed - (currentSpeed * pourcentageReductionVitesse / 100);
+
+        joueur.setWalkSpeed((float) newSpeed);
+
+        joueur.setHealth(joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
     }
 }
