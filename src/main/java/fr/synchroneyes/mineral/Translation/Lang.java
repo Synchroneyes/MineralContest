@@ -397,7 +397,7 @@ public enum Lang {
     kit_wizard_title("kit_wizard_title", "Enchanteur"),
     kit_wizard_description("kit_wizard_description", "Vous réapparaissez avec 15 niveaux d'experience, 32 lapis lazuli, et 3 livres d'enchantement"),
     kit_warrior_title("kit_warrior_title", "Guerrier"),
-    kit_warrior_description("kit_warrior_description", "Vous faites 25% de dégats en plus, mais vous avez 5 coeurs en moins"),
+    kit_warrior_description("kit_warrior_description", "Vous faites 25% de dégats en plus, mais perds se déplace 15% moins vite"),
     kit_miner_title("kit_miner_title", "Mineur"),
     kit_miner_description("kit_miner_description", "Cuit instantanément vos minerais, mais vous retire une ligne dans votre inventaire. Malheureusement vos outils sont lourds... Vous vous déplacez 15% moins vite."),
     kit_miner_item_denied("kit_miner_item_denied", "Bloqué"),

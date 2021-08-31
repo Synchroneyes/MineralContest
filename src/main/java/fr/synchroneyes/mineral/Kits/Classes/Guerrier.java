@@ -12,13 +12,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
 /**
- * Fait 25% de dégats en plus, mais perds 2.5 coeurs
+ * Fait 25% de dégats en plus, mais perds se déplace 15% moins vite
  */
 public class Guerrier extends KitAbstract {
 
 
     private double bonusPercentage = 25d;
-    private double vieEnMoins = 2.5;
+
+    // Le pourcentage de réduction de vitesse du joueur
+    private double pourcentageReductionVitesse = 15.0;
+
+    //private double vieEnMoins = 2.5;
+
 
 
     @Override
@@ -87,16 +92,21 @@ public class Guerrier extends KitAbstract {
      */
     private void setPlayerBonus(Player joueur) {
         double valeurDegatsParDefaut = 1.0;
-        double vieParDefaut = 20d;
+        double currentSpeed = 0.2f;
 
-        double nouvelleVie = vieParDefaut - (vieEnMoins * 2);
+
+        // On calcule sa nouvelle vitesse
+        double newSpeed = currentSpeed - (currentSpeed * pourcentageReductionVitesse / 100);
+        joueur.setWalkSpeed((float) newSpeed);
+
+
+
         double nouvelleValeur = valeurDegatsParDefaut + (valeurDegatsParDefaut * bonusPercentage / 100);
 
 
         joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(nouvelleValeur);
-        joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(nouvelleVie);
+        joueur.setHealth(joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 
-        joueur.setHealth(nouvelleVie);
 
     }
 

@@ -29,7 +29,6 @@ public class Mineur extends KitAbstract {
 
 
     // Le pourcentage de réduction de vitesse du joueur
-
     private double pourcentageReductionVitesse = 15.0;
 
 
