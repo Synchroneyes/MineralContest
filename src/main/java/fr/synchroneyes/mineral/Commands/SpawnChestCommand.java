@@ -1,9 +1,11 @@
 package fr.synchroneyes.mineral.Commands;
 
+import fr.synchroneyes.custom_events.MCArenaChestSpawnEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,6 +37,9 @@ public class SpawnChestCommand implements CommandExecutor {
                     if (partie.isGameStarted()) {
                         try {
                             partie.getArene().getCoffre().spawn();
+
+                            MCArenaChestSpawnEvent mcArenaChestSpawnEvent = new MCArenaChestSpawnEvent(partie);
+                            Bukkit.getPluginManager().callEvent(mcArenaChestSpawnEvent);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

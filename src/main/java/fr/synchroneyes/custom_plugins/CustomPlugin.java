@@ -76,6 +76,8 @@ public abstract class CustomPlugin extends JavaPlugin implements PluginInterface
                     shoudDisablePlugin = false;
                     break;
                 }
+        } else {
+            shoudDisablePlugin = false;
         }
 
 
