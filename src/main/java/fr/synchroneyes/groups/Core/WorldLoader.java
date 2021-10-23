@@ -404,7 +404,7 @@ public class WorldLoader {
                     parametres.setCVARValeur(variable, (String) config.get(section + "." + variable));
                 } catch (Exception e) {
                     //groupe.sendToadmin(mineralcontest.prefixErreur + "Setting " + variable + " doesnt exists");
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }

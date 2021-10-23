@@ -18,6 +18,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -160,7 +162,8 @@ public class WorldDownloader {
             areMapsLoaded = false;
 
             HttpGet request = new HttpGet(Urls.API_URL_WORKSHOP_LIST);
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClientBuilder.create()
+                    .setRedirectStrategy(new LaxRedirectStrategy()).build();
             HttpResponse response = null;
             try {
                 response = httpClient.execute(request);
@@ -234,13 +237,12 @@ public class WorldDownloader {
 
                 File fichierTelecharge = new File(dossierTelechargement, map.getMapFileName());
 
+                Bukkit.getLogger().info("Downloading: " + map.getMapUrl());
                 FileUtils.copyURLToFile(new URL(map.getMapUrl()), fichierTelecharge);
                 joueur.sendMessage(mineralcontest.prefixPrive + Lang.downloading_map_done_now_extracting.toString());
                 extraireMapTelechargee(map, fichierTelecharge, joueur);
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

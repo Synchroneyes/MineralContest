@@ -28,6 +28,7 @@ public class MapListInventory extends InventoryInterface {
         for (MapInfo map : maps_available)
             if (!maps_telecharger.contains(map.map_folder_name))
                 registerItem(MapDownloadItem.fromMapInfo(map));
+
     }
 
     @Override

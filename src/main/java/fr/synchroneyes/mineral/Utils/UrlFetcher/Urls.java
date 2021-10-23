@@ -23,7 +23,7 @@ public class Urls {
     public static String API_URL_SEND_METRIC = "";
 
 
-    public static String WEBSITE_URL = "http://beta.synchroneyes.fr";
+    public static String WEBSITE_URL = "https://mc.monvoisin-kevin.fr/";
     public static String GET_ALL_URL_ROUTE = "/api/getAllUrls";
 
     public static boolean areAllUrlFetched = false;

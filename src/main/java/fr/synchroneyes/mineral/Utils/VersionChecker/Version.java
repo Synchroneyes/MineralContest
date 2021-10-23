@@ -14,6 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
@@ -50,8 +51,11 @@ public class Version {
             List<NameValuePair> parametres = new ArrayList<>();
             parametres.add(new BasicNameValuePair("version", currentVersion));
             request.setEntity(new UrlEncodedFormEntity(parametres));
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClientBuilder.create()
+                    .setRedirectStrategy(new LaxRedirectStrategy()).build();
             HttpResponse response = null;
+
+
 
             // On execute la requete
             response = httpClient.execute(request);
@@ -86,7 +90,8 @@ public class Version {
 
             request.setEntity(new UrlEncodedFormEntity(parametres));
 
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClientBuilder.create()
+                    .setRedirectStrategy(new LaxRedirectStrategy()).build();
             HttpResponse response = null;
             response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
