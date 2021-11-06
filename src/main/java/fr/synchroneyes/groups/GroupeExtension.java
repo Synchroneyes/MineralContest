@@ -54,6 +54,8 @@ public class GroupeExtension {
 
         for (File fichier : fichiers) {
             try {
+
+                if(!fichier.isDirectory()) continue;
                 Bukkit.getServer().unloadWorld(fichier.getName(), false);
                 FileUtils.deleteDirectory(fichier);
             } catch (IOException ioe) {
