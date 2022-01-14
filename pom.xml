@@ -71,9 +71,6 @@
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>E:\Serveurs\Minecraft\Mineral Contest - DEV\plugins</outputDirectory>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
                 </executions>
@@ -135,7 +132,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
