@@ -1,0 +1,9 @@
+kind: pipeline
+name: compilation
+
+steps:
+  - name: Compilation
+    image: maven
+    commands:
+      - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+      - mvn test -B

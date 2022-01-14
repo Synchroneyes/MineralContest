@@ -1,7 +1,6 @@
 ## Welcome to Mineral Contest !
 
-<img src="https://github.com/Synchroneyes/MineralContest/actions/workflows/maven.yml/badge.svg">
-
+[![Build Status](https://drone.monvoisin-kevin.fr/api/badges/Synchroneyes/MineralContest/status.svg)](https://drone.monvoisin-kevin.fr/Synchroneyes/MineralContest)
 
 *(The plugin has been completly rewrote in order to support custom maps made by the community)*
 
