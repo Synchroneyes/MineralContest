@@ -3,6 +3,7 @@ package fr.synchroneyes.mineral.Core;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.Player.BaseItem.PlayerBaseItem;
+import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.Utils.Player.HUD.BaseHUD;
@@ -33,7 +34,7 @@ public class MCPlayer {
     private Groupe groupe;
 
     // Partie du joueur
-    @Getter
+    @Getter @Setter
     private Game partie;
 
     // Le joueur possède une équipe
@@ -67,6 +68,9 @@ public class MCPlayer {
 
     private boolean isInPlugin = true;
 
+    @Getter @Setter
+    private KitAbstract kit;
+
     /**
      * Constructeur, prend un joueur en paramètre
      * @param joueur
@@ -77,6 +81,35 @@ public class MCPlayer {
         this.hud = new BaseHUD(this);
     }
 
+
+    public void setVisible(){
+        if(this.groupe != null){
+            for(Player joueur : this.groupe.getPlayers()) {
+                if(!joueur.getUniqueId().equals(this.joueur.getUniqueId())) {
+                    this.joueur.showPlayer(mineralcontest.plugin, joueur);
+                    joueur.showPlayer(mineralcontest.plugin, this.joueur);
+                }
+            }
+        }
+
+    }
+
+    public void setInvisible(){
+
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            if(this.groupe != null){
+                for(Player joueur : this.groupe.getPlayers()) {
+                    if(!joueur.getUniqueId().equals(this.joueur.getUniqueId())) {
+                        this.joueur.hidePlayer(mineralcontest.plugin, joueur);
+                        joueur.hidePlayer(mineralcontest.plugin, this.joueur);
+                    }
+
+                }
+            }
+        }, 20);
+
+
+    }
 
     /**
      * Méthode permettant d'affecter le groupe ainsi que la partie du joueur

@@ -1,0 +1,55 @@
+# Fichier de configuration du kit enchanteur
+# Ce fichier permet de modifier le nombre de livre
+# Les différentes améliorations possible
+# Le nombre de lapis au respawn
+# Le niveau du joueur lorsqu'il selectionne la classe
+lapis_on_game_start: 32
+level_on_game_start: 15
+
+
+enchantment_book_min_level: 1
+enchantment_book_max_level: 3
+enchantment_book_count: 5
+
+enchantment_available: ["unbreaking", "sharpness", "fire_protection", "projectile_protection", "knockback", "fortune"]
+
+# Liste des enchantements:
+# protection
+# fire_protection
+# feather_falling
+# blast_protection
+# projectile_protection
+# respiration
+# aqua_affinity
+# thorns
+# depth_strider
+# frost_walker
+# binding_curse
+# sharpness
+# smite
+# bane_of_arthropods
+# knockback
+# fire_aspect
+# looting
+# sweeping
+# efficiency
+# silk_touch
+# unbreaking
+# fortune
+# power
+# punch
+# flame
+# infinity
+# luck_of_the_sea
+# lure
+# loyalty
+# impaling
+# riptide
+# channeling
+# multishot
+# quick_charge
+# piercing
+# mending
+# vanishing_curse
+# soul_speed
+

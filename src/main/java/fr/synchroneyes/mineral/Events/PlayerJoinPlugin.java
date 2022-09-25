@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.custom_events.MCPlayerJoinEvent;
+import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Utils.DisconnectedPlayer;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -43,6 +44,7 @@ public class PlayerJoinPlugin implements Listener {
 
             // On remet ses informations
             mcPlayer.reconnectPlayer(disconnectedPlayer);
+            mcPlayer.setVisible();
 
 
             return;
@@ -61,14 +63,25 @@ public class PlayerJoinPlugin implements Listener {
         mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
 
 
+
         // On regarde si on est en version communautaire ou non
         if(!mineralcontest.communityVersion) {
             // On l'ajoute au groupe par défault
             if(joueur.isOp()) mineralcontest.plugin.getNonCommunityGroup().addAdmin(joueur);
             else mineralcontest.plugin.getNonCommunityGroup().addJoueur(joueur);
 
+
+
             // Si la game avait démarré, on le met spec
             if(mcPlayer.getGroupe() != null) {
+
+                // Le joueur vient de join et est dans le monde de son groupe
+                // On doit lui donner le livre de selection d'équipe
+                if(!mcPlayer.getGroupe().getGame().isGameStarted() && mcPlayer.getGroupe().getGame().isGameInitialized) {
+                    mcPlayer.getJoueur().getInventory().setItemInMainHand(Game.getTeamSelectionItem());
+                }
+
+
                 if(mcPlayer.getGroupe().getGame().isGameStarted()) {
                     joueur.setGameMode(GameMode.SPECTATOR);
                     Bukkit.broadcastMessage("Le joueur a été mis en spectateur !");

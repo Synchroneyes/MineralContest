@@ -47,7 +47,7 @@ public class SendInformation {
                     request.addParameters("killCounter", partie.killCounter);
 
                     String result = request.getQueryResult();
-                    Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
+                    //Bukkit.getLogger().info(mineralcontest.prefix + "Resultat appel API: " + result);
                 } catch (Exception e) {
                     //e.printStackTrace();
                 }

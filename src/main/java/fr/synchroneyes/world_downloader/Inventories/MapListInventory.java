@@ -2,6 +2,7 @@ package fr.synchroneyes.world_downloader.Inventories;
 
 import fr.synchroneyes.groups.Core.MapVote;
 import fr.synchroneyes.mineral.Translation.Lang;
+import fr.synchroneyes.world_downloader.Items.AllMapDownloadItem;
 import fr.synchroneyes.world_downloader.Items.MapDownloadItem;
 import fr.synchroneyes.world_downloader.MapInfo;
 import fr.synchroneyes.world_downloader.WorldDownloader;
@@ -28,6 +29,8 @@ public class MapListInventory extends InventoryInterface {
         for (MapInfo map : maps_available)
             if (!maps_telecharger.contains(map.map_folder_name))
                 registerItem(MapDownloadItem.fromMapInfo(map));
+
+        registerItem(new AllMapDownloadItem());
 
     }
 

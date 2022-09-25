@@ -272,6 +272,8 @@ public class Equipe implements Comparable<Equipe> {
         // On set son équipe
         mineralcontest.plugin.getMCPlayer(p).setEquipe(this);
 
+        mineralcontest.plugin.getMCPlayer(p).setVisible();
+
 
 
 

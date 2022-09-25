@@ -107,6 +107,8 @@ public class Groupe {
     }
 
 
+
+
     public AutomatedChestManager getAutomatedChestManager() {
         return automatedChestManager;
     }
@@ -117,7 +119,14 @@ public class Groupe {
      */
     public void resetGame() {
         this.kitManager.removeAllPlayersKit();
+        String oldPartie = this.partie.toString();
         this.partie = new Game(this);
+
+        for(Player player : getPlayers()) {
+            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
+            mcPlayer.setPartie(this.partie);
+        }
+
         this.partie.startGameLoop();
 
         this.dechargerMonde();
@@ -438,8 +447,13 @@ public class Groupe {
 
         updatePlayersHUD(map);
 
+
         // Si le joueur n'est pas dans le monde du groupe, on le TP
-        teleportToGroupWorld(p);
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            teleportToGroupWorld(p);
+            MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(p);
+            mcPlayer.setVisible();
+        }, 20*5);
 
     }
 

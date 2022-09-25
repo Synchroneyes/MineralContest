@@ -6,7 +6,7 @@ import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -325,7 +325,7 @@ public class GameSettings {
 
             // Système de coffre à la mort
             parametresParDefaut.add(new GameCVAR("drop_chest_on_death", "1", "Permet d'activer ou non l'apparition de coffre à la mort d'un joueur contenant tout son inventaire", "settings", true, true));
-            parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "1", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
+            parametresParDefaut.add(new GameCVAR("drop_chest_on_death_time", "60", "Permet de définir le temps de vie d'un coffre, combien de temps il doit rester après sa première ouverture", "settings", true, true));
 
 
             // Evenement Halloween

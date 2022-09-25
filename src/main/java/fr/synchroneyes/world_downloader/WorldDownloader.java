@@ -248,6 +248,11 @@ public class WorldDownloader {
         });
 
         thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /*private static synchronized void doDownload(MapDownloadItem map, Player joueur) {

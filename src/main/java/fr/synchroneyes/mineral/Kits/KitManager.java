@@ -5,6 +5,7 @@ import fr.synchroneyes.custom_events.MCPreGameStartEvent;
 import fr.synchroneyes.custom_events.PlayerKitSelectedEvent;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Kits.Classes.*;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
@@ -115,8 +116,11 @@ public class KitManager implements Listener {
 
         Bukkit.getLogger().info(joueur.getDisplayName() + " -> " + kit.getNom());
 
-
         Equipe playerTeam = groupe.getPlayerTeam(joueur);
+
+
+        MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+        if(mcPlayer != null) mcPlayer.setKit(kit);
 
         // On averti le serveur que le joueur a sélectionner un kit
         if (playerTeam != null && !groupe.getGame().isGameStarted())
@@ -352,7 +356,6 @@ public class KitManager implements Listener {
      */
     public void openMenuToEveryone(boolean openToReferee) {
 
-        new Exception().printStackTrace();
         // On vérifie si on doit ouvrir le menu ou non (ex: si les kits sont actif ou non)
         if (!isKitsEnabled()) return;
 

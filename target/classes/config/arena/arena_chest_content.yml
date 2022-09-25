@@ -1,0 +1,13 @@
+chest_content:
+  gold_item:
+    name: GOLD_INGOT
+    probability: 35
+  iron_item:
+    name: IRON_INGOT
+    probability: 50
+  diamond_item:
+    name: DIAMOND
+    probability: 10
+  emerald_item:
+    name: EMERALD
+    probability: 5

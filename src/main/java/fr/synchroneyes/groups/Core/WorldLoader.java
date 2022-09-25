@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 public class WorldLoader {
 
     private Groupe groupe;
@@ -148,6 +147,9 @@ public class WorldLoader {
 
                     mondeCharge.setAutoSave(false);
                     groupe.setGameWorld(mondeCharge);
+                    groupe.getGame().setGameEnded(false);
+                    groupe.getGame().setGameStarted(false);
+                    groupe.setEtat(Etats.ATTENTE_DEBUT_PARTIE);
 
                     Location worldSpawnLocation = mondeCharge.getSpawnLocation();
 

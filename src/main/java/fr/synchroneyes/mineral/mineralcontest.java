@@ -84,6 +84,7 @@ public final class mineralcontest extends JavaPlugin {
 
     // Variable permettant d'avertir l'utilisateur en cas d'interaction avec un bloc avant une game
     public static boolean enable_block_warning = false;
+    public static boolean enable_lobby_block_protection = true;
 
 
     /**
@@ -241,6 +242,7 @@ public final class mineralcontest extends JavaPlugin {
         player_location_hud_refresh_rate = Integer.parseInt(getPluginConfigValue("player_location_refresh_rate").toString());
 
         enable_block_warning = Boolean.parseBoolean(getPluginConfigValue("enable_block_warning").toString());
+        enable_lobby_block_protection = Boolean.parseBoolean(getPluginConfigValue("enable_lobby_block_protection").toString());
 
 
         // On regard si on doit lancer le mode communautaire ou non

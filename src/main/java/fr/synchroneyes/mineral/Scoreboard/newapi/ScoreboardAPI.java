@@ -24,14 +24,14 @@ public class ScoreboardAPI {
 
         // Récupération du MCPlayer
         MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
-        if(mcPlayer == null && !force) return;
+
 
         // Création d'une liste de joueurs ayant un scoreboard
         if(playersWithScoreboard == null) playersWithScoreboard = new ArrayList<>();
 
-        if(doesPlayerHaveHUD(player) && !force) return;
-
-
+        if(doesPlayerHaveHUD(player) && !force) {
+            return;
+        }
 
         clearScoreboard(player);
         Scoreboard scoreboard = player.getScoreboard();

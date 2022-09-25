@@ -4,7 +4,7 @@ import fr.synchroneyes.groups.Commands.CommandTemplate;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Settings.GameCVAR;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;

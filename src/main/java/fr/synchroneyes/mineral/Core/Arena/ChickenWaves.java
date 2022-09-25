@@ -4,12 +4,14 @@ import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -20,6 +22,8 @@ public class ChickenWaves {
     private World monde;
     private boolean started = false;
     private boolean enabled = false;
+
+    private BukkitTask loop;
 
 
     private LinkedList<LivingEntity> pouletsEnVie;
@@ -69,11 +73,20 @@ public class ChickenWaves {
         handleChickenWaveTimer();
     }
 
+
+    /**
+     * Stop les vagues de poulet
+     */
+    public void stop() {
+        this.loop.cancel();
+
+    }
+
     /**
      * Gestion des vagues de poulets
      */
     private void handleChickenWaveTimer() {
-        new BukkitRunnable() {
+        this.loop = new BukkitRunnable() {
             @Override
             public void run() {
                 if (enabled) {
@@ -103,6 +116,10 @@ public class ChickenWaves {
 
         if(!enabled) return;
         if(arene.groupe.getGame().isGameEnded()) return;
+        if(!arene.groupe.getGame().isGameStarted()) {
+            stop();
+            return;
+        }
 
         this.monde = arene.groupe.getMonde();
         try {

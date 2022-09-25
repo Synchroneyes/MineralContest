@@ -143,6 +143,8 @@ public class PlayerHUDEvents implements Listener {
     public void onGameStart(MCGameStartedEvent event) {
 
 
+
+
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
             for(Player joueur : event.getGame().groupe.getPlayers()){
                 // On envoie le HUD normal si le joueur n'est pas arbitre
@@ -258,6 +260,7 @@ public class PlayerHUDEvents implements Listener {
      * @param player
      */
     public static void setPlayerInGameHUD(MCPlayer player) {
+
 
         // Pour chaque joueur
         Game game = player.getPartie();

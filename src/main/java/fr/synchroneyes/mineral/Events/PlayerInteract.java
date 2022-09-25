@@ -33,7 +33,7 @@ public class PlayerInteract implements Listener {
             Player joueur = (Player) event.getPlayer();
             Game partie = mineralcontest.getWorldGame(worldEvent);
 
-            if (mineralcontest.isInMineralContestHub(joueur)) {
+            if (mineralcontest.isInMineralContestHub(joueur) && mineralcontest.enable_lobby_block_protection) {
                 event.setCancelled(true);
 
                 if (event.getClickedBlock() != null && mineralcontest.enable_block_warning)

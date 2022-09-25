@@ -74,10 +74,13 @@ public class Game implements Listener {
     private int tempsPartie = 60 * DUREE_PARTIE;
     public int PreGameTimeLeft = 10;
 
+    @Setter
     private boolean GameStarted = false;
     private boolean GamePaused = false;
     private boolean PreGame = false;
+    @Setter
     private boolean GameEnded = false;
+
     private boolean GameForced = false;
     public boolean isGameInitialized = false;
     public int killCounter = 0;
@@ -149,7 +152,6 @@ public class Game implements Listener {
 
         initGameSettings();
     }
-
 
     public ParachuteManager getParachuteManager() {
         return parachuteManager;
@@ -750,6 +752,10 @@ public class Game implements Listener {
         // On commence par vérifier l'état de la partie
         if(isPreGame()) doGameStartingTick();
         else if(isGamePaused()) doGamePausedTick();
+        else if(!isGameStarted() && !isGameEnded()) {
+            gameLoopManager.cancel();
+            return;
+        }
         else doGameTick();
 
     }
@@ -802,6 +808,10 @@ public class Game implements Listener {
             return;
         }
 
+        PreGame = false;
+        GameStarted = true;
+
+
         // On effectue les actions suivante uniquement si c'est un début de partie
         // On ne doit pas le faire en cas de resume
         if(shouldClearPlayer) {
@@ -823,8 +833,7 @@ public class Game implements Listener {
         }
 
 
-        PreGame = false;
-        GameStarted = true;
+
     }
 
     /**
@@ -838,7 +847,7 @@ public class Game implements Listener {
         try {
 
             // Si le temps de la partie est égale à 0, la partie est termiéne
-            if (tempsPartie == 0) {
+            if (tempsPartie == 0 && !isGameEnded()) {
                 terminerPartie();
                 this.gameLoopManager.cancel();
                 return;
@@ -933,6 +942,7 @@ public class Game implements Listener {
 
 
         this.GameEnded = true;
+        this.gameLoopManager.cancel();
 
         MCGameEndEvent endEvent = new MCGameEndEvent(this);
         Bukkit.getPluginManager().callEvent(endEvent);
@@ -960,6 +970,7 @@ public class Game implements Listener {
 
 
         arene.chickenWaves.setEnabled(false);
+        arene.chickenWaves.stop();
 
         for (Entity entity : groupe.getMonde().getEntities())
             if (!(entity instanceof Player) && !(entity instanceof ArmorStand)) entity.remove();
@@ -997,8 +1008,13 @@ public class Game implements Listener {
         groupe.sendToEveryone(mineralcontest.prefixGlobal + "Vous serez téléporté au HUB dans " + delaiAvantFinPartie + " secondes.");
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
 
-            for (Player joueur : groupe.getPlayers())
+            for (Player joueur : groupe.getPlayers()) {
                 joueur.setGameMode(GameMode.SURVIVAL);
+                removePlayerReady(joueur);
+                ScoreboardAPI.clearScoreboard(joueur);
+                ScoreboardAPI.createScoreboard(joueur, true);
+
+            }
 
             this.resetMap();
             this.clear();
@@ -1009,6 +1025,7 @@ public class Game implements Listener {
             this.groupe.setGroupLocked(false);
             this.groupe.enableVote();
             this.groupe.resetGame();
+
             //this.achievementManager.unloadAchievementManager();
 
 

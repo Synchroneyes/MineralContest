@@ -18,6 +18,8 @@ public class GameEnd implements Listener {
 
     @EventHandler
     public void onGameEnd(MCGameEndEvent endEvent) {
+
+
         SendInformation.sendGameData(SendInformation.ended, endEvent.getGame());
 
         // On fait apparaitre le podium
