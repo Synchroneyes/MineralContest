@@ -288,6 +288,7 @@ public abstract class Boss {
 
             // Dans le doute, on supprime la bossbar
             removeBossBar();
+            Bukkit.broadcastMessage("remove291");
         }
 
         // On crée la nouvelle boucle
@@ -296,12 +297,13 @@ public abstract class Boss {
             if(entity == null) {
                 this.boucle.cancel();
                 removeBossBar();
+                Bukkit.broadcastMessage("remove300");
                 return;
             }
 
             // On vérifie si le mob est mort
             if(entity.isDead()) {
-
+                Bukkit.broadcastMessage("remove306");
                 removeBossBar();
                 spawnMobKillRewards();
                 if(entity.getKiller() != null) mineralcontest.broadcastMessage(entity.getKiller().getDisplayName() + " a tué " + getName());

@@ -31,6 +31,7 @@ import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
+import fr.synchroneyes.special_events.SpecialEventManager;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import lombok.Getter;
 import org.bukkit.*;
@@ -85,6 +86,8 @@ public final class mineralcontest extends JavaPlugin {
     // Variable permettant d'avertir l'utilisateur en cas d'interaction avec un bloc avant une game
     public static boolean enable_block_warning = false;
     public static boolean enable_lobby_block_protection = true;
+
+    public CommandMap pluginCommandMap;
 
 
     /**
@@ -486,8 +489,7 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new GameEnd(), this);
 
         // Halloween
-        Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.PlayerDeathEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.OnGameStart(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new SpecialEventManager(), this);
 
 
         // Database Save
@@ -543,18 +545,18 @@ public final class mineralcontest extends JavaPlugin {
         try {
             cmdMapField = SimplePluginManager.class.getDeclaredField("commandMap");
             cmdMapField.setAccessible(true);
-            CommandMap bukkitCommandMap = (CommandMap) cmdMapField.get(Bukkit.getPluginManager());
+            pluginCommandMap = (CommandMap) cmdMapField.get(Bukkit.getPluginManager());
 
-            bukkitCommandMap.register("", new MCCvarCommand());
-            bukkitCommandMap.register("", new SetDefaultItems());
+            pluginCommandMap.register("", new MCCvarCommand());
+            pluginCommandMap.register("", new SetDefaultItems());
             // bukkitCommandMap.register("", new SpawnDrop());
-            bukkitCommandMap.register("", new RefereeCommand());
-            bukkitCommandMap.register("", new McStats());
+            pluginCommandMap.register("", new RefereeCommand());
+            pluginCommandMap.register("", new McStats());
 
-            bukkitCommandMap.register("", new Halloween());
+            pluginCommandMap.register("", new Halloween());
 
-            bukkitCommandMap.register("", new DisplayScoreCommand());
-            bukkitCommandMap.register("", new SelectDeathAnimationCommand());
+            pluginCommandMap.register("", new DisplayScoreCommand());
+            pluginCommandMap.register("", new SelectDeathAnimationCommand());
 
 
 
@@ -613,14 +615,6 @@ public final class mineralcontest extends JavaPlugin {
         }
         return false;
 
-        /*MCPlayer joueur = plugin.getMCPlayer(p);
-        return (p.getWorld().equals(plugin.pluginWorld) ||
-
-                (   joueur != null &&
-                    joueur.getGroupe().getMonde() != null &&
-                    joueur.getGroupe().getMonde().equals(p.getWorld())
-                )
-        );*/
     }
 
     public static boolean isInMineralContestHub(Player p) {

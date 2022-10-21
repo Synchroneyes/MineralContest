@@ -44,7 +44,7 @@ public class CrazyZombie extends Boss {
 
     @Override
     public double getSanteMax() {
-        return 500;
+        return 25;
     }
 
     @Override
