@@ -42,6 +42,7 @@ public class MapDownloadItem extends ItemInterface {
     @Override
     public void performClick(Player joueur) {
         try {
+            joueur.closeInventory();
             WorldDownloader.download(this, joueur);
         } catch (Exception e) {
             e.printStackTrace();

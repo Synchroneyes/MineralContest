@@ -220,7 +220,7 @@ public class WorldDownloader {
     }
 
     private static synchronized void doDownload(MapDownloadItem map, Player joueur) {
-        joueur.closeInventory();
+
         WorldDownloader worldDownloader = getInstance();
         Thread thread = new Thread(() -> {
             try {

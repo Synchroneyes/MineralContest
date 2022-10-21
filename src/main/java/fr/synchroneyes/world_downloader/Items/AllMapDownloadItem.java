@@ -53,6 +53,7 @@ public class AllMapDownloadItem extends ItemInterface{
 
         if(mapsToDownload.isEmpty()) return;
 
+        joueur.closeInventory();
         mineralcontest.plugin.getServer().getScheduler().runTaskAsynchronously(mineralcontest.plugin, () -> {
             // Now download each item
             // download
