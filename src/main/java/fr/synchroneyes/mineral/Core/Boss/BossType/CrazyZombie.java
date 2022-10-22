@@ -13,6 +13,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +25,7 @@ import java.util.Random;
 
 public class CrazyZombie extends Boss {
 
-    private int maxSbire = 5;
+    private int maxSbire = 1;
 
     private List<LivingEntity> list_sbire;
 
@@ -44,12 +45,12 @@ public class CrazyZombie extends Boss {
 
     @Override
     public double getSanteMax() {
-        return 25;
+        return 50;
     }
 
     @Override
     public double getDegatsParAttaque() {
-        return 10;
+        return 1;
     }
 
     @Override
@@ -332,6 +333,7 @@ public class CrazyZombie extends Boss {
         zombieSbire.setCustomName("Sbire");
         zombieSbire.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(getSanteMax()/3);
         zombieSbire.setHealth(getSanteMax()/3);
+        zombieSbire.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
 
         zombieSbire.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(getDegatsParAttaque()/3);
 

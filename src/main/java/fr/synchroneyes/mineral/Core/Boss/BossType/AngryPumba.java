@@ -14,7 +14,7 @@ import java.util.List;
 public class AngryPumba extends Boss {
     @Override
     public String getName() {
-        return "FabienAvecAWP";
+        return "Défenseur de largage";
     }
 
     @Override

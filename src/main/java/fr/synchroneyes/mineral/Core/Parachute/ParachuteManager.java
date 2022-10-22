@@ -54,9 +54,16 @@ public class ParachuteManager {
      */
     public void spawnNewParachute() {
 
+
+
+
         if (nextDropLocation == null) {
             generateRandomLocation();
         }
+
+        // On appelle l'event de spawn de parachute
+        MCAirDropSpawnEvent event = new MCAirDropSpawnEvent(nextDropLocation, groupe.getGame());
+        Bukkit.getPluginManager().callEvent(event);
 
 
         GameLogger.addLog(new Log("parachute_spawn", "Parachute spawned @ " + nextDropLocation.getX() + ", " + nextDropLocation.getY() + ", " + nextDropLocation.getZ(), "parachute_time_reached"));
@@ -82,9 +89,7 @@ public class ParachuteManager {
         for (Player joueur : groupe.getGame().getReferees())
             joueur.sendMessage(mineralcontest.prefixPrive + "Drop: " + nextDropLocation.getBlockX() + " Y: " + nextDropLocation.getBlockY() + " Z: " + nextDropLocation.getBlockZ());
 
-        // On appelle l'event de spawn de parachute
-        MCAirDropSpawnEvent event = new MCAirDropSpawnEvent(nextDropLocation, groupe.getGame());
-        Bukkit.getPluginManager().callEvent(event);
+
 
 
 

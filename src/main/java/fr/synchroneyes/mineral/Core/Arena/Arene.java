@@ -21,6 +21,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
@@ -250,6 +251,10 @@ public class Arene {
                             // Si oui, on ne fait rien
                             return;
                         }
+
+                        // On vérifie si c'est un boss/sbire
+                        if(entite.hasMetadata("isBoss")) continue;
+
 
                         // On vérifie maintenant si c'est une chauve souris!
                         if(entite instanceof Bat) {

@@ -14,6 +14,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -196,6 +198,8 @@ public abstract class Boss {
         // Il doit avoir un nom visible constamment
         this.entity.setCustomNameVisible(true);
 
+        this.entity.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
+
         // On définit si il doit être luisant ou non
         this.entity.setGlowing(shouldEntityGlow());
 
@@ -288,7 +292,6 @@ public abstract class Boss {
 
             // Dans le doute, on supprime la bossbar
             removeBossBar();
-            Bukkit.broadcastMessage("remove291");
         }
 
         // On crée la nouvelle boucle
@@ -297,16 +300,14 @@ public abstract class Boss {
             if(entity == null) {
                 this.boucle.cancel();
                 removeBossBar();
-                Bukkit.broadcastMessage("remove300");
                 return;
             }
 
             // On vérifie si le mob est mort
             if(entity.isDead()) {
-                Bukkit.broadcastMessage("remove306");
                 removeBossBar();
                 spawnMobKillRewards();
-                if(entity.getKiller() != null) mineralcontest.broadcastMessage(entity.getKiller().getDisplayName() + " a tué " + getName());
+                if(entity.getKiller() != null) mineralcontest.broadcastMessage(mineralcontest.prefixGroupe + entity.getKiller().getDisplayName() + " a tué " + getName());
 
                 // On enregistre le meurtre du boss
                 getChestManager().getGroupe().getGame().getStatsManager().register(BossKiller.class, entity.getKiller(), null);
@@ -350,7 +351,12 @@ public abstract class Boss {
      * Méthode permettant de faire apparaitre les récompenses de mort d'un boss
      */
     private void spawnMobKillRewards() {
+
+
         List<ItemStack> items = getKillRewards();
+
+        System.out.println("isChestManagerNull: " + (this.chestManager == null) + " - areItemsEmpty: " + items.isEmpty());
+
 
         CoffreBoss coffreBoss = new CoffreBoss(items, this.chestManager);
 

@@ -71,27 +71,10 @@ public class BossManager implements Listener {
      * @param boss
      */
     public void spawnNewBoss(Location position, Boss boss) {
+        boss.setChestManager(partie.groupe.getAutomatedChestManager());
         this.bossList.add(boss);
         boss.spawn(position);
-        boss.setChestManager(partie.groupe.getAutomatedChestManager());
-    }
 
-    /**
-     * Méthode permettant de faire apparaitre le boss d'halloween
-     */
-    public void spawnHalloweenBoss() {
-
-        if(this.nextBoss != null && this.nextBoss.entity != null) {
-            CrazyZombie zombie = new CrazyZombie();
-            zombie.setChestManager(partie.groupe.getAutomatedChestManager());
-            this.bossList.add(zombie);
-            zombie.spawn(partie.getArene().getCoffre().getLocation());
-            return;
-        }
-
-        this.bossList.add(this.nextBoss);
-        this.nextBoss.setChestManager(partie.groupe.getAutomatedChestManager());
-        this.nextBoss.spawn(partie.getArene().getCoffre().getLocation());
     }
 
     /**
@@ -129,16 +112,16 @@ public class BossManager implements Listener {
     private void doLoopTick() {
 
         GameSettings gameSettings = partie.groupe.getParametresPartie();
-        boolean isHalloweenEnabled = (gameSettings.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+        //boolean isHalloweenEnabled = (gameSettings.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
 
         // On désactive halloween pour 'isntant
-        isHalloweenEnabled = false;
+        //isHalloweenEnabled = false;
 
         // On réduit le temps de 1
         this.timeLeftBeforeNewBossSpawn--;
         if(this.timeLeftBeforeNewBossSpawn == 0) {
-            if(isHalloweenEnabled) this.spawnHalloweenBoss();
-            if(isHalloweenEnabled) this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
+            //if(isHalloweenEnabled) this.spawnHalloweenBoss();
+            //if(isHalloweenEnabled) this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
             this.boucle.cancel();
             return;
         }
@@ -148,8 +131,8 @@ public class BossManager implements Listener {
 
         // On regarde si on peut faire une nouvelle annonce
         if(this.timeLeftBeforeNextAnnouncement == 0) {
-            if(isHalloweenEnabled) this.timeLeftBeforeNextAnnouncement = this.time_before_each_announcement;
-            if(isHalloweenEnabled) this.nextBoss.performAnnouncement();
+            //if(isHalloweenEnabled) this.timeLeftBeforeNextAnnouncement = this.time_before_each_announcement;
+            //if(isHalloweenEnabled) this.nextBoss.performAnnouncement();
         }
 
         //Bukkit.getLogger().info("Prochaine Annonce: " + this.timeLeftBeforeNextAnnouncement + " - Prochain Boss: " + this.timeLeftBeforeNewBossSpawn);

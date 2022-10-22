@@ -5,7 +5,9 @@ import fr.synchroneyes.mineral.Core.Boss.Boss;
 import fr.synchroneyes.mineral.Core.Boss.BossType.AngryPumba;
 import fr.synchroneyes.mineral.Core.Boss.BossType.CrazyZombie;
 import fr.synchroneyes.mineral.Core.Game.Game;
+import fr.synchroneyes.mineral.DeathAnimations.Animations.GroundFreezingAnimation;
 import fr.synchroneyes.mineral.mineralcontest;
+import fr.synchroneyes.special_events.halloween2022.animations.TNTEndermanThunderAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Effect;
@@ -31,7 +33,7 @@ public class Halloween extends CommandTemplate {
 
     public Halloween() {
         accessCommande.add(PLAYER_COMMAND);
-        accessCommande.add(GAME_STARTED);
+      //  accessCommande.add(GAME_STARTED);
         accessCommande.add(GROUP_REQUIRED);
         accessCommande.add(GROUP_ADMIN);
 
@@ -58,7 +60,8 @@ public class Halloween extends CommandTemplate {
 
         Player joueur = (Player) commandSender;
         Game playerGame = mineralcontest.getPlayerGame(joueur);
-        playerGame.getBossManager().spawnHalloweenBoss();
+
+        //playerGame.getBossManager().spawnHalloweenBoss();
 
         /*if(boucle != null && bar != null && zombie != null) {
             boucle.cancel();

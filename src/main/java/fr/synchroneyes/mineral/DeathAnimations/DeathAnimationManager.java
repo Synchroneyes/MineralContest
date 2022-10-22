@@ -145,7 +145,7 @@ public class DeathAnimationManager implements Listener {
         loadAnimationData();
     }
 
-                            @EventHandler
+    @EventHandler
     public void onPlayerAnimationSelected(InventoryClickEvent event) {
 
         if(!(event.getWhoClicked() instanceof Player)) {
