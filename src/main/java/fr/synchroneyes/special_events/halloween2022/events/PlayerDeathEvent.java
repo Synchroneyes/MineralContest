@@ -8,7 +8,9 @@ public class PlayerDeathEvent implements Listener {
 
     @EventHandler
     public void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event) {
-        new TNTEndermanThunderAnimation().playAnimation(event.getEntity());
+
+        if(event.getEntity().getKiller() != null) new TNTEndermanThunderAnimation().playAnimation(event.getEntity().getKiller());
+
     }
 
 }

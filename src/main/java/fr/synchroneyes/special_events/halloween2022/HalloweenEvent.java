@@ -10,18 +10,19 @@ import fr.synchroneyes.mineral.mineralcontest;
 import fr.synchroneyes.special_events.SpecialEvent;
 import fr.synchroneyes.special_events.halloween2022.boss.PillagerBoss;
 import fr.synchroneyes.special_events.halloween2022.boss.PillagerBrotherBoss;
-import fr.synchroneyes.special_events.halloween2022.events.AirdropEvent;
-import fr.synchroneyes.special_events.halloween2022.events.ArenaEvent;
-import fr.synchroneyes.special_events.halloween2022.events.PlayerDeathEvent;
+import fr.synchroneyes.special_events.halloween2022.events.*;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class HalloweenEvent extends SpecialEvent {
 
@@ -35,12 +36,18 @@ public class HalloweenEvent extends SpecialEvent {
 
     @Override
     public String getDescription() {
-        return "Cet évenement est prévu spécialement pour Halloween. Il sera actif entre le 28 octobre et le 2 novembre.";
+        return "Cet évenement est prévu spécialement pour Halloween. Il sera actif entre le 28 octobre et le 6 novembre. Pensez à activer le son de votre jeu pour profiter plainement :)";
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+
+        long startTimeStamp = 1666908000;
+        long endTimeStamp = 1667775540;
+
+        long current = Instant.now().getEpochSecond();
+
+        return (startTimeStamp < current && current < endTimeStamp);
     }
 
     @Override
@@ -53,11 +60,21 @@ public class HalloweenEvent extends SpecialEvent {
 
         // register events
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeathEvent(), mineralcontest.plugin);
-        Bukkit.getServer().getPluginManager().registerEvents(new ArenaEvent(), mineralcontest.plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new ArenaEvent(bossManager), mineralcontest.plugin);
         Bukkit.getServer().getPluginManager().registerEvents(new AirdropEvent(bossManager), mineralcontest.plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), mineralcontest.plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new ArrowEvent(), mineralcontest.plugin);
 
 
         // plugin logic
+        // On impose la nuit sur le serveur
+        FreezeWorldTime.setFrozenWorld(partie.groupe.getMonde());
+        FreezeWorldTime.freezeWorld();
+
+        // boucle des sons, un son chaque 2 minutes
+        Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, () -> partie.groupe.getPlayers().forEach(this::playRandomSound), 0, 2*60*20);
+
+        partie.groupe.getPlayers().forEach((p) -> p.sendTitle(ChatColor.WHITE + "\u2620 " + ChatColor.RED + "Mineral" + ChatColor.RED +" Contest" + ChatColor.WHITE + " \u2620", "Mode Halloween " + ChatColor.GREEN + "activé!", 20, 5*20, 20));
 
         // 1st event: faire spawns des loups aggressif, ils foncent sur le joueur et sont supprimé lorsqu'ils sont à 1 bloc du joueur
         // apparition au bout de 30 secondes
@@ -118,12 +135,12 @@ public class HalloweenEvent extends SpecialEvent {
             partie.groupe.getPlayers().forEach((player) -> {
                 player.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 0.8f, 1);
             });
-        }, 2*55*20);
+        }, 1*55*20);
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
             partie.groupe.getPlayers().forEach((player) -> {
                 player.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 0.8f, 1);
             });
-        }, 2*56*20);
+        }, 1*56*20);
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
 
             partie.groupe.getPlayers().forEach((player) -> {
@@ -138,7 +155,7 @@ public class HalloweenEvent extends SpecialEvent {
             });
 
 
-        }, 3*60*20);
+        }, 1*60*20);
 
         // 3rd event: on fait spawn un enderman sans danger devant chaque joueur
         // apparition: 6mn
@@ -206,7 +223,7 @@ public class HalloweenEvent extends SpecialEvent {
             joueurs.forEach(joueur -> {
                 joueur.sendTitle(ChatColor.RED + "???", "Comment osez-vous entrer dans mon monde?", 20, 5*20, 20);
                 joueur.playSound(joueur.getLocation(), Sound.ENTITY_WOLF_HOWL, 0.8f, 1);
-                joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 5));
+                joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 2));
 
                 int distanceJoueur = 5;
                 List<Entity> pWolves = new ArrayList<>();
@@ -258,16 +275,19 @@ public class HalloweenEvent extends SpecialEvent {
                 int defaultZLocation = player.getLocation().getBlockZ();
 
 
-                player.teleport(new Location(player.getWorld(), defaultXLocation, 500, defaultZLocation));
+                player.teleport(new Location(player.getWorld(), defaultXLocation, 320, defaultZLocation));
                 player.playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 0.8f, 1);
                 player.sendMessage(ChatColor.RED + "???" + ChatColor.RESET + ": ARRÊTE CETTE PARTIE !!");
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*6, 1));
+
 
 
                 Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                    player.setVelocity(new Vector(0,0,0));
                     player.setFallDistance(0F);
                     player.teleport(new Location(player.getWorld(), defaultXLocation, defaultYLocation, defaultZLocation));
                     player.sendTitle(ChatColor.RED + "???", "T'as eu peur, avoue?", 20, 20*5, 20);
-                }, 20*4);
+                }, 20*5);
             });
         }, 36*60*20);
 
@@ -280,12 +300,27 @@ public class HalloweenEvent extends SpecialEvent {
                 bossManager.spawnNewBoss(player.getLocation(), new PillagerBrotherBoss());
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*3, 10));
             });
-        }, 43*60*20);
+        }, 41*60*20);
     }
 
     private void playRandomSound(Player joueur) {
         Sound[] sounds = new Sound[]{
-                Sound.ENTITY_ENDERMAN_SCREAM
+                Sound.ENTITY_ENDERMAN_SCREAM,
+                Sound.AMBIENT_CAVE,
+                Sound.ENTITY_WOLF_HOWL,
+                Sound.ENTITY_ENDERMAN_TELEPORT,
+                Sound.ENTITY_BAT_TAKEOFF,
+                Sound.BLOCK_GLASS_BREAK,
+                Sound.ENTITY_TNT_PRIMED,
+                Sound.ENTITY_ZOMBIE_INFECT,
+                Sound.ENTITY_ZOMBIE_AMBIENT,
+                Sound.ENTITY_GHAST_SCREAM,
+                Sound.ENTITY_GHAST_SHOOT,
+                Sound.ENTITY_DRAGON_FIREBALL_EXPLODE,
+                Sound.ENTITY_GENERIC_BURN,
+                Sound.ENTITY_LIGHTNING_BOLT_THUNDER
         };
+
+        joueur.playSound(joueur.getLocation(), sounds[new Random().nextInt(sounds.length)], 0.8f, 1);
     }
 }

@@ -57,7 +57,7 @@ public enum Lang {
     cant_interact_block_pre_game("cant_interact_block_pre_game", "Vous ne pouvez pas interagir avec des blocs avant le début d'une partie"),
     cant_interact_block_hub("cant_interact_block_hub", "Vous ne pouvez pas intéragir avec des blocs ici"),
     bad_map_loaded("bad_map_loaded", "Mauvaise map chargée, merci de télécharger la bonne map. Disponible sur le github"),
-    github_link("github_link", "http://github.com/jaunefra/mineralcontest"),
+    github_link("github_link", "https://github.com/jaunefra/mineralcontest"),
     plugin_shutdown("plugin_shutdown", "Désactivation du plugin ..."),
     kick_game_already_in_progress("kick_game_already_in_progress", "Une partie est déjà en cours"),
     deathzone_spawn_location_added("deathzone_spawn_location_added", "Position de la deathzone ajoutée"),

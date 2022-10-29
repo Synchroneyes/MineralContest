@@ -22,7 +22,6 @@ public class AirdropEvent implements Listener {
     public void onAirdropSpawn(MCAirDropSpawnEvent event){
         Location groundLocation = getGroundLocation(event.getParachuteLocation());
         bossManager.spawnNewBoss(groundLocation, new AirdropDefenderBoss());
-        event.getGame().groupe.getPlayers().forEach((p) -> p.teleport(groundLocation));
     }
 
 

@@ -199,6 +199,7 @@ public abstract class Boss {
         this.entity.setCustomNameVisible(true);
 
         this.entity.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
+        this.entity.setMetadata("BossDamage", new FixedMetadataValue(mineralcontest.plugin, getDegatsParAttaque()));
 
         // On définit si il doit être luisant ou non
         this.entity.setGlowing(shouldEntityGlow());
@@ -354,9 +355,6 @@ public abstract class Boss {
 
 
         List<ItemStack> items = getKillRewards();
-
-        System.out.println("isChestManagerNull: " + (this.chestManager == null) + " - areItemsEmpty: " + items.isEmpty());
-
 
         CoffreBoss coffreBoss = new CoffreBoss(items, this.chestManager);
 
