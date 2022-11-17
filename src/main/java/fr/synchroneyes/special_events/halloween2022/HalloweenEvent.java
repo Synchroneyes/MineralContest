@@ -1,9 +1,7 @@
 package fr.synchroneyes.special_events.halloween2022;
 
 import fr.synchroneyes.mineral.Core.Boss.BossManager;
-import fr.synchroneyes.mineral.Core.Boss.BossType.CrazyZombie;
 import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.GroundFreezingAnimation;
 import fr.synchroneyes.mineral.DeathAnimations.Animations.HalloweenHurricaneAnimation;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -13,7 +11,6 @@ import fr.synchroneyes.special_events.halloween2022.boss.PillagerBrotherBoss;
 import fr.synchroneyes.special_events.halloween2022.events.*;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -36,7 +33,7 @@ public class HalloweenEvent extends SpecialEvent {
 
     @Override
     public String getDescription() {
-        return "Cet évenement est prévu spécialement pour Halloween. Il sera actif entre le 28 octobre et le 6 novembre. Pensez à activer le son de votre jeu pour profiter plainement :)";
+        return "Cet évenement est prévu spécialement pour Halloween. Il sera actif entre le 28 octobre et le 6 novembre. Pensez à activer le son de votre jeu pour profiter pleinement :)";
     }
 
     @Override
@@ -87,43 +84,11 @@ public class HalloweenEvent extends SpecialEvent {
                 joueur.playSound(joueur.getLocation(), Sound.ENTITY_WOLF_HOWL, 0.8f, 1);
                 joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 5));
 
-                int distanceJoueur = 5;
-                List<Entity> pWolves = new ArrayList<>();
-                World pWorld = joueur.getWorld();
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() - distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-
-                pWolves.forEach((entity) -> {
-                    Wolf wolf = (Wolf) entity;
-                    wolf.setAngry(true);
-                    wolf.setAdult();
-                    wolf.setTarget(joueur);
-                    wolf.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
-                    wolf.setCustomName("Chien de ???");
-                    wolf.setCustomNameVisible(true);
-                    wolves.add(wolf);
-                });
+                spawnAngryWolvesToPlayers(wolves, joueur);
             });
 
 
-            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-                wolves.forEach((entity) -> {
-                    Wolf wolf = (Wolf) entity;
-
-                    HalloweenHurricaneAnimation animation = new HalloweenHurricaneAnimation();
-                    animation.playAnimation(wolf);
-
-
-                    Location location = wolf.getLocation();
-                    if(!wolf.isDead()) {
-                        wolf.setHealth(0);
-                    }
-
-
-                });
-            }, 10*20);
+            killWolvesWithAnimation(wolves);
             // On tue tous les loups en vie, et on invoque une animation de mort halloween
 
         }, 30*20);
@@ -135,12 +100,12 @@ public class HalloweenEvent extends SpecialEvent {
             partie.groupe.getPlayers().forEach((player) -> {
                 player.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 0.8f, 1);
             });
-        }, 1*55*20);
+        }, 2*55*20);
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
             partie.groupe.getPlayers().forEach((player) -> {
                 player.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 0.8f, 1);
             });
-        }, 1*56*20);
+        }, 2*56*20);
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
 
             partie.groupe.getPlayers().forEach((player) -> {
@@ -155,7 +120,7 @@ public class HalloweenEvent extends SpecialEvent {
             });
 
 
-        }, 1*60*20);
+        }, 3*60*20);
 
         // 3rd event: on fait spawn un enderman sans danger devant chaque joueur
         // apparition: 6mn
@@ -225,43 +190,11 @@ public class HalloweenEvent extends SpecialEvent {
                 joueur.playSound(joueur.getLocation(), Sound.ENTITY_WOLF_HOWL, 0.8f, 1);
                 joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 2));
 
-                int distanceJoueur = 5;
-                List<Entity> pWolves = new ArrayList<>();
-                World pWorld = joueur.getWorld();
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() - distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-                pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
-
-                pWolves.forEach((entity) -> {
-                    Wolf wolf = (Wolf) entity;
-                    wolf.setAngry(true);
-                    wolf.setAdult();
-                    wolf.setTarget(joueur);
-                    wolf.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
-                    wolf.setCustomName("Chien de ???");
-                    wolf.setCustomNameVisible(true);
-                    wolves.add(wolf);
-                });
+                spawnAngryWolvesToPlayers(wolves, joueur);
             });
 
 
-            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-                wolves.forEach((entity) -> {
-                    Wolf wolf = (Wolf) entity;
-
-                    HalloweenHurricaneAnimation animation = new HalloweenHurricaneAnimation();
-                    animation.playAnimation(wolf);
-
-
-                    Location location = wolf.getLocation();
-                    if(!wolf.isDead()) {
-                        wolf.setHealth(0);
-                    }
-
-
-                });
-            }, 10*20);
+            killWolvesWithAnimation(wolves);
             // On tue tous les loups en vie, et on invoque une animation de mort halloween
 
         }, 32*60*20);
@@ -278,16 +211,16 @@ public class HalloweenEvent extends SpecialEvent {
                 player.teleport(new Location(player.getWorld(), defaultXLocation, 320, defaultZLocation));
                 player.playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 0.8f, 1);
                 player.sendMessage(ChatColor.RED + "???" + ChatColor.RESET + ": ARRÊTE CETTE PARTIE !!");
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*6, 1));
 
 
 
                 Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20*3, 1));
                     player.setVelocity(new Vector(0,0,0));
                     player.setFallDistance(0F);
                     player.teleport(new Location(player.getWorld(), defaultXLocation, defaultYLocation, defaultZLocation));
                     player.sendTitle(ChatColor.RED + "???", "T'as eu peur, avoue?", 20, 20*5, 20);
-                }, 20*5);
+                }, 20*4);
             });
         }, 36*60*20);
 
@@ -301,6 +234,46 @@ public class HalloweenEvent extends SpecialEvent {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*3, 10));
             });
         }, 41*60*20);
+    }
+
+    private void spawnAngryWolvesToPlayers(List<Entity> wolves, Player joueur) {
+        int distanceJoueur = 5;
+        List<Entity> pWolves = new ArrayList<>();
+        World pWorld = joueur.getWorld();
+        pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
+        pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() + distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() - distanceJoueur), EntityType.WOLF));
+        pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
+        pWolves.add(pWorld.spawnEntity(new Location(pWorld, joueur.getLocation().getX() - distanceJoueur, joueur.getLocation().getY(), joueur.getLocation().getZ() + distanceJoueur), EntityType.WOLF));
+
+        pWolves.forEach((entity) -> {
+            Wolf wolf = (Wolf) entity;
+            wolf.setAngry(true);
+            wolf.setAdult();
+            wolf.setTarget(joueur);
+            wolf.setMetadata("isBoss", new FixedMetadataValue(mineralcontest.plugin, true));
+            wolf.setCustomName("Chien de ???");
+            wolf.setCustomNameVisible(true);
+            wolves.add(wolf);
+        });
+    }
+
+    private void killWolvesWithAnimation(List<Entity> wolves) {
+        Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
+            wolves.forEach((entity) -> {
+                Wolf wolf = (Wolf) entity;
+
+                HalloweenHurricaneAnimation animation = new HalloweenHurricaneAnimation();
+                animation.playAnimation(wolf);
+
+
+                Location location = wolf.getLocation();
+                if(!wolf.isDead()) {
+                    wolf.setHealth(0);
+                }
+
+
+            });
+        }, 10*20);
     }
 
     private void playRandomSound(Player joueur) {

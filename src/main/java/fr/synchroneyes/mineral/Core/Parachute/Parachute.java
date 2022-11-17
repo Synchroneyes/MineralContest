@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Core.Parachute;
 
+import fr.synchroneyes.custom_events.MCAirDropBreakEvent;
+import fr.synchroneyes.custom_events.MCAirDropSpawnEvent;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
@@ -209,6 +211,8 @@ public class Parachute implements Listener {
                     // Le bloc n'est pas de l'air ... On arrête donc la tombée du parachute, et on casse le parachute
                     this.breakParachute();
                     setFalling(true);
+                    MCAirDropBreakEvent event = new MCAirDropBreakEvent(parachuteManager.getGroupe().getGame(), block.getLocation());
+                    Bukkit.getPluginManager().callEvent(event);
                     return;
                 }
             }
@@ -323,8 +327,9 @@ public class Parachute implements Listener {
 
             this.parachuteLoop = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, this::doChestFallingTickWhenParachuteIsBroken, 0, 1);
 
-
         }
+
+
     }
 
     /**
@@ -619,6 +624,9 @@ public class Parachute implements Listener {
 
             // Et on oublie pas d'enregistrer !
             parachuteManager.getGroupe().getAutomatedChestManager().addChest(coffre);
+
+            MCAirDropBreakEvent event = new MCAirDropBreakEvent(parachuteManager.getGroupe().getGame(), feltLocation.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.UP).getLocation());
+            Bukkit.getPluginManager().callEvent(event);
 
             return;
         }

@@ -4,9 +4,9 @@ main: fr.synchroneyes.mineral.mineralcontest
 api-version: 1.13
 prefix: MINERALC
 load: STARTUP
-authors: [Groupe6]
+authors: [Kevin Monvoisin]
 description: Plugin gamemode Mineral Contest
-website: http://mineral.synchroneyes.fr
+website: https://mc.monvoisin-kevin.fr
 commands:
   start:
     description: Démarre une partie

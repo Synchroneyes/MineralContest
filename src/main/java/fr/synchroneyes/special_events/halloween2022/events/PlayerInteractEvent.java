@@ -39,10 +39,7 @@ public class PlayerInteractEvent implements Listener {
 
 
             if(p.getInventory().getItemInMainHand().equals(ShulkerStick.getItem())) {
-                ShulkerBullet bullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getLocation(), EntityType.SHULKER_BULLET);
-                bullet.setGlowing(true);
-                playerCooldown.putIfAbsent(p, tempsPartie);
-                playerCooldown.replace(p, tempsPartie);
+
 
                 // ----------------------
 
@@ -51,7 +48,7 @@ public class PlayerInteractEvent implements Listener {
 
                 Vector3D observerStart = new Vector3D(observerPos);
                 // distance = 100mn
-                Vector3D observerEnd = observerStart.add(observerDir.multiply(25));
+                Vector3D observerEnd = observerStart.add(observerDir.multiply(100));
 
                 Player hit = null;
 
@@ -72,8 +69,13 @@ public class PlayerInteractEvent implements Listener {
                     }
                 }
 
-                // Hit the closest player
-                bullet.setTarget(hit);
+
+                if(hit != null) {
+                    ShulkerBullet bullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getLocation(), EntityType.SHULKER_BULLET);
+                    bullet.setGlowing(true);
+                    playerCooldown.putIfAbsent(p, tempsPartie);
+                    playerCooldown.replace(p, tempsPartie);
+                }
             }
         }
     }

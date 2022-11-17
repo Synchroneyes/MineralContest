@@ -22,7 +22,7 @@ public class ArenaEvent implements Listener {
     }
 
     @EventHandler
-    public void onAirdropSpawn(MCArenaChestSpawnEvent event){
+    public void onArenaChestSpawn(MCArenaChestSpawnEvent event){
         Location groundLocation = getGroundLocation(event.getGame().getArene().getCoffre().getLocation());
         bossManager.spawnNewBoss(groundLocation, new ArenaChestDefenderBoss());
     }

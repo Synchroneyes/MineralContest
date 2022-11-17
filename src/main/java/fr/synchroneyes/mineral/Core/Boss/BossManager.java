@@ -74,7 +74,6 @@ public class BossManager implements Listener {
         boss.setChestManager(partie.groupe.getAutomatedChestManager());
         this.bossList.add(boss);
         boss.spawn(position);
-
     }
 
     /**

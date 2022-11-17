@@ -141,10 +141,9 @@ public class ChickenWaves {
         }
 
 
-        boolean isHalloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
+        //boolean isHalloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
 
         // On désactive halloween pour l'instant
-        isHalloweenEnabled = false;
 
 
         Random random = new Random();
@@ -154,17 +153,14 @@ public class ChickenWaves {
         for (int i = 0; i < nombreDePouletASpawn; ++i) {
             LivingEntity entity = null;
 
-            if(!isHalloweenEnabled) pouletsEnVie.add((Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN));
-            else {
-                pouletsEnVie.add((Zombie) monde.spawnEntity(spawnCoffre, EntityType.ZOMBIE_VILLAGER));
-            }
+            pouletsEnVie.add((Chicken) monde.spawnEntity(spawnCoffre, EntityType.CHICKEN));
+
 
             entity = pouletsEnVie.getLast();
 
 
             double currentSpeed = entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
             entity.setCustomName(Lang.custom_chicken_name.toString());
-            if(isHalloweenEnabled) ((Zombie)entity).setAdult();
             entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(currentSpeed * 1.5);
             entity.setCanPickupItems(false);
             entity.setCustomNameVisible(false);

@@ -81,11 +81,6 @@ public class ArenaChestDefenderBoss extends Boss {
     public List<ItemStack> getKillRewards() {
         List<ItemStack> items = new LinkedList<>();
         items.add(ShulkerStick.getItem());
-        items.add(ShulkerStick.getItem());
-        items.add(ShulkerStick.getItem());
-        items.add(ShulkerStick.getItem());
-
-
         return items;
     }
 

@@ -13,8 +13,12 @@ public class RawToCooked {
     public static Material toCooked(Material material) {
         switch (material) {
             case GOLD_ORE:
+            case RAW_GOLD:
+            case DEEPSLATE_GOLD_ORE:
                 return Material.GOLD_INGOT;
             case IRON_ORE:
+            case RAW_IRON:
+            case DEEPSLATE_IRON_ORE:
                 return Material.IRON_INGOT;
             case BEEF:
                 return Material.COOKED_BEEF;
@@ -30,6 +34,12 @@ public class RawToCooked {
                 return Material.COOKED_RABBIT;
             case SALMON:
                 return Material.COOKED_SALMON;
+            case RAW_COPPER:
+                return Material.COPPER_INGOT;
+            case DEEPSLATE_DIAMOND_ORE:
+                return Material.DIAMOND;
+            case DEEPSLATE_EMERALD_ORE:
+                return Material.EMERALD;
             default:
                 return null;
         }

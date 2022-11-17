@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Core.Coffre;
 
 import fr.synchroneyes.custom_events.MCPlayerOpenChestEvent;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,6 +12,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AutomatedChestAnimation {
@@ -31,6 +34,10 @@ public abstract class AutomatedChestAnimation {
 
     private int tailleInventaire;
 
+
+    @Getter
+    private UUID chestId;
+
     private BukkitTask tacheOuverture = null;
 
 
@@ -49,6 +56,7 @@ public abstract class AutomatedChestAnimation {
     public AutomatedChestAnimation(int tailleInventaire, AutomatedChestManager manager) {
         this.tailleInventaire = tailleInventaire;
         this.inventaireCoffre = Bukkit.createInventory(null, tailleInventaire, getOpeningChestTitle());
+        this.chestId = UUID.randomUUID();
         this.manager = manager;
     }
 
@@ -328,8 +336,10 @@ public abstract class AutomatedChestAnimation {
         if (isChestContentGenerated) {
             if (automaticallyGiveItemsToPlayer()) {
 
-                for (ItemStack item : inventaireCoffre.getContents())
+                for (ItemStack item : inventaireCoffre.getContents()) {
                     if (item != null) p.getInventory().addItem(item);
+                    if (p.getInventory().firstEmpty() == -1 && item != null) p.getWorld().dropItemNaturally(p.getLocation(), item);
+                }
 
                 inventaireCoffre.clear();
                 // On supprime le bloc

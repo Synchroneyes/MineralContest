@@ -32,6 +32,6 @@ public class ShulkerStick {
     }
 
     public static int cooldownBetweenAttacks() {
-        return 5;
+        return 1;
     }
 }

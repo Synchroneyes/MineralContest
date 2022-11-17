@@ -306,7 +306,6 @@ public class ChestEvent implements Listener {
             // On applique cet évenement uniquement aux joueurs du plugin
             if (mineralcontest.isInAMineralContestWorld(joueur)) {
 
-
                 // On récupère la location du bloc contenant cet inventaire
                 Location chestLocation = event.getInventory().getLocation();
                 if (chestLocation == null) return;
@@ -332,14 +331,15 @@ public class ChestEvent implements Listener {
                 // Si le coffre ouvert fait parti des blocs d'animation
                 if (playerGroup.getAutomatedChestManager().isThisBlockAChestAnimation(chest)) {
 
+
                     event.setCancelled(true);
                     // On récupère son instance
                     AutomatedChestAnimation automatedChestAnimation = playerGroup.getAutomatedChestManager().getChestAnomation(chest);
 
-
                     if (automatedChestAnimation == null) return;
 
                     if (automatedChestAnimation.isBeingOpened()) return;
+
 
 
                     if (automatedChestAnimation.getClass().equals(CoffreArene.class))

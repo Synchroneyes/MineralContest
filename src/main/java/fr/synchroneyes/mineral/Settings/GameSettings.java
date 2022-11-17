@@ -329,7 +329,7 @@ public class GameSettings {
 
 
             // Evenement Halloween
-            parametresParDefaut.add(new GameCVAR("enable_halloween_event", "0", "Permet d'activer ou non le mode halloween", "event", true, false));
+            //parametresParDefaut.add(new GameCVAR("enable_halloween_event", "0", "Permet d'activer ou non le mode halloween", "event", true, false));
 
 
             // Paramètre permettant de donner des points lors d'un kill d'un joueur

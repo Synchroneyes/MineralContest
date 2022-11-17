@@ -42,7 +42,7 @@ public class AirdropDefenderBoss extends Boss {
 
     @Override
     public int getRayonDetectionJoueur() {
-        return 10;
+        return 5;
     }
 
     @Override
@@ -122,7 +122,7 @@ public class AirdropDefenderBoss extends Boss {
             Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> joueur.playSound(joueur.getLocation(), Sound.ENTITY_WITCH_CELEBRATE, 1,1), 20);
 
             // On aveugle temporairement le joueur pendant 3 secondes
-            joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, duree_annonce*20, 10));
+            //joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, duree_annonce*20, 10));
             joueur.sendMessage(ChatColor.GOLD + "???: " + ChatColor.RESET + "Vous pensez pouvoir récupérer ce largage facilement? On verra ça ...");
 
         }
