@@ -1,10 +1,10 @@
 package fr.synchroneyes.mineral.Utils;
 
 public class TimeConverter {
-    public static String intToString(int valeur) {
+    public static String intToString(int valeurEnSecondes) {
         int minutes, secondes;
-        minutes = (valeur % 3600) / 60;
-        secondes = valeur % 60;
+        minutes = valeurEnSecondes / 60;
+        secondes = valeurEnSecondes % 60;
         return String.format("%02d:%02d", minutes, secondes);
 
     }
