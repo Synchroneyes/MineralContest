@@ -22,7 +22,7 @@ public class Guerrier extends KitAbstract {
     // Le pourcentage de réduction de vitesse du joueur
     private double pourcentageReductionVitesse = 15.0;
 
-    //private double vieEnMoins = 2.5;
+    private double vieEnMoins = 2.5;
 
 
 
@@ -94,6 +94,11 @@ public class Guerrier extends KitAbstract {
         double valeurDegatsParDefaut = 1.0;
         double currentSpeed = 0.2f;
 
+        double vieParDefaut = 20d;
+
+        double nouvelleVie = vieParDefaut - (vieEnMoins * 2);
+
+
 
         // On calcule sa nouvelle vitesse
         double newSpeed = currentSpeed - (currentSpeed * pourcentageReductionVitesse / 100);
@@ -102,10 +107,8 @@ public class Guerrier extends KitAbstract {
 
 
         double nouvelleValeur = valeurDegatsParDefaut + (valeurDegatsParDefaut * bonusPercentage / 100);
-
-
+        joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(nouvelleVie);
         joueur.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(nouvelleValeur);
-        joueur.setHealth(joueur.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 
 
     }

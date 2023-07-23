@@ -1,5 +1,5 @@
 name: MineralContest
-version: 2.8.4
+version: 2.8.4.6
 main: fr.synchroneyes.mineral.mineralcontest
 api-version: 1.13
 prefix: MINERALC
