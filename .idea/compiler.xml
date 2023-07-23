@@ -10,8 +10,5 @@
         <module name="MineralContest" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MineralContest" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
