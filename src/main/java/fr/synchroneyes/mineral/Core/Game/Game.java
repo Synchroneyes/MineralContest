@@ -18,8 +18,7 @@ import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.StatsManager;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.BlockSaver;
-import fr.synchroneyes.mineral.Utils.ChatColorString;
+import fr.synchroneyes.mineral.Utils.*;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
 import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
@@ -27,9 +26,7 @@ import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Metric.SendInformation;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayerTeam;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
-import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
-import fr.synchroneyes.mineral.Utils.WorldUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -1353,10 +1350,7 @@ public class Game implements Listener {
     }
 
     public String getTempsRestant() {
-        int minutes, secondes;
-        minutes = (tempsPartie % 3600) / 60;
-        secondes = tempsPartie % 60;
-        return String.format("%02d:%02d", minutes, secondes);
+        return TimeConverter.intToString(tempsPartie);
     }
 
     public static ItemStack getTeamSelectionItem() {
