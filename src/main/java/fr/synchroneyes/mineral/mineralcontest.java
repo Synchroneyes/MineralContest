@@ -514,6 +514,7 @@ public final class mineralcontest extends JavaPlugin {
 
 
 
+
         // AutomatedChest
         //Bukkit.getServer().getPluginManager().registerEvents(new ChestOpenEvent(), this);
 
