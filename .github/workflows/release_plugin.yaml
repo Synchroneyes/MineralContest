@@ -1,0 +1,61 @@
+name: Release MineralContest plugin
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is merged to main
+        id: pr_merged
+        run: echo "::set-output name=is_merged::${{ github.event.pull_request.merged }}"
+
+      - name: Only run on merged PR to main
+        run: |
+          if [[ "${{ steps.pr_merged.outputs.is_merged }}" != "true" ]]; then
+            echo "Not a merged PR to main. Exiting..."
+            exit 0
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java (if needed)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Extract Version from pom.xml
+        id: extract_version
+        run: |
+          VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)
+          echo "::set-output name=version::$VERSION"
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Get past commits
+        id: past_commits
+        run: |
+          RELEASE_NOTES=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits")
+          echo $RELEASE_NOTES | jq -r '.[].commit.message' > release.txt  
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+      - name: Create Release and Attach Build
+        id: create_release
+        uses: softprops/action-gh-release@v1 
+        with:
+          files: target/MineralContest.jar
+          tag_name: ${{ steps.extract_version.outputs.version }} 
+          body_path: release.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
