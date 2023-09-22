@@ -78,8 +78,7 @@ public class ChickenWaves {
      * Stop les vagues de poulet
      */
     public void stop() {
-        this.loop.cancel();
-
+        if(this.loop != null) this.loop.cancel();
     }
 
     /**
