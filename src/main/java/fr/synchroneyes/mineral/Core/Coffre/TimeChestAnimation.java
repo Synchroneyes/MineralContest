@@ -50,7 +50,7 @@ public abstract class TimeChestAnimation extends AutomatedChestAnimation{
      * Méthode appelée lors de la fin du timer de ce coffre
      */
     public void deleteChest() {
-        MCAutomatedChestTimeOverEvent event = new MCAutomatedChestTimeOverEvent(this);
+        MCAutomatedChestTimeOverEvent event = new MCAutomatedChestTimeOverEvent(this, getOpeningPlayer());
         Bukkit.getPluginManager().callEvent(event);
         this.getLocation().getBlock().setType(Material.AIR);
         this.isAnimationOver = true;

@@ -8,7 +8,6 @@ import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Statistics.Class.KillStat;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -18,11 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PlayerDeathEvent implements Listener {
 
@@ -136,8 +132,6 @@ public class PlayerDeathEvent implements Listener {
                     // Si le joueur a été tué par un autre joueur
                     partie.getStatsManager().register(KillStat.class, joueur, joueur.getKiller());
                 } else {
-
-                    // Si le joueur s'est suicidé
                     partie.getStatsManager().register(KillStat.class, joueur, joueur);
 
                 }

@@ -1,23 +1,10 @@
 package fr.synchroneyes.mineral.Commands;
 
 import fr.synchroneyes.groups.Commands.CommandTemplate;
-import fr.synchroneyes.mineral.Core.Boss.Boss;
-import fr.synchroneyes.mineral.Core.Boss.BossType.AngryPumba;
-import fr.synchroneyes.mineral.Core.Boss.BossType.CrazyZombie;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Effect;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.List;
 
 /**
  * Commande permettant de tester les fonctionnalité Halloween
@@ -58,7 +45,7 @@ public class Halloween extends CommandTemplate {
 
         Player joueur = (Player) commandSender;
         Game playerGame = mineralcontest.getPlayerGame(joueur);
-        playerGame.getBossManager().spawnHalloweenBoss();
+        //playerGame.getBossManager().spawnHalloweenBoss();
 
         /*if(boucle != null && bar != null && zombie != null) {
             boucle.cancel();

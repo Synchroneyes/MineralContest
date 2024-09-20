@@ -1,6 +1,7 @@
 package fr.synchroneyes.mineral.Core.Boss;
 
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
+import fr.synchroneyes.custom_events.MCPlayerKilledByBossEvent;
 import fr.synchroneyes.mineral.Core.Boss.BossType.CrazyZombie;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
@@ -27,19 +28,6 @@ import java.util.List;
 public class BossManager implements Listener {
 
 
-    // Temps avant l'apparition du boss, on dit ici qu'il apparait à la 37 ème minute de jeu
-    private int time_before_spawn = 37*60;
-
-    // Variable contenant le temps restant avant l'apparition du prochain boss
-    private int timeLeftBeforeNewBossSpawn = time_before_spawn;
-
-    // Temps entre chaque annocne dans le chat, on en veut une toute les 7 minutes
-    private final int time_before_each_announcement = 7*60;
-
-    private int timeLeftBeforeNextAnnouncement = time_before_each_announcement;
-
-    private Boss nextBoss;
-
     private BukkitTask boucle;
 
 
@@ -57,11 +45,6 @@ public class BossManager implements Listener {
     public BossManager(Game partie) {
         this.bossList = new LinkedList<>();
         this.partie = partie;
-
-        // On définit le prochain boss
-        this.nextBoss = new CrazyZombie();
-        this.nextBoss.setChestManager(partie.groupe.getAutomatedChestManager());
-
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
     }
 
@@ -72,26 +55,8 @@ public class BossManager implements Listener {
      */
     public void spawnNewBoss(Location position, Boss boss) {
         this.bossList.add(boss);
-        boss.spawn(position);
         boss.setChestManager(partie.groupe.getAutomatedChestManager());
-    }
-
-    /**
-     * Méthode permettant de faire apparaitre le boss d'halloween
-     */
-    public void spawnHalloweenBoss() {
-
-        if(this.nextBoss != null && this.nextBoss.entity != null) {
-            CrazyZombie zombie = new CrazyZombie();
-            zombie.setChestManager(partie.groupe.getAutomatedChestManager());
-            this.bossList.add(zombie);
-            zombie.spawn(partie.getArene().getCoffre().getLocation());
-            return;
-        }
-
-        this.bossList.add(this.nextBoss);
-        this.nextBoss.setChestManager(partie.groupe.getAutomatedChestManager());
-        this.nextBoss.spawn(partie.getArene().getCoffre().getLocation());
+        boss.spawn(position);
     }
 
     /**
@@ -116,6 +81,7 @@ public class BossManager implements Listener {
 
         for(Boss boss: bossList) {
             if(killer.equals(boss.entity)) {
+                Bukkit.getPluginManager().callEvent(new MCPlayerKilledByBossEvent(deadPlayer, partie, boss));
                 boss.onPlayerKilled(deadPlayer);
                 return;
             }
@@ -128,31 +94,6 @@ public class BossManager implements Listener {
      */
     private void doLoopTick() {
 
-        GameSettings gameSettings = partie.groupe.getParametresPartie();
-        boolean isHalloweenEnabled = (gameSettings.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
-
-        // On désactive halloween pour 'isntant
-        isHalloweenEnabled = false;
-
-        // On réduit le temps de 1
-        this.timeLeftBeforeNewBossSpawn--;
-        if(this.timeLeftBeforeNewBossSpawn == 0) {
-            if(isHalloweenEnabled) this.spawnHalloweenBoss();
-            if(isHalloweenEnabled) this.timeLeftBeforeNewBossSpawn = this.time_before_spawn;
-            this.boucle.cancel();
-            return;
-        }
-
-        // On réduit le temps avant la prochaine annonce
-        this.timeLeftBeforeNextAnnouncement--;
-
-        // On regarde si on peut faire une nouvelle annonce
-        if(this.timeLeftBeforeNextAnnouncement == 0) {
-            if(isHalloweenEnabled) this.timeLeftBeforeNextAnnouncement = this.time_before_each_announcement;
-            if(isHalloweenEnabled) this.nextBoss.performAnnouncement();
-        }
-
-        //Bukkit.getLogger().info("Prochaine Annonce: " + this.timeLeftBeforeNextAnnouncement + " - Prochain Boss: " + this.timeLeftBeforeNewBossSpawn);
 
 
     }
@@ -177,7 +118,7 @@ public class BossManager implements Listener {
     public boolean isThisEntityABoss(LivingEntity e) {
         for(Boss b : bossList) {
             if(b.entity == null) continue;
-            if(b.entity.equals(e)) return true;
+            if(e.getMetadata("boss").get(0) != null) return true;
         }
         return  false;
     }

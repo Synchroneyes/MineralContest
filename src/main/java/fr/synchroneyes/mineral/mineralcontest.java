@@ -31,6 +31,7 @@ import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.UrlFetcher.Urls;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
+import fr.synchroneyes.special_events.SpecialEventManager;
 import fr.synchroneyes.world_downloader.WorldDownloader;
 import lombok.Getter;
 import org.bukkit.*;
@@ -79,6 +80,8 @@ public final class mineralcontest extends JavaPlugin {
     public MapBuilder mapBuilderInstance;
 
     public EffectManager effectManager;
+
+    public SpecialEventManager eventManager;
 
     public static int player_location_hud_refresh_rate = 10;
 
@@ -287,6 +290,7 @@ public final class mineralcontest extends JavaPlugin {
         this.mapBuilderInstance = MapBuilder.getInstance();
         this.messagesFromWebsite = new ArrayList<>();
         this.worldDownloader = WorldDownloader.getInstance();
+        this.eventManager = new SpecialEventManager();
 
         // Initialisation des events customs
         PermissionCheckerLoop permissionCheckerLoop = new PermissionCheckerLoop(this, 1);
@@ -295,6 +299,9 @@ public final class mineralcontest extends JavaPlugin {
         // Initialisation de la sauvegarde des position d'un joueur
         PlayerLocationSaverLoop playerLocationSaverLoop = new PlayerLocationSaverLoop(this, 1);
         playerLocationSaverLoop.run();
+
+        // Initialisation des evenements spéciaux
+        eventManager.init();
 
 
 
@@ -486,8 +493,8 @@ public final class mineralcontest extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new GameEnd(), this);
 
         // Halloween
-        Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.PlayerDeathEvent(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.OnGameStart(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.PlayerDeathEvent(), this);
+        //Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.OnGameStart(), this);
 
 
         // Database Save
@@ -552,7 +559,7 @@ public final class mineralcontest extends JavaPlugin {
             bukkitCommandMap.register("", new RefereeCommand());
             bukkitCommandMap.register("", new McStats());
 
-            bukkitCommandMap.register("", new Halloween());
+            //bukkitCommandMap.register("", new Halloween());
 
             bukkitCommandMap.register("", new DisplayScoreCommand());
             bukkitCommandMap.register("", new SelectDeathAnimationCommand());

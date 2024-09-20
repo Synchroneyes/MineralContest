@@ -264,7 +264,7 @@ public class Arene {
                         if(groupe.getGame().getBossManager().isThisEntitySpawnedByBoss(entite)) {
                                 return;
                         }
-
+                        Bukkit.getLogger().info("Removing entity: " + entite.getName());
                         entite.remove();
                     }
                 }
