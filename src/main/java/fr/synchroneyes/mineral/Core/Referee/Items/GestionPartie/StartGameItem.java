@@ -4,7 +4,6 @@ import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Referee.Inventory.InventoryTemplate;
 import fr.synchroneyes.mineral.Core.Referee.Items.RefereeItemTemplate;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public class StartGameItem extends RefereeItemTemplate {
             try {
                 groupe.getGame().demarrerPartie(true);
             } catch (Exception e) {
-                Error.Report(e, groupe.getGame());
+                e.printStackTrace();
             }
         } else {
             joueur.sendMessage(mineralcontest.prefixErreur + Lang.game_already_started.toString());

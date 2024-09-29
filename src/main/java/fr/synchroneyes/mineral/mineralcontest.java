@@ -488,9 +488,6 @@ public final class mineralcontest extends JavaPlugin {
         // Drop
         Bukkit.getServer().getPluginManager().registerEvents(new ParachuteHitDetection(), this);
 
-        // Metric
-        Bukkit.getServer().getPluginManager().registerEvents(new GameStart(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new GameEnd(), this);
 
         // Halloween
         //Bukkit.getServer().getPluginManager().registerEvents(new fr.synchroneyes.halloween_event.PlayerDeathEvent(), this);

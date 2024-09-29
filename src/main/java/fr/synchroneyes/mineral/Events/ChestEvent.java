@@ -16,7 +16,6 @@ import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.NPCs.Event.NPCPlayerInteract;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -114,7 +113,6 @@ public class ChestEvent implements Listener {
                             playerHouse.getTeam().updateScore(player);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Error.Report(e, partie);
                         }
                     }
 

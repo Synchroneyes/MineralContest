@@ -20,10 +20,8 @@ import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.*;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
-import fr.synchroneyes.mineral.Utils.Metric.SendInformation;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayerTeam;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.VersionChecker.Version;
@@ -242,7 +240,7 @@ public class Game implements Listener {
             tempsPartie = DUREE_PARTIE * 60;
             PreGameTimeLeft = groupe.getParametresPartie().getCVAR("pre_game_timer").getValeurNumerique();
         } catch (Exception e) {
-            Error.Report(e, this);
+            e.printStackTrace();
         }
 
     }
@@ -475,7 +473,6 @@ public class Game implements Listener {
                         this.cancel();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Error.Report(e, instance);
                     }
                 } else {
                     warnPlayerWithNoTeam();
@@ -855,7 +852,6 @@ public class Game implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, this);
         }
 
 
@@ -868,7 +864,6 @@ public class Game implements Listener {
                 if (!arene.chickenWaves.isStarted()) arene.chickenWaves.start();
             }
         } catch (Exception e) {
-            Error.Report(e, this);
             e.printStackTrace();
         }
     }
@@ -944,8 +939,6 @@ public class Game implements Listener {
         MCGameEndEvent endEvent = new MCGameEndEvent(this);
         Bukkit.getPluginManager().callEvent(endEvent);
 
-
-        SendInformation.sendGameData(SendInformation.ended, this);
         if (groupe.getPlayers().size() == 0) return;
 
 

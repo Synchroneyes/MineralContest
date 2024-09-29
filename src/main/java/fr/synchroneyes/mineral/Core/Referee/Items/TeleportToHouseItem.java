@@ -4,7 +4,6 @@ import fr.synchroneyes.mineral.Core.Referee.Inventory.InventoryTemplate;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ChatColorString;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
@@ -25,7 +24,7 @@ public class TeleportToHouseItem extends RefereeItemTemplate {
                 joueur.sendMessage("Téléportation en cours ...");
 
             } catch (Exception e) {
-                Error.Report(e, mineralcontest.getPlayerGame(joueur));
+                e.printStackTrace();
             }
         }
     }

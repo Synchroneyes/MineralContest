@@ -3,7 +3,6 @@ package fr.synchroneyes.mineral.Core.Referee.Items;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Inventory.InventoryTemplate;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -31,7 +30,6 @@ public class OpenTeamInventory extends RefereeItemTemplate {
                 joueur.openInventory(coffreMaison);
                 joueur.sendMessage(mineralcontest.prefixPrive + Lang.translate(Lang.referee_team_current_score.toString(), maison.getTeam()));
             } catch (Exception e) {
-                Error.Report(e, mineralcontest.getPlayerGame(joueur));
                 e.printStackTrace();
             }
         }

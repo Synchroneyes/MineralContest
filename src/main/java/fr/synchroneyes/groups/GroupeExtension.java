@@ -5,7 +5,6 @@ import fr.synchroneyes.groups.Commands.Admin.RetirerAdmin;
 import fr.synchroneyes.groups.Commands.Groupe.*;
 import fr.synchroneyes.groups.Commands.Vote.StartVote;
 import fr.synchroneyes.groups.Commands.Vote.Vote;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
@@ -35,7 +34,6 @@ public class GroupeExtension {
             getPluginCommandMap();
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
         registerCommands();
@@ -60,7 +58,6 @@ public class GroupeExtension {
                 FileUtils.deleteDirectory(fichier);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-                Error.Report(ioe, null);
             }
         }
 

@@ -7,7 +7,6 @@ import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -44,7 +43,7 @@ public class DeathZone {
             timeInDeathzone = g.getParametresPartie().getCVAR("death_time").getValeurNumerique();
 
         } catch (Exception e) {
-            Error.Report(e, g.getGame());
+            e.printStackTrace();
         }
     }
 
@@ -236,7 +235,6 @@ public class DeathZone {
             } catch (Exception e) {
                 mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), partie.groupe);
                 e.printStackTrace();
-                Error.Report(e, partie);
             }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2 * 20, 1);
 

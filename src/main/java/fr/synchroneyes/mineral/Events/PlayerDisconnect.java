@@ -1,16 +1,8 @@
 package fr.synchroneyes.mineral.Events;
 
 import fr.synchroneyes.custom_events.MCPlayerLeavePluginEvent;
-import fr.synchroneyes.mineral.Core.Game.Game;
-import fr.synchroneyes.mineral.Core.House;
-import fr.synchroneyes.mineral.Teams.Equipe;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
-import fr.synchroneyes.mineral.Utils.Log.GameLogger;
-import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

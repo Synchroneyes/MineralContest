@@ -1,6 +1,5 @@
 package fr.synchroneyes.mineral.Events;
 
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ public class WorldLoaded implements Listener {
                 world_name = mineralcontest.getPluginConfigValue("world_name").toString();
             } catch (Exception e) {
                 e.printStackTrace();
-                Error.Report(e, null);
             }
 
             if (event.getWorld().getName().equalsIgnoreCase(world_name)) {

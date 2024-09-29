@@ -2,7 +2,6 @@ package fr.synchroneyes.data_storage;
 
 
 import fr.synchroneyes.data_storage.Config.FileReader;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +29,6 @@ public class SQLConnection {
                 Bukkit.getConsoleSender().sendMessage(mineralcontest.prefixErreur + ChatColor.RED + e.getMessage());
                 return;
             }
-            Error.Report(e, null);
             e.printStackTrace();
         }
 

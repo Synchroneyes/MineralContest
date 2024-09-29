@@ -12,7 +12,6 @@ import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Shop.NPCs.BonusSeller;
 import fr.synchroneyes.mineral.Shop.ShopManager;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
@@ -120,7 +119,6 @@ public class WorldLoader {
             return createdWorld;
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            Error.Report(ioe, null);
         }
 
 
@@ -214,7 +212,6 @@ public class WorldLoader {
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            Error.Report(ioe, null);
         }
 
     }
@@ -430,7 +427,7 @@ public class WorldLoader {
             CoffreArene coffreArene = (CoffreArene) groupe.getGame().getArene().getCoffre();
             coffreArene.getArenaChestContentGenerator().initialize(fichierConfigPartie);
         } catch (Exception e) {
-            Error.Report(e, groupe.getGame());
+            e.printStackTrace();
         }
 
 

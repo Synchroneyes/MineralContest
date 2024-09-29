@@ -4,7 +4,6 @@ import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Range;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -58,7 +57,7 @@ public class ArenaChestContentGenerator {
             minItem = settings.getCVAR("min_item_in_chest").getValeurNumerique();
             maxItem = settings.getCVAR("max_item_in_chest").getValeurNumerique();
         } catch (Exception e) {
-            Error.Report(e, groupe.getGame());
+            e.printStackTrace();
         }
 
         // On génère un tableau de "range"

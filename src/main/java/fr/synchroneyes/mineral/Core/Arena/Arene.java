@@ -8,7 +8,6 @@ import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreArene;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -107,7 +106,6 @@ public class Arene {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, groupe.getGame());
         }
 
         // If the min time is greater than the max time
@@ -181,7 +179,6 @@ public class Arene {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, groupe.getGame());
         }
 
 
@@ -354,7 +351,6 @@ public class Arene {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Error.Report(e, groupe.getGame());
                     }
 
                 }

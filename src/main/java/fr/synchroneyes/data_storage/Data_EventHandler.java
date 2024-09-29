@@ -8,7 +8,6 @@ import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreParachute;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.MCPlayer;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -78,7 +77,7 @@ public class Data_EventHandler implements Listener {
             }
 
         } catch (SQLException throwables) {
-            Error.Report(throwables, event.getMcPlayer().getPartie());
+            throwables.printStackTrace();
         }
 
     }
@@ -154,7 +153,7 @@ public class Data_EventHandler implements Listener {
             }
 
         } catch (SQLException throwables) {
-            Error.Report(throwables, event.getGame());
+            throwables.printStackTrace();
         }
     }
 
@@ -190,7 +189,6 @@ public class Data_EventHandler implements Listener {
 
             //connection.createStatement().execute("INSERT INTO mineral_game_kills SET gameid = " + partie.getDatabaseGameId() + ", dead_playerid = " + deadPlayer.getDatabasePlayerId() + ", killer_playerid = " + killerPlayer.getDatabasePlayerId() + ", cause = '" + deathCause + "';");
         } catch (SQLException throwables) {
-            Error.Report(throwables, partie);
             throwables.printStackTrace();
         }
 
@@ -274,7 +272,6 @@ public class Data_EventHandler implements Listener {
                 }
             }
         } catch (SQLException throwables) {
-            Error.Report(throwables, partie);
             throwables.printStackTrace();
         }
 
@@ -308,8 +305,6 @@ public class Data_EventHandler implements Listener {
             requete_insert_shop_purchase.executeUpdate();
 
         } catch (SQLException throwables) {
-
-            Error.Report(throwables, partie);
             throwables.printStackTrace();
         }
 
@@ -346,8 +341,6 @@ public class Data_EventHandler implements Listener {
 
             requete_insert_coffre_ouvert.executeUpdate();
         } catch (SQLException throwables) {
-
-            Error.Report(throwables, mcPlayer.getPartie());
             throwables.printStackTrace();
         }
 

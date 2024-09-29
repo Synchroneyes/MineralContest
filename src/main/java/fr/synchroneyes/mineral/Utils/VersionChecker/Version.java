@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Version {
 
@@ -39,40 +40,33 @@ public class Version {
      * @param listToFill    - Une liste à remplir avec les messages du site
      */
     public static void fetchAllMessages(List<String> listToFill) {
+
         listToFill.clear();
 
         // On récupère la verison du plugin
         String currentVersion = mineralcontest.plugin.getDescription().getVersion();
 
         // On crée la nouvelle requete
-        HttpPost request = new HttpPost(Urls.API_URL_GET_CURRENT_VERSION_MESSAGES);
+        HttpGet request = new HttpGet(Urls.API_URL_MESSAGES);
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setRedirectStrategy(new LaxRedirectStrategy()).build();
+        HttpResponse response = null;
         try {
-            // On ajoute un paramètre à la requete
-            List<NameValuePair> parametres = new ArrayList<>();
-            parametres.add(new BasicNameValuePair("version", currentVersion));
-            request.setEntity(new UrlEncodedFormEntity(parametres));
-            HttpClient httpClient = HttpClientBuilder.create()
-                    .setRedirectStrategy(new LaxRedirectStrategy()).build();
-            HttpResponse response = null;
-
-
-
-            // On execute la requete
             response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
-
-            // On récupère le contenu de la requete
             String entityContents = EntityUtils.toString(entity);
 
-            // On sait que le résultat est un tableau au format JSON, on le traite donc comme un tableau
-            JSONArray reponse = new JSONArray(entityContents);
-            // Si on reçois aucun message, on arrête
-            if (reponse.isEmpty()) return;
+            // Réponse du site web
+            JSONObject messages = new JSONObject(entityContents);
 
-            // Sinon, on rempli la liste
-            for (int indexMessage = 0; indexMessage < reponse.length(); ++indexMessage)
-                listToFill.add(Lang.translate(reponse.get(indexMessage).toString()));
+            // Check si message pour notre version
+            if (!messages.has(currentVersion)) return;
 
+            JSONArray messagesArray = messages.getJSONArray(currentVersion);
+
+            for(int i = 0; i < messagesArray.length(); i++) {
+                listToFill.add(Lang.translate(messagesArray.getString(i)));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,37 +76,49 @@ public class Version {
 
 
     private static void doCheck() {
+
         String currentVersion = mineralcontest.plugin.getDescription().getVersion();
-        HttpPost request = new HttpPost(Urls.API_URL_LAST_VERSION_CHECK);
+
+        HttpGet request = new HttpGet(Urls.API_URL_VERSIONS);
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setRedirectStrategy(new LaxRedirectStrategy()).build();
+        HttpResponse response = null;
         try {
-            List<NameValuePair> parametres = new ArrayList<>();
-            parametres.add(new BasicNameValuePair("version", currentVersion));
-
-            request.setEntity(new UrlEncodedFormEntity(parametres));
-
-            HttpClient httpClient = HttpClientBuilder.create()
-                    .setRedirectStrategy(new LaxRedirectStrategy()).build();
-            HttpResponse response = null;
             response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
             String entityContents = EntityUtils.toString(entity);
 
-
-            // On récupère la réponse, plusieurs cas
-            JSONObject reponse = new JSONObject(entityContents);
-            if (reponse.getString("status").equals("update")) {
-                Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.RED + " A new update is available, plugin will now auto-update to version " + reponse.getString("message"));
-                isUpdating = true;
-                DownloadNewVersion(reponse.getString("url"), reponse.getString("file_name"), reponse.get("file_size").toString(), reponse.get("message").toString());
-            } else {
-                isCheckingStarted = false;
-            }
-
-            if (reponse.getString("status").equals("same")) {
-                Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Plugin is up-to-date!");
-            }
             // Réponse du site web
-        } catch (Exception e) {
+            JSONObject files = new JSONObject(entityContents);
+            JSONObject versions = files.getJSONObject("plugins");
+
+            List<String> available_versions = new ArrayList<>(versions.keySet());
+
+            available_versions.sort((v1, v2) -> {
+                String[] parts1 = v1.split("\\.");
+                String[] parts2 = v2.split("\\.");
+                int length = Math.max(parts1.length, parts2.length);
+
+                for (int i = 0; i < length; i++) {
+                    int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
+                    int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
+                    if (num1 != num2) {
+                        return Integer.compare(num2, num1);  // Reverse order for DESC
+                    }
+                }
+                return 0;
+            });
+
+            String latestVersion = available_versions.get(0);
+
+            if (isCurrentVersionLast(latestVersion)) {
+                Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.GREEN + " Plugin is up-to-date! Current Version: " + currentVersion + " - Latest Version: " + latestVersion);
+            } else {
+                Bukkit.getConsoleSender().sendMessage(mineralcontest.prefix + ChatColor.RED + " A new update is available, plugin will now auto-update to version " + latestVersion);
+                isUpdating = true;
+                DownloadNewVersion(versions.getJSONObject(latestVersion).getString("file_url"), versions.getJSONObject(latestVersion).getString("file_name"), versions.getJSONObject(latestVersion).getString("file_size"), latestVersion);
+            }
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
@@ -129,6 +135,32 @@ public class Version {
         }
 
 
+    }
+
+    private static boolean isCurrentVersionLast(String version) {
+        // Fetch the current version of the plugin
+        String currentVersion = mineralcontest.plugin.getDescription().getVersion();
+
+        // Compare the current version with the passed version string
+        return compareVersions(currentVersion, version) >= 0;
+    }
+
+    // Helper method to compare two version strings
+    private static int compareVersions(String version1, String version2) {
+        String[] parts1 = version1.split("\\.");
+        String[] parts2 = version2.split("\\.");
+
+        int length = Math.max(parts1.length, parts2.length);
+
+        for (int i = 0; i < length; i++) {
+            int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
+            int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
+            if (num1 != num2) {
+                return Integer.compare(num1, num2);
+            }
+        }
+
+        return 0; // The versions are equal
     }
 
 

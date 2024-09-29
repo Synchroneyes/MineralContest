@@ -2,7 +2,6 @@ package fr.synchroneyes.mineral.Settings;
 
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.groups.Core.Groupe;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -200,7 +199,6 @@ public class GameSettings {
             yamlConfiguration.save(nouveauFichierConfig);
         } catch (IOException e) {
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
 
