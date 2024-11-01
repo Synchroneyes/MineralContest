@@ -1,5 +1,6 @@
 package fr.synchroneyes.mineral.Core.Boss;
 
+import fr.synchroneyes.custom_events.MCBossKilledByPlayerEvent;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestManager;
 import fr.synchroneyes.mineral.Core.Coffre.Coffres.CoffreBoss;
 import fr.synchroneyes.mineral.Statistics.Class.BossKiller;
@@ -14,6 +15,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -165,10 +167,15 @@ public abstract class Boss {
      */
     protected abstract boolean canSpawnMobs();
 
+
+
     public Boss() {
         this.spawnedBoss = new ArrayList<>();
         this.spawnedEntities = new ArrayList<>();
     }
+
+
+    public abstract void onBossRemove();
 
 
     /**
@@ -191,7 +198,6 @@ public abstract class Boss {
 
         // On crée l'entité et on définit ses attributs
         this.entity = (Mob) monde.spawnEntity(mobLocation, getMobType());
-
 
         // Il doit avoir un nom visible constamment
         this.entity.setCustomNameVisible(true);
@@ -218,6 +224,8 @@ public abstract class Boss {
         // On définit la première cible du mob
         this.entity.setTarget(getNearestPlayer());
 
+        this.entity.setMetadata("boss", new FixedMetadataValue(mineralcontest.plugin, true));
+
         // On démarre la boucle de gestion du mob
         this.startMobTask();
 
@@ -225,9 +233,6 @@ public abstract class Boss {
         this.onBossSpawn();
 
         this.defineCustomAttributes();
-
-
-
 
     }
 
@@ -280,7 +285,6 @@ public abstract class Boss {
      */
     private void startMobTask(){
 
-
         // On arrête la précedente boucle si elle existait
         if(this.boucle != null) {
             this.boucle.cancel();
@@ -292,6 +296,7 @@ public abstract class Boss {
 
         // On crée la nouvelle boucle
         this.boucle = Bukkit.getScheduler().runTaskTimer(mineralcontest.plugin, () -> {
+
             // On vérifie si le mob existe ou est mort
             if(entity == null) {
                 this.boucle.cancel();
@@ -299,8 +304,13 @@ public abstract class Boss {
                 return;
             }
 
+
+
             // On vérifie si le mob est mort
             if(entity.isDead()) {
+                if(entity.getKiller() != null) {
+                    Bukkit.getPluginManager().callEvent(new MCBossKilledByPlayerEvent(this, entity.getKiller()));
+                }
 
                 removeBossBar();
                 spawnMobKillRewards();
@@ -386,6 +396,11 @@ public abstract class Boss {
 
     }
 
+    public void removePlayerBossBar(Player p) {
+        if(this.bossBar == null) return;
+        this.bossBar.removePlayer(p);
+    }
+
     private String getNameWithHealth() {
         if(this.entity.getHealth() == 0) return getName();
         return getName() + " " + ((int)entity.getHealth()) + ChatColor.RED + "♥" + ChatColor.RESET;
@@ -422,6 +437,16 @@ public abstract class Boss {
             if(b.entity != null && b.entity.equals(spawnedEntity)) return true;
 
         return false;
+    }
+
+    public void remove() {
+        if(entity != null) entity.setHealth(0);
+        onBossRemove();
+        this.boucle.cancel();
+    }
+
+    public boolean isAlive() {
+        return entity != null && !entity.isDead();
     }
 
 }

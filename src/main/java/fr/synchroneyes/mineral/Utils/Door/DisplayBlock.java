@@ -1,6 +1,5 @@
 package fr.synchroneyes.mineral.Utils.Door;
 
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,7 +23,6 @@ public class DisplayBlock {
             this.blockData = baseBlock.getBlockData();
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
 
@@ -51,7 +49,6 @@ public class DisplayBlock {
             position.getBlock().getState().update();
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
     }

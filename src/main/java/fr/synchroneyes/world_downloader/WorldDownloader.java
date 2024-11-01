@@ -160,7 +160,6 @@ public class WorldDownloader {
 
         if (download) {
             areMapsLoaded = false;
-
             HttpGet request = new HttpGet(Urls.API_URL_WORKSHOP_LIST);
             HttpClient httpClient = HttpClientBuilder.create()
                     .setRedirectStrategy(new LaxRedirectStrategy()).build();
@@ -171,8 +170,7 @@ public class WorldDownloader {
                 String entityContents = EntityUtils.toString(entity);
 
                 // Réponse du site web
-                JSONObject jsonResponse = new JSONObject(entityContents);
-                JSONArray maps = jsonResponse.getJSONArray("maps");
+                JSONArray maps = new JSONArray(entityContents);
 
                 for (int i = 0; i < maps.length(); ++i) {
                     JSONObject map = maps.getJSONObject(i);

@@ -7,12 +7,8 @@ import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
-import fr.synchroneyes.mineral.Kits.KitAbstract;
-import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
-import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Radius;
@@ -239,7 +235,6 @@ public class PlayerUtils {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Error.Report(e, mineralcontest.getPlayerGame(player));
                 }
                 return;
             }
@@ -288,7 +283,6 @@ public class PlayerUtils {
                 mp_enable_item_drop = settings.getCVAR("mp_enable_item_drop").getValeurNumerique();
             } catch (Exception e) {
                 e.printStackTrace();
-                Error.Report(e, playerGroup.getGame());
             }
 
 
@@ -320,7 +314,6 @@ public class PlayerUtils {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, mineralcontest.getPlayerGame(player));
         }
     }
 
@@ -330,6 +323,29 @@ public class PlayerUtils {
         p.setFoodLevel(30);
 
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+    }
+
+
+    /**
+     * Permet de respawn un joueur
+     * @param p Joueur à respawn
+     */
+    public static void respawnPlayer(Player p) {
+        Game partie = mineralcontest.getPlayerGame(p);
+        if(partie == null) return;
+
+        DeathZone deathZone = partie.getArene().getDeathZone();
+
+        if(!deathZone.isPlayerDead(p)) return;
+
+        CouplePlayer couplePlayer = new CouplePlayer(p, 0);
+        try {
+            deathZone.libererJoueur(couplePlayer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 }

@@ -4,6 +4,7 @@ import fr.synchroneyes.mapbuilder.Blocks.SaveableBlock;
 import fr.synchroneyes.mineral.DeathAnimations.DeathAnimation;
 import fr.synchroneyes.mineral.Utils.Pair;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,6 +21,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GroundFreezingAnimation extends DeathAnimation {
+
+    @Setter
+    private boolean sendNotification = false;
 
     private List<Pair<Location, SaveableBlock>> blocks_affected = new LinkedList<>();
 
@@ -45,7 +49,7 @@ public class GroundFreezingAnimation extends DeathAnimation {
         Material MaterialToReplace = Material.FROSTED_ICE;
 
 
-        killer.sendTitle(ChatColor.BLUE + "\u2744 \u2744 \u2744", "Il fait froid par ici ...", 20, 20*5, 20);
+        if(sendNotification) killer.sendTitle(ChatColor.BLUE + "\u2744 \u2744 \u2744", "Il fait froid par ici ...", 20, 20*5, 20);
 
         int nb_second_animation = 10;
 

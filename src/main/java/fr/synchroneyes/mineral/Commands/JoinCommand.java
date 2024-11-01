@@ -6,7 +6,6 @@ import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.ChatColorString;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -75,7 +74,6 @@ public class JoinCommand implements CommandExecutor {
                                 selectedHouse.getTeam().addPlayerToTeam(player, !(partie.isGameStarted() || partie.isGamePaused()));
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Error.Report(e, partie);
                                 return false;
                             }
 
@@ -89,7 +87,6 @@ public class JoinCommand implements CommandExecutor {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Error.Report(e, partie);
                 }
             }
         }

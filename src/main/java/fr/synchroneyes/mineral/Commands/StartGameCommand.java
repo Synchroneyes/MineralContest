@@ -2,7 +2,6 @@ package fr.synchroneyes.mineral.Commands;
 
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,7 +44,6 @@ public class StartGameCommand implements CommandExecutor {
                 } catch (Exception e) {
                     sender.sendMessage(mineralcontest.prefixErreur + e.getMessage());
                     e.printStackTrace();
-                    Error.Report(e, partie);
                 }
             }
             return false;

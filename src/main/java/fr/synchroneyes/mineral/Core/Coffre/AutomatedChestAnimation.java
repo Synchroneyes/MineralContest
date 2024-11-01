@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Core.Coffre;
 
 import fr.synchroneyes.custom_events.MCPlayerOpenChestEvent;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,6 +21,10 @@ public abstract class AutomatedChestAnimation {
 
     // variable pour enregistrer le joueur ouvrant le coffre
     protected Player openingPlayer = null;
+
+    @Getter
+    // Variable pour enregistrer le joueur ouvrant le coffre
+    protected Player playerOpenedChest = null;
 
     // Variable contenant le contenu de l'inventaire du coffre
     protected Inventory inventaireCoffre;
@@ -246,6 +251,8 @@ public abstract class AutomatedChestAnimation {
                     // On marque le coffre comme ayant été généré
                     isChestContentGenerated = true;
 
+                    playerOpenedChest = openingPlayer;
+
                     // On dit que l'animation du coffre est terminée
                     isAnimationOver = true;
 
@@ -254,7 +261,7 @@ public abstract class AutomatedChestAnimation {
                     actionToPerformAfterAnimationOver();
 
                     // On lance l'event d'ouverture de coffre
-                    MCPlayerOpenChestEvent playerOpenChestEvent = new MCPlayerOpenChestEvent(instance, openingPlayer);
+                    MCPlayerOpenChestEvent playerOpenChestEvent = new MCPlayerOpenChestEvent(instance, playerOpenedChest);
                     Bukkit.getPluginManager().callEvent(playerOpenChestEvent);
 
 

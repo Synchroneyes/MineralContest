@@ -7,7 +7,6 @@ import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Statistics.Class.BuilderStat;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
@@ -80,7 +79,6 @@ public class BlockPlaced implements Listener {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Error.Report(e, game);
                 }
             } else {
                 // We block the block adding

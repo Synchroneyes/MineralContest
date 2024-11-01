@@ -210,6 +210,15 @@ public class Equipe implements Comparable<Equipe> {
         this.score -= score;
     }
 
+    public void ajouterPoints(int score) {
+        MCTeamScoreUpdated event = new MCTeamScoreUpdated(this.score, this.score + score, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if(event.isCancelled()) return;
+
+        this.score += score;
+    }
+
     public void sendMessage(String message, Player sender) {
         if (this.joueurs.contains(sender)) {
             for (Player member : joueurs)

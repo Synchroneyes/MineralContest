@@ -20,7 +20,9 @@ public enum FileList {
     MySQL_Config_File("config", "mysql_settings.yml"),
     MySQL_database_schema("models", "database_schema.sql"),
     Kit_Enchanteur_ConfigFile("config/kits", "enchanteur.yml"),
-    DeathAnimation_DataFile("data", "death_animations.yml");
+    DeathAnimation_DataFile("data", "death_animations.yml"),
+    Halloween_Arena("models/halloween", "arena.yml"),
+    Halloween_Parkour("models/halloween", "parkour.yml");
 
     private String path;
     private String fileName;

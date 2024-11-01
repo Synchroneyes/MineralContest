@@ -3,11 +3,9 @@ package fr.synchroneyes.mineral.Events;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Utils.Door.DisplayBlock;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.Utils.Radius;
 import fr.synchroneyes.mineral.mineralcontest;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -69,7 +67,6 @@ public class PlayerMove implements Listener {
 
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Error.Report(e, mineralcontest.getPlayerGame(event.getPlayer()));
                             }
                         }
                     }

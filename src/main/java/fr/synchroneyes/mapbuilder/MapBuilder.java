@@ -9,7 +9,6 @@ import fr.synchroneyes.mapbuilder.Events.BlockPlaced;
 import fr.synchroneyes.mapbuilder.Events.PlayerInteract;
 import fr.synchroneyes.mineral.Scoreboard.ScoreboardUtil;
 import fr.synchroneyes.mineral.Utils.BlockSaver;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -47,15 +46,12 @@ public class MapBuilder {
             getPluginCommandMap();
         } catch (Exception e) {
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
 
         printToConsole("Loading custom maps module ...");
         registerEvents();
         registerCommands();
-
-
     }
 
 

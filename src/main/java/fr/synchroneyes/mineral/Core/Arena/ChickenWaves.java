@@ -2,7 +2,6 @@ package fr.synchroneyes.mineral.Core.Arena;
 
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.mineralcontest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -97,7 +96,7 @@ public class ChickenWaves {
                         try {
                             tempsRestantAvantProchaineVague = arene.groupe.getParametresPartie().getCVAR("chicken_spawn_interval").getValeurNumerique();
                         } catch (Exception e) {
-                            Error.Report(e, arene.groupe.getGame());
+                            e.printStackTrace();
                         }
 
                     }
@@ -136,7 +135,7 @@ public class ChickenWaves {
             chicken_spawn_min_count = parametres.getCVAR("chicken_spawn_min_count").getValeurNumerique();
             chicken_spawn_max_count = parametres.getCVAR("chicken_spawn_max_count").getValeurNumerique();
         } catch (Exception e) {
-            Error.Report(e, arene.groupe.getGame());
+            e.printStackTrace();
         }
 
 
@@ -186,7 +185,7 @@ public class ChickenWaves {
             Random random = new Random();
             nextWaveChickenCount = random.nextInt((maxPoulet - minPoulet) + 1) + minPoulet;
         } catch (Exception e) {
-            Error.Report(e, arene.groupe.getGame());
+            e.printStackTrace();
         }
 
     }

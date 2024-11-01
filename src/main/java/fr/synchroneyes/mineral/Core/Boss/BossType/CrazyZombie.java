@@ -36,6 +36,12 @@ public class CrazyZombie extends Boss {
         list_sbire = new ArrayList<>();
     }
 
+    @Override
+    public void onBossRemove() {
+        for(LivingEntity sbire : list_sbire)
+            sbire.remove();
+    }
+
 
     @Override
     public String getName() {

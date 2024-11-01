@@ -7,7 +7,6 @@ import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.Referee.Referee;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Player.CouplePlayer;
 import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -44,7 +43,7 @@ public class DeathZone {
             timeInDeathzone = g.getParametresPartie().getCVAR("death_time").getValeurNumerique();
 
         } catch (Exception e) {
-            Error.Report(e, g.getGame());
+            e.printStackTrace();
         }
     }
 
@@ -153,7 +152,7 @@ public class DeathZone {
         return false;
     }
 
-    private synchronized void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
+    public synchronized void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
 
         // SI le joueur n'a plus de temps à passer ici
         if (DeathZonePlayer.getValeur() <= 0) {
@@ -209,8 +208,10 @@ public class DeathZone {
             }
 
 
-            // ON le supprime de la liste
-            this.joueurs.remove(DeathZonePlayer);
+            if(!this.joueurs.contains(DeathZonePlayer)) {
+                remove(joueur);
+            } else this.joueurs.remove(DeathZonePlayer);
+
 
             PlayerUtils.setMaxHealth(joueur);
             // On appelle l'evenement de respawn
@@ -236,7 +237,6 @@ public class DeathZone {
             } catch (Exception e) {
                 mineralcontest.broadcastMessage(mineralcontest.prefixErreur + e.getMessage(), partie.groupe);
                 e.printStackTrace();
-                Error.Report(e, partie);
             }
             DeathZonePlayer.getJoueur().sendTitle(ChatColor.GREEN + Lang.translate(Lang.deathzone_respawned.toString()), "", 1, 2 * 20, 1);
 
@@ -244,4 +244,12 @@ public class DeathZone {
         }
     }
 
+    private synchronized void remove(Player joueur) {
+        for (CouplePlayer cp : getPlayers()) {
+            if (cp.getJoueur().equals(joueur)) {
+                this.joueurs.remove(cp);
+                return;
+            }
+        }
+    }
 }

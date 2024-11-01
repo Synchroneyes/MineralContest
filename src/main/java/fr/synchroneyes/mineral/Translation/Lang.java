@@ -3,7 +3,6 @@ package fr.synchroneyes.mineral.Translation;
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Teams.Equipe;
-import fr.synchroneyes.mineral.Utils.ErrorReporting.Error;
 import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.TimeConverter;
@@ -503,13 +502,11 @@ public enum Lang {
         } catch (IOException ioe) {
             plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
             ioe.printStackTrace();
-            Error.Report(ioe, null);
             GameLogger.addLog(new Log("error", "failed to save lang.yml", "plugin_error"));
 
         } catch (Exception e) {
             plugin.getLogger().severe("ERREUR");
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
 
@@ -547,7 +544,6 @@ public enum Lang {
         } catch (Exception e) {
             Bukkit.getLogger().severe("GET ERROR");
             e.printStackTrace();
-            Error.Report(e, null);
         }
 
         return result;
