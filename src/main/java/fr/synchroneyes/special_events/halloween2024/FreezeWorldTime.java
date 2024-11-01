@@ -1,6 +1,7 @@
 package fr.synchroneyes.special_events.halloween2024;
 
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
@@ -16,13 +17,10 @@ public class FreezeWorldTime {
 
     private static boolean isWorldFrozen = false;
 
+    @Setter
     private static World frozenWorld = null;
 
     private static BukkitTask boucle = null;
-
-    public static void setFrozenWorld(World w) {
-        frozenWorld = w;
-    }
 
     public static void freezeWorld() {
 

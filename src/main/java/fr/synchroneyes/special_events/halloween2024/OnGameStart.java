@@ -2,18 +2,21 @@ package fr.synchroneyes.special_events.halloween2024;
 
 import fr.synchroneyes.custom_events.MCGameStartedEvent;
 
+import fr.synchroneyes.special_events.halloween2024.game_events.ArenaMonsterEvent;
 import fr.synchroneyes.special_events.halloween2024.game_events.FakeChestEvent;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.mineralcontest;
 import fr.synchroneyes.special_events.halloween2024.game_events.FightArenaEvent;
 import fr.synchroneyes.special_events.halloween2024.game_events.HellParkourEvent;
+import fr.synchroneyes.special_events.halloween2024.utils.Screamer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
 
 public class OnGameStart implements Listener {
 
@@ -35,7 +38,7 @@ public class OnGameStart implements Listener {
 
         if(halloweenEnabled) {
 
-            String unknownName = ChatColor.RED + "???";
+
 
             World gameWorld = event.getGame().groupe.getMonde();
             FreezeWorldTime.setFrozenWorld(gameWorld);
@@ -44,41 +47,66 @@ public class OnGameStart implements Listener {
             FakeChestEvent fakeChestEvent = new FakeChestEvent(event.getGame());
             FightArenaEvent fightArenaEvent = new FightArenaEvent(event.getGame());
             HellParkourEvent hellParkourEvent = new HellParkourEvent(event.getGame());
+            ArenaMonsterEvent arenaMonsterEvent = new ArenaMonsterEvent(event.getGame());
 
-            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, hellParkourEvent::execute, 20*5);
-
-            // On joue l'event Fight Arena au bout de 15 secondes
-            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, fightArenaEvent::execute, 60*20*2);
-
-            // On joue l'event Fake Chest au bout de 8 minutes
-            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, fakeChestEvent::execute, 20*60*8);
-
-
-
-
-            /*
-                Features:
-                - Fausse arène d'arène, avec des mobs à la place du coffre. Quand les mobs sont morts, lorsque le joueur tente d'ouvrir le coffre,
-                 une animation se joue, puis le coffre se ferme, et se transforme en TNT
-
-                - Boss de fin
-
-                - Screamers
-
-
-
-                Scénario Halloween 2024
-                1- Lors du démarrage de la partie, tous les joueurs sont TP sur la fausse arène au loin, remplis de monstre, avec un Y+ 20 & Freeze
-                2- Les joueurs sont aveuglé pendant 15 secondes, et un esprit leur parle
-                3- les joueurs se fightent dans l'arène
-
-
-
-             */
-
-
-            // On joue les tâches de début de game
             sendDelayedTitleToEveryOne(ChatColor.WHITE + "\u2620 " + ChatColor.RED + "Mineral" + ChatColor.RED +" Contest" + ChatColor.WHITE + " \u2620", "Mode Halloween " + ChatColor.GREEN + "activé!", 5, 5, true, event.getGame());
+
+            // On joue l'event Son éclair au bout de 5 secondes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playThunderSound", partie), 20*5);
+
+            // On joue l'event Fight Arena au bout de 5 secondes
+            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, fightArenaEvent::execute, 20*5);
+
+            // On joue l'event Son creeper au bout de 4 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playCreeperSound", partie), 20*60*4);
+
+            // Titre joué après 2 minutes
+            sendDelayedTitleToEveryOne(ChatColor.RED + "???", "N'ayez pas peur.. ce n'était que le début", 5, 60*2, false, event.getGame());
+
+
+            // On joue l'event Warden au bout de 5 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playWarden", partie), 20*60*5);
+
+            // Titre joué après 8 minutes 30
+            sendDelayedTitleToEveryOne(ChatColor.RED + "???", "Vous avez l'air trop en forme...", 5, 60*8+30, false, event.getGame());
+
+            // On joue l'event Hell Parkour au bout de 9 minutes
+            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, hellParkourEvent::execute, 20*60*9);
+
+            // On joue l'event Son Warden au bout de 14 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playWardenSound", partie), 20*60*14);
+
+            // On joue l'event Screamer au bout de 19 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playCreeper", partie), 20*60*8);
+
+
+            // Titre joué après 19 minutes 10
+            sendDelayedTitleToEveryOne(ChatColor.RED + "???", "Peur d'exploser? :)", 5, 60*19+10, false, event.getGame());
+
+            // On joue l'event Son Warden au bout de 14 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playWardenSound", partie), 20*60*14);
+
+            // On joue l'event Fake Chest au bout de 28 minutes
+            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, fakeChestEvent::execute, 20*60*28);
+
+            // On joue l'event Pluie d'enclume au bout de 31 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playAnvilRain", partie), 20*60*31);
+
+            // On joue l'event Monstre Random au bout de 36 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playMonsterRoulette", partie), 20*60*36);
+
+            // On joue l'event Son Zombie au bout de 40 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playZombieSound", partie), 20*60*40);
+
+            // On joue l'event Son Enderman au bout de 47 minutes
+            Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> Screamer.playEffectToAllPlayers("playEndermanSound", partie), 20*60*40);
+
+            // Titre joué après 51 minutes 30
+            sendDelayedTitleToEveryOne(ChatColor.RED + "???", "Ne vous inquietez pas, j'arrive ...", 5, 60*51+30, true, event.getGame());
+
+
+            // On joue l'event arenaMonsterEvent au bout de 52 minutes
+            Bukkit.getServer().getScheduler().runTaskLater(mineralcontest.plugin, arenaMonsterEvent::execute, 20*60*52);
 
 
 
@@ -91,11 +119,6 @@ public class OnGameStart implements Listener {
     private void sendDelayedTitleToEveryOne(String title, String message, int duree_seconde, int duree_avant_annonce, boolean blindPlayers, Game game) {
 
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
-            GameSettings parametres = game.groupe.getParametresPartie();
-            boolean halloweenEnabled = (parametres.getCVAR("enable_halloween_event").getValeurNumerique() == 1);
-
-            if(!halloweenEnabled) return;
-
             for(Player joueur : game.groupe.getPlayers()) {
                 joueur.sendTitle(title, message, 20, 20*duree_seconde, 20);
                 if(blindPlayers) joueur.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*(duree_seconde+2), 5));

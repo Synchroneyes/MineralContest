@@ -396,6 +396,11 @@ public abstract class Boss {
 
     }
 
+    public void removePlayerBossBar(Player p) {
+        if(this.bossBar == null) return;
+        this.bossBar.removePlayer(p);
+    }
+
     private String getNameWithHealth() {
         if(this.entity.getHealth() == 0) return getName();
         return getName() + " " + ((int)entity.getHealth()) + ChatColor.RED + "♥" + ChatColor.RESET;
@@ -437,6 +442,7 @@ public abstract class Boss {
     public void remove() {
         if(entity != null) entity.setHealth(0);
         onBossRemove();
+        this.boucle.cancel();
     }
 
     public boolean isAlive() {

@@ -46,7 +46,7 @@ public class AngryZombie extends Boss {
 
     @Override
     public double getSanteMax() {
-        return 20;
+        return 150;
     }
 
     @Override
@@ -177,7 +177,6 @@ public class AngryZombie extends Boss {
     @Override
     public void onBossSpawn() {
 
-        Bukkit.broadcastMessage("onBossSpawn");
         // On s'assure que le zombie est adulte
         if(entity instanceof Zombie) {
             Zombie zombie = (Zombie) entity;
@@ -244,8 +243,8 @@ public class AngryZombie extends Boss {
         ZombieVillager zombieSbire = (ZombieVillager) this.entity.getWorld().spawnEntity(position, EntityType.ZOMBIE_VILLAGER);
         if(zombieSbire.isBaby())zombieSbire.setAdult();
         zombieSbire.setCustomNameVisible(true);
-        zombieSbire.setCustomName("???");
-        zombieSbire.setMetadata("boss", new FixedMetadataValue(mineralcontest.plugin, true));
+        zombieSbire.setCustomName("Sbire ???");
+        //zombieSbire.setMetadata("boss", new FixedMetadataValue(mineralcontest.plugin, true));
         zombieSbire.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(getSanteMax()/3);
         zombieSbire.setHealth(getSanteMax()/3);
 

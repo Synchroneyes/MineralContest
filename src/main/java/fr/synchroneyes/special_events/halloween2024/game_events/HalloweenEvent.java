@@ -11,6 +11,7 @@ public abstract class HalloweenEvent {
     @Getter
     private Game partie;
 
+
     public HalloweenEvent(Game partie) {
         this.partie = partie;
     }
@@ -24,11 +25,14 @@ public abstract class HalloweenEvent {
     public abstract String getEventDescription();
     public abstract boolean isTextMessageNotificationEnabled();
 
+    public abstract boolean isNotificationDelayed();
+
+
     public void execute() {
 
         Bukkit.getLogger().info("[MineralContest][Halloween2024] Executing event: " + getEventName());
         beforeExecute();
-        sendEventNotification();
+        if(!isNotificationDelayed()) sendEventNotification();
         executionContent();
         afterExecute();
     }

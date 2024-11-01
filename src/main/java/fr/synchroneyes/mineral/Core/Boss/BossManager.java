@@ -116,11 +116,7 @@ public class BossManager implements Listener {
      * @return
      */
     public boolean isThisEntityABoss(LivingEntity e) {
-        for(Boss b : bossList) {
-            if(b.entity == null) continue;
-            if(e.getMetadata("boss").get(0) != null) return true;
-        }
-        return  false;
+        return (!e.getMetadata("boss").isEmpty());
     }
 
     /**
@@ -132,6 +128,13 @@ public class BossManager implements Listener {
         for(Boss b : bossList)
             if(b.isThisEntitySpawnedByBoss(e)) return true;
         return false;
+    }
+
+
+    public Boss toBoss(Entity e) {
+        for(Boss b : bossList)
+            if(b.isThisEntitySpawnedByBoss(e)) return b;
+        return null;
     }
 
 

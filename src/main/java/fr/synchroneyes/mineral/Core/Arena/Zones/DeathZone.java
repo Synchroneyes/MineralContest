@@ -152,7 +152,7 @@ public class DeathZone {
         return false;
     }
 
-    private synchronized void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
+    public synchronized void libererJoueur(CouplePlayer DeathZonePlayer) throws Exception {
 
         // SI le joueur n'a plus de temps à passer ici
         if (DeathZonePlayer.getValeur() <= 0) {
@@ -208,8 +208,10 @@ public class DeathZone {
             }
 
 
-            // ON le supprime de la liste
-            this.joueurs.remove(DeathZonePlayer);
+            if(!this.joueurs.contains(DeathZonePlayer)) {
+                remove(joueur);
+            } else this.joueurs.remove(DeathZonePlayer);
+
 
             PlayerUtils.setMaxHealth(joueur);
             // On appelle l'evenement de respawn
@@ -242,4 +244,12 @@ public class DeathZone {
         }
     }
 
+    private synchronized void remove(Player joueur) {
+        for (CouplePlayer cp : getPlayers()) {
+            if (cp.getJoueur().equals(joueur)) {
+                this.joueurs.remove(cp);
+                return;
+            }
+        }
+    }
 }

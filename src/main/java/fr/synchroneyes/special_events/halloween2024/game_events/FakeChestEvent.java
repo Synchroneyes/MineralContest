@@ -75,4 +75,9 @@ public class FakeChestEvent extends HalloweenEvent{
     public boolean isTextMessageNotificationEnabled() {
         return false;
     }
+
+    @Override
+    public boolean isNotificationDelayed() {
+        return false;
+    }
 }

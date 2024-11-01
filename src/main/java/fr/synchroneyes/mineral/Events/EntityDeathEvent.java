@@ -1,5 +1,7 @@
 package fr.synchroneyes.mineral.Events;
 
+import fr.synchroneyes.custom_events.MCBossKilledByPlayerEvent;
+import fr.synchroneyes.mineral.Core.Boss.Boss;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Settings.GameSettings;
 import fr.synchroneyes.mineral.Statistics.Class.ChickenKillerStat;
@@ -8,6 +10,7 @@ import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.Range;
 import fr.synchroneyes.mineral.mineralcontest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -26,6 +29,13 @@ public class EntityDeathEvent implements Listener {
             Game partie = mineralcontest.getWorldGame(event.getEntity().getWorld());
             event.getEntity();
             if (partie != null && partie.isGameStarted()) {
+
+                if(partie.getBossManager().isThisEntityABoss(event.getEntity())) {
+                    Boss boss = partie.getBossManager().toBoss(event.getEntity());
+
+                    MCBossKilledByPlayerEvent event1 = new MCBossKilledByPlayerEvent(boss, event.getEntity().getKiller());
+                    Bukkit.getPluginManager().callEvent(event1);
+                }
 
                 if(partie.getArene().chickenWaves.isFromChickenWave(event.getEntity())) {
                     LivingEntity poulet = (LivingEntity) event.getEntity();

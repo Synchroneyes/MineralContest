@@ -2,6 +2,7 @@ package fr.synchroneyes.mineral.Utils.Player;
 
 import fr.synchroneyes.groups.Core.Groupe;
 import fr.synchroneyes.groups.Utils.Etats;
+import fr.synchroneyes.mineral.Core.Arena.Zones.DeathZone;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.House;
 import fr.synchroneyes.mineral.Core.MCPlayer;
@@ -322,6 +323,29 @@ public class PlayerUtils {
         p.setFoodLevel(30);
 
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+    }
+
+
+    /**
+     * Permet de respawn un joueur
+     * @param p Joueur à respawn
+     */
+    public static void respawnPlayer(Player p) {
+        Game partie = mineralcontest.getPlayerGame(p);
+        if(partie == null) return;
+
+        DeathZone deathZone = partie.getArene().getDeathZone();
+
+        if(!deathZone.isPlayerDead(p)) return;
+
+        CouplePlayer couplePlayer = new CouplePlayer(p, 0);
+        try {
+            deathZone.libererJoueur(couplePlayer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 }

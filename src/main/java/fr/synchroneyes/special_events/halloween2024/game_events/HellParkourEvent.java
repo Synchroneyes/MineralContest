@@ -1,14 +1,13 @@
 package fr.synchroneyes.special_events.halloween2024.game_events;
 
-import fr.synchroneyes.custom_events.MCAutomatedChestTimeOverEvent;
-import fr.synchroneyes.custom_events.MCPlayerOpenChestEvent;
-import fr.synchroneyes.custom_events.MCPlayerRespawnEvent;
-import fr.synchroneyes.custom_events.PlayerDeathByPlayerEvent;
+import fr.synchroneyes.custom_events.*;
 import fr.synchroneyes.file_manager.FileList;
 import fr.synchroneyes.mineral.Core.Coffre.AutomatedChestAnimation;
 import fr.synchroneyes.mineral.Core.Game.Game;
 import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Teams.Equipe;
+import fr.synchroneyes.mineral.Utils.MassBlockSpawner;
+import fr.synchroneyes.mineral.Utils.Player.PlayerUtils;
 import fr.synchroneyes.mineral.mineralcontest;
 import fr.synchroneyes.special_events.halloween2024.chests.ParkourChest;
 import fr.synchroneyes.special_events.halloween2024.utils.ClonedInventory;
@@ -36,8 +35,6 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
     @Getter
     private Game game;
 
-    private List<Block> blocks;
-
     private Location parkourSpawnLocation;
 
     private Location parkourChestLocation;
@@ -56,16 +53,20 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
     private ParkourChest parkourChest;
 
+    private MassBlockSpawner spawner;
+
+    private boolean blockSpawnEnded = false;
+
 
     public HellParkourEvent(Game partie) {
         super(partie);
         this.game = partie;
-        this.blocks = new ArrayList<>();
         this.playersAlive = new ArrayList<>();
         this.playersInventory = new HashMap<>();
         this.playerWithoutInventory = new ArrayList<>();
         this.parkourChest = new ParkourChest(54, partie.groupe.getAutomatedChestManager());
         Bukkit.getPluginManager().registerEvents(this, mineralcontest.plugin);
+        this.spawner = new MassBlockSpawner();
     }
 
 
@@ -76,7 +77,11 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
     @Override
     public void executionContent() {
+        if(!this.blockSpawnEnded) return;
+
+
         for(Player player : this.game.groupe.getPlayers()) {
+            PlayerUtils.respawnPlayer(player);
             player.teleport(this.parkourSpawnLocation);
         }
     }
@@ -85,6 +90,7 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
     public void beforeExecute() {
 
         for(Player player: this.game.groupe.getPlayers()) {
+            if(this.game.isReferee(player)) continue;
             this.playersInventory.put(player, new ClonedInventory(player.getInventory()));
             this.playerWithoutInventory.add(player);
             player.getInventory().clear();
@@ -92,7 +98,10 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
         }
 
-        this.playersAlive.addAll(this.getPartie().groupe.getPlayers());
+        for(Player p : this.getPartie().groupe.getPlayers()) {
+            if(getPartie().isReferee(p)) continue;
+            playersAlive.add(p);
+        }
 
         World world = this.getPartie().groupe.getMonde();
         int xLocation = 20000;
@@ -111,8 +120,10 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
 
             Material itemTypeMaterial = Material.valueOf(itemType);
-            world.getBlockAt(xLocation + x, yLocation + y, zLocation + z).setType(itemTypeMaterial);
-            this.blocks.add(world.getBlockAt(xLocation + x, yLocation + y, zLocation + z));
+
+            this.spawner.addBlock(new Location(world, xLocation + x, yLocation + y, zLocation + z), itemTypeMaterial);
+            //world.getBlockAt(xLocation + x, yLocation + y, zLocation + z).setType(itemTypeMaterial);
+            //this.blocks.add(world.getBlockAt(xLocation + x, yLocation + y, zLocation + z));
 
 
             if(itemTypeMaterial == Material.OAK_PLANKS) {
@@ -128,10 +139,14 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
 
         }
+
+        this.spawner.spawnBlocks();
+
     }
 
     @Override
     public void afterExecute() {
+        if(!this.blockSpawnEnded) return;
         this.isEnabled = true;
 
         Bukkit.getScheduler().runTaskLater(mineralcontest.plugin, () -> {
@@ -160,6 +175,11 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
         return false;
     }
 
+    @Override
+    public boolean isNotificationDelayed() {
+        return true;
+    }
+
     public boolean isPlayerOnParkour(Player player) {
         Location playerLocation = player.getLocation();
         int xLocation = 20000;
@@ -185,7 +205,7 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
         for(int x = xLocation; x < xLocation + 19; x++) {
             for(int z = zLocation; z < zLocation + 19; z++) {
                 world.getBlockAt(x, lavaHeight, z).setType(Material.LAVA);
-                this.blocks.add(world.getBlockAt(x, lavaHeight, z));
+                this.spawner.addBlock(new Location(world, x, lavaHeight, z), Material.LAVA);
             }
         }
     }
@@ -193,9 +213,7 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
 
     private void cleanParkour() {
         this.lavaLoop.cancel();
-        for(Block block : this.blocks) {
-            block.setType(Material.AIR);
-        }
+        this.spawner.removeSpawnedBlocks();
 
         for(Player player : this.playersAlive) {
             MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(player);
@@ -204,6 +222,12 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
             resetPlayerInventory(player);
             this.playerWithoutInventory.remove(player);
         }
+
+        for(Player p : this.getPartie().groupe.getPlayers()) {
+            if(!getPartie().isReferee(p)) continue;
+            p.teleport(getPartie().getArene().getCoffre().getLocation());
+        }
+
 
         this.playersAlive.clear();
         this.isEnabled = false;
@@ -274,6 +298,17 @@ public class HellParkourEvent extends HalloweenEvent implements Listener {
         if(! event.getCoffre().equals(this.parkourChest)) return;
         cleanParkour();
         this.parkourChest.remove();
+    }
+
+    @EventHandler
+    public void onBlockSpawnEnd(MCMassBlockSpawnEndedEvent event){
+        if(event.getSpawner().equals(this.spawner)) {
+            this.blockSpawnEnded = true;
+            sendEventNotification();
+            executionContent();
+            afterExecute();
+        }
+
     }
 
 }
