@@ -343,58 +343,55 @@ public final class mineralcontest extends JavaPlugin {
             Verification de mise à jour et téléchargement automatique
             Seulement si la config l'autorise
          */
-        if ((boolean) getPluginConfigValue("enable_auto_update")) {
 
-            // On lance la procédure de vérification de version une fois que le plugin est totalement chargé
-            getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        // On lance la procédure de vérification de version une fois que le plugin est totalement chargé
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
 
 
-                Version.isCheckingStarted = true;
-                Thread operationsThreade = new Thread(() -> {
-                    // On récupère toutes les URL du plugin
-                    Urls.FetchAllUrls();
+            Version.isCheckingStarted = true;
+            Thread operationsThreade = new Thread(() -> {
+                // On récupère toutes les URL du plugin
+                Urls.FetchAllUrls();
 
-                    if(Urls.isWebsiteDown) {
-                        Bukkit.broadcastMessage(ChatColor.RED + Urls.WEBSITE_URL + " is down. Please check on our discord to get the latest plugin version & maps mirrors link");
-                        return;
-                    }
+                if(Urls.isWebsiteDown) {
+                    Bukkit.broadcastMessage(ChatColor.RED + Urls.WEBSITE_URL + " is down. Please check on our discord to get the latest plugin version & maps mirrors link");
+                    return;
+                }
 
-                    worldDownloader.initMapLists();
+                worldDownloader.initMapLists();
 
-                    Version.fetchAllMessages(messagesFromWebsite);
+                Version.fetchAllMessages(messagesFromWebsite);
 
-                    afficherMessageVersion();
+                afficherMessageVersion();
 
+                if ((boolean) getPluginConfigValue("enable_auto_update")) {
                     Version.Check(true);
-
-                });
-
-                operationsThreade.start();
-
-                // On lance un timer qui vérifie, à chaque seconde, si le téléchargement est terminé
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        // La procédure à commencer
-                        if (Version.isCheckingStarted && !Urls.isWebsiteDown) {
-
-                            // Si le plugin a été mis à jour, on reload le plugin
-                            if (Version.hasUpdated) {
-                                Bukkit.reload();
-                            }
-
-                        } else {
-                            // On arrête le timer
-                            this.cancel();
-                        }
-                    }
-                }.runTaskTimer(this, 20, 20);
+                }
 
             });
 
+            operationsThreade.start();
 
+            // On lance un timer qui vérifie, à chaque seconde, si le téléchargement est terminé
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    // La procédure à commencer
+                    if (Version.isCheckingStarted && !Urls.isWebsiteDown) {
 
-        }
+                        // Si le plugin a été mis à jour, on reload le plugin
+                        if (Version.hasUpdated) {
+                            Bukkit.reload();
+                        }
+
+                    } else {
+                        // On arrête le timer
+                        this.cancel();
+                    }
+                }
+            }.runTaskTimer(this, 20, 20);
+
+        });
 
     }
 
