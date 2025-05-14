@@ -32,10 +32,10 @@ Open "plugins/MineralContest/config/plugin_config.yml" and change the value for 
 In order to play a map, you will need to run the following command: /mcdownloader.
 
 ## Commands
-The list of commands is coming soon, they need to be translated into english. If you want to read them with any translation service, you can get them [here.](https://mc.monvoisin-kevin.fr/commandes)
+The list of commands is coming soon, they need to be translated into english. If you want to read them with any translation service, you can get them [here.](https://mineralcontest.fr/commandes)
 
 ## Installing maps manually
-Installing a map manually is pretty easy. Just navigate to [our "workshop"](https://mc.monvoisin-kevin.fr/workshop/) and click on the download icon of the map you want to download. Once the download is done, just extract the folder (starting with "mc_") inside plugins/MineralContest/worlds.
+Installing a map manually is pretty easy. Just navigate to [our "workshop"](https://mineralcontest.fr/workshop/) and click on the download icon of the map you want to download. Once the download is done, just extract the folder (starting with "mc_") inside plugins/MineralContest/worlds.
 And now, you are ready to go! You can start to play on your map.
 
 ## Licence 
