@@ -22,7 +22,7 @@ public class Urls {
     public static String API_URL_MESSAGES = "";
 
 
-    public static String WEBSITE_URL = "https://api.mc.monvoisin-kevin.fr";
+    public static String WEBSITE_URL = "https://api.mineralcontest.fr";
     public static String GET_ALL_URL_ROUTE = "/index.json";
 
     public static boolean areAllUrlFetched = false;
