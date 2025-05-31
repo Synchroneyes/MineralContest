@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Core.MCPlayer;
 import fr.synchroneyes.mineral.Kits.KitAbstract;
 import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardAPI;
 import fr.synchroneyes.mineral.Scoreboard.newapi.ScoreboardFields;
+import fr.synchroneyes.mineral.Settings.GameCVAR;
 import fr.synchroneyes.mineral.Teams.Equipe;
 import fr.synchroneyes.mineral.Translation.Lang;
 import fr.synchroneyes.mineral.mineralcontest;
@@ -165,12 +166,25 @@ public class PlayerHUDEvents implements Listener {
     @EventHandler
     public void onScoreUpdated(MCTeamScoreUpdated mcTeamScoreUpdated) {
 
+        Game game = mcTeamScoreUpdated.getEquipe().getPartie();
+
+        String score = mcTeamScoreUpdated.getEquipe().getCouleur() + "⛏ CACHÉ ⚡";
+
+        GameCVAR hide_scoreboard_during_game = game.groupe.getParametresPartie().getCVAR("hide_scoreboard_during_game");
+
+        if(hide_scoreboard_during_game.getValeur().equals("false") && game.isGameStarted() && !game.isGameEnded()) {
+            // On ajoute le score de l'équipe
+            score = mcTeamScoreUpdated.getEquipe().getFormattedScore(mcTeamScoreUpdated.getNewScore());
+
+        }
+
+
 
 
         // On récupère les membres de l'équipe
         for(Player player : mcTeamScoreUpdated.getEquipe().getJoueurs()){
             // Pour chaque joueur, on update le score
-            ScoreboardAPI.updateField(player, ScoreboardFields.SCOREBOARD_TEAMSCORE_VALUE, mcTeamScoreUpdated.getEquipe().getFormattedScore(mcTeamScoreUpdated.getNewScore()));
+            ScoreboardAPI.updateField(player, ScoreboardFields.SCOREBOARD_TEAMSCORE_VALUE, score);
         }
 
 
