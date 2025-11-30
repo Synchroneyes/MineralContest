@@ -338,7 +338,7 @@ public class GameSettings {
 
             parametresParDefaut.add(new GameCVAR("enable_hunger", "1", "Permet d'activer ou non la faim dans une partie", "game", true, true));
 
-            parametresParDefaut.add(new GameCVAR("hide_scoreboard_during_game", "1", "Permet de cacher le scoreboard pendant une partie", "game", true, false));
+            parametresParDefaut.add(new GameCVAR("hide_scoreboard_during_game", "0", "Permet de cacher le scoreboard pendant une partie", "game", true, false));
 
 
             GameLogger.addLog(new Log("game_cvar", "Successfully added default cvar", "GameSettings: getParametresParDefaut"));
